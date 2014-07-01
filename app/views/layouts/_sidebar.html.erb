@@ -1,8 +1,14 @@
 <div class="col-sm-3 col-md-2 sidebar">
   <ul class="nav nav-sidebar">
-    <li><a href="#">Overview</a></li>
-    <li><a href="#">Reports</a></li>
-    <li><a href="#">Analytics</a></li>
-    <li><a href="#">Export</a></li>
+    <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+      <li><%= link_to "Manage Clients", clients_path %></li>    
+      <li><%= link_to "Manage Locations", locations_path %></li>
+      <li><%= link_to "Manage Projects", projects_path %></li>
+      <li><%= link_to "Manage Services", services_path %></li>    
+      <li><%= link_to "Manage BA", brand_ambassadors_path %></li> 
+      <li><%= link_to("Manage ISMP", ismp_index_path) if current_user.has_role? :admin %></li>
+    <% elsif current_user.has_role?(:ba) %>
+      <li><%= link_to "Manage Assignments", assignments_path %></li>    
+    <% end %>
   </ul>
 </div>

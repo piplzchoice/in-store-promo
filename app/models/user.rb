@@ -9,4 +9,13 @@ class User < ActiveRecord::Base
   has_many :brand_ambassadors
   has_many :projects
   has_many :services
+
+  def self.all_ismp
+    with_role(:ismp)
+  end
+
+  def save_ismp
+    self.add_role :ismp
+    self.save
+  end
 end

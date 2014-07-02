@@ -1,1 +1,26 @@
 <h1 class="page-header">List ISMP</h1>
+<div class="link-new-btn"><%= link_to("New ISMP", new_ismp_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each_with_index do |user, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= user.email %></td>
+        <td>
+          <%= link_to "Show", ismp_path(user) %> || 
+          <%= link_to "Edit", edit_ismp_path(user) %> || 
+          <%= link_to "Delete", ismp_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

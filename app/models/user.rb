@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_one :client, foreign_key: 'account_id', class_name: 'Client'
 
   has_many :brand_ambassadors
+  has_one :brand_ambassador, foreign_key: 'account_id', class_name: 'BrandAmbassador'
+
   has_many :projects
   has_many :services
 

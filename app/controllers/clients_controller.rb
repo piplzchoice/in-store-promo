@@ -60,7 +60,8 @@ class ClientsController < ApplicationController
 
   def destroy
     @client = Client.find(params[:id])
-    if @client.destroy
+    @account = @client.account
+    if @client.destroy && @account.destroy
       redirect_to clients_url, {notice: "Client deleted"}
     end    
   end

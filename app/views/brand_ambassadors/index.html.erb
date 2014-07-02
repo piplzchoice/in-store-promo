@@ -1,1 +1,28 @@
 <h1 class="page-header">List BA</h1>
+<div class="link-new-btn"><%= link_to("New BA", new_brand_ambassador_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <!-- <th>Email</th> -->
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @brand_ambassadors.each_with_index do |brand_ambassador, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <!-- <td><%#= brand_ambassador.email %></td> -->
+        <td><%= brand_ambassador.name %></td>
+        <td>
+          <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
+          <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> || 
+          <%= link_to "Delete", brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

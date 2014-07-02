@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   resources :projects
   resources :services
   resources :ismp
+
   resources :assignments
 
   # Example of regular route:

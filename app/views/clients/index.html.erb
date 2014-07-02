@@ -1,1 +1,28 @@
 <h1 class="page-header">List Clients</h1>
+<div class="link-new-btn"><%= link_to("New Client", new_client_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Company Name</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @clients.each_with_index do |client, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= client.company_name %></td>
+        <td><%= client.name %></td>
+        <td>
+          <%= link_to "Show", client_path(client) %> || 
+          <%= link_to "Edit", edit_client_path(client) %> || 
+          <%= link_to "Delete", client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

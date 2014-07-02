@@ -4,18 +4,30 @@ class IsmpController < ApplicationController
 
   def index
     @users = User.all_ismp
+    respond_to do |format|
+      format.html
+    end
   end
 
   def new
     @user = User.new
+    respond_to do |format|
+      format.html
+    end    
   end
 
   def edit
     assign_user
+    respond_to do |format|
+      format.html
+    end    
   end
 
   def show
     assign_user
+    respond_to do |format|
+      format.html
+    end    
   end
 
   def create

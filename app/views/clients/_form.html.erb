@@ -1,0 +1,26 @@
+<%= form_for @client, html: {role: "form"} do |f| %>
+  <div class="form-group">
+    <%= f.label :company_name %>
+    <%= f.text_field :company_name, {class: "form-control", placeholder: "Company Name"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Contact Name" %>
+    <%= f.select :title, ["Mr", "Mrs", "Miss"], {}, {class: "form-control", style: "width: 7%"} %>
+    <%= f.text_field :first_name, {class: "form-control", placeholder: "First Name", style: "width: 35%"} %>
+    <%= f.text_field :last_name, {class: "form-control", placeholder: "Last Name", style: "width: 35%"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label "Billing Address" %>
+    <%= f.text_field :street_one, {class: "form-control", placeholder: "Street 1"} %>
+    <%= f.text_field :street_two, {class: "form-control", placeholder: "Street 2"} %>
+    <%= f.text_field :city, {class: "form-control", placeholder: "City"} %>
+    <%= f.text_field :state, {class: "form-control", placeholder: "State"} %>
+    <%= f.text_field :zipcode, {class: "form-control", placeholder: "Zipcode"} %>
+    <%= f.country_select :country, {priority: %w(US CA), prompt: 'Please select a country'}, {class: "form-control"} %>
+  </div>  
+
+
+  <%= f.button "Create", {type: "submit", class: "btn btn-default"} %>
+<% end %>

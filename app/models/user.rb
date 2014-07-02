@@ -6,9 +6,13 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
 
   has_many :clients
+  has_one :client, foreign_key: 'account_id', class_name: 'Client'
+
   has_many :brand_ambassadors
   has_many :projects
   has_many :services
+
+  default_scope { order("created_at ASC") }
 
   def self.all_ismp
     with_role(:ismp)

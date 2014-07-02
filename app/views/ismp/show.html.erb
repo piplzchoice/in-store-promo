@@ -1,3 +1,6 @@
 <h1 class="page-header">Show ISMP</h1>
-<p>Email : <%= @user.email %></p>
-<p>Last Sign in At : <%= @user.last_sign_in_at.strftime("%m/%d/%Y") %></p>
+<label>Email :</label>
+<p><%= @user.email %></p>
+
+<label>Last Sign in At :</label>
+<p><%= @user.last_sign_in_at.strftime("%m/%d/%Y") %></p>

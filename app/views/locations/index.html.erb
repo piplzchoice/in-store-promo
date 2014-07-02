@@ -1,1 +1,26 @@
 <h1 class="page-header">List Locations</h1>
+<div class="link-new-btn"><%= link_to("New Location", new_location_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @locations.each_with_index do |location, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= location.name %></td>
+        <td>
+          <%= link_to "Show", location_path(location) %> || 
+          <%= link_to "Edit", edit_location_path(location) %> || 
+          <%= link_to "Delete", location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

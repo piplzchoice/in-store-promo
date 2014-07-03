@@ -11,6 +11,7 @@ class ClientsController < ApplicationController
 
   def new
     @client = Client.new
+    @client.build_account
     respond_to do |format|
       format.html
     end    
@@ -31,8 +32,7 @@ class ClientsController < ApplicationController
   end
 
   def create
-    @client = Client.new(client_params)
-    @client.user_id = current_user.id
+    @client, password = Client.new_with_account(client_params, current_user.id)
     respond_to do |format|
       format.html do
         if @client.save
@@ -67,7 +67,8 @@ class ClientsController < ApplicationController
   end
 
   def client_params
-    params.require(:client).permit(:company_name, :title, :first_name, :last_name, :street_one, :street_two, :city, :state, :zipcode, :country)
+    params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
+      :street_one, :street_two, :city, :state, :zipcode, :country, :phone, account_attributes: [:email])
   end  
 
 end

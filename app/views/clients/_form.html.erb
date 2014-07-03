@@ -9,6 +9,10 @@
     <%= f.select :title, ["Mr", "Mrs", "Miss"], {}, {class: "form-control", style: "width: 7%"} %>
     <%= f.text_field :first_name, {class: "form-control", placeholder: "First Name", style: "width: 35%"} %>
     <%= f.text_field :last_name, {class: "form-control", placeholder: "Last Name", style: "width: 35%"} %>
+    <%= f.fields_for :account do |account_fields| %>
+      <%= account_fields.email_field :email, {class: "form-control", placeholder: "Email", style: "width: 35%"} %>
+    <% end %>    
+    <%= f.text_field :phone, {class: "form-control", placeholder: "Phone", style: "width: 35%"} %>
   </div>  
 
   <div class="form-group">

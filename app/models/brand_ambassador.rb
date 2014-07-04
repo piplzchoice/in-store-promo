@@ -18,10 +18,29 @@
 class BrandAmbassador < ActiveRecord::Base
   belongs_to :user
   belongs_to :account, :class_name => "User", :foreign_key => :account_id
+  accepts_nested_attributes_for :account, allow_destroy: true
+
+  validates :name, :phone, :address, :grade, :rate, :mileage, presence: true
+  validates :grade, :rate, numericality: true
   
   has_many :services
+
+  def self.new_with_account(brand_ambassador_params, user_id)
+    brand_ambassador = self.new(brand_ambassador_params)
+    brand_ambassador.user_id = user_id
+    brand_ambassador.build_account(brand_ambassador_params["account_attributes"])
+    password =  Devise.friendly_token.first(8)
+    brand_ambassador.account.password = password
+    brand_ambassador.account.password_confirmation = password
+    brand_ambassador.account.add_role :ba   
+    return brand_ambassador, password
+  end
 
   def email
     account.email
   end  
+
+  def mileage_choice
+    (mileage ? "Yes" : "No")
+  end
 end

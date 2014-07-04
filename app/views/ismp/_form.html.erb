@@ -1,15 +1,16 @@
 <%= form_for @user, url: path_action, html: {role: "form"} do |f| %>
   <div class="form-group">
-    <%= f.label :email %>
+    <%= f.label :email, {class: "control-label"} %>
     <%= f.email_field :email, {class: "form-control", placeholder: "Enter Email"} %>
   </div>
 
   <div class="form-group">
-    <%= f.label :password %>
+    <%= f.label :password, {class: "control-label"} %>
     <%= f.password_field :password, {class: "form-control", placeholder: "Enter Password"} %>    
   </div>  
 
   <div class="form-group">
+    <%= f.label :password_confirmation, {class: "control-label"} %>
     <%= f.password_field :password_confirmation, {class: "form-control", placeholder: "Confirm Password"} %>
   </div>  
 

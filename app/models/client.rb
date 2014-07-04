@@ -44,16 +44,6 @@ class Client < ActiveRecord::Base
     return client, password
   end
 
-  def update_data(client_params)
-    account_params = client_params["account_attributes"]
-    client_params.delete("account_attributes")    
-    self.update_attributes(client_params)
-    unless self.account.email == account_params["email"]
-      self.account.email = account_params["email"] 
-      self.account.save
-    end    
-  end
-
   def email
     account.email
   end

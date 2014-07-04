@@ -49,7 +49,7 @@ class ClientsController < ApplicationController
     @client = Client.find(params[:id])
     respond_to do |format|
       format.html do
-        if @client.update_data(client_params)
+        if @client.update_attributes(client_params)
           redirect_to clients_url, notice: "Client updated"
         else
           render :edit
@@ -69,7 +69,7 @@ class ClientsController < ApplicationController
 
   def client_params
     params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
-      :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email])
+      :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])
   end  
 
 end

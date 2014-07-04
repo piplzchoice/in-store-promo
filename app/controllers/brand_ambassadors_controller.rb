@@ -11,6 +11,7 @@ class BrandAmbassadorsController < ApplicationController
 
   def new
     @brand_ambassador = BrandAmbassador.new
+    @brand_ambassador.build_account
     respond_to do |format|
       format.html
     end    
@@ -31,11 +32,11 @@ class BrandAmbassadorsController < ApplicationController
   end
 
   def create
-    @brand_ambassador = BrandAmbassador.new(brand_ambassador_params)
-    @brand_ambassador.user_id = current_user.id
+    @brand_ambassador, password = BrandAmbassador.new_with_account(brand_ambassador_params, current_user.id)
     respond_to do |format|
       format.html do
         if @brand_ambassador.save
+          ApplicationMailer.welcome_email(@brand_ambassador.account.email, @brand_ambassador.name ,password).deliver
           redirect_to brand_ambassadors_url, notice: "BA created"
         else
           render :new
@@ -60,13 +61,13 @@ class BrandAmbassadorsController < ApplicationController
 
   def destroy
     @brand_ambassador = BrandAmbassador.find(params[:id])
-    # @account = @brand_ambassador.account
-    if @brand_ambassador.destroy #&& @account.destroy
+    @account = @brand_ambassador.account
+    if @brand_ambassador.destroy && @account.destroy
       redirect_to brand_ambassadors_url, {notice: "BA deleted"}
     end    
   end
 
   def brand_ambassador_params
-    params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage)
+    params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, account_attributes: [:email, :id])
   end    
 end

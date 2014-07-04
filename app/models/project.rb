@@ -14,4 +14,6 @@
 class Project < ActiveRecord::Base
   belongs_to :user
   belongs_to :client
+
+  validates :name, :descriptions, :client_id, presence: true
 end

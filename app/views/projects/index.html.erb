@@ -1,1 +1,26 @@
 <h1 class="page-header">List Projects</h1>
+<div class="link-new-btn"><%= link_to("New Project", new_project_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @projects.each_with_index do |project, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= project.name %></td>
+        <td>
+          <%= link_to "Show", project_path(project) %> || 
+          <%= link_to "Edit", edit_project_path(project) %> || 
+          <%= link_to "Delete", project_path(project), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

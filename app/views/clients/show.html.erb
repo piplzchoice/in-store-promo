@@ -11,3 +11,27 @@
 
 <label>Billing Address :</label>
 <p><%= @client.billing_address %></p>
+
+<h3 class="sub-header">List Projects</h3>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @client.projects.each_with_index do |project, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= project.name %></td>
+        <td>
+          <%= link_to "Show", project_path(project) %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -24,7 +24,7 @@
 class Client < ActiveRecord::Base
   belongs_to :user
   belongs_to :account, :class_name => "User", :foreign_key => :account_id
-  accepts_nested_attributes_for :account
+  accepts_nested_attributes_for :account, allow_destroy: true
 
   has_many :projects  
 
@@ -42,6 +42,16 @@ class Client < ActiveRecord::Base
     client.account.password_confirmation = password
     client.account.add_role :client   
     return client, password
+  end
+
+  def update_data(client_params)
+    account_params = client_params["account_attributes"]
+    client_params.delete("account_attributes")    
+    self.update_attributes(client_params)
+    unless self.account.email == account_params["email"]
+      self.account.email = account_params["email"] 
+      self.account.save
+    end    
   end
 
   def email

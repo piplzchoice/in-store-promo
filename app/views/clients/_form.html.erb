@@ -34,6 +34,11 @@
 
   <h3 class="sub-header">Billing Address</h3>
   <div class="form-group">
+    <%= f.label :billing_name, {class: "control-label"} %>
+    <%= f.text_field :billing_name, {class: "form-control", placeholder: "Billing Name"} %>
+  </div>  
+
+  <div class="form-group">
     <%= f.label :street_one, "Street 1", {class: "control-label"} %>
     <%= f.text_field :street_one, {class: "form-control", placeholder: "Street 1"} %>
   </div>  

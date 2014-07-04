@@ -1,3 +1,20 @@
+# == Schema Information
+#
+# Table name: brand_ambassadors
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer
+#  name       :string(255)
+#  phone      :string(255)
+#  address    :string(255)
+#  grade      :integer
+#  rate       :decimal(5, 2)
+#  created_at :datetime
+#  updated_at :datetime
+#  account_id :integer
+#  mileage    :boolean
+#
+
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # This model initially had no columns defined.  If you add columns to the

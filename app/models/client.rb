@@ -28,6 +28,9 @@ class Client < ActiveRecord::Base
 
   has_many :projects  
 
+  validates :company_name, :title, :first_name, :last_name, :phone, :street_one, :street_two, :city, :state,
+    :zipcode, :country, :billing_name, presence: true
+
   default_scope { order("created_at ASC") }
 
   def self.new_with_account(client_params, user_id)

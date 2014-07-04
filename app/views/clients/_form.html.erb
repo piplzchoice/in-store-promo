@@ -1,30 +1,68 @@
 <%= form_for @client, html: {role: "form"} do |f| %>
   <div class="form-group">
-    <%= f.label :company_name %>
+    <%= f.label :company_name, {class: "control-label"} %>
     <%= f.text_field :company_name, {class: "form-control", placeholder: "Company Name"} %>
   </div>
 
+  <h3 class="sub-header">Contact Name</h3>
   <div class="form-group">
-    <%= f.label "Contact Name" %>
-    <%= f.select :title, ["Mr", "Mrs", "Miss"], {}, {class: "form-control", style: "width: 7%"} %>
-    <%= f.text_field :first_name, {class: "form-control", placeholder: "First Name", style: "width: 35%"} %>
-    <%= f.text_field :last_name, {class: "form-control", placeholder: "Last Name", style: "width: 35%"} %>
-    <%= f.fields_for :account do |account_fields| %>
-      <%= account_fields.email_field :email, {class: "form-control", placeholder: "Email", style: "width: 35%"} %>
-    <% end %>    
-    <%= f.text_field :phone, {class: "form-control", placeholder: "Phone", style: "width: 35%"} %>
+    <%= f.label :title, {class: "control-label"} %>
+    <%= f.select :title, ["Mr", "Mrs", "Miss"], {}, {class: "form-control"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :first_name, {class: "control-label"} %>
+    <%= f.text_field :first_name, {class: "form-control", placeholder: "First Name"} %>
   </div>  
 
   <div class="form-group">
-    <%= f.label "Billing Address" %>
+    <%= f.label :last_name, {class: "control-label"} %>
+    <%= f.text_field :last_name, {class: "form-control", placeholder: "Last Name"} %>
+  </div>  
+
+  <div class="form-group">    
+    <%= f.fields_for :account do |account_fields| %>
+      <%= account_fields.label :email, {class: "control-label"} %>
+      <%= account_fields.email_field :email, {class: "form-control", placeholder: "Email"} %>
+    <% end %>    
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :phone, {class: "control-label"} %>
+    <%= f.text_field :phone, {class: "form-control", placeholder: "Phone"} %>
+  </div>  
+
+  <h3 class="sub-header">Billing Address</h3>
+  <div class="form-group">
+    <%= f.label :street_one, "Street 1", {class: "control-label"} %>
     <%= f.text_field :street_one, {class: "form-control", placeholder: "Street 1"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :street_two, "Street 2", {class: "control-label"} %>
     <%= f.text_field :street_two, {class: "form-control", placeholder: "Street 2"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :city, {class: "control-label"} %>
     <%= f.text_field :city, {class: "form-control", placeholder: "City"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :state, {class: "control-label"} %>
     <%= f.text_field :state, {class: "form-control", placeholder: "State"} %>
+  </div>  
+
+  <div class="form-group" >
+    <%= f.label :zipcode, {class: "control-label"} %>
     <%= f.text_field :zipcode, {class: "form-control", placeholder: "Zipcode"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :country, {class: "control-label"} %>
     <%= f.country_select :country, {priority: %w(US CA), prompt: 'Please select a country'}, {class: "form-control"} %>
   </div>  
 
 
-  <%= f.button "Create", {type: "submit", class: "btn btn-default"} %>
+  <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

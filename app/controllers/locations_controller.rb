@@ -33,6 +33,7 @@ class LocationsController < ApplicationController
 
   def create
     @location = Location.new(location_params)
+    @location.user_id = current_user.id
     respond_to do |format|
       format.html do
         if @location.save

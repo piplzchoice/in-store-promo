@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
 
   has_many :projects
   has_many :services
+  has_many :locations
 
   default_scope { order("created_at ASC") }
 

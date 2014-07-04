@@ -13,6 +13,7 @@
 #
 
 class Location < ActiveRecord::Base
-  # has_many :projects
+  belongs_to :user
+  validates :name, :address, :city, :state, :zipcode, presence: true
   
 end

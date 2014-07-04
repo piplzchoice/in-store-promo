@@ -46,14 +46,8 @@ class IsmpController < ApplicationController
   def update
     assign_user
     respond_to do |format|
-      format.html do
-        status = nil
-        if user_params[:password].blank? && user_params[:password_confirmation].blank?
-          status = @user.update_attributes(user_params)
-        else
-          status = @user.update_without_password(user_params)          
-        end           
-        if status
+      format.html do           
+        if @user.update_ismp(user_params)
           redirect_to ismp_index_url, notice: "ISMP updated"
         else
           render :edit

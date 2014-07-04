@@ -43,4 +43,12 @@ class User < ActiveRecord::Base
     self.add_role :ismp
     self.save
   end
+
+  def update_ismp(user_params)
+    if user_params["password"].blank?
+      user_params.delete("password")
+      user_params.delete("password_confirmation")
+    end
+    self.update_attributes(user_params)
+  end
 end

@@ -54,4 +54,11 @@ class Client < ActiveRecord::Base
   def billing_address
     "#{street_one} #{street_two} #{city} #{state} #{zipcode} #{country}"
   end
+
+  def reset_password
+    password = Devise.friendly_token.first(8)
+    account.password = password
+    account.password_confirmation = password
+    return password    
+  end
 end

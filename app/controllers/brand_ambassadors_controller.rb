@@ -67,6 +67,19 @@ class BrandAmbassadorsController < ApplicationController
     end    
   end
 
+  def reset_password
+    @brand_ambassador, msg = BrandAmbassador.find(params[:id]), nil
+    password = @brand_ambassador.reset_password
+    if @brand_ambassador.account.save
+      ApplicationMailer.reset_password(@brand_ambassador.account.email, @brand_ambassador.name ,password).deliver
+      msg = "Password reset success, new password sent to email"
+    else
+      msg = "Password reset failed"
+    end
+
+    redirect_to brand_ambassadors_url, {notice: msg}
+  end
+
   def brand_ambassador_params
     params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, account_attributes: [:email, :id])
   end    

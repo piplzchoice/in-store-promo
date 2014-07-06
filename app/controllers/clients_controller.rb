@@ -67,6 +67,19 @@ class ClientsController < ApplicationController
     end    
   end
 
+  def reset_password
+    @client, msg = Client.find(params[:id]), nil
+    password = @client.reset_password
+    if @client.account.save
+      ApplicationMailer.reset_password(@client.account.email, @client.name ,password).deliver
+      msg = "Password reset success, new password sent to email"
+    else
+      msg = "Password reset failed"
+    end
+
+    redirect_to clients_url, {notice: msg}
+  end
+
   def client_params
     params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
       :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])

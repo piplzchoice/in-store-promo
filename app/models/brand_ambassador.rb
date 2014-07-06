@@ -43,4 +43,11 @@ class BrandAmbassador < ActiveRecord::Base
   def mileage_choice
     (mileage ? "Yes" : "No")
   end
+
+  def reset_password
+    password = Devise.friendly_token.first(8)
+    account.password = password
+    account.password_confirmation = password
+    return password    
+  end
 end

@@ -5,8 +5,18 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
-  resources :clients
-  resources :brand_ambassadors
+  resources :clients do
+    member do
+      patch "reset_password"
+    end
+  end
+
+  resources :brand_ambassadors do
+    member do
+      patch "reset_password"
+    end
+  end
+  
   resources :locations
   resources :projects
   resources :services

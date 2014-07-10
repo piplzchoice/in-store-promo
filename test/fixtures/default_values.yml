@@ -1,17 +1,11 @@
 # == Schema Information
 #
-# Table name: services
+# Table name: default_values
 #
-#  id                  :integer          not null, primary key
-#  project_id          :integer
-#  location_id         :integer
-#  brand_ambassador_id :integer
-#  user_id             :integer
-#  created_at          :datetime
-#  updated_at          :datetime
-#  start_at            :datetime
-#  end_at              :datetime
-#  details             :text
+#  id           :integer          not null, primary key
+#  rate_project :decimal(8, 2)
+#  created_at   :datetime
+#  updated_at   :datetime
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

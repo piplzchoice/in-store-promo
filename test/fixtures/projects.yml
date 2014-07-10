@@ -9,6 +9,9 @@
 #  descriptions :string(255)
 #  created_at   :datetime
 #  updated_at   :datetime
+#  start_at     :date
+#  end_at       :date
+#  rate         :decimal(8, 2)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

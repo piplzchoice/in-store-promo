@@ -39,7 +39,13 @@ class Service < ActiveRecord::Base
   end
 
   def old_id
-    service = Service.find self.id
-    service.brand_ambassador_id
+    ret = nil
+    unless self.id.nil?
+      service = Service.find self.id
+      ret = service.brand_ambassador_id
+    else
+      ret == nil
+    end
+    return ret
   end
 end

@@ -20,4 +20,8 @@ class Location < ActiveRecord::Base
   def self.autocomplete_search(q)
     Location.where("name ILIKE ?", "%#{q}%")    
   end  
+
+  def self.complete_location
+    "#{name} - #{address}, #{city}"
+  end
 end

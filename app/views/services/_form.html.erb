@@ -3,7 +3,7 @@
     <%= f.label :location_id, "Select Location", {class: "control-label"} %>
     <%= f.hidden_field :location_id, {class: "select-2-box", data: { 
       url: autocomplete_location_name_project_services_path(project_id: @project.id),
-      name: (@service.location_id.nil? ? "-" : "#{@service.location.name}"),
+      name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
       location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
     }} %>
   </div>

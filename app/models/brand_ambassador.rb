@@ -20,7 +20,7 @@ class BrandAmbassador < ActiveRecord::Base
   belongs_to :account, :class_name => "User", :foreign_key => :account_id
   accepts_nested_attributes_for :account, allow_destroy: true
 
-  validates :name, :phone, :address, :grade, :rate, :mileage, presence: true
+  validates :name, :phone, :address, :grade, :rate, presence: true
   validates :grade, :rate, numericality: true
   
   has_many :services

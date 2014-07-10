@@ -28,7 +28,7 @@ class Client < ActiveRecord::Base
 
   has_many :projects  
 
-  validates :company_name, :title, :first_name, :last_name, :phone, presence: true
+  validates :company_name, :first_name, :last_name, :phone, presence: true
 
   default_scope { order("created_at ASC") }
 

@@ -130,16 +130,16 @@ $(function() {
                 return {results: data};
             }
         },
-        formatResult: function (location) { return location.name; },
-        formatSelection: function (location) { return location.name; },
+        formatResult: function (location) { return location.name + " - " + location.address + ", " + location.city; },
+        formatSelection: function (location) { return location.name + " - " + location.address + ", " + location.city; },
         dropdownCssClass: "bigdrop",
         escapeMarkup: function (m) { return m; }
     });
 
-    $("#service_location_id").select2("data", { 
-      id: $("#service_location_id").data("location-id"), 
-      name: $("#service_location_id").data("name")
-    });
+    // $("#service_location_id").select2("data", { 
+    //   id: $("#service_location_id").data("location-id"), 
+    //   name: $("#service_location_id").data("name")
+    // });
 
   }
 

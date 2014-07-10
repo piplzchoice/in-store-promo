@@ -1,0 +1,13 @@
+<h1 class="page-header">New Date</h1>
+<%= form_for @available_date, html: {role: "form"} do |f| %>
+  <div class="form-group">
+    <%= f.label :availablty, {class: "control-label"} %>    
+    <div class='input-group date' id='availablty_datetimepicker'>
+      <%= f.text_field :availablty, {class: "form-control", readonly: true} %>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </div>      
+  </div>
+  <div id="dates" data-disable="<%= @disable_dates %>"></div>
+
+  <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
+<% end %>

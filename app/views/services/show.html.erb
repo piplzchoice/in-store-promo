@@ -1,0 +1,27 @@
+<h1 class="page-header">Show Service</h1>
+<label>Client :</label>
+<p><%= @project.client.name %></p>
+
+<label>Project Name :</label>
+<p><%= @project.name %></p>
+
+<label>Location</label>
+<p><%= @service.location.name %></p>
+
+<label>Assigned BA</label>
+<p><%= @service.brand_ambassador.name %></p>
+
+<label>Start Date</label>
+<p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+<label>End Date</label>
+<p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+<label>Details</label>
+<p><%= @service.details %></p>
+
+<div class="link-new-btn">
+  <%= link_to("Back", project_path(@project), {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("Edit", edit_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
+  <%= link_to("Delete", project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure?" }, :method => :delete}) %>
+</div>

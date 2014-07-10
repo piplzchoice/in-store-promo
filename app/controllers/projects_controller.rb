@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
+  autocomplete :client, :name
   
   authorize_resource class: ProjectsController
 
@@ -32,7 +33,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(project_params)
+    @project = Project.new_data(project_params)
     @project.user_id = current_user.id
     respond_to do |format|
       format.html do
@@ -49,7 +50,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     respond_to do |format|
       format.html do
-        if @project.update_attributes(project_params)
+        if @project.update_data(project_params)
           redirect_to projects_url, notice: "Project updated"
         else
           render :edit
@@ -67,6 +68,6 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:name, :descriptions, :client_id)
+    params.require(:project).permit(:name, :descriptions, :client_id, :rate, :start_at, :end_at)
   end      
 end

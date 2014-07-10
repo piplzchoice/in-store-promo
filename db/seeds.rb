@@ -25,3 +25,8 @@ if User.find_by_email('client@ism.com').blank?
   user.add_role :client
   puts "user client created"
 end
+
+if DefaultValue.all.size == 0
+  DefaultValue.create(rate_project: 150)
+  puts "default value created"
+end

@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
   resources :clients do
+    get :autocomplete_client_name, :on => :collection
     member do
       patch "reset_password"
     end
@@ -18,11 +19,19 @@ Rails.application.routes.draw do
   end
   
   resources :locations
-  resources :projects
-  resources :services
+
+  resources :projects do
+    resources :services do
+      get :autocomplete_location_name, :on => :collection
+    end
+    get :autocomplete_client_name, :on => :collection
+  end
+  
   resources :ismp
 
   resources :assignments
+  resources :default_values, only: [:edit, :update]
+  resources :available_dates, except: [:edit, :update]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

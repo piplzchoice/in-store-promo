@@ -11,10 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140704145033) do
+ActiveRecord::Schema.define(version: 20140709070817) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "available_dates", force: true do |t|
+    t.integer  "brand_ambassador_id"
+    t.date     "availablty"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "brand_ambassadors", force: true do |t|
     t.integer  "user_id"
@@ -48,6 +55,12 @@ ActiveRecord::Schema.define(version: 20140704145033) do
     t.integer  "account_id"
   end
 
+  create_table "default_values", force: true do |t|
+    t.decimal  "rate_project", precision: 8, scale: 2
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "locations", force: true do |t|
     t.string   "name"
     t.string   "address"
@@ -66,6 +79,9 @@ ActiveRecord::Schema.define(version: 20140704145033) do
     t.string   "descriptions"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "start_at"
+    t.date     "end_at"
+    t.decimal  "rate",         precision: 8, scale: 2
   end
 
   create_table "roles", force: true do |t|
@@ -86,6 +102,9 @@ ActiveRecord::Schema.define(version: 20140704145033) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "start_at"
+    t.datetime "end_at"
+    t.text     "details"
   end
 
   create_table "users", force: true do |t|

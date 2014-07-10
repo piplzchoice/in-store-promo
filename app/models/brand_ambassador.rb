@@ -8,11 +8,11 @@
 #  phone      :string(255)
 #  address    :string(255)
 #  grade      :integer
-#  rate       :decimal(5, 2)
 #  created_at :datetime
 #  updated_at :datetime
 #  account_id :integer
 #  mileage    :boolean
+#  rate       :decimal(8, 2)
 #
 
 class BrandAmbassador < ActiveRecord::Base
@@ -24,6 +24,7 @@ class BrandAmbassador < ActiveRecord::Base
   validates :grade, :rate, numericality: true
   
   has_many :services
+  has_many :available_dates
 
   def self.new_with_account(brand_ambassador_params, user_id)
     brand_ambassador = self.new(brand_ambassador_params)
@@ -49,5 +50,14 @@ class BrandAmbassador < ActiveRecord::Base
     account.password = password
     account.password_confirmation = password
     return password    
+  end
+
+  def available_calendar
+    available_dates.collect{|x| {title: "", 
+      start: x.availablty.strftime("%Y-%m-%d"), url: Rails.application.routes.url_helpers.available_date_path(x.id) } }
+  end
+
+  def disable_dates
+    available_dates.all.collect{|x| x.availablty.strftime("%m/%d/%Y")}.to_json
   end
 end

@@ -80,6 +80,14 @@ class ClientsController < ApplicationController
     redirect_to clients_url, {notice: msg}
   end
 
+  def autocomplete_client_name
+    respond_to do |format|
+      format.json do
+        render json: Client.all
+      end
+    end    
+  end
+
   def client_params
     params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
       :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])

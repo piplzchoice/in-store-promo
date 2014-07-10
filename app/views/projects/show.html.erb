@@ -7,3 +7,14 @@
 
 <label>Description :</label>
 <p><%= @project.descriptions %></p>
+
+<label>Start At :</label>
+<p><%= @project.start_at %></p>
+
+<label>End At :</label>
+<p><%= @project.end_at %></p>
+
+<h2 class="sub-header">Services</h2>
+<div class="link-new-btn"><%= link_to("New Service", new_project_service_path(project_id: @project.id), {class: "btn btn-primary", role: "button"}) %></div>
+
+<div id="calendar" data-url="<%= project_services_path(project_id: @project.id) %>"></div>

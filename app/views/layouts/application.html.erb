@@ -4,8 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= content_for?(:title) ? yield(:title) : "In Store Marketing" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "In Store Marketing" %>">
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>    
     <%= csrf_meta_tags %>
   </head>
   <body>
@@ -26,5 +25,7 @@
     <% else %>
       <%= yield %>
     <% end %>
+
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   </body>
 </html>

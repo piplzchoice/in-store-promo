@@ -55,6 +55,10 @@ class Client < ActiveRecord::Base
     "#{street_one} #{street_two} #{city} #{state} #{zipcode} #{country}"
   end
 
+  def fullprofile
+    "#{company_name} - #{first_name} #{last_name}"
+  end
+
   def reset_password
     password = Devise.friendly_token.first(8)
     account.password = password

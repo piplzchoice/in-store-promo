@@ -1,4 +1,5 @@
 @import "bootstrap";
+@import "bootstrap-datetimepicker";
 
 body {
   padding-top: 50px;
@@ -135,4 +136,8 @@ body {
 .link-new-btn {
   float: right;
   margin: 10px
+}
+
+.select-2-box{
+  width:100%;
 }

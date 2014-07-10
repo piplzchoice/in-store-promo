@@ -1,7 +1,11 @@
 <%= form_for @project, html: {role: "form"} do |f| %>
   <div class="form-group">
     <%= f.label :client_id, "Choose Client", {class: "control-label"} %>
-    <%= f.select :client_id, Client.all.collect{|x| [x.name, x.id] }, {}, {class: "form-control"} %>
+    <%= f.hidden_field :client_id, {class: "select-2-box", data: { 
+      url: autocomplete_client_name_clients_path,
+      name: (@project.client_id.nil? ? "-" : "#{@project.client.fullprofile}"),
+      client_id: (@project.client_id.nil? ? "" : "#{@project.client_id}"),
+    }} %>    
   </div>
 
   <div class="form-group">
@@ -12,6 +16,27 @@
   <div class="form-group">
     <%= f.label :descriptions, {class: "control-label"} %>
     <%= f.text_field :descriptions, {class: "form-control", placeholder: "Address"} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :rate, "Project Rate", {class: "control-label"} %>
+    <%= f.number_field :rate, {class: "form-control", placeholder: "Rate", value: DefaultValue.rate_project} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :start_at, {class: "control-label"} %>
+    <div class='input-group date dp-project' id='start_at_datetimepicker' data-date="<%= @project.start_at.nil? ? "" : @project.start_at.strftime("%m/%d/%Y") %>">     
+      <%= f.text_field :start_at, {class: "form-control", readonly: true} %>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :end_at, "End At (optional)", {class: "control-label"} %>
+    <div class='input-group date dp-project' id='end_at_datetimepicker' data-date="<%= @project.end_at.nil? ? "" : @project.end_at.strftime("%m/%d/%Y") %>">
+      <%= f.text_field :end_at, {class: "form-control", readonly: true} %>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+    </div>      
   </div>
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>

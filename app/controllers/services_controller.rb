@@ -67,9 +67,16 @@ class ServicesController < ApplicationController
   def autocomplete_location_name
     respond_to do |format|
       format.json do
-        render json: Location.all
+        render json: Location.autocomplete_search(params[:q])
       end
     end        
+  end
+
+  def generate_select_ba
+    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at])
+    @brand_ambassadors.push BrandAmbassador.find params[:ba_id] if params[:action_method] == "edit" || params[:action_method] == "update"
+
+    render layout: false    
   end
 
   def service_params

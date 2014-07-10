@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   resources :projects do
     resources :services do
       get :autocomplete_location_name, :on => :collection
+      get :generate_select_ba, :on => :collection
     end
     get :autocomplete_client_name, :on => :collection
   end

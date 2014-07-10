@@ -16,5 +16,8 @@
 class Location < ActiveRecord::Base
   belongs_to :user
   validates :name, :address, :city, :state, :zipcode, presence: true
-  
+
+  def self.autocomplete_search(q)
+    Location.where("name ILIKE ?", "%#{q}%")    
+  end  
 end

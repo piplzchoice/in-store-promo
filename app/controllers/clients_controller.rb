@@ -83,7 +83,7 @@ class ClientsController < ApplicationController
   def autocomplete_client_name
     respond_to do |format|
       format.json do
-        render json: Client.all
+        render json: Client.autocomplete_search(params[:q])
       end
     end    
   end

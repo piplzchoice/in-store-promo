@@ -37,4 +37,9 @@ class Service < ActiveRecord::Base
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?    
     self.update_attributes(service_params)
   end
+
+  def old_id
+    service = Service.find self.id
+    service.brand_ambassador_id
+  end
 end

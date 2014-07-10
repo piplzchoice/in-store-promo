@@ -37,6 +37,14 @@ class BrandAmbassador < ActiveRecord::Base
     return brand_ambassador, password
   end
 
+  def self.get_available_people(datetime)
+    time = DateTime.strptime(datetime, '%m/%d/%Y %I:%M %p')
+    time_range = time.midnight..(time.midnight + 1.day)
+
+    ba_data = BrandAmbassador.joins(:available_dates).where(available_dates: {availablty: time})
+    ba_data.collect{|x| x if x.services.where({start_at: time_range}).blank?}.compact    
+  end
+
   def email
     account.email
   end  

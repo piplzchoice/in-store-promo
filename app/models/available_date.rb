@@ -18,4 +18,5 @@ class AvailableDate < ActiveRecord::Base
     params[:availablty] = Date.strptime(params[:availablty], '%m/%d/%Y') unless params[:availablty].blank?
     self.new(params)
   end
+
 end

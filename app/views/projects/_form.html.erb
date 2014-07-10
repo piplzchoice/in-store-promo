@@ -3,7 +3,7 @@
     <%= f.label :client_id, "Choose Client", {class: "control-label"} %>
     <%= f.hidden_field :client_id, {class: "select-2-box", data: { 
       url: autocomplete_client_name_clients_path,
-      name: (@project.client_id.nil? ? "-" : "#{@project.client.fullprofile}"),
+      name: (@project.client_id.nil? ? "-" : "xxx"),
       client_id: (@project.client_id.nil? ? "" : "#{@project.client_id}"),
     }} %>    
   </div>

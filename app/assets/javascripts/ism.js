@@ -1,3 +1,22 @@
+function generate_select_ba(){
+  $.ajax({
+    url: $("#service_start_at").data("url"),
+    data: { 
+      start_at: $("#service_start_at").val(), 
+      action_method: $("#select-ba").data("action"),
+      ba_id: $("#select-ba").data("old-id")
+    }
+  })
+  .done(function( html ) {    
+    $("#select-ba").html("");
+    $("#select-ba").append(html);
+
+    if($("#select-ba").data("id") !== "")
+      $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
+  });  
+  
+}
+
 $(function() {  
   // if($(".alert").length !== 0) {
   //   setTimeout($(".alert").hide(), 5000);
@@ -14,11 +33,13 @@ $(function() {
     $(".dp-service#start_at_datetimepicker").on("dp.change",function (e) {   
       e.date.hour(e.date.hour() + 4);
       $('.dp-service#end_at_datetimepicker').data("DateTimePicker").setDate(e.date);
+      generate_select_ba();
     });
 
     $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) {     
       e.date.hour(e.date.hour() - 4);
-      $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);     
+      $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);
+      // generate_select_ba();
     });
 
     if($("#start_at_datetimepicker").data("date") !== "")
@@ -124,7 +145,7 @@ $(function() {
 
   if($("#project_client_id").length !== 0) {
     $("#project_client_id").select2({
-        placeholder: "Select Client",
+        placeholder: "-",
         minimumInputLength: 1,
         ajax: {
             url: $("#project_client_id").data("url"),
@@ -140,10 +161,10 @@ $(function() {
         escapeMarkup: function (m) { return m; }
     });
 
-    $("#project_client_id").select2("data", { 
-      id: $("#project_client_id").data("client-id"), 
-      name: $("#project_client_id").data("name")
-    });    
+    // $("#project_client_id").select2("data", { 
+    //   id: $("#project_client_id").data("client-id"), 
+    //   name: $("#project_client_id").data("name")
+    // });    
   }
 
   if($('#calendar').length !== 0 ) {

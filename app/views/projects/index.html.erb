@@ -6,7 +6,7 @@
       <tr>
         <th>No</th>
         <th>Name</th>
-        <th>Client</th>
+        <th>Company Name</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -15,7 +15,7 @@
       <tr>
         <td><%= i + 1 %></td>
         <td><%= project.name %></td>
-        <td><%= project.client.name %></td>
+        <td><%= project.client.company_name %></td>
         <td>
           <%= link_to "Display", project_path(project) %> || 
           <%= link_to "Edit", edit_project_path(project) %> || 

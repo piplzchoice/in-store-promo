@@ -24,4 +24,8 @@ class Location < ActiveRecord::Base
   def self.complete_location
     "#{name} - #{address}, #{city}"
   end
+
+  def complete_location
+    "#{name} - #{address}, #{city}"
+  end  
 end

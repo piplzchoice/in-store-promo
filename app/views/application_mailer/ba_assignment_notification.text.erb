@@ -1,0 +1,13 @@
+You have been assign to service
+========================================
+Hello, <%= @ba.name %>
+
+You have been assigned to a service, here is the details :
+Date : <%= @service.end_at.strftime("%m/%d/%Y") %>
+Time : <%= @service.end_at.strftime("%I:%M %p") %>
+Location : <%= @service.location.name %>
+
+Please respond it by click link text below
+<a>Yes</a> or <a>No</a>
+
+Thanks

@@ -33,6 +33,7 @@ class Project < ActiveRecord::Base
         title: x.title_calendar, 
         start: x.start_at.strftime("%Y-%m-%dT%H:%M:%S"), 
         end: x.end_at.strftime("%Y-%m-%dT%H:%M:%S"),
+        color: x.get_color,
         url: Rails.application.routes.url_helpers.project_service_path({project_id: project_id, id: x.id})
       } }
   end

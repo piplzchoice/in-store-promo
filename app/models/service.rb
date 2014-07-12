@@ -12,6 +12,15 @@
 #  start_at            :datetime
 #  end_at              :datetime
 #  details             :text
+#  status              :integer          default(1)
+#
+
+# note for field "status"
+# 1. invited => this state mean new service has been created and notification has send to BA
+# 2. accepted => BA accepted the assignment
+# 3. rejected => BA rejected the assignment
+# 4. completed => BA delivered service and added report
+# 5. unrespond => BA did not respond after 12 hours
 #
 
 class Service < ActiveRecord::Base
@@ -22,10 +31,23 @@ class Service < ActiveRecord::Base
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
+  before_create do |service|
+    service.token = Devise.friendly_token
+  end
+
+  before_update do |service|
+    service.token = Devise.friendly_token unless service.changed_attributes["brand_ambassador_id"].nil?
+  end
+
   def self.build_data(service_params)
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     self.new(service_params)
+  end
+
+  def self.invited_and_unrespond_status
+    # where status = 1 and created_at >= 12 hours
+    # update status to 5 and send notification to admin
   end
 
   def title_calendar
@@ -47,5 +69,48 @@ class Service < ActiveRecord::Base
       ret == nil
     end
     return ret
+  end
+
+  def get_color
+    case status
+    when 1
+      "#428bca"
+    when 2
+      "#5bc0de"
+    when 3
+      "#f0ad4e"
+    when 4
+      "#5cb85c"
+    when 5
+      "#d9534f"
+    end    
+  end
+
+  def client_and_companyname
+    client = project.client
+    "#{client.name}/#{client.company_name}"
+  end
+
+  def date
+    start_at.strftime("%m/%d/%Y")
+  end
+
+  def complete_date_time
+    "#{start_at.strftime("%m/%d/%Y")} - #{start_at.strftime("%I:%M %p")}/#{end_at.strftime("%I:%M %p")}"
+  end  
+
+  def current_status
+    case status
+    when 1
+      "Invited"
+    when 2
+      "Accepted"
+    when 3
+      "Rejected"
+    when 4
+      "Completed"
+    when 5
+      "Unrespond"
+    end        
   end
 end

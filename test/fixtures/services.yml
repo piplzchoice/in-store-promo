@@ -12,6 +12,7 @@
 #  start_at            :datetime
 #  end_at              :datetime
 #  details             :text
+#  status              :integer          default(1)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

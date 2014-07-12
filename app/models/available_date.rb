@@ -4,7 +4,7 @@
 #
 #  id                  :integer          not null, primary key
 #  brand_ambassador_id :integer
-#  availablty            :date
+#  availablty          :date
 #  created_at          :datetime
 #  updated_at          :datetime
 #

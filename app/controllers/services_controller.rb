@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
   
-  authorize_resource class: ServicesController
+  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
 
   def index
     render json: Project.calendar_services(params[:project_id])
@@ -21,6 +21,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html do
         if @service.save
+          ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to project_path(@project), notice: "Service created"
         else
           render :new
@@ -40,9 +41,11 @@ class ServicesController < ApplicationController
   def update
     @project = Project.find(params[:project_id])
     @service = @project.services.find(params[:id])
+    # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
     respond_to do |format|
       format.html do
         if @service.update_data(service_params)
+          # change status to invited and send email to BA if is_ba_changed true          
           redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated"
         else
           render :edit
@@ -60,6 +63,7 @@ class ServicesController < ApplicationController
     @project = Project.find(params[:project_id])
     @service = @project.services.find(params[:id])    
     if @service.destroy
+      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service).deliver
       redirect_to project_path(@project), {notice: "Service deleted"}
     end            
   end
@@ -79,12 +83,37 @@ class ServicesController < ApplicationController
     render layout: false    
   end
 
+  def confirm_respond
+    @project = Project.find(params[:project_id])
+    unless @project.nil?
+      @service = @project.services.find(params[:id])    
+      unless @service.nil?
+        if Devise.secure_compare(@service.token, params[:token])
+          @service.update_attributes({status: 2, token: Devise.friendly_token})          
+          ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
+        end
+      end
+    end
+    
+    redirect_to root_path
+  end
+
+  def rejected_respond
+    @project = Project.find(params[:project_id])
+    unless @project.nil?
+      @service = @project.services.find(params[:id])    
+      unless @service.nil?
+        if Devise.secure_compare(@service.token, params[:token])
+          @service.update_attributes({status: 3, token: Devise.friendly_token})
+        end
+      end
+    end
+    
+    redirect_to root_path    
+  end
+
   def service_params
     params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details)
   end
 
 end
-
-  # "service"=>{"location_id"=>"3", "brand_ambassador_id"=>"6", 
-  #   "start_at"=>"10/10/2013 9:00 AM", "end_at"=>"07/08/2014 10:00 PM", "details"=>""}
-

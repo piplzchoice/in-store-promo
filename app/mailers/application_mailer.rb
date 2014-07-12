@@ -29,7 +29,9 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: @ba.account.email, subject: "Demo was canceled")
   end
 
-  def ba_unrespond_assignment
+  def ba_unrespond_assignment(service)
+    @service = service
+    mail(to: "carol.wellins@gmail.com", subject: "Unrespond Assignment")    
   end
 
   def send_ics(ba, service)

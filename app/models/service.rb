@@ -39,6 +39,30 @@ class Service < ActiveRecord::Base
     service.token = Devise.friendly_token unless service.changed_attributes["brand_ambassador_id"].nil?
   end
 
+  def self.status_invited
+    return 1
+  end
+
+  def self.status_accepted
+    return 2
+  end
+
+  def self.status_rejected
+    return 3
+  end
+
+  def self.status_completed
+    return 4
+  end
+
+  def self.status_unrespond
+    return 5
+  end      
+
+  def self.send_notif_after
+    return 2.round
+  end
+
   def self.build_data(service_params)
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?

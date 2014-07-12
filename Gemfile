@@ -45,6 +45,7 @@ gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 gem "select2-rails"
 gem "icalendar"
 gem "letter_opener", :group => :development
+gem "time_difference"
 
 gem 'debugger', group: [:development, :test]
 

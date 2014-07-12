@@ -89,7 +89,7 @@ class ServicesController < ApplicationController
       @service = @project.services.find(params[:id])    
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: 2, token: Devise.friendly_token})          
+          @service.update_attributes({status: Service.status_accepted, token: Devise.friendly_token})          
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
@@ -104,7 +104,7 @@ class ServicesController < ApplicationController
       @service = @project.services.find(params[:id])    
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: 3, token: Devise.friendly_token})
+          @service.update_attributes({status: Service.status_rejected, token: Devise.friendly_token})
         end
       end
     end

@@ -153,6 +153,8 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    time_difference (0.3.2)
+      activesupport
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -199,6 +201,7 @@ DEPENDENCIES
   sdoc (~> 0.4.0)
   select2-rails
   spring
+  time_difference
   turbolinks
   uglifier (>= 1.3.0)
   will_paginate (~> 3.0)

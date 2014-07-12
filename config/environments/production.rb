@@ -83,14 +83,14 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { :host => 'instorem.herokuapp.com' }
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.perform_deliveries = true
-  config.action_mailer.raise_delivery_errors = false
   config.action_mailer.smtp_settings = {
-    address:              'smtp.gmail.com',
-    port:                 587,
-    domain:               'example.com',
-    user_name:            'ehbeat',
-    password:             'q2w1e4r3t5',
-    authentication:       'plain',
-    enable_starttls_auto: true  }
+    :user_name => '2211184d188e916fa',
+    :password => 'a1b06081a032c4',
+    :address => 'mailtrap.io',
+    :domain => 'mailtrap.io',
+    :port => '2525',
+    :authentication => :cram_md5,
+    :enable_starttls_auto => true
+  }
+  
 end

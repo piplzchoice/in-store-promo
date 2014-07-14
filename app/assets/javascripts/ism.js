@@ -1,27 +1,4 @@
-function generate_select_ba(){
-  $.ajax({
-    url: $("#service_start_at").data("url"),
-    data: { 
-      start_at: $("#service_start_at").val(), 
-      action_method: $("#select-ba").data("action"),
-      ba_id: $("#select-ba").data("old-id")
-    }
-  })
-  .done(function( html ) {    
-    $("#select-ba").html("");
-    $("#select-ba").append(html);
-
-    if($("#select-ba").data("id") !== "")
-      $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
-  });  
-  
-}
-
 $(function() {  
-  // if($(".alert").length !== 0) {
-  //   setTimeout($(".alert").hide(), 5000);
-  // }
-  var date = new Date();
 
   if($('.dp-service').length !== 0) {
 
@@ -39,7 +16,7 @@ $(function() {
     $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) {     
       e.date.hour(e.date.hour() - 4);
       $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);
-      // generate_select_ba();
+      generate_select_ba();
     });
 
     if($("#start_at_datetimepicker").data("date") !== "")
@@ -188,3 +165,21 @@ $(function() {
   }
 
 });  
+
+function generate_select_ba(){
+  $.ajax({
+    url: $("#service_start_at").data("url"),
+    data: { 
+      start_at: $("#service_start_at").val(), 
+      action_method: $("#select-ba").data("action"),
+      ba_id: $("#select-ba").data("old-id")
+    }
+  })
+  .done(function( html ) {    
+    $("#select-ba").html("");
+    $("#select-ba").append(html);
+
+    if($("#select-ba").data("id") !== "")
+      $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
+  });  
+}

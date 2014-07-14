@@ -1,6 +1,5 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
-  autocomplete :client, :name
   
   authorize_resource class: ProjectsController
 

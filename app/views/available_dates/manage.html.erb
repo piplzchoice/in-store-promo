@@ -1,0 +1,13 @@
+<h1 class="page-header">Manage Date</h1>
+<div id="select-date">
+  <%= form_tag(manage_available_dates_path, remote: true) do %>
+  <%#= form_for @available_date, html: {role: "form"} do |f| %>
+    <%#= render "add_data" %>  
+    <div class="form-group">
+      <%= label_tag :select_date, "Select Date", {class: "control-label"} %><br />
+      <%= date_select("ba", "date", order: [:month, :year], start_year: 2014, class: "form-control") %>
+    </div>  
+    <%= button_tag "Submit", {type: "submit", class: "btn btn-default"} %>
+  <% end %>
+</div>
+<div id="date-table"></div>

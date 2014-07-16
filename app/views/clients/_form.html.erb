@@ -1,69 +1,24 @@
-<%= form_for @client, html: {role: "form"} do |f| %>
+<form accept-charset="UTF-8" action="/clients" class="new_client" id="new_client" method="post" role="form"><div style="display:none"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="oPKIyoVZ2EIpyUQ7RLiJrErn18q9Y6CBJfK4CyqRNWk="></div>
   <div class="form-group">
-    <%= f.label :company_name, {class: "control-label"} %>
-    <%= f.text_field :company_name, {class: "form-control", placeholder: "Company Name"} %>
+    <label class="control-label" for="client_company_name">Company name</label>
+    <input class="form-control" id="client_company_name" name="client[][company_name]" placeholder="Company Name" type="text">
   </div>
 
-  <h3 class="sub-header">Contact Name</h3>
 
   <div class="form-group">
-    <%= f.label :first_name, {class: "control-label"} %>
-    <%= f.text_field :first_name, {class: "form-control", placeholder: "First Name"} %>
-  </div>  
+    <label class="control-label" for="client_company_name">Company name</label>
+    <input class="form-control" id="client_company_name" name="client[][company_name]" placeholder="Company Name" type="text">
+  </div>
 
   <div class="form-group">
-    <%= f.label :last_name, {class: "control-label"} %>
-    <%= f.text_field :last_name, {class: "form-control", placeholder: "Last Name"} %>
-  </div>  
-
-  <div class="form-group">    
-    <%= f.fields_for :account do |account_fields| %>
-      <%= account_fields.label :email, {class: "control-label"} %>
-      <%= account_fields.email_field :email, {class: "form-control", placeholder: "Email"} %>
-    <% end %>    
-  </div>  
+    <label class="control-label" for="client_company_name">Company name</label>
+    <input class="form-control" id="client_company_name" name="client[][company_name]" placeholder="Company Name" type="text">
+  </div>
 
   <div class="form-group">
-    <%= f.label :phone, {class: "control-label"} %>
-    <%= f.text_field :phone, {class: "form-control", placeholder: "Phone"} %>
-  </div>  
+    <label class="control-label" for="client_company_name">Company name</label>
+    <input class="form-control" id="client_company_name" name="client[][company_name]" placeholder="Company Name" type="text">
+  </div>    
 
-  <h3 class="sub-header">Billing Address</h3>
-  <div class="form-group">
-    <%= f.label :billing_name, {class: "control-label"} %>
-    <%= f.text_field :billing_name, {class: "form-control", placeholder: "Billing Name"} %>
-  </div>  
-
-  <div class="form-group">
-    <%= f.label :street_one, "Street 1", {class: "control-label"} %>
-    <%= f.text_field :street_one, {class: "form-control", placeholder: "Street 1"} %>
-  </div>  
-
-  <div class="form-group">
-    <%= f.label :street_two, "Street 2", {class: "control-label"} %>
-    <%= f.text_field :street_two, {class: "form-control", placeholder: "Street 2"} %>
-  </div>  
-
-  <div class="form-group">
-    <%= f.label :city, {class: "control-label"} %>
-    <%= f.text_field :city, {class: "form-control", placeholder: "City"} %>
-  </div>  
-
-  <div class="form-group">
-    <%= f.label :state, {class: "control-label"} %>
-    <%= f.text_field :state, {class: "form-control", placeholder: "State"} %>
-  </div>  
-
-  <div class="form-group" >
-    <%= f.label :zipcode, {class: "control-label"} %>
-    <%= f.text_field :zipcode, {class: "form-control", placeholder: "Zipcode"} %>
-  </div>  
-
-  <div class="form-group">
-    <%= f.label :country, {class: "control-label"} %>
-    <%= f.country_select :country, {priority: %w(US CA), prompt: 'Please select a country'}, {class: "form-control"} %>
-  </div>  
-
-
-  <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
-<% end %>
+  <button class="btn btn-default" name="button" type="submit">Submit</button>
+</form>

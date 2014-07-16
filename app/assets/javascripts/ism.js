@@ -1,5 +1,5 @@
 $(function() {  
-
+  checkbox_avalaible_click()
   if($('.dp-service').length !== 0) {
 
     $("#service_start_at").val("");
@@ -181,5 +181,66 @@ function generate_select_ba(){
 
     if($("#select-ba").data("id") !== "")
       $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
+  });  
+}
+
+
+function checkbox_avalaible_click(){
+  $("#check-all-available").on("click", function(){
+    $(".checkbox-avalaible").prop("checked", true)  
+  });
+
+  $(".checkbox-avalaible").on("click", function(){
+    elem_parent = $(this).parents("tr");
+    if($(this).hasClass("checkbox-day")) {
+      if($(this).prop("checked")) {
+        elem_parent.find(".checkbox-am").prop("checked", true);
+        elem_parent.find(".checkbox-pm").prop("checked", true);
+      } else {
+        elem_parent.find(".checkbox-am").prop("checked", false);
+        elem_parent.find(".checkbox-pm").prop("checked", false);
+      }
+    }
+
+    if($(this).hasClass("checkbox-am")) {
+      if($(this).prop("checked")) {
+        elem_parent.find(".checkbox-day").prop("checked", true);
+      } else {        
+        if(!elem_parent.find(".checkbox-pm").prop("checked")) {
+          elem_parent.find(".checkbox-day").prop("checked", false);
+        }
+      }
+    }
+
+    if($(this).hasClass("checkbox-pm")) {
+      if($(this).prop("checked")) {
+        elem_parent.find(".checkbox-day").prop("checked", true);
+      } else {        
+        if(!elem_parent.find(".checkbox-am").prop("checked")) {
+          elem_parent.find(".checkbox-day").prop("checked", false);
+        }
+      }
+    } 
+
+    // ajax proses
+    // kirim2x data utk create or update date nya          
+
+    // $.ajax({
+    //   url: //benerin,
+    //   data: { 
+    //     available_date: {
+    //       availablty: $("#service_start_at").val(), 
+    //       am: $("#select-ba").data("action"),
+    //       pm: $("#select-ba").data("old-id")
+    //     }
+    //   }
+    // })
+    // .done(function( html ) {    
+    //   $("#select-ba").html("");
+    //   $("#select-ba").append(html);
+
+    //   if($("#select-ba").data("id") !== "")
+    //     $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
+    // });      
   });  
 }

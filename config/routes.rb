@@ -36,6 +36,10 @@ Rails.application.routes.draw do
 
   resources :assignments
   resources :default_values, only: [:edit, :update]
-  resources :available_dates, except: [:edit, :update]  
+  resources :available_dates, only: [:index] do
+    get :manage, :on => :collection
+    post :manage, :on => :collection
+    post :update_date, :on => :collection
+  end
 
 end

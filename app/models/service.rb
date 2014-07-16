@@ -13,6 +13,7 @@
 #  end_at              :datetime
 #  details             :text
 #  status              :integer          default(1)
+#  token               :string(255)
 #
 
 # note for field "status"

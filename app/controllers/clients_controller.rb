@@ -32,6 +32,7 @@ class ClientsController < ApplicationController
   end
 
   def create
+    debugger
     @client, password = Client.new_with_account(client_params, current_user.id)
     respond_to do |format|
       format.html do

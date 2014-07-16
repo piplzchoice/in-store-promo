@@ -62,10 +62,14 @@ class BrandAmbassador < ActiveRecord::Base
 
   def available_calendar
     available_dates.collect{|x| {title: "", 
-      start: x.availablty.strftime("%Y-%m-%d"), url: Rails.application.routes.url_helpers.available_date_path(x.id) } }
+      start: x.availablty.strftime("%Y-%m-%d") } }
   end
 
   def disable_dates
     available_dates.all.collect{|x| x.availablty.strftime("%m/%d/%Y")}.to_json
+  end
+
+  def get_monthly_date(date)
+    available_dates.where(availablty: Date.new(date[:year].to_i, date[:month].to_i).beginning_of_month..Date.new(date[:year].to_i, date[:month].to_i).end_of_month)
   end
 end

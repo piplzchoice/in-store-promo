@@ -1,0 +1,29 @@
+<%= form_tag(update_date_available_dates_path) do %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>BA: <%= current_user.brand_ambassador.name %></th>
+        <th colspan="3" style="text-align: center">
+          Available (<%= link_to("Checked All", "#", {id: "check-all-available"}) %>)
+
+        </th>
+      </tr>
+    </thead>
+    <thead>
+      <tr>
+        <th>Dates</th>
+        <th>Day</th>
+        <th>AM</th>
+        <th>PM</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% (Date.new(date[:year].to_i, date[:month].to_i).beginning_of_month..Date.new(date[:year].to_i, date[:month].to_i).end_of_month).each_with_index do |itr, i|  %>
+      <%= get_checkbox_available_date(@date, itr.day, current_user.brand_ambassador) %>
+      <% end %>
+    </tbody>
+  </table>
+  <%= button_tag "Submit", {type: "submit", class: "btn btn-default"} %>
+</div>
+<% end %>

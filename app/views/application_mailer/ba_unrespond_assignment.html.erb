@@ -6,10 +6,10 @@
   <body>
     <p>BA <%= @service.brand_ambassador.name %> has unrespond his assignment, here is the assigment :</p>
 
-    <p>[<%= @service.client_and_companyname %>]</p>
-    <p>[<%= @service.location.complete_location %>]</p>
-    <p>[<%= @service.complete_date_time %>]</p>
-    <p>[<%= @service.details %>]</p>
+    <p><%= @service.client_and_companyname %></p>
+    <p><%= @service.location.complete_location %></p>
+    <p><%= @service.complete_date_time %></p>
+    <p><%= @service.details %></p>
 
     <p>Click <a href="<%= edit_project_service_url(project_id: @service.project.id, id: @service.id )%>">here</a> to edit service</p>
 

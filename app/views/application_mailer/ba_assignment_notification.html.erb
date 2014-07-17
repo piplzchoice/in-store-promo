@@ -8,10 +8,10 @@
 
     <p>You have been offered the following assignment, please accept or decline within 12 hours.</p>
     <br />
-    <p>[<%= @service.client_and_companyname %>]</p>
-    <p>[<%= @service.location.complete_location %>]</p>
-    <p>[<%= @service.complete_date_time %>]</p>
-    <p>[<%= @service.details %>]</p>
+    <p><%= @service.client_and_companyname %></p>
+    <p><%= @service.location.complete_location %></p>
+    <p><%= @service.complete_date_time %></p>
+    <p><%= @service.details %></p>
 
     <p>Please follow link below to respond assignment</p>
     <p><a href="<%= confirm_respond_project_service_url(project_id: @service.project.id, id: @service.id, token: @service.token) %>">Yes</a>

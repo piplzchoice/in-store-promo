@@ -42,7 +42,30 @@ class BrandAmbassador < ActiveRecord::Base
     time_range = time.midnight..(time.midnight + 1.day)
 
     ba_data = BrandAmbassador.joins(:available_dates).where(available_dates: {availablty: time})
-    ba_data.collect{|x| x if x.services.where({start_at: time_range}).blank?}.compact    
+    # ba_data.collect{|x| x if x.services.where({start_at: time_range}).blank?}.compact    
+    
+    ba_data.collect{|ba|
+      services = ba.services.where({start_at: time_range})
+      available_date = ba.available_dates.where({availablty: time}).first
+
+      if services.blank?
+        if time.strftime("%p") == "AM"
+          ba if available_date.am
+        elsif time.strftime("%p") == "PM"
+          ba if available_date.pm
+        end
+      else
+        service = services.first        
+        unless time.strftime("%p") == service.start_at.strftime("%p")
+          if time.strftime("%p") == "AM"
+            ba if available_date.am
+          elsif time.strftime("%p") == "PM"
+            ba if available_date.pm
+          end            
+        end        
+      end
+
+    }.compact.flatten
   end
 
   def email

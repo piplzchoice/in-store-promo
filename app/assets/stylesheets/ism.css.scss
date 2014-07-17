@@ -141,3 +141,25 @@ body {
 .select-2-box{
   width:100%;
 }
+
+.report {
+  padding-bottom: 10px;
+}
+
+.report-title {
+  text-decoration: underline;
+}
+
+.report-left {
+  float: left;
+  padding-right: 15px;  
+}
+
+.report-option-details {
+  background-color: lime;
+  font-weight: bold;  
+}
+
+.report-weather-traffic {
+  background-color: yellow;
+}

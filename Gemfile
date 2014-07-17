@@ -44,6 +44,8 @@ gem "select2-rails"
 gem "icalendar"
 gem "letter_opener", :group => :development
 gem "time_difference"
+gem 'pdfkit'
+gem "wkhtmltopdf-binary"
 
 gem 'debugger', group: [:development, :test]
 

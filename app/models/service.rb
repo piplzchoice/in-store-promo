@@ -138,4 +138,8 @@ class Service < ActiveRecord::Base
       "Unrespond"
     end        
   end
+
+  def time_at
+    "#{start_at.strftime("%I:%M%p")} - #{end_at.strftime("%I:%M%p")}"
+  end
 end

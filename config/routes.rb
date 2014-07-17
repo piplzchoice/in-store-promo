@@ -34,7 +34,15 @@ Rails.application.routes.draw do
   
   resources :ismp
 
-  resources :assignments
+  resources :assignments, only: [:index, :show] do
+    member do
+      get :new_report
+      post :create_report
+      get :download_pdf
+      get :print_pdf
+    end    
+  end
+
   resources :default_values, only: [:edit, :update]
   resources :available_dates, only: [:index] do
     get :manage, :on => :collection

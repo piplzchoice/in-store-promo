@@ -1,14 +1,17 @@
 # == Schema Information
 #
-# Table name: available_dates
+# Table name: reports
 #
-#  id                  :integer          not null, primary key
-#  brand_ambassador_id :integer
-#  availablty          :date
-#  created_at          :datetime
-#  updated_at          :datetime
-#  am                  :boolean          default(FALSE)
-#  pm                  :boolean          default(FALSE)
+#  id               :integer          not null, primary key
+#  service_id       :integer
+#  demo_in_store    :string(255)
+#  weather          :string(255)
+#  traffic          :string(255)
+#  busiest_hours    :string(255)
+#  price_comment    :string(255)
+#  sample_units_use :string(255)
+#  created_at       :datetime
+#  updated_at       :datetime
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

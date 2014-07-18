@@ -29,6 +29,7 @@ class Service < ActiveRecord::Base
   belongs_to :brand_ambassador
   belongs_to :location
   belongs_to :project
+  has_one :report
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 

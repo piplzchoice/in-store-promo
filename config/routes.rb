@@ -34,12 +34,11 @@ Rails.application.routes.draw do
   
   resources :ismp
 
-  resources :assignments, only: [:index, :show] do
+  resources :reports do
     member do
-      get :new_report
-      post :create_report
       get :download_pdf
       get :print_pdf
+      get :show_report
     end    
   end
 

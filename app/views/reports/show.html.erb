@@ -11,7 +11,12 @@
       <p>Assigned to: <strong><%= @service.brand_ambassador.name %></strong></p>
       <p>Jobs description: <strong><%= @service.details %></strong></p>
 
-      <%= link_to("Create Report", new_report_assignment_path(id: @service.id), {class: "btn btn-primary", role: "button"}) %>
+      <% if @service.report.nil? %>
+        <%= link_to("Create Report", new_report_path(service_id: @service.id), {class: "btn btn-primary", role: "button"}) %>
+      <% else %>
+        <%= link_to("Show Report", show_report_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>      
+        <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>      
+      <% end %>
     </div>
 
     <div class="col-md-3">

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140717143640) do
+ActiveRecord::Schema.define(version: 20140718070733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,6 +96,32 @@ ActiveRecord::Schema.define(version: 20140717143640) do
     t.string   "sample_units_use"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "products"
+    t.string   "product_one"
+    t.integer  "product_one_beginning"
+    t.integer  "product_one_end"
+    t.integer  "product_one_sold"
+    t.string   "product_two"
+    t.integer  "product_two_beginning"
+    t.integer  "product_two_end"
+    t.integer  "product_two_sold"
+    t.string   "product_three"
+    t.integer  "product_three_beginning"
+    t.integer  "product_three_end"
+    t.integer  "product_three_sold"
+    t.string   "product_four"
+    t.integer  "product_four_beginning"
+    t.integer  "product_four_end"
+    t.integer  "product_four_sold"
+    t.string   "sample_product"
+    t.string   "est_customer_touched"
+    t.string   "est_sample_given"
+    t.string   "expense_one"
+    t.string   "expense_one_img"
+    t.string   "expense_two"
+    t.string   "expense_two_img"
+    t.text     "customer_comments"
+    t.decimal  "price_value_comment",     precision: 8, scale: 2
   end
 
   create_table "roles", force: true do |t|

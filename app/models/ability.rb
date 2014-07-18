@@ -12,15 +12,16 @@ class Ability
       can :manage, BrandAmbassadorsController
       can :manage, IsmpController
       can :manage, DefaultValuesController
+      can :manage, ReportsController
     elsif user.has_role? :ismp
       can :manage, ServicesController
       can :manage, ProjectsController
       can :manage, LocationsController
       can :manage, ClientsController
       can :manage, BrandAmbassadorsController
+      can :manage, ReportsController
     elsif user.has_role? :ba
       can :manage, AssignmentsController
-      can :manage, AvailableDatesController
     # elsif user.has_role? :client
     end
   end

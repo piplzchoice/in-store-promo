@@ -1,37 +1,24 @@
 <h1 class="page-header">List Assignments</h1>
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Times</th>
-        <th>Client Name</th>
-        <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-          <th>Assigned To</th>
-        <% end %>
-        <th>Job Details</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @services.each_with_index do |service, i|  %>
-      <tr>
-        <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-        <td><%= service.time_at %></td>
-        <td><%= service.project.client.name %></td> 
-        <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-          <td><%= service.brand_ambassador.name %></td> 
-        <% end %>
-        <td><%= service.details == "" ?  "-" : truncate(service.details, length: 30) %></td> 
-        <td><%= link_to "Show", report_path(service.id), {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: ".bs-example-modal-lg"}} %></td> 
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
 
-<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" style="display: none;">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content"></div>
+<%= render partial: 'grid' %>    
+
+<div class="row-fluid">
+<!--   <div class="row-fluid">
+    <div class="span2">
+      Assigned To
+    </div>
+    <div class="span10">
+      <%#= grid_filter @services_grid, :ba_name_filter %>
+    </div>    
+  </div> -->
+  <div class="span12">
+    <div class="external-buttons">
+      <!-- <button class="btn btn-primary wg-external-submit-button" data-grid-name="grid">Submit</button> -->
+      <!-- <button class="btn wg-external-reset-button" data-grid-name="grid">Reset</button> -->
+      <button class="btn btn-primary wg-external-csv-export-button" data-grid-name="grid">Export To CSV</button>
+    </div>
   </div>
 </div>
+
+
+<%= render_grid @services_grid %>

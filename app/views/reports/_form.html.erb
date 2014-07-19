@@ -1,6 +1,6 @@
-<%= form_for @report, html: {role: "form"} do |f| %>
+<%= form_for @report, html: {role: "form", style: "margin: 35px;", "multipart" => true} do |f| %>
   <%= f.hidden_field(:service_id) %>
-  <div class="row">
+  <div class="row">    
     <div class="row report">
       <div id="report-client" class="report-left">
         <span class="report-title">Client</span>: 
@@ -48,8 +48,8 @@
       </div>
 
       <div id="report-traffic">
-        <span class="report-title">Traffic busy/moderate/slow</span>: 
-        <%= f.text_field(:traffic) %>
+        <span class="report-title">Traffic</span>: 
+        <%= f.select(:traffic, DefaultValue.traffic) %>
       </div>
     </div>
 
@@ -83,13 +83,13 @@
               <td id="product-one" data-id="one">
                 <%= f.text_field(:product_one) %>
               </td>
-              <td id="product-one-beginning" data-id="one">
+              <td id="product-one-beginning" data-id="one" class="product-beginning">
                 <%= f.text_field(:product_one_beginning, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-one-end" data-id="one">
+              <td id="product-one-end" data-id="one" class="product-end">
                 <%= f.text_field(:product_one_end, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-one-sold" data-id="one">
+              <td id="product-one-sold" data-id="one" class="product-sold">
                 <%= f.text_field(:product_one_sold, {style: "width: 35px;"}) %>
               </td>
             </tr>
@@ -98,13 +98,13 @@
               <td id="product-two" data-id="two">
                 <%= f.text_field(:product_two) %>
               </td>
-              <td id="product-two-beginning" data-id="two">
+              <td id="product-two-beginning" data-id="two" class="product-beginning">
                 <%= f.text_field(:product_two_beginning, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-two-end" data-id="two">
+              <td id="product-two-end" data-id="two" class="product-end">
                 <%= f.text_field(:product_two_end, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-two-sold" data-id="two">
+              <td id="product-two-sold" data-id="two" class="product-sold">
                 <%= f.text_field(:product_two_sold, {style: "width: 35px;"}) %>
               </td>
             </tr>
@@ -113,13 +113,13 @@
               <td id="product-three" data-id="three">
                 <%= f.text_field(:product_three) %>
               </td>
-              <td id="product-three-beginning" data-id="three">
+              <td id="product-three-beginning" data-id="three" class="product-beginning">
                 <%= f.text_field(:product_three_beginning, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-three-end" data-id="three">
+              <td id="product-three-end" data-id="three" class="product-end">
                 <%= f.text_field(:product_three_end, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-three-sold" data-id="three">
+              <td id="product-three-sold" data-id="three" class="product-sold">
                 <%= f.text_field(:product_three_sold, {style: "width: 35px;"}) %>
               </td>
             </tr>
@@ -128,13 +128,13 @@
               <td id="product-four" data-id="four">
                 <%= f.text_field(:product_four) %>
               </td>
-              <td id="product-four-beginning" data-id="four">
+              <td id="product-four-beginning" data-id="four" class="product-beginning">
                 <%= f.text_field(:product_four_beginning, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-four-end" data-id="four">
+              <td id="product-four-end" data-id="four" class="product-end">
                 <%= f.text_field(:product_four_end, {style: "width: 35px;"}) %>
               </td>
-              <td id="product-four-sold" data-id="four">
+              <td id="product-four-sold" data-id="four" class="product-sold">
                 <%= f.text_field(:product_four_sold, {style: "width: 35px;"}) %>
               </td>
             </tr>                                    
@@ -160,7 +160,7 @@
     <div class="row report">
       <div id="report-sample-product">
         <span class="report-title">Sample product</span>:
-        <%= f.text_field(:sample_product) %>
+        <%= f.select(:sample_product, DefaultValue.sample_product) %>
       </div>
     </div>    
 
@@ -180,6 +180,7 @@
       <div id="report-sample-product">
         <span class="report-title">Expense 1</span>:
         <%= f.text_field(:expense_one) %>
+        <%= f.file_field(:expense_one_img) %>
       </div>
     </div>  
 
@@ -187,6 +188,7 @@
       <div id="report-sample-product">
         <span class="report-title">Expense 2</span>:
         <%= f.text_field(:expense_two) %>
+        <%= f.file_field(:expense_two_img) %>
       </div>
     </div>      
 
@@ -197,7 +199,15 @@
       </div>
     </div>      
 
+    <div class="row report">
+      <div id="report-sample-product">
+        <span class="report-title">BA Comments</span>:<br />
+        <%= f.text_area(:ba_comments, cols: 100, rows: 10) %>
+      </div>
+    </div>      
+
   </div>
 
+  <hr>
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

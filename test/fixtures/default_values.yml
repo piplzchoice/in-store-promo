@@ -2,10 +2,12 @@
 #
 # Table name: default_values
 #
-#  id           :integer          not null, primary key
-#  rate_project :decimal(8, 2)
-#  created_at   :datetime
-#  updated_at   :datetime
+#  id             :integer          not null, primary key
+#  rate_project   :decimal(8, 2)
+#  created_at     :datetime
+#  updated_at     :datetime
+#  traffic        :string(255)
+#  sample_product :string(255)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

@@ -164,6 +164,32 @@ $(function() {
     });
   }
 
+ $(".product-beginning").keyup(function(){  
+  prod_end = 0;
+  
+  if($("#report_product_" + $(this).data("id") +"_end").val() !== "") {
+    prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
+  }
+
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+
+  calculate = prod_beginning - prod_end;
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+ })
+  
+ $(".product-end").keyup(function(){  
+  prod_beginning = 0;
+  
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
+    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  }
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
+
+  calculate = prod_beginning - prod_end;
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+ })  
+
 });  
 
 function generate_select_ba(){

@@ -3,21 +3,24 @@ class ReportsController < ApplicationController
   authorize_resource class: ReportsController 
 
   def index
-    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-      @services = Service.all
-    else
-      @services = current_user.brand_ambassador.services
-    end    
+    # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+    #   @services = Service.all
+    # else
+    #   @services = current_user.brand_ambassador.services
+    # end    
+    @services_grid = initialize_grid(Service,
+      :name => 'grid',
+      :enable_export_to_csv => true,
+      :csv_field_separator => ';',
+      :csv_file_name => 'services'      
+    )
+
+    export_grid_if_requested('grid' => 'grid')
   end
 
   def show
-    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-      @service = Service.find(params[:id])
-    else
-      @service = current_user.brand_ambassador.services.find(params[:id])
-    end
-    
-    render layout: false
+    @report = Report.find(params[:id])
+    @service = @report.service
   end
 
   def new
@@ -30,7 +33,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         if @report.save
-          redirect_to show_report_report_path(@report), notice: "Report created"
+          redirect_to report_path(@report), notice: "Report created"
         else
           render :new
         end
@@ -49,17 +52,12 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         if @report.update_attributes(report_params)
-          redirect_to show_report_report_path(@report), notice: "Report updated"
+          redirect_to report_path(@report), notice: "Report updated"
         else
           render :edit
         end
       end
     end          
-  end
-
-  def show_report
-    @report = Report.find(params[:id])
-    @service = @report.service
   end
 
   def download_pdf
@@ -80,6 +78,11 @@ class ReportsController < ApplicationController
   end
 
   def report_params
-    params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, :price_comment, :sample_units_use, :products, :product_one, :product_one_beginning, :product_one_end, :product_one_sold, :product_two, :product_two_beginning, :product_two_end, :product_two_sold, :product_three, :product_three_beginning, :product_three_end, :product_three_sold, :product_four, :product_four_beginning, :product_four_end, :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, :expense_one_img, :expense_two, :expense_two_img, :customer_comments, :price_value_comment)
+    params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, 
+      :price_comment, :sample_units_use, :products, :product_one, :product_one_beginning, :product_one_end, 
+      :product_one_sold, :product_two, :product_two_beginning, :product_two_end, :product_two_sold, :product_three, 
+      :product_three_beginning, :product_three_end, :product_three_sold, :product_four, :product_four_beginning, 
+      :product_four_end, :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, 
+      :expense_one_img, :expense_two, :expense_two_img, :customer_comments, :price_value_comment, :ba_comments)
   end    
 end

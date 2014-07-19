@@ -38,7 +38,6 @@ Rails.application.routes.draw do
     member do
       get :download_pdf
       get :print_pdf
-      get :show_report
     end    
   end
 

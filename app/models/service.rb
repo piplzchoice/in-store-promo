@@ -143,4 +143,8 @@ class Service < ActiveRecord::Base
   def time_at
     "#{start_at.strftime("%I:%M%p")} - #{end_at.strftime("%I:%M%p")}"
   end
+
+  def company_name
+    project.client.company_name
+  end
 end

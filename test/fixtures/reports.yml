@@ -38,6 +38,7 @@
 #  expense_two_img         :string(255)
 #  customer_comments       :text
 #  price_value_comment     :decimal(8, 2)
+#  ba_comments             :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

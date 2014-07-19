@@ -5,6 +5,15 @@
     <%= f.number_field :rate_project, {class: "form-control"} %>
   </div>  
 
+  <div class="form-group">
+    <%= f.label :traffic, {class: "control-label"} %>
+    <%= f.text_field :traffic, {class: "form-control"} %>
+  </div>  
+
+  <div class="form-group">
+    <%= f.label :sample_product, {class: "control-label"} %>
+    <%= f.text_field :sample_product, {class: "form-control"} %>
+  </div>    
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

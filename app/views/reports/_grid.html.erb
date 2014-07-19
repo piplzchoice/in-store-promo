@@ -1,0 +1,31 @@
+<%= define_grid(@services_grid, hide_submit_button: true, hide_reset_button: true) do |g|
+
+  g.column name: 'Date' do |service|
+    service.start_at.strftime('%m/%d/%Y')
+  end
+
+  g.column name: 'Times' do |service|
+    service.time_at
+  end
+
+  g.column name: 'Client Name', attribute: 'company_name', model: 'Client', detach_with_id: :company_name_filter do |service|
+    service.project.client.company_name
+  end
+
+  g.column name: 'Assigned To', attribute: 'name', model: 'BrandAmbassador', detach_with_id: :ba_name_filter do |service|
+    service.brand_ambassador.name
+  end
+
+  g.column name: 'Job Details' do |service|
+    service.details == "" ?  "-" : truncate(service.details, length: 30)
+  end
+
+  g.column name: 'Action', in_csv: false do |service|
+    if service.report.nil?
+      link_to("Create Report", new_report_path(service_id: service.id), {class: "btn btn-primary", role: "button"})
+    else
+      link_to("Show Report", report_path(service.report), {class: "btn btn-primary", role: "button"}) + " " + link_to("Edit Report", edit_report_path(service.report), {class: "btn btn-primary", role: "button"})      
+    end
+  end
+
+end -%>

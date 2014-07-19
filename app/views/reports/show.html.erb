@@ -1,33 +1,214 @@
-<div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-  <h4 class="modal-title" id="mySmallModalLabel">
-    <%= @service.project.name %> - <%= @service.client_and_companyname %>
-  </h4>
-</div>
-<div class="modal-body">
-  <div class="row">
-    <div class="col-md-9">
-      <p>Schedule: <strong><%= @service.start_at.strftime('%m/%d/%Y') %>: <%= @service.time_at %></strong></p>
-      <p>Assigned to: <strong><%= @service.brand_ambassador.name %></strong></p>
-      <p>Jobs description: <strong><%= @service.details %></strong></p>
+<h1 class="page-header">Show Report</h1>
 
-      <% if @service.report.nil? %>
-        <%= link_to("Create Report", new_report_path(service_id: @service.id), {class: "btn btn-primary", role: "button"}) %>
-      <% else %>
-        <%= link_to("Show Report", show_report_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>      
-        <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>      
-      <% end %>
+<div class="row" style="margin: 0px;">
+  <%= link_to "Download as PDF", download_pdf_report_path(id: @report.id), {class: "btn btn-primary", role: "button"} %>
+  <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>
+</div>
+<hr>
+
+<div class="row" style="margin: 15px;">
+  <div style="text-align: center;margin-bottom: 50px;">
+    <h4 style="color: rgb(9, 152, 197);">In Store Marketing Services Demo Report</h4>
+  </div>
+  <div class="row report">
+    <div id="report-client" class="report-left">
+      <span class="report-title">Client</span>: 
+      <span class="report-option-details"><%= @service.project.client.name %></span>
     </div>
 
-    <div class="col-md-3">
-      <div class="row">
-        <%= link_to("Edit", "", {class: "btn btn-primary", role: "button"}) %>
-      </div>
-      <br />
-      <div class="row">
-        <label><%= @service.project.name %></label>
-        <label><%= @service.location.complete_location %></label>
-      </div>
+    <div id="report-project">
+      <span class="report-title">Project</span>: 
+      <span class="report-option-details"><%= @service.project.name %></span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-ba" class="report-left">
+      <span class="report-title">Name of BA</span>: 
+      <span class="report-option-details"><%= @service.brand_ambassador.name %></span>
+    </div>
+
+    <div id="report-location">
+      <span class="report-title">Location</span>: 
+      <span class="report-option-details"><%= @service.location.complete_location %></span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-date">
+      <span class="report-title">Date/Time</span>: 
+      <span class="report-option-details">
+        <%= @service.start_at.strftime('%m/%d/%Y') %>: <%= @service.time_at %>
+      </span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-demo-in-store">
+      <span class="report-title">Location of demo in store</span>: <%= @report.demo_in_store %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-weather" class="report-left">
+      <span class="report-title">Weather</span>: 
+      <%= @report.weather %>
+    </div>
+
+    <div id="report-traffic">
+      <span class="report-title">Traffic</span>: 
+      <%= @report.traffic %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-busiest-hours" class="report-left">
+      <span class="report-title">Busiest hours of demo</span>: <%= @report.busiest_hours %>
+    </div>
+
+    <div id="report-products">
+      <span class="report-title">Product(s)</span>: <%= @report.products %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-product" class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th><span class="report-title">Beginning</span></th>
+            <th><span class="report-title">End</span></th>
+            <th><span class="report-title">Sold</span></th>
+          </tr>
+        </thead>
+        <tbody>  
+          <tr>
+            <td>Product 1</td>
+            <td id="product-one" data-id="one">
+              <%= @report.product_one %>
+            </td>
+            <td id="product-one-beginning" data-id="one">
+              <%= @report.product_one_beginning %>
+            </td>
+            <td id="product-one-end" data-id="one">
+              <%= @report.product_one_end %>
+            </td>
+            <td id="product-one-sold" data-id="one">
+              <%= @report.product_one_sold %>
+            </td>
+          </tr>
+          <tr>
+            <td>Product 2</td>
+            <td id="product-two" data-id="two">
+              <%= @report.product_two %>
+            </td>
+            <td id="product-two-beginning" data-id="two">
+              <%= @report.product_two_beginning %>
+            </td>
+            <td id="product-two-end" data-id="two">
+              <%= @report.product_two_end %>
+            </td>
+            <td id="product-two-sold" data-id="two">
+              <%= @report.product_two_sold %>
+            </td>
+          </tr>
+          <tr>
+            <td>Product 3</td>
+            <td id="product-three" data-id="three">
+              <%= @report.product_three %>
+            </td>
+            <td id="product-three-beginning" data-id="three">
+              <%= @report.product_three_beginning %>
+            </td>
+            <td id="product-three-end" data-id="three">
+              <%= @report.product_three_end %>
+            </td>
+            <td id="product-three-sold" data-id="three">
+              <%= @report.product_three_sold %>
+            </td>
+          </tr>
+          <tr>
+            <td>Product 4</td>
+            <td id="product-four" data-id="four">
+              <%= @report.product_four %>
+            </td>
+            <td id="product-four-beginning" data-id="four">
+              <%= @report.product_four_beginning %>
+            </td>
+            <td id="product-four-end" data-id="four">
+              <%= @report.product_four_end %>
+            </td>
+            <td id="product-four-sold" data-id="four">
+              <%= @report.product_four_sold %>
+            </td>
+          </tr>                                    
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-price-comment">
+      <span class="report-title">Price &nbsp;<%= @report.price_value_comment %>&nbsp; comment</span>: <%= @report.price_comment %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-sample-units-use">
+      <span class="report-title">Sample units use</span>: <%= @report.sample_units_use %>
     </div>
   </div>  
+
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">Sample product</span>: <%= @report.sample_product %>
+    </div>
+  </div>    
+
+  <div class="row report">
+    <div id="report-est-customer-touched" class="report-left">
+      <span class="report-title">Estimated # of customers touched</span>: 
+      <%= @report.est_customer_touched %>
+    </div>
+
+    <div id="report-est-sample-given">
+      <span class="report-title">Estimated # of sample given</span>: 
+      <%= @report.est_sample_given %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">Expense 1</span>: <%= @report.expense_one %>
+      <% unless @report.expense_one_img.nil? %>
+        <%= image_tag @report.expense_one_img.url %>
+      <% end %>
+    </div>
+  </div>  
+
+  <div class="row report">
+    <div id="report-expense-one">
+      <span class="report-title">Expense 2</span>: <%= @report.expense_two %>
+      <% unless @report.expense_two_img.nil? %>
+        <%= image_tag @report.expense_two_img.url %>
+      <% end %>      
+    </div>
+  </div>      
+
+  <div class="row report">
+    <div id="report-expense-two">
+      <span class="report-title">Customer Comments</span>: 
+      <p><%= @report.customer_comments %></p>
+    </div>
+  </div>      
+
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">BA Comments</span>: 
+      <p><%= @report.ba_comments %></p>
+    </div>
+  </div>      
+
 </div>

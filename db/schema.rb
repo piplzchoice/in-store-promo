@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140718070733) do
+ActiveRecord::Schema.define(version: 20140719043129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,9 +58,11 @@ ActiveRecord::Schema.define(version: 20140718070733) do
   end
 
   create_table "default_values", force: true do |t|
-    t.decimal  "rate_project", precision: 8, scale: 2
+    t.decimal  "rate_project",   precision: 8, scale: 2
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "traffic"
+    t.string   "sample_product"
   end
 
   create_table "locations", force: true do |t|
@@ -122,6 +124,7 @@ ActiveRecord::Schema.define(version: 20140718070733) do
     t.string   "expense_two_img"
     t.text     "customer_comments"
     t.decimal  "price_value_comment",     precision: 8, scale: 2
+    t.text     "ba_comments"
   end
 
   create_table "roles", force: true do |t|

@@ -9,3 +9,13 @@ if DefaultValue.all.size == 0
   DefaultValue.create(rate_project: 150)
   puts "default value created"
 end
+
+if DefaultValue.all.size == 1
+  df = DefaultValue.first
+  if df.sample_product.nil? && df.traffic.nil?
+    df.sample_product = "Provided by Client;Store Inventory;Purchased"
+    df.traffic = "Busy;Moderate;Slow"
+    df.save
+    puts "default value updated"
+  end
+end

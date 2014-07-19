@@ -38,8 +38,13 @@
 #  expense_two_img         :string(255)
 #  customer_comments       :text
 #  price_value_comment     :decimal(8, 2)
+#  ba_comments             :text
 #
 
+require 'carrierwave/orm/activerecord'
 class Report < ActiveRecord::Base
   belongs_to :service
+  
+  mount_uploader :expense_one_img, ImageUploader
+  mount_uploader :expense_two_img, ImageUploader
 end

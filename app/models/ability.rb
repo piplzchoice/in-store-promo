@@ -21,7 +21,7 @@ class Ability
       can :manage, BrandAmbassadorsController
       can :manage, ReportsController
     elsif user.has_role? :ba
-      can :manage, AssignmentsController
+      can :manage, AvailableDatesController
     # elsif user.has_role? :client
     end
   end

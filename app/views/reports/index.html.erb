@@ -1,24 +1,34 @@
-<h1 class="page-header">List Assignments</h1>
+<h1 class="page-header">Reports</h1>
 
-<%= render partial: 'grid' %>    
-
-<div class="row-fluid">
-<!--   <div class="row-fluid">
-    <div class="span2">
-      Assigned To
-    </div>
-    <div class="span10">
-      <%#= grid_filter @services_grid, :ba_name_filter %>
-    </div>    
-  </div> -->
-  <div class="span12">
-    <div class="external-buttons">
-      <!-- <button class="btn btn-primary wg-external-submit-button" data-grid-name="grid">Submit</button> -->
-      <!-- <button class="btn wg-external-reset-button" data-grid-name="grid">Reset</button> -->
-      <button class="btn btn-primary wg-external-csv-export-button" data-grid-name="grid">Export To CSV</button>
-    </div>
+<div class="row" style="margin-bottom: 30px;">
+  <div class="col-md-3">
+    <%= form_tag(reports_path, method: :get, remote: true, html: {role: "form"}) do %>
+      <div class="form-group">
+        <label class="control-label">Completed</label>
+        <%= select_tag("completed", options_for_select(["Yes"]), {class: "form-control", :include_blank => true}) %>
+      </div>      
+      <div class="form-group">
+        <label class="control-label">Assigned To</label>
+        <%= select_tag("assigned_to", options_from_collection_for_select(@brand_ambassadors, "id", "name"), {class: "form-control", :include_blank => true}) %>
+      </div>      
+      <div class="form-group">
+        <label class="control-label">Client Name</label>
+        <%= text_field_tag("client_name", nil, {class: "form-control"}) %>
+      </div>             
+      <%= submit_tag("Filter", class: "btn btn-default") %>               
+      <%= link_to("Export CSV", "#", {id: "export-csv" ,class: "btn btn-primary", role: "button"}) %>
+    <% end %>
   </div>
+</div>
+<hr>
+
+<div class="table-responsive">
+  <%= render "grid" %>
 </div>
 
 
-<%= render_grid @services_grid %>
+<%= form_tag(reports_path(format: :csv), method: :get, role: "form", id: "download-csv") do %>
+  <%= hidden_field_tag(:completed, nil, id: "completed-csv") %>
+  <%= hidden_field_tag(:assigned_to, nil, id: "assigned-csv") %>
+  <%= hidden_field_tag(:client_name, nil, id: "client-csv") %>
+<% end %>

@@ -17,5 +17,4 @@
 //= require bootstrap-datetimepicker
 //= require select2
 //= require fullcalendar
-//= require wice_grid
 //= require_tree .

@@ -190,6 +190,13 @@ $(function() {
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 
+  $("#export-csv").click(function(){
+    $("#completed-csv").val($("#completed").val())
+    $("#assigned-csv").val($("#assigned_to").val())
+    $("#client-csv").val($("#client_name").val())    
+    $("#download-csv").submit();
+  })  
+
 });  
 
 function generate_select_ba(){

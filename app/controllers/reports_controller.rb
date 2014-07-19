@@ -1,21 +1,24 @@
+require "csv"
 class ReportsController < ApplicationController
   before_filter :authenticate_user!
   authorize_resource class: ReportsController 
 
   def index
-    # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-    #   @services = Service.all
-    # else
-    #   @services = current_user.brand_ambassador.services
-    # end    
-    @services_grid = initialize_grid(Service,
-      :name => 'grid',
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'services'      
-    )
-
-    export_grid_if_requested('grid' => 'grid')
+    respond_to do |format|
+      format.html do
+        @services = Service.all
+        @brand_ambassadors = BrandAmbassador.all
+        @projects = Project.all        
+      end
+      format.js do
+        @services = Service.filter(params[:completed], params[:assigned_to], params[:client_name])
+      end
+      format.csv do
+        @services = Service.filter(params[:completed], params[:assigned_to], params[:client_name])
+        headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}\""
+        headers['Content-Type'] ||= 'text/csv'        
+      end
+    end
   end
 
   def show

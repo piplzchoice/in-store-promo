@@ -1,0 +1,11 @@
+<%- headers = ["Date", "Times", "Client Name", "Assigned To", "Job Details"] -%>
+<%= CSV.generate_line headers %>
+<%- @services.each do |service| -%>
+  <%= CSV.generate_line([
+    service.start_at.strftime('%m/%d/%Y'), 
+    service.time_at,
+    service.company_name,
+    service.brand_ambassador.name,
+    service.details == "" ?  "-" : truncate(service.details, length: 30)
+  ]) %>
+<%- end -%>

@@ -46,7 +46,6 @@ gem "letter_opener", :group => :development
 gem "time_difference"
 gem 'pdfkit'
 gem "wkhtmltopdf-binary"
-gem "wice_grid", '3.4.2'
 
 gem 'debugger', group: [:development, :test]
 

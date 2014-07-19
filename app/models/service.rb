@@ -41,6 +41,18 @@ class Service < ActiveRecord::Base
     service.token = Devise.friendly_token unless service.changed_attributes["brand_ambassador_id"].nil?
   end
 
+  def self.filter(completed, assigned_to, client_name)
+    conditions = {}
+    conditions.merge!(status: 4) if completed != ""
+    conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
+    unless client_name == ""
+      project_ids = Project.joins(:client).where("clients.company_name ILIKE ?", client_name).collect(&:id)
+      conditions.merge!(project_id: project_ids) 
+    end
+    
+    Service.where(conditions)
+  end
+
   def self.status_invited
     return 1
   end

@@ -1,31 +1,35 @@
-<%= define_grid(@services_grid, hide_submit_button: true, hide_reset_button: true) do |g|
-
-  g.column name: 'Date' do |service|
-    service.start_at.strftime('%m/%d/%Y')
-  end
-
-  g.column name: 'Times' do |service|
-    service.time_at
-  end
-
-  g.column name: 'Client Name', attribute: 'company_name', model: 'Client', detach_with_id: :company_name_filter do |service|
-    service.project.client.company_name
-  end
-
-  g.column name: 'Assigned To', attribute: 'name', model: 'BrandAmbassador', detach_with_id: :ba_name_filter do |service|
-    service.brand_ambassador.name
-  end
-
-  g.column name: 'Job Details' do |service|
-    service.details == "" ?  "-" : truncate(service.details, length: 30)
-  end
-
-  g.column name: 'Action', in_csv: false do |service|
-    if service.report.nil?
-      link_to("Create Report", new_report_path(service_id: service.id), {class: "btn btn-primary", role: "button"})
-    else
-      link_to("Show Report", report_path(service.report), {class: "btn btn-primary", role: "button"}) + " " + link_to("Edit Report", edit_report_path(service.report), {class: "btn btn-primary", role: "button"})      
-    end
-  end
-
-end -%>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Times</th>
+      <th>Client Name</th>
+      <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+        <th>Assigned To</th>
+      <% end %>
+      <th>Job Details</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+    <tr>
+      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td><%= service.time_at %></td>
+      <td><%= service.company_name %></td> 
+      <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+        <td><%= service.brand_ambassador.name %></td> 
+      <% end %>
+      <td><%= service.details == "" ?  "-" : truncate(service.details, length: 30) %></td> 
+      <td>
+      <% if service.report.nil? %>
+        <%= link_to("Create Report", new_report_path(service_id: service.id), {class: "btn btn-primary", role: "button"}) %>
+      <% else %>
+        <%= link_to("Show Report", report_path(service.report), {class: "btn btn-primary", role: "button"}) %>      
+        <%= link_to("Edit Report", edit_report_path(service.report), {class: "btn btn-primary", role: "button"}) %>      
+      <% end %>
+      </td> 
+    </tr>
+    <% end %>
+  </tbody>
+</table>

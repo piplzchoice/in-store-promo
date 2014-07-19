@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   resources :reports do
     member do
       get :download_pdf
-      get :print_pdf
+      get :print_pdf      
     end    
   end
 

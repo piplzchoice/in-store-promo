@@ -4,11 +4,11 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <p>Dear <%= @ba.name, %>
+    <p>Dear <%= @ba.name %>,
 
     <p>You have been offered the following assignment, please accept or decline within 12 hours.</p>
     <br />
-    <p><%= @service.client.company_name %></p>
+    <p><%= @service.project.client.company_name %></p>
     <p><%= @service.location.complete_location %></p>
     <p><%= @service.complete_date_time %></p>
     <p><%= @service.details %></p>

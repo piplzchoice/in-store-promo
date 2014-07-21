@@ -112,6 +112,20 @@ class ServicesController < ApplicationController
     redirect_to root_path    
   end
 
+  def mark_service_as_complete
+    msg = "Service update failed"
+    @project = Project.find(params[:project_id])
+    unless @project.nil?
+      @service = @project.services.find(params[:id])    
+      unless @service.nil?
+        @service.update_attributes({status: Service.status_completed})
+        msg = "Service set at completed"
+      end
+    end
+
+    redirect_to project_service_path(:project_id => params[:project_id], :id => params[:id]), {notice: msg}
+  end
+
   def service_params
     params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details)
   end

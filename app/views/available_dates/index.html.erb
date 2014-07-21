@@ -1,3 +1,3 @@
-<h1 class="page-header">Available Date</h1>
-<div class="link-new-btn"><%= link_to("Manage date", manage_available_dates_path, {class: "btn btn-primary", role: "button"}) %></div>
-<div id="calendar" data-url="<%= available_dates_path %>.json"></div>
+<h1 class="page-header">My Availability</h1>
+<div class="link-new-btn"><%= link_to("Set available dates", manage_available_dates_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div id="calendar" data-url="<%= available_dates_path(format: :json) %>"></div>

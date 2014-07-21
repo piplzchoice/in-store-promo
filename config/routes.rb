@@ -26,7 +26,8 @@ Rails.application.routes.draw do
 
       member do
         get :confirm_respond
-        get :rejected_respond        
+        get :rejected_respond  
+        get :mark_service_as_complete      
       end
     end
     get :autocomplete_client_name, :on => :collection

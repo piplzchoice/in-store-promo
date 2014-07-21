@@ -1,5 +1,8 @@
 <h1 class="page-header">Show Service</h1>
 <label>Status :</label>
+<% if @service.status != 4 %>
+<div class="link-new-btn"><%= link_to("Set as completed", mark_service_as_complete_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-primary", role: "button"}) %></div>
+<% end %>
 <p><%= @service.current_status %></p>
 
 <label>Client :</label>

@@ -33,7 +33,12 @@ Rails.application.routes.draw do
     get :autocomplete_client_name, :on => :collection
   end
   
-  resources :ismp
+  resources :ismp do
+    member do
+      get :set_as_ba
+      post :update_as_ba      
+    end
+  end
 
   resources :reports do
     member do
@@ -42,6 +47,7 @@ Rails.application.routes.draw do
     end    
   end
 
+  resources :users, only: [:edit, :update]
   resources :default_values, only: [:edit, :update]
   resources :assignments, only: [:index, :show]
   resources :available_dates, only: [:index] do

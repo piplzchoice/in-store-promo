@@ -45,6 +45,14 @@ class User < ActiveRecord::Base
     self.save
   end
 
+  def update_data(user_params)
+    if user_params["password"].blank?
+      user_params.delete("password")
+      user_params.delete("password_confirmation")
+    end
+    self.update_attributes(user_params)
+  end
+
   def update_ismp(user_params)
     if user_params["password"].blank?
       user_params.delete("password")

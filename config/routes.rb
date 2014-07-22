@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   end
 
   resources :default_values, only: [:edit, :update]
+  resources :assignments, only: [:index, :show]
   resources :available_dates, only: [:index] do
     get :manage, :on => :collection
     post :manage, :on => :collection

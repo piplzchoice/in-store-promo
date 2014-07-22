@@ -9,6 +9,7 @@
       <li><%= link_to("Manage Default Values", edit_default_value_path(DefaultValue.first)) if current_user.has_role? :admin %></li>      
       <li><%= link_to "Manage Report", reports_path %></li>          
     <% elsif current_user.has_role?(:ba) %>
+    <li><%= link_to "My Assignments", assignments_path %></li>    
       <li><%= link_to "Manage Availablty", available_dates_path %></li>    
     <% end %>
   </ul>

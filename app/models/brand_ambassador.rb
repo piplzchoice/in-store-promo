@@ -95,4 +95,18 @@ class BrandAmbassador < ActiveRecord::Base
   def get_monthly_date(date)
     available_dates.where(availablty: Date.new(date[:year].to_i, date[:month].to_i).beginning_of_month..Date.new(date[:year].to_i, date[:month].to_i).end_of_month)
   end
+
+  def get_assignments
+    services.collect{|x|
+      if x.status == 2 || x.status == 4
+        {
+          title: x.title_calendar, 
+          start: x.start_at.iso8601, 
+          end: x.end_at.iso8601,
+          color: x.get_color,
+          url: Rails.application.routes.url_helpers.assignment_path({id: x.id})
+        }
+      end
+    }    
+  end
 end

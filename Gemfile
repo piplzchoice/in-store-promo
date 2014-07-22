@@ -46,6 +46,7 @@ gem "letter_opener", :group => :development
 gem "time_difference"
 gem 'pdfkit'
 gem "wkhtmltopdf-binary"
+gem 'redactor-rails'
 
 gem 'debugger', group: [:development, :test]
 

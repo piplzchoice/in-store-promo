@@ -1,0 +1,23 @@
+<h1 class="page-header">Manage Email Template</h1>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Template For</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @email_templates.each_with_index do |temp, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= temp.name_template %></td>
+        <td>
+          <%= link_to "Edit", edit_email_template_path(temp) %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

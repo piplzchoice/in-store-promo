@@ -17,4 +17,5 @@
 //= require bootstrap-datetimepicker
 //= require select2
 //= require fullcalendar
+//= require redactor-rails
 //= require_tree .

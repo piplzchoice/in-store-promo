@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  mount RedactorRails::Engine => '/redactor_rails'
   devise_for :users
 
   root 'home#index'
@@ -16,6 +17,7 @@ Rails.application.routes.draw do
   end
   
   resources :locations
+  resources :email_templates, only: [:index, :edit, :update]
 
   resources :projects do
     resources :services do

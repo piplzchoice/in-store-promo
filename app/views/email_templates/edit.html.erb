@@ -1,0 +1,13 @@
+<%= form_for @email_template, html: {role: "form"} do |f| %>
+  <div class="form-group">
+    <%= f.label :subject, {class: "control-label"} %>
+    <%= f.text_field :subject, {class: "form-control"} %>
+  </div> 
+
+  <div class="form-group">
+    <%= f.label :content, {class: "control-label"} %>
+    <%= f.text_area :content, {class: "form-control", :rows => 40, :cols => 120} %>
+  </div> 
+
+  <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
+<% end %>

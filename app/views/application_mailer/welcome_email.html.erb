@@ -4,12 +4,6 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <p>Dear <%= @fullname %></p>
-
-    <p>Please follow this <a href="<%= root_url %>">link</a> to access our online system. The system helps to streamline scheduling, reporting and payment processes.</p>
-
-    <p>You will need your username <strong><%= @email %></strong> and password <strong><%= @password %></strong> to login going forward, so please keep the information where it is readily accessible.</p>
-
-    <p>Thanks</p>
+    <%= @content.html_safe %>
   </body>
 </html>

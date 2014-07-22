@@ -4,21 +4,6 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <p>Dear <%= @ba.name %>,
-
-    <p>You have been offered the following assignment, please accept or decline within 12 hours.</p>
-    <br />
-    <p><%= @service.project.client.company_name %></p>
-    <p><%= @service.location.complete_location %></p>
-    <p><%= @service.complete_date_time %></p>
-    <p><%= @service.details %></p>
-
-    <p>Please click on a link below to respond</p>
-    <p><a href="<%= confirm_respond_project_service_url(project_id: @service.project.id, id: @service.id, token: @service.token) %>">Yes</a>
-     or 
-     <a href="<%= rejected_respond_project_service_url(project_id: @service.project.id, id: @service.id, token: @service.token) %>">No</a><p>
-
-    
-    <p>Thanks</p>
+    <%= @content.html_safe %>
   </body>
 </html>

@@ -197,6 +197,14 @@ $(function() {
     $("#download-csv").submit();
   })  
 
+  $("#email_template_content").redactor({
+    buttons: [
+      'html', 'bold', 'italic', 'underline', 'deleted', 'alignleft', 'aligncenter', 'alignright', 'justify', 
+      'outdent', 'indent','unorderedlist', 'orderedlist','link', 'formatting'],
+    formattingTags: ['h1', 'h2', 'p'],
+    // plugins: ['undo', 'redo']
+  });  
+
 });  
 
 function generate_select_ba(){

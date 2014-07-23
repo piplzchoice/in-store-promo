@@ -81,12 +81,12 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
 
-  config.action_mailer.default_url_options = { :host => 'in-store-promo.com' }
+  config.action_mailer.default_url_options = { :host => 'app.in-store-promo.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :user_name => ENV['SENDGRID_USERNAME'],
     :password => ENV['SENDGRID_PASSWORD'],
-    :domain => 'in-store-promo.com',
+    :domain => 'app.in-store-promo.com',
     :address => 'smtp.sendgrid.net',
     :port => 587,
     :authentication => :plain,

@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  default :from => "info@in-store-marketing.com"
+  default :from => "info@app.in-store-promo.com"
 
   def welcome_email(email, fullname, password)
     @email = email

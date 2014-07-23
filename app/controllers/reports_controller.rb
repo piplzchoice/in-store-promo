@@ -6,9 +6,12 @@ class ReportsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @services = Service.all
-        @brand_ambassadors = BrandAmbassador.all
-        @projects = Project.all        
+        if current_user.has_role?(:ba)
+          @services = current_user.brand_ambassador.services
+        else
+          @services = Service.all
+          @brand_ambassadors = BrandAmbassador.all
+        end        
       end
       format.js do
         @services = Service.filter(params[:completed], params[:assigned_to], params[:client_name])

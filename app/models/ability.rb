@@ -25,6 +25,7 @@ class Ability
       can :manage, UsersController
     elsif user.has_role? :ba
       can :manage, UsersController
+      can :manage, ReportsController
     # elsif user.has_role? :client
     end
     can :manage, AvailableDatesController if user.has_role? :ba

@@ -7,10 +7,14 @@
         <label class="control-label">Completed</label>
         <%= select_tag("completed", options_for_select(["Yes"]), {class: "form-control", :include_blank => true}) %>
       </div>      
-      <div class="form-group">
-        <label class="control-label">Assigned To</label>
-        <%= select_tag("assigned_to", options_from_collection_for_select(@brand_ambassadors, "id", "name"), {class: "form-control", :include_blank => true}) %>
-      </div>      
+      <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+        <div class="form-group">
+          <label class="control-label">Assigned To</label>
+          <%= select_tag("assigned_to", options_from_collection_for_select(@brand_ambassadors, "id", "name"), {class: "form-control", :include_blank => true}) %>
+        </div>      
+      <% else %>
+        <%= hidden_field_tag "assigned_to", current_user.brand_ambassador.id %>
+      <% end %>
       <div class="form-group">
         <label class="control-label">Client Name</label>
         <%= text_field_tag("client_name", nil, {class: "form-control"}) %>

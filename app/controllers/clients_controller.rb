@@ -37,7 +37,7 @@ class ClientsController < ApplicationController
     respond_to do |format|
       format.html do
         if @client.save
-          ApplicationMailer.welcome_email(@client.account.email, @client.name ,password).deliver
+          # ApplicationMailer.welcome_email(@client.account.email, @client.name ,password).deliver
           redirect_to clients_url, notice: "Client created"
         else
           render :new

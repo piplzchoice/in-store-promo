@@ -74,7 +74,7 @@ class Service < ActiveRecord::Base
   end      
 
   def self.send_notif_after
-    return 2.round
+    return 12.round
   end
 
   def self.build_data(service_params)

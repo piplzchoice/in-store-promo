@@ -107,6 +107,6 @@ class BrandAmbassador < ActiveRecord::Base
           url: Rails.application.routes.url_helpers.assignment_path({id: x.id})
         }
       end
-    }    
+    }.compact  
   end
 end

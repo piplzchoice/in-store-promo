@@ -1,0 +1,29 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Times</th>
+      <th>Client Name</th>
+      <th>Job Details</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+    <tr>
+      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td><%= service.time_at %></td>
+      <td><%= service.company_name %></td> 
+      <td><%= service.details == "" ?  "-" : truncate(service.details, length: 30) %></td> 
+      <td>
+      <% if service.report.nil? %>
+        <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
+      <% else %>
+        <%= link_to("Show Report", report_path(service.report)) %> ||    
+        <%= link_to("Edit Report", edit_report_path(service.report)) %>      
+      <% end %>
+      </td> 
+    </tr>
+    <% end %>
+  </tbody>
+</table>

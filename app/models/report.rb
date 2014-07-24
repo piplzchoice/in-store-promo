@@ -8,8 +8,6 @@
 #  weather                 :string(255)
 #  traffic                 :string(255)
 #  busiest_hours           :string(255)
-#  price_comment           :string(255)
-#  sample_units_use        :string(255)
 #  created_at              :datetime
 #  updated_at              :datetime
 #  products                :string(255)
@@ -32,13 +30,20 @@
 #  sample_product          :string(255)
 #  est_customer_touched    :string(255)
 #  est_sample_given        :string(255)
-#  expense_one             :string(255)
 #  expense_one_img         :string(255)
-#  expense_two             :string(255)
 #  expense_two_img         :string(255)
 #  customer_comments       :text
-#  price_value_comment     :decimal(8, 2)
 #  ba_comments             :text
+#  product_one_price       :decimal(8, 2)
+#  product_two_price       :decimal(8, 2)
+#  product_three_price     :decimal(8, 2)
+#  product_four_price      :decimal(8, 2)
+#  product_one_sample      :integer
+#  product_two_sample      :integer
+#  product_three_sample    :integer
+#  product_four_sample     :integer
+#  expense_one             :decimal(8, 2)    default(0.0)
+#  expense_two             :decimal(8, 2)    default(0.0)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -47,4 +52,8 @@ class Report < ActiveRecord::Base
   
   mount_uploader :expense_one_img, ImageUploader
   mount_uploader :expense_two_img, ImageUploader
+
+  def sum_expense
+    expense_one.to_f + expense_two.to_f
+  end
 end

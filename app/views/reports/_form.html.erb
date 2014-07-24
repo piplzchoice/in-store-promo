@@ -4,7 +4,7 @@
     <div class="row report">
       <div id="report-client" class="report-left">
         <span class="report-title">Client</span>: 
-        <span class="report-option-details"><%= @service.project.client.name %></span>
+        <span class="report-option-details"><%= @service.project.client.company_name %></span>
       </div>
 
       <div id="report-project">
@@ -58,11 +58,6 @@
         <span class="report-title">Busiest hours of demo</span>:
         <%= f.text_field(:busiest_hours) %>
       </div>
-
-      <div id="report-products">
-        <span class="report-title">Product(s)</span>:
-        <%= f.text_field(:products) %>
-      </div>
     </div>
 
     <div class="row report">
@@ -72,6 +67,8 @@
             <tr>
               <th>&nbsp;</th>
               <th>&nbsp;</th>
+              <th><span class="report-title">Price</span></th>
+              <th><span class="report-title">Sample</span></th>
               <th><span class="report-title">Beginning</span></th>
               <th><span class="report-title">End</span></th>
               <th><span class="report-title">Sold</span></th>
@@ -83,6 +80,12 @@
               <td id="product-one" data-id="one">
                 <%= f.text_field(:product_one) %>
               </td>
+              <td id="product-one-price" data-id="one">
+                <%= f.text_field(:product_one_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-one-sample" data-id="one">
+                <%= f.text_field(:product_one_sample, {style: "width: 35px;"}) %>
+              </td>                            
               <td id="product-one-beginning" data-id="one" class="product-beginning">
                 <%= f.text_field(:product_one_beginning, {style: "width: 35px;"}) %>
               </td>
@@ -98,6 +101,12 @@
               <td id="product-two" data-id="two">
                 <%= f.text_field(:product_two) %>
               </td>
+              <td id="product-two-price" data-id="two">
+                <%= f.text_field(:product_two_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-two-sample" data-id="two">
+                <%= f.text_field(:product_two_sample, {style: "width: 35px;"}) %>
+              </td>                     
               <td id="product-two-beginning" data-id="two" class="product-beginning">
                 <%= f.text_field(:product_two_beginning, {style: "width: 35px;"}) %>
               </td>
@@ -113,6 +122,12 @@
               <td id="product-three" data-id="three">
                 <%= f.text_field(:product_three) %>
               </td>
+              <td id="product-three-price" data-id="three">
+                <%= f.text_field(:product_three_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-three-sample" data-id="three">
+                <%= f.text_field(:product_three_sample, {style: "width: 35px;"}) %>
+              </td>                     
               <td id="product-three-beginning" data-id="three" class="product-beginning">
                 <%= f.text_field(:product_three_beginning, {style: "width: 35px;"}) %>
               </td>
@@ -128,6 +143,12 @@
               <td id="product-four" data-id="four">
                 <%= f.text_field(:product_four) %>
               </td>
+              <td id="product-four-price" data-id="four">
+                <%= f.text_field(:product_four_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-four-sample" data-id="four">
+                <%= f.text_field(:product_four_sample, {style: "width: 35px;"}) %>
+              </td>                     
               <td id="product-four-beginning" data-id="four" class="product-beginning">
                 <%= f.text_field(:product_four_beginning, {style: "width: 35px;"}) %>
               </td>
@@ -142,20 +163,6 @@
         </table>
       </div>
     </div>
-
-    <div class="row report">
-      <div id="report-price-comment">
-        <span class="report-title">Price <%= f.text_field(:price_value_comment, {style: "width: 35px;"}) %> comment</span>:
-        <%= f.text_field(:price_comment) %>
-      </div>
-    </div>
-
-    <div class="row report">
-      <div id="report-sample-units-use">
-        <span class="report-title">Sample units use</span>:
-        <%= f.text_field(:sample_units_use) %>
-      </div>
-    </div>  
 
     <div class="row report">
       <div id="report-sample-product">

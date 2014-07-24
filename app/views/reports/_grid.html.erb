@@ -2,12 +2,13 @@
   <thead>
     <tr>
       <th>Date</th>
-      <th>Times</th>
+      <th>Time</th>
       <th>Client Name</th>
-      <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-        <th>Assigned To</th>
-      <% end %>
-      <th>Job Details</th>
+      <th>BA</th>
+      <th>Demo Rate</th>
+      <th>Expenses</th>
+      <th>Mileage</th>
+      <th>Status</th>
       <th></th>
     </tr>
   </thead>
@@ -15,18 +16,28 @@
     <% @services.each_with_index do |service, i|  %>
     <tr>
       <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-      <td><%= service.time_at %></td>
+      <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
-      <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-        <td><%= service.brand_ambassador.name %></td> 
-      <% end %>
-      <td><%= service.details == "" ?  "-" : truncate(service.details, length: 30) %></td> 
+      <td><%= service.brand_ambassador.name %></td> 
+      <td><%= number_to_currency(service.project.rate) %></td> 
+      <td>
+        <% if service.report.nil? %>
+          <%= "-" %>
+        <% else %>
+          <%= number_to_currency service.report.sum_expense %>
+        <% end %>        
+      </td> 
+      <td><%= service.brand_ambassador.mileage %></td>
+      <td><%= service.current_status %></td>
       <td>
       <% if service.report.nil? %>
-        <%= link_to("Create Report", new_report_path(service_id: service.id), {class: "btn btn-primary", role: "button"}) %>
+        <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
       <% else %>
-        <%= link_to("Show Report", report_path(service.report), {class: "btn btn-primary", role: "button"}) %>      
-        <%= link_to("Edit Report", edit_report_path(service.report), {class: "btn btn-primary", role: "button"}) %>      
+        <%= link_to("Show Report", report_path(service.report)) %> ||
+        <%= link_to("Edit Report", edit_report_path(service.report)) %>   
+        <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+          || <%= link_to("Delete Report", report_path(service.report), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+        <% end %>
       <% end %>
       </td> 
     </tr>

@@ -66,6 +66,16 @@ class ReportsController < ApplicationController
     end          
   end
 
+  def destroy
+    msg = nil
+    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+      report = Report.find(params[:id])
+      report.destroy
+      msg = "Report deleted"
+    end
+    redirect_to reports_path, {notice: msg}
+  end
+
   def download_pdf
     file = "report-#{Time.now.to_i}.pdf"
 
@@ -85,10 +95,12 @@ class ReportsController < ApplicationController
 
   def report_params
     params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, 
-      :price_comment, :sample_units_use, :products, :product_one, :product_one_beginning, :product_one_end, 
-      :product_one_sold, :product_two, :product_two_beginning, :product_two_end, :product_two_sold, :product_three, 
-      :product_three_beginning, :product_three_end, :product_three_sold, :product_four, :product_four_beginning, 
-      :product_four_end, :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, 
-      :expense_one_img, :expense_two, :expense_two_img, :customer_comments, :price_value_comment, :ba_comments)
+      :products, :product_one, :product_one_beginning, :product_one_end, :product_one_sold, :product_two, 
+      :product_two_beginning, :product_two_end, :product_two_sold, :product_three, :product_three_beginning, 
+      :product_three_end, :product_three_sold, :product_four, :product_four_beginning, :product_four_end, 
+      :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, :expense_one_img, 
+      :expense_two, :expense_two_img, :customer_comments, :ba_comments, :product_one_price, :product_two_price, 
+      :product_three_price, :product_four_price, :product_one_sample, :product_two_sample, :product_three_sample, 
+      :product_four_sample)
   end    
 end

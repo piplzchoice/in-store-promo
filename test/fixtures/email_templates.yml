@@ -3,7 +3,7 @@
 # Table name: email_templates
 #
 #  id         :integer          not null, primary key
-#  for        :string(255)
+#  name       :string(255)
 #  subject    :string(255)
 #  content    :text
 #  created_at :datetime

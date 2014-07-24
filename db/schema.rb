@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140722202438) do
+ActiveRecord::Schema.define(version: 20140724032029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,8 +118,6 @@ ActiveRecord::Schema.define(version: 20140722202438) do
     t.string   "weather"
     t.string   "traffic"
     t.string   "busiest_hours"
-    t.string   "price_comment"
-    t.string   "sample_units_use"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "products"
@@ -142,13 +140,20 @@ ActiveRecord::Schema.define(version: 20140722202438) do
     t.string   "sample_product"
     t.string   "est_customer_touched"
     t.string   "est_sample_given"
-    t.string   "expense_one"
     t.string   "expense_one_img"
-    t.string   "expense_two"
     t.string   "expense_two_img"
     t.text     "customer_comments"
-    t.decimal  "price_value_comment",     precision: 8, scale: 2
     t.text     "ba_comments"
+    t.decimal  "product_one_price",       precision: 8, scale: 2
+    t.decimal  "product_two_price",       precision: 8, scale: 2
+    t.decimal  "product_three_price",     precision: 8, scale: 2
+    t.decimal  "product_four_price",      precision: 8, scale: 2
+    t.integer  "product_one_sample"
+    t.integer  "product_two_sample"
+    t.integer  "product_three_sample"
+    t.integer  "product_four_sample"
+    t.decimal  "expense_one",             precision: 8, scale: 2, default: 0.0
+    t.decimal  "expense_two",             precision: 8, scale: 2, default: 0.0
   end
 
   create_table "roles", force: true do |t|

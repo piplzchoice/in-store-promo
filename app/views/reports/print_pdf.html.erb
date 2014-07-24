@@ -5,7 +5,7 @@
   <div class="row report">
     <div id="report-client" class="report-left">
       <span class="report-title">Client</span>: 
-      <span class="report-option-details"><%= @service.project.client.name %></span>
+      <span class="report-option-details"><%= @service.project.client.company_name %></span>
     </div>
 
     <div id="report-project">
@@ -57,10 +57,6 @@
     <div id="report-busiest-hours" class="report-left">
       <span class="report-title">Busiest hours of demo</span>: <%= @report.busiest_hours %>
     </div>
-
-    <div id="report-products">
-      <span class="report-title">Product(s)</span>: <%= @report.products %>
-    </div>
   </div>
 
   <div class="row report">
@@ -70,6 +66,8 @@
           <tr>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
+              <th><span class="report-title">Price</span></th>
+              <th><span class="report-title">Sample</span></th>            
             <th><span class="report-title">Beginning</span></th>
             <th><span class="report-title">End</span></th>
             <th><span class="report-title">Sold</span></th>
@@ -81,6 +79,12 @@
             <td id="product-one" data-id="one">
               <%= @report.product_one %>
             </td>
+            <td id="product-one-price" data-id="one">
+              <%= number_to_currency @report.product_one_price %>
+            </td>              
+            <td id="product-one-sample" data-id="one">
+              <%= @report.product_one_sample %>
+            </td>               
             <td id="product-one-beginning" data-id="one">
               <%= @report.product_one_beginning %>
             </td>
@@ -96,6 +100,12 @@
             <td id="product-two" data-id="two">
               <%= @report.product_two %>
             </td>
+            <td id="product-two-price" data-id="two">
+              <%= number_to_currency @report.product_two_price %>
+            </td>              
+            <td id="product-two-sample" data-id="two">
+              <%= @report.product_two_sample %>
+            </td>                           
             <td id="product-two-beginning" data-id="two">
               <%= @report.product_two_beginning %>
             </td>
@@ -111,6 +121,12 @@
             <td id="product-three" data-id="three">
               <%= @report.product_three %>
             </td>
+            <td id="product-three-price" data-id="three">
+              <%= number_to_currency @report.product_three_price %>
+            </td>              
+            <td id="product-three-sample" data-id="three">
+              <%= @report.product_three_sample %>
+            </td>                           
             <td id="product-three-beginning" data-id="three">
               <%= @report.product_three_beginning %>
             </td>
@@ -126,6 +142,12 @@
             <td id="product-four" data-id="four">
               <%= @report.product_four %>
             </td>
+            <td id="product-four-price" data-id="four">
+              <%= number_to_currency @report.product_four_price %>
+            </td>              
+            <td id="product-four-sample" data-id="four">
+              <%= @report.product_four_sample %>
+            </td>                           
             <td id="product-four-beginning" data-id="four">
               <%= @report.product_four_beginning %>
             </td>
@@ -140,18 +162,6 @@
       </table>
     </div>
   </div>
-
-  <div class="row report">
-    <div id="report-price-comment">
-      <span class="report-title">Price &nbsp;<%= @report.price_value_comment %>&nbsp; comment</span>: <%= @report.price_comment %>
-    </div>
-  </div>
-
-  <div class="row report">
-    <div id="report-sample-units-use">
-      <span class="report-title">Sample units use</span>: <%= @report.sample_units_use %>
-    </div>
-  </div>  
 
   <div class="row report">
     <div id="report-sample-product">
@@ -173,7 +183,7 @@
 
   <div class="row report">
     <div id="report-sample-product">
-      <span class="report-title">Expense 1</span>: <%= @report.expense_one %>
+      <span class="report-title">Expense 1</span>: <%= number_to_currency @report.expense_one %>
       <% unless @report.expense_one_img.nil? %>
         <%= image_tag @report.expense_one_img.current_path %>
       <% end %>
@@ -182,7 +192,7 @@
 
   <div class="row report">
     <div id="report-expense-one">
-      <span class="report-title">Expense 2</span>: <%= @report.expense_two %>
+      <span class="report-title">Expense 2</span>: <%= number_to_currency @report.expense_two %>
       <% unless @report.expense_two_img.nil? %>
         <%= image_tag @report.expense_two_img.current_path %>
       <% end %>      

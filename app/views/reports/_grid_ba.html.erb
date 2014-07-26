@@ -1,10 +1,10 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Times</th>
-      <th>Client Name</th>
-      <th>Job Details</th>
+      <th><%= sortable "start_at", "Date" %></th>
+      <th><%= sortable "time", "Time" %></th>
+      <th><%= sortable "client", "Client Name" %></th>
+      <th>Status</th>
       <th></th>
     </tr>
   </thead>
@@ -12,9 +12,9 @@
     <% @services.each_with_index do |service, i|  %>
     <tr>
       <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-      <td><%= service.time_at %></td>
+      <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
-      <td><%= service.details == "" ?  "-" : truncate(service.details, length: 30) %></td> 
+      <td><%= service.current_status %></td>
       <td>
       <% if service.report.nil? %>
         <%= link_to("Create Report", new_report_path(service_id: service.id)) %>

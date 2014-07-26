@@ -15,7 +15,10 @@
 </div>
 
 <%= form_tag(reports_path(format: :csv), method: :get, role: "form", id: "download-csv") do %>
-  <%= hidden_field_tag(:completed, nil, id: "completed-csv") %>
+  <%= hidden_field_tag(:status, nil, id: "status-csv") %>
   <%= hidden_field_tag(:assigned_to, nil, id: "assigned-csv") %>
   <%= hidden_field_tag(:client_name, nil, id: "client-csv") %>
+  <%= hidden_field_tag(:project_name, nil, id: "project-csv") %>
+  <%= hidden_field_tag(:sort, nil, id: "sort-csv") %>
+  <%= hidden_field_tag(:direction, nil, id: "direction-csv") %>
 <% end %>

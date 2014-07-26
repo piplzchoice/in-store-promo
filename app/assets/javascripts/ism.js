@@ -96,28 +96,29 @@ $(function() {
   
 
   if($("#service_location_id").length !== 0) {
-    $("#service_location_id").select2({
-        placeholder: "-",
-        minimumInputLength: 1,
-        ajax: {
-            url: $("#service_location_id").data("url"),
-            dataType: 'json',
-            data: function (term, page) { return { q: term}; },
-            results: function (data, page) { 
-                return {results: data};
-            }
-        },
-        formatResult: function (location) { return location.name + " - " + location.address + ", " + location.city; },
-        formatSelection: function (location) { return location.name + " - " + location.address + ", " + location.city; },
-        dropdownCssClass: "bigdrop",
-        escapeMarkup: function (m) { return m; }
-    });
+    if($("#service_location_id").data("state") === "new") {
+      $("#service_location_id").select2({
+          placeholder: "-",
+          minimumInputLength: 1,
+          ajax: {
+              url: $("#service_location_id").data("url"),
+              dataType: 'json',
+              data: function (term, page) { return { q: term}; },
+              results: function (data, page) { 
+                  return {results: data};
+              }
+          },
+          formatResult: function (location) { return location.name + " - " + location.address + ", " + location.city; },
+          formatSelection: function (location) { return location.name + " - " + location.address + ", " + location.city; },
+          dropdownCssClass: "bigdrop",
+          escapeMarkup: function (m) { return m; }
+      });
 
-    // $("#service_location_id").select2("data", { 
-    //   id: $("#service_location_id").data("location-id"), 
-    //   name: $("#service_location_id").data("name")
-    // });
-
+      // $("#service_location_id").select2("data", { 
+      //   id: $("#service_location_id").data("location-id"), 
+      //   name: $("#service_location_id").data("name")
+      // });
+    }
   }
 
   if($("#project_client_id").length !== 0) {
@@ -191,9 +192,12 @@ $(function() {
  })  
 
   $("#export-csv").click(function(){
-    $("#completed-csv").val($("#completed").val())
+    $("#status-csv").val($("#status").val())
     $("#assigned-csv").val($("#assigned_to").val())
-    $("#client-csv").val($("#client_name").val())    
+    $("#client-csv").val($("#client_name").val())
+    $("#project-csv").val($("#project_name").val())
+    $("#sort-csv").val($("#sort").val())
+    $("#direction-csv").val($("#direction").val())
     $("#download-csv").submit();
   })  
 
@@ -206,6 +210,21 @@ $(function() {
   });  
 
 });  
+
+$(".order-data").on("click", function(){
+  column = $(this).data("sort")
+  if(column === $("#sort").val()) {
+    if($("#direction").val() === "desc") {
+      $("#direction").val("asc")
+    } else {
+      $("#direction").val("desc")
+    }
+  } else {
+    $("#sort").val(column)
+    $("#direction").val("desc")
+  }
+  $("#filter-data").submit();
+})
 
 function generate_select_ba(){
   $.ajax({

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
         get :confirm_respond
         get :rejected_respond  
         get :mark_service_as_complete      
+        patch :update_status_after_reported
       end
     end
     get :autocomplete_client_name, :on => :collection

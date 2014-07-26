@@ -1,36 +1,57 @@
 <%= form_for [@project, @service], html: {role: "form"} do |f| %>
   <div class="form-group">
     <%= f.label :location_id, "Select Location", {class: "control-label"} %>
-    <%= f.hidden_field :location_id, {class: "select-2-box", data: { 
-      url: autocomplete_location_name_project_services_path(project_id: @project.id),
-      name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
-      location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
-    }} %>
+    <% if @service.new_record? %>
+      <%= f.hidden_field :location_id, {class: "select-2-box", data: { 
+        url: autocomplete_location_name_project_services_path(project_id: @project.id),
+        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
+        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
+        state: "new"
+      }} %>
+    <% else %>
+      <%= @service.location.name %>
+      <%= f.hidden_field :location_id, {data: {state: "edit"}} %>
+    <% end %>
   </div>
 
   <div class="form-group">
     <%= f.label :brand_ambassador_id, "Select BA", {class: "control-label"} %>
-    <div id="select-ba" 
-      data-id="<%= @service.brand_ambassador_id.nil? ? "" : @service.brand_ambassador_id %>" 
-      data-action="<%= controller.action_name %>"
-      data-old-id="<%= @service.old_id %>"></div>
+    <% if @service.new_record? || @service.can_reassign? %>
+      <div id="select-ba" 
+        data-id="<%= @service.brand_ambassador_id.nil? ? "" : @service.brand_ambassador_id %>" 
+        data-action="<%= controller.action_name %>"
+        data-old-id="<%= @service.old_id %>"></div>
+    <% else %>
+      <%= @service.brand_ambassador.name %>
+      <%= f.hidden_field :brand_ambassador_id %>
+    <% end %>
   </div>
 
 
   <div class="form-group">
     <%= f.label :start_at, {class: "control-label"} %>
-    <div class='input-group date dp-service' id='start_at_datetimepicker' data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
-      <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
-      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-    </div>
+    <% if @service.new_record? %>
+      <div class='input-group date dp-service' id='start_at_datetimepicker' data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
+        <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+      </div>
+    <% else %>
+      <%= @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>
+      <%= f.hidden_field :start_at %>
+    <% end %>
   </div>
 
   <div class="form-group">
-    <%= f.label :end_at, {class: "control-label"} %>    
-    <div class='input-group date dp-service' id='end_at_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
-      <%= f.text_field :end_at, {class: "form-control", readonly: true} %>
-      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-    </div>      
+    <%= f.label :end_at, {class: "control-label"} %>  
+    <% if @service.new_record? %>  
+      <div class='input-group date dp-service' id='end_at_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
+        <%= f.text_field :end_at, {class: "form-control", readonly: true} %>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+      </div>  
+    <% else %>
+      <%= @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>     
+      <%= f.hidden_field :end_at %> 
+    <% end %>    
   </div>
 
   <div class="form-group">

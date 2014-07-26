@@ -1,1 +1,21 @@
-$(".table-responsive").html("<%= escape_javascript render('grid') %>");
+
+<% if current_user.has_role?(:ba) %>
+  $(".table-responsive").html("<%= escape_javascript render('grid_ba') %>");
+<% else %>
+  $(".table-responsive").html("<%= escape_javascript render('grid') %>");
+<% end %>
+
+$(".order-data").on("click", function(){
+  column = $(this).data("sort")
+  if(column === $("#sort").val()) {
+    if($("#direction").val() === "desc") {
+      $("#direction").val("asc")
+    } else {
+      $("#direction").val("desc")
+    }
+  } else {
+    $("#sort").val(column)
+    $("#direction").val("desc")
+  }
+  $("#filter-data").submit();
+})

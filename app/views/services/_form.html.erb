@@ -10,7 +10,6 @@
       }} %>
     <% else %>
       <%= @service.location.name %>
-      <%= f.hidden_field :location_id, {data: {state: "edit"}} %>
     <% end %>
   </div>
 
@@ -23,7 +22,6 @@
         data-old-id="<%= @service.old_id %>"></div>
     <% else %>
       <%= @service.brand_ambassador.name %>
-      <%= f.hidden_field :brand_ambassador_id %>
     <% end %>
   </div>
 

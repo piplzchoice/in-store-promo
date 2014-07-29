@@ -50,11 +50,10 @@ class ServicesController < ApplicationController
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
               @service.update_attribute(:status, Service.status_scheduled)
             end            
-            redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated"
-          end          
-        else
-          render :edit
+            redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated" and return
+          end                    
         end        
+        render :edit
       end
     end        
   end

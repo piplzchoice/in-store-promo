@@ -31,7 +31,7 @@
       <td><%= service.brand_ambassador.mileage %></td>
       <td><%= service.current_status %></td>
       <td>
-      <% if service.can_create_report? && service.report.nil? %>
+      <% if service.can_create_report? || service.report.nil? %>
         <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
       <% else %>
         <%= link_to("Show Report", report_path(service.report)) %> ||

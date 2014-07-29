@@ -52,6 +52,8 @@ class Report < ActiveRecord::Base
   
   mount_uploader :expense_one_img, ImageUploader
   mount_uploader :expense_two_img, ImageUploader
+  mount_uploader :table_image_one_img, ImageUploader
+  mount_uploader :table_image_two_img, ImageUploader
 
   def sum_expense
     expense_one.to_f + expense_two.to_f

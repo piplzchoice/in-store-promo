@@ -165,7 +165,49 @@
             <td id="product-four-sold" data-id="four">
               <%= @report.product_four_sold %>
             </td>
-          </tr>                                    
+          </tr>      
+          <tr>
+            <td>Product 5</td>
+            <td id="product-five" data-id="five">
+              <%= @report.product_five %>
+            </td>
+            <td id="product-five-price" data-id="five">
+              <%= number_to_currency @report.product_five_price %>
+            </td>              
+            <td id="product-five-sample" data-id="five">
+              <%= @report.product_five_sample %>
+            </td>                           
+            <td id="product-five-beginning" data-id="five">
+              <%= @report.product_five_beginning %>
+            </td>
+            <td id="product-five-end" data-id="five">
+              <%= @report.product_five_end %>
+            </td>
+            <td id="product-five-sold" data-id="five">
+              <%= @report.product_five_sold %>
+            </td>
+          </tr>   
+          <tr>
+            <td>Product 6</td>
+            <td id="product-six" data-id="six">
+              <%= @report.product_six %>
+            </td>
+            <td id="product-six-price" data-id="six">
+              <%= number_to_currency @report.product_six_price %>
+            </td>              
+            <td id="product-six-sample" data-id="six">
+              <%= @report.product_six_sample %>
+            </td>                           
+            <td id="product-six-beginning" data-id="six">
+              <%= @report.product_six_beginning %>
+            </td>
+            <td id="product-six-end" data-id="six">
+              <%= @report.product_six_end %>
+            </td>
+            <td id="product-six-sold" data-id="six">
+              <%= @report.product_six_sold %>
+            </td>
+          </tr>             
         </tbody>
       </table>
     </div>
@@ -219,6 +261,19 @@
       <span class="report-title">BA Comments</span>: 
       <p><%= @report.ba_comments %></p>
     </div>
-  </div>      
+  </div>  
+
+  <div class="row report">
+    <div id="report-attach-table">
+      <span class="report-title">Attach Table Image</span>:
+      <% unless @report.table_image_one_img.nil? %>
+        <%= image_tag @report.table_image_one_img.url %>
+      <% end %> 
+      <br />
+      <% unless @report.table_image_two_img.nil? %>
+        <%= image_tag @report.table_image_two_img.url %>
+      <% end %>            
+    </div>
+  </div>             
 
 </div>

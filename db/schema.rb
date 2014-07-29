@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140724032029) do
+ActiveRecord::Schema.define(version: 20140729232606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,20 @@ ActiveRecord::Schema.define(version: 20140724032029) do
     t.integer  "product_four_sample"
     t.decimal  "expense_one",             precision: 8, scale: 2, default: 0.0
     t.decimal  "expense_two",             precision: 8, scale: 2, default: 0.0
+    t.integer  "product_five_sample"
+    t.decimal  "product_five_price",      precision: 8, scale: 2
+    t.string   "product_five"
+    t.integer  "product_five_beginning"
+    t.integer  "product_five_end"
+    t.integer  "product_five_sold"
+    t.integer  "product_six_sample"
+    t.decimal  "product_six_price",       precision: 8, scale: 2
+    t.string   "product_six"
+    t.integer  "product_six_beginning"
+    t.integer  "product_six_end"
+    t.integer  "product_six_sold"
+    t.string   "table_image_one_img"
+    t.string   "table_image_two_img"
   end
 
   create_table "roles", force: true do |t|

@@ -11,7 +11,7 @@
   <tbody>
     <% @services.each_with_index do |service, i|  %>
     <tr>
-      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), assignment_path(id: service.id) %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
       <td><%= service.current_status %></td>

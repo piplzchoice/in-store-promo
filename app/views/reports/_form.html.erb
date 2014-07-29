@@ -158,7 +158,49 @@
               <td id="product-four-sold" data-id="four" class="product-sold">
                 <%= f.text_field(:product_four_sold, {style: "width: 35px;"}) %>
               </td>
-            </tr>                                    
+            </tr> 
+            <tr>
+              <td>Product 5</td>
+              <td id="product-five" data-id="five">
+                <%= f.text_field(:product_five) %>
+              </td>
+              <td id="product-five-price" data-id="five">
+                <%= f.text_field(:product_five_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-five-sample" data-id="five">
+                <%= f.text_field(:product_five_sample, {style: "width: 35px;"}) %>
+              </td>                     
+              <td id="product-five-beginning" data-id="five" class="product-beginning">
+                <%= f.text_field(:product_five_beginning, {style: "width: 35px;"}) %>
+              </td>
+              <td id="product-five-end" data-id="five" class="product-end">
+                <%= f.text_field(:product_five_end, {style: "width: 35px;"}) %>
+              </td>
+              <td id="product-five-sold" data-id="five" class="product-sold">
+                <%= f.text_field(:product_five_sold, {style: "width: 35px;"}) %>
+              </td>
+            </tr>     
+            <tr>
+              <td>Product 6</td>
+              <td id="product-six" data-id="six">
+                <%= f.text_field(:product_six) %>
+              </td>
+              <td id="product-six-price" data-id="six">
+                <%= f.text_field(:product_six_price, {style: "width: 35px;"}) %>
+              </td>              
+              <td id="product-six-sample" data-id="six">
+                <%= f.text_field(:product_six_sample, {style: "width: 35px;"}) %>
+              </td>                     
+              <td id="product-six-beginning" data-id="six" class="product-beginning">
+                <%= f.text_field(:product_six_beginning, {style: "width: 35px;"}) %>
+              </td>
+              <td id="product-six-end" data-id="six" class="product-end">
+                <%= f.text_field(:product_six_end, {style: "width: 35px;"}) %>
+              </td>
+              <td id="product-six-sold" data-id="six" class="product-sold">
+                <%= f.text_field(:product_six_sold, {style: "width: 35px;"}) %>
+              </td>
+            </tr>                                                            
           </tbody>
         </table>
       </div>
@@ -211,7 +253,15 @@
         <span class="report-title">BA Comments</span>:<br />
         <%= f.text_area(:ba_comments, cols: 100, rows: 10) %>
       </div>
-    </div>      
+    </div>     
+
+    <div class="row report">
+      <div id="report-attach-table">
+        <span class="report-title">Attach Table Image</span>:
+        <%= f.file_field(:table_image_one_img) %>
+        <%= f.file_field(:table_image_two_img) %>
+      </div>
+    </div>         
 
   </div>
 

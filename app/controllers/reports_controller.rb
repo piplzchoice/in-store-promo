@@ -110,7 +110,7 @@ class ReportsController < ApplicationController
       :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, :expense_one_img, 
       :expense_two, :expense_two_img, :customer_comments, :ba_comments, :product_one_price, :product_two_price, 
       :product_three_price, :product_four_price, :product_one_sample, :product_two_sample, :product_three_sample, 
-      :product_four_sample)
+      :product_four_sample, :table_image_one_img, :table_image_two_img)
   end    
 
   private

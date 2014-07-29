@@ -44,7 +44,7 @@
 <p><%= @service.details %></p>
 
 <div class="link-new-btn">
-  <%= link_to("Back", project_path(@project), {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("Back", (params[:report].nil? ? project_path(@project) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
   <% if @service.can_modify? %>
     <%= link_to("Edit", edit_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>

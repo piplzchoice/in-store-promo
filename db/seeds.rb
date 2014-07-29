@@ -105,3 +105,18 @@ if EmailTemplate.all.size == 0
 
   puts "email template created"
 end
+
+if EmailTemplate.find_by_name("send_reminder_to_add_availablty_date").nil?
+  send_reminder_to_add_availablty_date = {
+    name: "send_reminder_to_add_availablty_date", 
+    subject: "Add Availablty Date",
+    content: "
+      <p>Dear .ba_name</p>
+      <p>Please don't forget to add your availablty date</p>
+      <p>Thanks</p>
+    "  
+  }  
+  EmailTemplate.create(send_reminder_to_add_availablty_date)
+
+  puts "created email template for send_reminder_to_add_availablty_date"
+end

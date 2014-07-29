@@ -29,29 +29,23 @@
 
 
   <div class="form-group">
-    <%= f.label :start_at, {class: "control-label"} %>
-    <% if @service.new_record? %>
-      <div class='input-group date dp-service' id='start_at_datetimepicker' data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
-        <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
+    <%= f.label :start_at, {class: "control-label"} %>    
+    <div class='input-group date dp-service' id='start_at_datetimepicker' data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
+      <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
+      <% if @service.new_record? %>
         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
-      </div>
-    <% else %>
-      <%= @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>
-      <%= f.hidden_field :start_at %>
-    <% end %>
+      <% end %>
+    </div>  
   </div>
 
   <div class="form-group">
-    <%= f.label :end_at, {class: "control-label"} %>  
-    <% if @service.new_record? %>  
+    <%= f.label :end_at, {class: "control-label"} %>      
       <div class='input-group date dp-service' id='end_at_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
         <%= f.text_field :end_at, {class: "form-control", readonly: true} %>
-        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        <% if @service.new_record? %>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        <% end %>
       </div>  
-    <% else %>
-      <%= @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>     
-      <%= f.hidden_field :end_at %> 
-    <% end %>    
   </div>
 
   <div class="form-group">

@@ -1,28 +1,17 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+=== SETUP APPLICATION
 
-Things you may want to cover:
+Here is guide for setup In Store Promo Application :
 
-* Ruby version
+* Create database and run migration
 
-* System dependencies
+* Run rake db:seed to add initialize data
 
-* Configuration
+* Adjust ENV file when setup server for SendGrid, AWS S3
 
-* Database creation
+* add command 'rake notification:unrespond_service' on cronjob, make it run for every hour
 
-* Database initialization
+* add command 'rake notification:change_to_conduceted' on cronjob, make it run for every 10 minutes
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-
-
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* add command 'rake notification:add_availblty_date' on cronjob, make it run for every day

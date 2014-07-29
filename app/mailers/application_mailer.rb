@@ -21,6 +21,7 @@ class ApplicationMailer < ActionMailer::Base
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
     @content = @content.gsub(".link_confirm_respond", confirm_respond_project_service_url(project_id: service.project.id, id: service.id, token: service.token))
     @content = @content.gsub(".link_rejected_respond", rejected_respond_project_service_url(project_id: service.project.id, id: service.id, token: service.token))
+    @content = @content.gsub(".service_details", service.details)
 
     mail(to: ba.account.email, subject: et.subject)
   end
@@ -66,6 +67,12 @@ class ApplicationMailer < ActionMailer::Base
         render :text => ical.to_ical, :layout => false
       }
     end    
+  end
+
+  def send_reminder_to_add_availablty_date(ba)
+    et = EmailTemplate.find_by_name("send_reminder_to_add_availablty_date")
+    @content = et.content.gsub(".ba_name", ba.name)
+    mail(to: ba.account.email, subject: et.subject)    
   end
 
 end

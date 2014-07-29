@@ -21,7 +21,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html do
         if @service.save
-          ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver          
+          ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to project_path(@project), notice: "Service created"
         else
           render :new
@@ -46,10 +46,15 @@ class ServicesController < ApplicationController
       format.html do
         if @service.can_modify?
           if @service.update_data(service_params)
+            if @service.can_reassign?
+              ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+              @service.update_attribute(:status, Service.status_scheduled)
+            end            
             redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated"
           end          
-        end
-        render :edit
+        else
+          render :edit
+        end        
       end
     end        
   end

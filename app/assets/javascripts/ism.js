@@ -1,5 +1,7 @@
 $(function() {  
-  checkbox_avalaible_click()
+  $(".tooltip-legend").tooltip();
+  checkbox_avalaible_click();
+  generate_select_ba
   if($('.dp-service').length !== 0) {
 
     $("#service_start_at").val("");

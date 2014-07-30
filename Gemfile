@@ -47,6 +47,7 @@ gem "time_difference"
 gem 'pdfkit'
 gem "wkhtmltopdf-binary"
 gem 'redactor-rails'
+gem 'carrierwave-aws'
 
 gem 'debugger', group: [:development, :test]
 

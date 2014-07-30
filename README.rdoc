@@ -18,7 +18,7 @@ Here is guide for setup In Store Promo Application :
 
 === Config Vars
 AWS_ACCESS_KEY:             AKIAICHX4CSMRYN4JXGA
-AWS_DIRECTORY:              in-store-promo-live
+AWS_DIRECTORY:              ismp-live
 AWS_REGION:                 us-west-2
 AWS_SECRET_ACCESS_KEY:      t5+Hzc9bYYgi96X3/N7jH51afIo1HdCx+8bm7wWz
 SENDGRID_PASSWORD:          felicia777

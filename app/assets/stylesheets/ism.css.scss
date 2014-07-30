@@ -163,3 +163,64 @@ body {
 .report-weather-traffic {
   background-color: yellow;
 }
+
+// #colour-legend {}
+
+#colour-legend div{  
+  float: left;
+  margin: 5px;
+}
+
+.scheduled {
+  background-color: #428bca;
+  width: 30px;
+  height: 30px;
+}
+
+.confirmed {
+  background-color: #5bc0de;
+  width: 30px;
+  height: 30px;  
+}
+
+.rejected {
+  background-color: #f0ad4e;
+  width: 30px;
+  height: 30px;  
+}
+
+.conducted {
+  background-color: #5cb85c;
+  width: 30px;
+  height: 30px;  
+}
+
+.unrespond {
+  background-color: #d9534f;
+  width: 30px;
+  height: 30px;  
+}
+
+.reported {
+  background-color: #dff0d8;
+  width: 30px;
+  height: 30px;  
+}
+
+.paid {
+  background-color: #3c763d;
+  width: 30px;
+  height: 30px;  
+}
+
+.ba-paid {
+  background-color: #8a6d3b;
+  width: 30px;
+  height: 30px;  
+}
+
+.cancelled {
+  background-color: #B49C1D;
+  width: 30px;
+  height: 30px;  
+}

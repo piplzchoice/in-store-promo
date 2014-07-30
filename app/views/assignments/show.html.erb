@@ -1,0 +1,18 @@
+<h1 class="page-header">Show Assignment</h1>
+<label>Status :</label>
+<p><%= @service.current_status %></p>
+
+<label>Client :</label>
+<p><%= @service.project.client.company_name %></p>
+
+<label>Location</label>
+<p><%= @service.location.name %></p>
+
+<label>Start Date</label>
+<p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+<label>End Date</label>
+<p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+<label>Details</label>
+<p><%= @service.details %></p>

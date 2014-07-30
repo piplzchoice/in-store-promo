@@ -17,11 +17,15 @@
 #
 
 # note for field "status"
-# 1. invited => this state mean new service has been created and notification has send to BA
-# 2. accepted => BA accepted the assignment
+# 1. Scheduled => this state mean new service has been created and notification has send to BA
+# 2. Confirmed => BA accepted the assignment
 # 3. rejected => BA rejected the assignment
-# 4. completed => BA delivered service and added report
+# 4. Conducted => BA delivered service and added report
 # 5. unrespond => BA did not respond after 12 hours
+# 6. Reported => when report is created
+# 7. Paid => when service has been paid
+# 8. BA Paid => 
+# 9. Cancelled
 #
 
 class Service < ActiveRecord::Base
@@ -30,6 +34,8 @@ class Service < ActiveRecord::Base
   belongs_to :location
   belongs_to :project
   has_one :report
+
+  has_one :client, :through => :project
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
@@ -41,23 +47,39 @@ class Service < ActiveRecord::Base
     service.token = Devise.friendly_token unless service.changed_attributes["brand_ambassador_id"].nil?
   end
 
-  def self.filter(completed, assigned_to, client_name)
+  def self.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction)
+    data = nil
     conditions = {}
-    conditions.merge!(status: 4) if completed != ""
+    conditions.merge!(status: status) if status != ""
     conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
-    unless client_name == ""
-      project_ids = Project.joins(:client).where("clients.company_name ILIKE ?", client_name).collect(&:id)
-      conditions.merge!(project_id: project_ids) 
-    end
+    conditions.merge!(project_id: project_name) if project_name != ""
     
-    Service.where(conditions)
+    if client_name != ""
+      data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
+    else
+      data = Service.where(conditions)
+    end        
+
+    if sort_column == "ba"
+      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{sort_direction}")
+    elsif sort_column == "client"
+      data = data.joins(:client).order("clients.company_name #{sort_direction}")
+    else
+      if sort_column == "time"
+        data = data.order("EXTRACT (HOUR from start_at) #{sort_direction}")
+      else
+        data = data.order(sort_column + " " + sort_direction)
+      end      
+    end
+
+    return data
   end
 
-  def self.status_invited
+  def self.status_scheduled
     return 1
   end
 
-  def self.status_accepted
+  def self.status_confirmed
     return 2
   end
 
@@ -65,13 +87,29 @@ class Service < ActiveRecord::Base
     return 3
   end
 
-  def self.status_completed
+  def self.status_conducted
     return 4
   end
 
   def self.status_unrespond
     return 5
   end      
+
+  def self.status_reported
+    return 6
+  end      
+
+  def self.status_paid
+    return 7
+  end       
+
+  def self.status_ba_paid
+    return 8
+  end         
+
+  def self.status_cancelled
+    return 9
+  end         
 
   def self.send_notif_after
     return 12.round
@@ -86,6 +124,22 @@ class Service < ActiveRecord::Base
   def self.invited_and_unrespond_status
     # where status = 1 and created_at >= 12 hours
     # update status to 5 and send notification to admin
+  end
+
+  def self.options_select_after_reported
+    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid]]
+  end
+
+  def self.options_select_status
+    [
+      ["Scheduled", Service.status_scheduled], 
+      ["BA Confirmed", Service.status_confirmed], 
+      ["Conducted", Service.status_conducted], 
+      ["Reported", Service.status_reported], 
+      ["Paid", Service.status_paid], 
+      ["BA paid", Service.status_ba_paid], 
+      ["Cancelled", Service.status_cancelled]
+    ]
   end
 
   def title_calendar
@@ -121,11 +175,18 @@ class Service < ActiveRecord::Base
       "#5cb85c"
     when 5
       "#d9534f"
-    end    
+    when 6
+      "#dff0d8"
+    when 7
+      "#3c763d"
+    when 8
+      "#8a6d3b"   
+    when 9
+      "#B49C1D"
+    end        
   end
 
   def client_and_companyname
-    client = project.client
     "#{client.name}/#{client.company_name}"
   end
 
@@ -140,15 +201,23 @@ class Service < ActiveRecord::Base
   def current_status
     case status
     when 1
-      "Invited"
+      "Scheduled"
     when 2
-      "Accepted"
+      "Confirmed"
     when 3
       "Rejected"
     when 4
-      "Completed"
+      "Conducted"
     when 5
       "Unrespond"
+    when 6
+      "Reported"
+    when 7
+      "Paid"
+    when 8
+      "BA Paid"
+    when 9
+      "Cancelled"
     end        
   end
 
@@ -157,6 +226,45 @@ class Service < ActiveRecord::Base
   end
 
   def company_name
-    project.client.company_name
+    client.company_name
   end
+
+  def cancelled
+    if can_modify?
+      update_attribute(:status, Service.status_cancelled)
+    end
+  end
+
+  def can_modify?
+    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected, 
+      Service.status_unrespond].include?(status)
+  end
+
+  def can_reassign?
+    self.status == Service.status_rejected || self.status == Service.status_unrespond
+  end
+
+  def is_not_complete?
+    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected, 
+      Service.status_unrespond].include?(status)
+  end
+
+  def is_cancelled?
+    Service.status_cancelled == status
+  end
+
+  def is_reported?
+    [Service.status_reported, Service.status_paid, Service.status_ba_paid].include?(status)
+  end
+
+  def can_create_report?
+    [Service.status_conducted, Service.status_paid, Service.status_ba_paid].include?(status)
+  end
+
+
 end
+
+# status_reported
+# status_paid
+# status_ba_paid
+# status_cancelled

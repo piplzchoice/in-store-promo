@@ -1,0 +1,29 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= sortable "start_at", "Date" %></th>
+      <th><%= sortable "time", "Time" %></th>
+      <th><%= sortable "client", "Client Name" %></th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+    <tr>
+      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), assignment_path(id: service.id) %></td>
+      <td><%= service.start_at.strftime("%I:%M %p") %></td>
+      <td><%= service.company_name %></td> 
+      <td><%= service.current_status %></td>
+      <td>
+      <% if service.report.nil? %>
+        <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
+      <% else %>
+        <%= link_to("Show Report", report_path(service.report)) %> ||    
+        <%= link_to("Edit Report", edit_report_path(service.report)) %>      
+      <% end %>
+      </td> 
+    </tr>
+    <% end %>
+  </tbody>
+</table>

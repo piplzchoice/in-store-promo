@@ -17,4 +17,16 @@
 <h2 class="sub-header">Services</h2>
 <div class="link-new-btn"><%= link_to("New Service", new_project_service_path(project_id: @project.id), {class: "btn btn-primary", role: "button"}) %></div>
 
+<div id="colour-legend">
+  <div class="scheduled tooltip-legend" data-toggle="tooltip" data-placement="top" title="Scheduled">&nbsp;</div>
+  <div class="confirmed tooltip-legend" data-toggle="tooltip" data-placement="top" title="Confirmed">&nbsp;</div>
+  <div class="rejected tooltip-legend" data-toggle="tooltip" data-placement="top" title="Rejected">&nbsp;</div>
+  <div class="conducted tooltip-legend" data-toggle="tooltip" data-placement="top" title="Conducted">&nbsp;</div>
+  <div class="unrespond tooltip-legend" data-toggle="tooltip" data-placement="top" title="Unrespond">&nbsp;</div>
+  <div class="reported tooltip-legend" data-toggle="tooltip" data-placement="top" title="Reported">&nbsp;</div>
+  <div class="paid tooltip-legend" data-toggle="tooltip" data-placement="top" title="Paid">&nbsp;</div>
+  <div class="ba-paid tooltip-legend" data-toggle="tooltip" data-placement="top" title="BA Paid">&nbsp;</div>
+  <div class="cancelled tooltip-legend" data-toggle="tooltip" data-placement="top" title="Cancelled">&nbsp;</div>
+</div>
+
 <div id="calendar" data-url="<%= project_services_path(project_id: @project.id) %>"></div>

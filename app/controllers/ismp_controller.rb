@@ -63,9 +63,34 @@ class IsmpController < ApplicationController
     end
   end
 
+  def set_as_ba
+    assign_user
+    @brand_ambassador = @user.build_brand_ambassador
+  end
+
+  def update_as_ba
+    assign_user
+    @brand_ambassador = @user.build_brand_ambassador(brand_ambassador_params)
+    respond_to do |format|
+      format.html do
+        if @brand_ambassador.save
+          @user.add_role :ba
+          @user.save
+          redirect_to ismp_path(@user), notice: "ISMP as BA created"
+        else
+          render :set_as_ba
+        end
+      end
+    end           
+  end
+
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation)
   end
+
+  def brand_ambassador_params
+    params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage)
+  end      
 
   def assign_user
     @user = User.find(params[:id])

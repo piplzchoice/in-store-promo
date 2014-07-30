@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140719043129) do
+ActiveRecord::Schema.define(version: 20140729232606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,6 +65,14 @@ ActiveRecord::Schema.define(version: 20140719043129) do
     t.string   "sample_product"
   end
 
+  create_table "email_templates", force: true do |t|
+    t.string   "name"
+    t.string   "subject"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "locations", force: true do |t|
     t.string   "name"
     t.string   "address"
@@ -88,14 +96,28 @@ ActiveRecord::Schema.define(version: 20140719043129) do
     t.decimal  "rate",         precision: 8, scale: 2
   end
 
+  create_table "redactor_assets", force: true do |t|
+    t.string   "data_file_name",               null: false
+    t.string   "data_content_type"
+    t.integer  "data_file_size"
+    t.integer  "assetable_id"
+    t.string   "assetable_type",    limit: 30
+    t.string   "type",              limit: 30
+    t.integer  "width"
+    t.integer  "height"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "redactor_assets", ["assetable_type", "assetable_id"], name: "idx_redactor_assetable", using: :btree
+  add_index "redactor_assets", ["assetable_type", "type", "assetable_id"], name: "idx_redactor_assetable_type", using: :btree
+
   create_table "reports", force: true do |t|
     t.integer  "service_id"
     t.string   "demo_in_store"
     t.string   "weather"
     t.string   "traffic"
     t.string   "busiest_hours"
-    t.string   "price_comment"
-    t.string   "sample_units_use"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "products"
@@ -118,13 +140,34 @@ ActiveRecord::Schema.define(version: 20140719043129) do
     t.string   "sample_product"
     t.string   "est_customer_touched"
     t.string   "est_sample_given"
-    t.string   "expense_one"
     t.string   "expense_one_img"
-    t.string   "expense_two"
     t.string   "expense_two_img"
     t.text     "customer_comments"
-    t.decimal  "price_value_comment",     precision: 8, scale: 2
     t.text     "ba_comments"
+    t.decimal  "product_one_price",       precision: 8, scale: 2
+    t.decimal  "product_two_price",       precision: 8, scale: 2
+    t.decimal  "product_three_price",     precision: 8, scale: 2
+    t.decimal  "product_four_price",      precision: 8, scale: 2
+    t.integer  "product_one_sample"
+    t.integer  "product_two_sample"
+    t.integer  "product_three_sample"
+    t.integer  "product_four_sample"
+    t.decimal  "expense_one",             precision: 8, scale: 2, default: 0.0
+    t.decimal  "expense_two",             precision: 8, scale: 2, default: 0.0
+    t.integer  "product_five_sample"
+    t.decimal  "product_five_price",      precision: 8, scale: 2
+    t.string   "product_five"
+    t.integer  "product_five_beginning"
+    t.integer  "product_five_end"
+    t.integer  "product_five_sold"
+    t.integer  "product_six_sample"
+    t.decimal  "product_six_price",       precision: 8, scale: 2
+    t.string   "product_six"
+    t.integer  "product_six_beginning"
+    t.integer  "product_six_end"
+    t.integer  "product_six_sold"
+    t.string   "table_image_one_img"
+    t.string   "table_image_two_img"
   end
 
   create_table "roles", force: true do |t|

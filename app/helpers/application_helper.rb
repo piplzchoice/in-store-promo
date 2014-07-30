@@ -38,4 +38,12 @@ module ApplicationHelper
       concat(content_tag(:td, cb_pm))      
     end    
   end
+
+  def sortable(column, title = nil)
+    title ||= column.titleize
+    css_class = column == sort_column ? "order-data #{sort_direction}" : nil
+    direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
+    link_to title, "#table-data", {:class => "order-data", data: {sort: column}}
+  end  
+  
 end

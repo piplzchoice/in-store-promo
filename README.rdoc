@@ -15,11 +15,3 @@ Here is guide for setup In Store Promo Application :
 * add command 'rake notification:change_to_conduceted' on cronjob, make it run for every 10 minutes
 
 * add command 'rake notification:add_availblty_date' on cronjob, make it run for every day
-
-=== Config Vars
-AWS_ACCESS_KEY:             AKIAICHX4CSMRYN4JXGA
-AWS_DIRECTORY:              ismp-live
-AWS_REGION:                 us-west-2
-AWS_SECRET_ACCESS_KEY:      t5+Hzc9bYYgi96X3/N7jH51afIo1HdCx+8bm7wWz
-SENDGRID_PASSWORD:          felicia777
-SENDGRID_USERNAME:          gregy

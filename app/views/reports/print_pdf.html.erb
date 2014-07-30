@@ -227,7 +227,7 @@
     <div id="report-sample-product">
       <span class="report-title">Expense 1</span>: <%= number_to_currency @report.expense_one %>
       <% unless @report.expense_one_img.nil? %>
-        <%= image_tag @report.expense_one_img.current_path %>
+        <%= image_tag @report.expense_one_img.url %>
       <% end %>
     </div>
   </div>  
@@ -236,7 +236,7 @@
     <div id="report-expense-one">
       <span class="report-title">Expense 2</span>: <%= number_to_currency @report.expense_two %>
       <% unless @report.expense_two_img.nil? %>
-        <%= image_tag @report.expense_two_img.current_path %>
+        <%= image_tag @report.expense_two_img.url %>
       <% end %>      
     </div>
   </div>    
@@ -259,11 +259,11 @@
     <div id="report-attach-table">
       <span class="report-title">Attach Table Image</span>:
       <% unless @report.table_image_one_img.nil? %>
-        <%= image_tag @report.table_image_one_img.current_path %>
+        <%= image_tag @report.table_image_one_img.url %>
       <% end %> 
       <br />
       <% unless @report.table_image_two_img.nil? %>
-        <%= image_tag @report.table_image_two_img.current_path %>
+        <%= image_tag @report.table_image_two_img.url %>
       <% end %>            
     </div>
   </div>               

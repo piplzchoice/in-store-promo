@@ -15,5 +15,10 @@
     <%= f.text_field :sample_product, {class: "form-control"} %>
   </div>    
 
+  <div class="form-group">
+    <%= f.label :service_hours_est, {class: "control-label"} %>
+    <%= f.number_field :service_hours_est, {class: "form-control"} %>
+  </div>      
+
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

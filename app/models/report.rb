@@ -44,6 +44,20 @@
 #  product_four_sample     :integer
 #  expense_one             :decimal(8, 2)    default(0.0)
 #  expense_two             :decimal(8, 2)    default(0.0)
+#  product_five_sample     :integer
+#  product_five_price      :decimal(8, 2)
+#  product_five            :string(255)
+#  product_five_beginning  :integer
+#  product_five_end        :integer
+#  product_five_sold       :integer
+#  product_six_sample      :integer
+#  product_six_price       :decimal(8, 2)
+#  product_six             :string(255)
+#  product_six_beginning   :integer
+#  product_six_end         :integer
+#  product_six_sold        :integer
+#  table_image_one_img     :string(255)
+#  table_image_two_img     :string(255)
 #
 
 require 'carrierwave/orm/activerecord'

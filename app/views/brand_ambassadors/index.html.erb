@@ -22,7 +22,7 @@
         <td>
           <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
           <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> || 
-          <%= link_to "Delete", brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <%= link_to (brand_ambassador.is_active ? "Deactivated" : "Reactivated"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
         </td>
       </tr>
       <% end %>

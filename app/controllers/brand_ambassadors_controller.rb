@@ -83,4 +83,11 @@ class BrandAmbassadorsController < ApplicationController
   def brand_ambassador_params
     params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, account_attributes: [:email, :id])
   end    
+
+  def view_ba_calender
+    respond_to do |format|
+      format.html
+      format.json { render json: BrandAmbassador.get_all_available_dates }
+    end
+  end
 end

@@ -14,6 +14,10 @@ Rails.application.routes.draw do
     member do
       patch "reset_password"
     end
+
+    collection do
+      get "view_ba_calender"
+    end
   end
   
   resources :locations

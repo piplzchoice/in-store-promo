@@ -39,4 +39,14 @@ class AvailableDate < ActiveRecord::Base
     end
   end
 
+  def get_color
+    if am && pm
+      "#3c763d"
+    elsif am && !pm
+      "#f0ad4e"
+    elsif !am && pm
+      "#428bca" 
+    end
+  end
+
 end

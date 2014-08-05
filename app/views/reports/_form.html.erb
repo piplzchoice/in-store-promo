@@ -16,7 +16,7 @@
     <div class="row report">
       <div id="report-ba" class="report-left">
         <span class="report-title">Name of BA</span>: 
-        <span class="report-option-details"><%= @service.brand_ambassador.name %></span>
+        <span class="report-option-details"><%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %></span>
       </div>
 
       <div id="report-location">

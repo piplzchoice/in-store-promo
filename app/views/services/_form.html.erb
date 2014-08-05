@@ -28,7 +28,7 @@
 
   <div class="form-group">
     <%= f.label :start_at, {class: "control-label"} %>    
-    <div class='input-group date dp-service' id='start_at_datetimepicker' data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
+    <div class='input-group date dp-service' id='start_at_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
       <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
       <% if @service.new_record? %>
         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>

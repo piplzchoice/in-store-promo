@@ -7,7 +7,7 @@ class ReportsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        if current_user.has_role?(:ba)
+        unless current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           @services = current_user.brand_ambassador.services
         else
           @services = Service.all

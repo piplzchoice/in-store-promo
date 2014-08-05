@@ -1,7 +1,7 @@
 <h1 class="page-header">List BA</h1>
 <div class="link-new-btn">
   <%= link_to("New BA", new_brand_ambassador_path, {class: "btn btn-primary", role: "button"}) %>
-  <%= link_to("View Calender BA Availablty", view_ba_calender_brand_ambassadors_path, {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("View BA Availability Calendar", view_ba_calender_brand_ambassadors_path, {class: "btn btn-primary", role: "button"}) %>
 </div>
 <div class="table-responsive">
   <table class="table table-striped">
@@ -22,7 +22,7 @@
         <td>
           <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
           <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> || 
-          <%= link_to (brand_ambassador.is_active ? "Deactivated" : "Reactivated"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <%= link_to (brand_ambassador.is_active ? "Deactivate" : "Reactivated"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
         </td>
       </tr>
       <% end %>

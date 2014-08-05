@@ -19,7 +19,7 @@
       <td><%= link_to service.start_at.strftime('%m/%d/%Y'), project_service_path(project_id: service.project.id, id: service.id, report: true) %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
-      <td><%= service.brand_ambassador.name %></td> 
+      <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
       <td><%= number_to_currency(service.project.rate) %></td> 
       <% unless service.report.nil? %>
         <td><%= number_to_currency service.report.expense_one %></td>
@@ -28,7 +28,7 @@
         <td>-</td>
         <td>-</td>      
       <% end %>
-      <td><%= service.brand_ambassador.mileage %></td>
+      <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.mileage %></td> 
       <td><%= service.current_status %></td>
       <td>
       <% if service.can_create_report? || service.report.nil? %>

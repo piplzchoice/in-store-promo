@@ -13,6 +13,7 @@
 #  account_id :integer
 #  mileage    :boolean
 #  rate       :decimal(8, 2)
+#  is_active  :boolean          default(TRUE)
 #
 
 class BrandAmbassador < ActiveRecord::Base
@@ -41,7 +42,7 @@ class BrandAmbassador < ActiveRecord::Base
     time = DateTime.strptime(datetime, '%m/%d/%Y %I:%M %p')
     time_range = time.midnight..(time.midnight + 1.day)
 
-    ba_data = BrandAmbassador.joins(:available_dates).where(available_dates: {availablty: time})
+    ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time})
     # ba_data.collect{|x| x if x.services.where({start_at: time_range}).blank?}.compact    
     
     ba_data.collect{|ba|
@@ -108,5 +109,22 @@ class BrandAmbassador < ActiveRecord::Base
         }
       end
     }.compact  
+  end
+
+  def self.get_all_available_dates 
+    dates = []
+    self.all.each do |ba|
+      ba.available_dates.each do |available_date| 
+        hash = {
+          title: ba.name, 
+          start: available_date.availablty.strftime("%Y-%m-%d"),
+          url: Rails.application.routes.url_helpers.brand_ambassador_path(ba),
+          color: available_date.get_color
+        }
+
+        dates.push hash
+      end
+    end
+    return dates
   end
 end

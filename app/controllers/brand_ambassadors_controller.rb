@@ -61,10 +61,15 @@ class BrandAmbassadorsController < ApplicationController
 
   def destroy
     @brand_ambassador = BrandAmbassador.find(params[:id])
-    @account = @brand_ambassador.account
-    if @brand_ambassador.destroy && @account.destroy
-      redirect_to brand_ambassadors_url, {notice: "BA deleted"}
-    end    
+    msg = nil
+    if @brand_ambassador.is_active
+      @brand_ambassador.update_attribute(:is_active, false)
+      msg = "BA is deactivated"
+    else
+      @brand_ambassador.update_attribute(:is_active, true)
+      msg = "BA is reactivated"
+    end
+    redirect_to brand_ambassadors_url, {notice: msg}
   end
 
   def reset_password
@@ -83,4 +88,11 @@ class BrandAmbassadorsController < ApplicationController
   def brand_ambassador_params
     params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, account_attributes: [:email, :id])
   end    
+
+  def view_ba_calender
+    respond_to do |format|
+      format.html
+      format.json { render json: BrandAmbassador.get_all_available_dates }
+    end
+  end
 end

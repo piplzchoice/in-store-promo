@@ -10,18 +10,18 @@ $(function() {
     $('.dp-service').datetimepicker();
 
     $(".dp-service#start_at_datetimepicker").on("dp.change",function (e) {   
-      // if(!moment($("#service_end_at").val()).isValid()) {
+      if(!$("#manual-override").prop('checked')) {
         e.date.hour(e.date.hour() + $("#start_at_datetimepicker").data("est-service"));
         $('.dp-service#end_at_datetimepicker').data("DateTimePicker").setDate(e.date);
-      // }
+      }
       generate_select_ba();
     });
 
     $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) {     
-      // if(!moment($("#service_start_at").val()).isValid()) {
+      if(!$("#manual-override").prop('checked')) {
         e.date.hour(e.date.hour() - $("#start_at_datetimepicker").data("est-service"));
         $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);
-      // }      
+      }      
       generate_select_ba();
     });
 

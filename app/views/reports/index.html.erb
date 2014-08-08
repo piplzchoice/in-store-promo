@@ -6,10 +6,6 @@
   <%= render "filter_ba" %>
 <% end %>
 
-<div class="link-new-btn">
-  <%= link_to("View Calendar", "#", {id: "view-calendar-filter" ,class: "btn btn-primary", role: "button", data: {url: view_calendar_reports_path}}) %>
-</div>
-
 <div class="table-responsive">
   <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
     <%= render "grid" %>

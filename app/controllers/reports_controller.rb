@@ -31,6 +31,16 @@ class ReportsController < ApplicationController
     end
   end
 
+  def view_calendar
+    respond_to do |format|
+      format.html {}
+      format.json { 
+        ba_id = (current_user.has_role?(:ba) ? current_user.brand_ambassador.id : params[:assigned_to])
+        render json: Service.calendar_services(params[:status], ba_id, "", "", sort_column, sort_direction)
+      }
+    end
+  end
+
   def show
     @report = Report.find(params[:id])
     @service = @report.service

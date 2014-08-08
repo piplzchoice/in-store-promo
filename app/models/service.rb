@@ -142,8 +142,18 @@ class Service < ActiveRecord::Base
     ]
   end
 
+  def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
+    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x| {
+        title: x.title_calendar, 
+        start: x.start_at.iso8601, 
+        end: x.end_at.iso8601,
+        color: x.get_color,
+        url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
+      } }
+  end  
+
   def title_calendar
-    return "#{self.location.name} - #{self.brand_ambassador.name}"
+    return "#{(self.location.nil? ? "" : self.location.name)} - #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
   end
 
   def update_data(service_params)

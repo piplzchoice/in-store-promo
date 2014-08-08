@@ -1,4 +1,11 @@
 $(function() {  
+
+  $("#view-calendar-filter").on("click", function(){
+    url = $(this).data("url") + "?&status=" + $("#status").val() + "&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val();
+    var win = window.open(url, '_blank');
+    win.focus();
+  });
+
   $(".tooltip-legend").tooltip();
   checkbox_avalaible_click();
   generate_select_ba

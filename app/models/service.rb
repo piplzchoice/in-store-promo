@@ -176,23 +176,23 @@ class Service < ActiveRecord::Base
   def get_color
     case status
     when 1
-      "#428bca"
+      "#8DB4E3"
     when 2
-      "#5bc0de"
+      "#92D050"
     when 3
-      "#f0ad4e"
+      "#FFFF00"
     when 4
-      "#5cb85c"
+      "#0070C0"
     when 5
-      "#d9534f"
+      "#A5A5A5"
     when 6
-      "#dff0d8"
+      "#FFC000"
     when 7
-      "#3c763d"
+      "#00B050"
     when 8
-      "#8a6d3b"   
+      "#E46D0A"
     when 9
-      "#B49C1D"
+      "#FF0000"
     end        
   end
 

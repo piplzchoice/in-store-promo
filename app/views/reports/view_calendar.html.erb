@@ -1,17 +1,69 @@
 <h1 class="page-header">In Store Marketing Services Calendar</h1>
 
-
-<div id="colour-legend">
-  <div class="scheduled tooltip-legend" data-toggle="tooltip" data-placement="top" title="Scheduled">&nbsp;</div>
-  <div class="confirmed tooltip-legend" data-toggle="tooltip" data-placement="top" title="Confirmed">&nbsp;</div>
-  <div class="rejected tooltip-legend" data-toggle="tooltip" data-placement="top" title="Rejected">&nbsp;</div>
-  <div class="conducted tooltip-legend" data-toggle="tooltip" data-placement="top" title="Conducted">&nbsp;</div>
-  <div class="unrespond tooltip-legend" data-toggle="tooltip" data-placement="top" title="Unrespond">&nbsp;</div>
-  <div class="reported tooltip-legend" data-toggle="tooltip" data-placement="top" title="Reported">&nbsp;</div>
-  <div class="paid tooltip-legend" data-toggle="tooltip" data-placement="top" title="Paid">&nbsp;</div>
-  <div class="ba-paid tooltip-legend" data-toggle="tooltip" data-placement="top" title="BA Paid">&nbsp;</div>
-  <div class="cancelled tooltip-legend" data-toggle="tooltip" data-placement="top" title="Cancelled">&nbsp;</div>
+<div class="col-md-3">
+  <table class="table">
+    <tr>
+      <td colspan="2">
+        <strong>Service Status</strong>
+      </td>
+    </tr>
+    <tr>
+      <td class="width_50">Scheduled</td>
+      <td>
+        <div class="scheduled tooltip-legend width_100" title="Scheduled">&nbsp;</div>
+      </td>
+    </tr> 
+    <tr>
+      <td class="width_50">Confirmed</td>
+      <td>
+        <div class="confirmed tooltip-legend width_100" title="Confirmed">&nbsp;</div>
+      </td>
+    </tr>          
+    <tr>
+      <td class="width_50">Rejected</td>
+      <td>
+        <div class="rejected tooltip-legend width_100" title="Rejected">&nbsp;</div>
+      </td>
+    </tr> 
+    <tr>
+      <td class="width_50">Conducted</td>
+      <td>
+        <div class="conducted tooltip-legend width_100" title="Conducted">&nbsp;</div>
+      </td>
+    </tr>
+    <tr>
+      <td class="width_50">No Response</td>
+      <td>
+        <div class="unrespond tooltip-legend width_100" title="Unrespond">&nbsp;</div>
+      </td>
+    </tr>    
+    <tr>
+      <td class="width_50">Reported</td>
+      <td>
+        <div class="reported tooltip-legend width_100" title="Reported">&nbsp;</div>
+      </td>
+    </tr>    
+    <tr>
+      <td class="width_50">Paid</td>
+      <td>
+        <div class="paid tooltip-legend width_100" title="Paid">&nbsp;</div>
+      </td>
+    </tr>   
+    <tr>
+      <td class="width_50">BA Paid</td>
+      <td>
+        <div class="ba-paid tooltip-legend width_100" title="BA Paid">&nbsp;</div>
+      </td>
+    </tr>   
+    <tr>
+      <td class="width_50">Cancelled</td>
+      <td>
+        <div class="cancelled tooltip-legend width_100" title="Cancelled">&nbsp;</div>
+      </td>
+    </tr>              
+  </table>
 </div>
+
 
 
 <div id="calendar" data-url="<%= view_calendar_reports_path({format: :json, status: params[:status], assigned_to: params[:assigned_to], project_name: params[:project_name], client_name: params[:client_name]}) %>"></div>

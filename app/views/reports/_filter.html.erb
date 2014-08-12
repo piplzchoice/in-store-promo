@@ -10,15 +10,12 @@
         <%= select_tag("assigned_to", options_from_collection_for_select(@brand_ambassadors, "id", "name"), {class: "form-control", :include_blank => true}) %>
       </div>   
       <div class="form-group">
-        <label class="control-label">Project Name</label>
-        <%= select_tag("project_name", options_from_collection_for_select(@projects, "id", "name"), {class: "form-control", :include_blank => true}) %>
-      </div>      
-      <div class="form-group">
         <label class="control-label">Client Name</label>
         <%= select_tag("client_name", options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control", :include_blank => true}) %>
       </div>             
       <%= hidden_field_tag(:sort, "start_at",) %>
       <%= hidden_field_tag(:direction, "desc") %>
+      <%= hidden_field_tag(:project_name, "") %>
       <%= submit_tag("Filter", class: "btn btn-default") %>               
       <%= link_to("Export CSV", "#", {id: "export-csv" ,class: "btn btn-primary", role: "button"}) %>   
     <% end %>

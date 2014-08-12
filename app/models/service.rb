@@ -53,8 +53,8 @@ class Service < ActiveRecord::Base
     conditions.merge!(status: status) if status != ""
     conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
     conditions.merge!(project_id: project_name) if project_name != ""
-    
-    if client_name != ""
+
+    if client_name != ""            
       data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
     else
       data = Service.where(conditions)

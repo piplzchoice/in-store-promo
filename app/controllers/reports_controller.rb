@@ -8,9 +8,9 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         unless current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-          @services = current_user.brand_ambassador.services
+          @services = current_user.brand_ambassador.services.order(created_at: :desc)
         else
-          @services = Service.all
+          @services = Service.all.order(created_at: :desc)
           @brand_ambassadors = BrandAmbassador.all
           @clients = Client.all
           @projects = Project.all
@@ -18,8 +18,10 @@ class ReportsController < ApplicationController
       end
       
       format.js do
-        ba_id = (current_user.has_role?(:ba) ? current_user.brand_ambassador.id : params[:assigned_to])
-        @services = Service.filter_and_order(params[:status], ba_id, "", "", sort_column, sort_direction)
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
+        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
+        @services = Service.filter_and_order(params[:status], ba_id, client_name, project_name, sort_column, sort_direction)
       end
 
       format.csv do
@@ -126,7 +128,7 @@ class ReportsController < ApplicationController
   private
   
   def sort_column
-    params[:sort].nil? ? "start_at" : params[:sort]
+    params[:sort].nil? ? "created_at" : params[:sort]
   end
   
   def sort_direction

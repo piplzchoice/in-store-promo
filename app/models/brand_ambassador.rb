@@ -53,17 +53,19 @@ class BrandAmbassador < ActiveRecord::Base
         if time.strftime("%p") == "AM"
           ba if available_date.am
         elsif time.strftime("%p") == "PM"
-          ba if available_date.pm
+          # ba if available_date.pm
+          ba if available_date.am || available_date.pm
         end
       else
         service = services.first        
-        unless time.strftime("%p") == service.start_at.strftime("%p")
+        unless time.strftime("%p") == service.start_at.strftime("%p")          
           if time.strftime("%p") == "AM"
             ba if available_date.am
           elsif time.strftime("%p") == "PM"
-            ba if available_date.pm
+            # ba if available_date.pm
+            ba if available_date.am || available_date.pm
           end            
-        end        
+        end
       end
 
     }.compact.flatten

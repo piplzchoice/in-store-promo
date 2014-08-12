@@ -52,6 +52,10 @@ Rails.application.routes.draw do
       get :download_pdf
       get :print_pdf      
     end    
+
+    collection do
+      get :view_calendar
+    end
   end
 
   resources :users, only: [:edit, :update]

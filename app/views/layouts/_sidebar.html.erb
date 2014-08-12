@@ -11,6 +11,6 @@
     <% end %>      
       <li><%= link_to "My Assignments", assignments_path if current_user.has_role?(:ba) %></li>    
       <li><%= link_to "Manage Availablty", available_dates_path if current_user.has_role?(:ba) %></li>        
-      <li><%= link_to "Manage Report", reports_path %></li>          
+      <li><%= link_to "Management Report", reports_path %></li>          
   </ul>
 </div>

@@ -153,7 +153,7 @@ class Service < ActiveRecord::Base
   end  
 
   def title_calendar
-    return "#{(self.location.nil? ? "" : self.location.name)} - #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
+    return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
   end
 
   def update_data(service_params)
@@ -197,7 +197,8 @@ class Service < ActiveRecord::Base
   end
 
   def client_and_companyname
-    "#{client.name}/#{client.company_name}"
+    # "#{client.name}/#{client.company_name}"
+    "#{client.company_name}"
   end
 
   def date
@@ -207,6 +208,10 @@ class Service < ActiveRecord::Base
   def complete_date_time
     "#{start_at.strftime("%m/%d/%Y")} - #{start_at.strftime("%I:%M %p")}/#{end_at.strftime("%I:%M %p")}"
   end  
+
+  def start_date_time
+    "#{start_at.strftime("%I:%M %p")}"
+  end
 
   def current_status
     case status

@@ -55,7 +55,7 @@ class ApplicationMailer < ActionMailer::Base
          e = Icalendar::Event.new
          e.dtstart = service.start_at.utc
          e.dtend = service.end_at.utc
-         e.summary = "#{service.start_date_time}, #{service.client.company_name}, #{service.location.complete_location}, #{ba.name}"
+         e.summary = "#{service.client.company_name}, #{service.location.name}, #{ba.name}"
          e.description = <<-EOF
            Date: #{service.complete_date_time}
            Client: #{service.client.company_name}

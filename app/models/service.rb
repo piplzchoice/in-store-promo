@@ -210,7 +210,7 @@ class Service < ActiveRecord::Base
   end  
 
   def start_date_time
-    "#{start_at.strftime("%m/%d/%Y")} - #{start_at.strftime("%I:%M %p")}"
+    "#{start_at.strftime("%I:%M %p")}"
   end
 
   def current_status

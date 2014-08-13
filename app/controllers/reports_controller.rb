@@ -25,7 +25,9 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
-        ba_id = (current_user.has_role?(:ba) ? current_user.brand_ambassador.id : params[:assigned_to])
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
+        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
         @services = Service.filter_and_order(params[:status], ba_id, params[:client_name], params[:project_name], sort_column, sort_direction)
         headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}\""
         headers['Content-Type'] ||= 'text/csv'        
@@ -37,8 +39,10 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {}
       format.json { 
-        ba_id = (current_user.has_role?(:ba) ? current_user.brand_ambassador.id : params[:assigned_to])
-        render json: Service.calendar_services(params[:status], ba_id, "", "", sort_column, sort_direction)
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
+        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")        
+        render json: Service.calendar_services(params[:status], ba_id, client_name, project_name, sort_column, sort_direction)
       }
     end
   end

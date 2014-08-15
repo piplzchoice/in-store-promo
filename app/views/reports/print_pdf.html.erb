@@ -5,31 +5,31 @@
   <div class="row report">
     <div id="report-client" class="report-left">
       <span class="report-title">Client</span>: 
-      <span class="report-option-details"><%= @service.project.client.company_name %></span>
+      <span><%= @service.project.client.company_name %></span>
     </div>
 
     <div id="report-project">
       <span class="report-title">Project</span>: 
-      <span class="report-option-details"><%= @service.project.name %></span>
+      <span><%= @service.project.name %></span>
     </div>
   </div>
 
   <div class="row report">
     <div id="report-ba" class="report-left">
       <span class="report-title">Name of BA</span>: 
-      <span class="report-option-details"><%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %></span>
+      <span><%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %></span>
     </div>
 
     <div id="report-location">
       <span class="report-title">Location</span>: 
-      <span class="report-option-details"><%= @service.location.complete_location %></span>
+      <span><%= @service.location.complete_location %></span>
     </div>
   </div>
 
   <div class="row report">
     <div id="report-date">
       <span class="report-title">Date/Time</span>: 
-      <span class="report-option-details">
+      <span>
         <%= @service.start_at.strftime('%m/%d/%Y') %>: <%= @service.time_at %>
       </span>
     </div>
@@ -44,12 +44,12 @@
   <div class="row report">
     <div id="report-weather" class="report-left">
       <span class="report-title">Weather</span>: 
-      <span class="report-weather-traffic"><%= @report.weather %></span>
+      <span><%= @report.weather %></span>
     </div>
 
     <div id="report-traffic">
       <span class="report-title">Traffic</span>: 
-      <span class="report-weather-traffic"><%= @report.traffic %></span>
+      <span><%= @report.traffic %></span>
     </div>
   </div>
 
@@ -59,18 +59,19 @@
     </div>
   </div>
 
-  <div class="row report">
-    <div id="report-product" class="table-responsive">
-      <table class="table table-striped">
+  <br /><br />
+  <div class="row report" style="float: left; width: 100%">
+    <div id="report-product" class="table-responsive" style="float: left; width: 100%">
+      <table class="table table-striped" style="float: left; width: 100%">
         <thead>
           <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-              <th><span class="report-title">Price</span></th>
-              <th><span class="report-title">Sample</span></th>            
-            <th><span class="report-title">Beginning</span></th>
-            <th><span class="report-title">End</span></th>
-            <th><span class="report-title">Sold</span></th>
+            <th style="text-align: left;">&nbsp;</th>
+            <th style="text-align: left;">&nbsp;</th>
+            <th style="text-align: left;"><span class="report-title">Price</span></th>
+            <th style="text-align: left;"><span class="report-title">Sample</span></th>            
+            <th style="text-align: left;"><span class="report-title">Beginning</span></th>
+            <th style="text-align: left;"><span class="report-title">End</span></th>
+            <th style="text-align: left;"><span class="report-title">Sold</span></th>
           </tr>
         </thead>
         <tbody>  
@@ -205,12 +206,14 @@
     </div>
   </div>
 
+  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">Sample product</span>: <%= @report.sample_product %>
     </div>
   </div>    
 
+  <br />
   <div class="row report">
     <div id="report-est-customer-touched" class="report-left">
       <span class="report-title">Estimated # of customers touched</span>: 
@@ -223,24 +226,29 @@
     </div>
   </div>
 
+  <br />
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">Expense 1</span>: <%= number_to_currency @report.expense_one %>
       <% unless @report.expense_one_img.nil? %>
+        <br />
         <%= image_tag @report.expense_one_img.current_path %>
       <% end %>
     </div>
   </div>  
 
+  <br />
   <div class="row report">
     <div id="report-expense-one">
       <span class="report-title">Expense 2</span>: <%= number_to_currency @report.expense_two %>
       <% unless @report.expense_two_img.nil? %>
+        <br />
         <%= image_tag @report.expense_two_img.current_path %>
       <% end %>      
     </div>
   </div>    
 
+  <br />
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">Customer Comments</span>: 
@@ -248,6 +256,7 @@
     </div>
   </div>  
 
+  <br />
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">BA Comments</span>: 
@@ -255,14 +264,16 @@
     </div>
   </div>            
 
+  <br />
   <div class="row report">
     <div id="report-attach-table">
       <span class="report-title">Attach Table Image</span>:
       <% unless @report.table_image_one_img.nil? %>
+        <br />
         <%= image_tag @report.table_image_one_img.current_path %>
-      <% end %> 
-      <br />
+      <% end %>       
       <% unless @report.table_image_two_img.nil? %>
+        <br />
         <%= image_tag @report.table_image_two_img.current_path %>
       <% end %>            
     </div>

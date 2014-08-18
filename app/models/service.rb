@@ -241,7 +241,7 @@ class Service < ActiveRecord::Base
   end
 
   def company_name
-    client.company_name
+    client.nil? ? "" : client.company_name
   end
 
   def cancelled

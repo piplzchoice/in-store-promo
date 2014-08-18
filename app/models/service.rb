@@ -276,10 +276,4 @@ class Service < ActiveRecord::Base
     [Service.status_conducted, Service.status_paid, Service.status_ba_paid].include?(status)
   end
 
-
 end
-
-# status_reported
-# status_paid
-# status_ba_paid
-# status_cancelled

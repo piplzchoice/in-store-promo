@@ -16,11 +16,11 @@
   <tbody>
     <% @services.each_with_index do |service, i|  %>
     <tr>
-      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), project_service_path(project_id: service.project.id, id: service.id, report: true) %></td>
+      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), project_service_path(project_id:  (service.project.nil? ? "" : service.project.id), id: service.id, report: true) %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <td><%= number_to_currency(service.project.rate) %></td> 
+      <td><%= number_to_currency((service.project.nil? ? "" : service.project.rate)) %></td> 
       <% unless service.report.nil? %>
         <td><%= number_to_currency service.report.expense_one %></td>
         <td><%= number_to_currency service.report.expense_two %></td>

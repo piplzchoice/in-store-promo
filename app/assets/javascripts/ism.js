@@ -203,7 +203,7 @@ $(function() {
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
 
-  calculate = prod_beginning - prod_end;
+  calculate = prod_beginning - prod_end - prod_sample;
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 

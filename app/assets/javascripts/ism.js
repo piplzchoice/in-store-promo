@@ -202,7 +202,20 @@ $(function() {
   }
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
+  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+  calculate = prod_beginning - prod_end - prod_sample;
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+ })  
 
+ $(".product-sample").keyup(function(){  
+  prod_beginning = 0;
+  
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
+    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  }
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
+  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
   calculate = prod_beginning - prod_end - prod_sample;
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  

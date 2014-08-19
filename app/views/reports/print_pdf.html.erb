@@ -65,139 +65,139 @@
       <table class="table table-striped" style="float: left; width: 100%">
         <thead>
           <tr>
-            <th style="text-align: left;">&nbsp;</th>
-            <th style="text-align: left;">&nbsp;</th>
-            <th style="text-align: left;"><span class="report-title">Price</span></th>
-            <th style="text-align: left;"><span class="report-title">Sample</span></th>            
-            <th style="text-align: left;"><span class="report-title">Beginning</span></th>
-            <th style="text-align: left;"><span class="report-title">End</span></th>
-            <th style="text-align: left;"><span class="report-title">Sold</span></th>
+            <th style="text-align: left; width: 20%;">&nbsp;</th>
+            <th style="text-align: left; width: 30%;">&nbsp;</th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Price</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Sample</span></th>            
+            <th style="text-align: right; width: 10%;"><span class="report-title">Beginning</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">End</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Sold</span></th>
           </tr>
         </thead>
         <tbody>  
           <tr>
-            <td>Product 1</td>
-            <td id="product-one" data-id="one">
+            <td style="width: 20%;">Product 1</td>
+            <td id="product-one" data-id="one" style="width: 30%;">
               <%= @report.product_one %>
             </td>
-            <td id="product-one-price" data-id="one">
+            <td id="product-one-price" data-id="one" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_one_price %>
             </td>              
-            <td id="product-one-sample" data-id="one">
+            <td id="product-one-sample" data-id="one" style="text-align: right; width: 10%;">
               <%= @report.product_one_sample %>
             </td>               
-            <td id="product-one-beginning" data-id="one">
+            <td id="product-one-beginning" data-id="one" style="text-align: right; width: 10%;">
               <%= @report.product_one_beginning %>
             </td>
-            <td id="product-one-end" data-id="one">
+            <td id="product-one-end" data-id="one" style="text-align: right; width: 10%;">
               <%= @report.product_one_end %>
             </td>
-            <td id="product-one-sold" data-id="one">
+            <td id="product-one-sold" data-id="one" style="text-align: right; width: 10%;">
               <%= @report.product_one_sold %>
             </td>
           </tr>
           <tr>
-            <td>Product 2</td>
-            <td id="product-two" data-id="two">
+            <td style="width: 20%;">Product 2</td>
+            <td id="product-two" data-id="two" style="width: 30%;">
               <%= @report.product_two %>
             </td>
-            <td id="product-two-price" data-id="two">
+            <td id="product-two-price" data-id="two" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_two_price %>
             </td>              
-            <td id="product-two-sample" data-id="two">
+            <td id="product-two-sample" data-id="two" style="text-align: right; width: 10%;">
               <%= @report.product_two_sample %>
             </td>                           
-            <td id="product-two-beginning" data-id="two">
+            <td id="product-two-beginning" data-id="two" style="text-align: right; width: 10%;">
               <%= @report.product_two_beginning %>
             </td>
-            <td id="product-two-end" data-id="two">
+            <td id="product-two-end" data-id="two" style="text-align: right; width: 10%;">
               <%= @report.product_two_end %>
             </td>
-            <td id="product-two-sold" data-id="two">
+            <td id="product-two-sold" data-id="two" style="text-align: right; width: 10%;">
               <%= @report.product_two_sold %>
             </td>
           </tr>
           <tr>
-            <td>Product 3</td>
-            <td id="product-three" data-id="three">
+            <td style="width: 20%;">Product 3</td>
+            <td id="product-three" data-id="three" style="width: 30%;">
               <%= @report.product_three %>
             </td>
-            <td id="product-three-price" data-id="three">
+            <td id="product-three-price" data-id="three" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_three_price %>
             </td>              
-            <td id="product-three-sample" data-id="three">
+            <td id="product-three-sample" data-id="three" style="text-align: right; width: 10%;">
               <%= @report.product_three_sample %>
             </td>                           
-            <td id="product-three-beginning" data-id="three">
+            <td id="product-three-beginning" data-id="three" style="text-align: right; width: 10%;">
               <%= @report.product_three_beginning %>
             </td>
-            <td id="product-three-end" data-id="three">
+            <td id="product-three-end" data-id="three" style="text-align: right; width: 10%;">
               <%= @report.product_three_end %>
             </td>
-            <td id="product-three-sold" data-id="three">
+            <td id="product-three-sold" data-id="three" style="text-align: right; width: 10%;">
               <%= @report.product_three_sold %>
             </td>
           </tr>
           <tr>
-            <td>Product 4</td>
-            <td id="product-four" data-id="four">
+            <td style="width: 20%;">Product 4</td>
+            <td id="product-four" data-id="four" style="width: 30%;">
               <%= @report.product_four %>
             </td>
-            <td id="product-four-price" data-id="four">
+            <td id="product-four-price" data-id="four" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_four_price %>
             </td>              
-            <td id="product-four-sample" data-id="four">
+            <td id="product-four-sample" data-id="four" style="text-align: right; width: 10%;">
               <%= @report.product_four_sample %>
             </td>                           
-            <td id="product-four-beginning" data-id="four">
+            <td id="product-four-beginning" data-id="four" style="text-align: right; width: 10%;">
               <%= @report.product_four_beginning %>
             </td>
-            <td id="product-four-end" data-id="four">
+            <td id="product-four-end" data-id="four" style="text-align: right; width: 10%;">
               <%= @report.product_four_end %>
             </td>
-            <td id="product-four-sold" data-id="four">
+            <td id="product-four-sold" data-id="four" style="text-align: right; width: 10%;">
               <%= @report.product_four_sold %>
             </td>
           </tr>  
           <tr>
-            <td>Product 5</td>
-            <td id="product-five" data-id="five">
+            <td style="width: 20%;">Product 5</td>
+            <td id="product-five" data-id="five" style="width: 30%;">
               <%= @report.product_five %>
             </td>
-            <td id="product-five-price" data-id="five">
+            <td id="product-five-price" data-id="five" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_five_price %>
             </td>              
-            <td id="product-five-sample" data-id="five">
+            <td id="product-five-sample" data-id="five" style="text-align: right; width: 10%;">
               <%= @report.product_five_sample %>
             </td>                           
-            <td id="product-five-beginning" data-id="five">
+            <td id="product-five-beginning" data-id="five" style="text-align: right; width: 10%;">
               <%= @report.product_five_beginning %>
             </td>
-            <td id="product-five-end" data-id="five">
+            <td id="product-five-end" data-id="five" style="text-align: right; width: 10%;">
               <%= @report.product_five_end %>
             </td>
-            <td id="product-five-sold" data-id="five">
+            <td id="product-five-sold" data-id="five" style="text-align: right; width: 10%;">
               <%= @report.product_five_sold %>
             </td>
           </tr>   
           <tr>
-            <td>Product 6</td>
-            <td id="product-six" data-id="six">
+            <td style="width: 20%;">Product 6</td>
+            <td id="product-six" data-id="six" style="width: 30%;">
               <%= @report.product_six %>
             </td>
-            <td id="product-six-price" data-id="six">
+            <td id="product-six-price" data-id="six" style="text-align: right; width: 10%;">
               <%= number_to_currency @report.product_six_price %>
             </td>              
-            <td id="product-six-sample" data-id="six">
+            <td id="product-six-sample" data-id="six" style="text-align: right; width: 10%;">
               <%= @report.product_six_sample %>
             </td>                           
-            <td id="product-six-beginning" data-id="six">
+            <td id="product-six-beginning" data-id="six" style="text-align: right; width: 10%;">
               <%= @report.product_six_beginning %>
             </td>
-            <td id="product-six-end" data-id="six">
+            <td id="product-six-end" data-id="six" style="text-align: right; width: 10%;">
               <%= @report.product_six_end %>
             </td>
-            <td id="product-six-sold" data-id="six">
+            <td id="product-six-sold" data-id="six" style="text-align: right; width: 10%;">
               <%= @report.product_six_sold %>
             </td>
           </tr> 

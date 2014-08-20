@@ -37,6 +37,7 @@ gem 'autoprefixer-rails'
 gem 'nokogiri'
 gem "paranoia", "~> 2.0"
 gem 'will_paginate', '~> 3.0'
+gem "will_paginate-bootstrap"
 gem 'fullcalendar-rails'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
@@ -47,6 +48,7 @@ gem "time_difference"
 gem 'pdfkit'
 gem "wkhtmltopdf-binary"
 gem 'redactor-rails'
+gem "fog"
 
 gem 'debugger', group: [:development, :test]
 

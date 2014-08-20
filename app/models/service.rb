@@ -24,7 +24,7 @@
 # 5. unrespond => BA did not respond after 12 hours
 # 6. Reported => when report is created
 # 7. Paid => when service has been paid
-# 8. BA Paid => 
+# 8. BA Paid =>
 # 9. Cancelled
 #
 
@@ -39,6 +39,8 @@ class Service < ActiveRecord::Base
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
+  self.per_page = 3
+
   before_create do |service|
     service.token = Devise.friendly_token
   end
@@ -47,6 +49,7 @@ class Service < ActiveRecord::Base
     service.token = Devise.friendly_token unless service.changed_attributes["brand_ambassador_id"].nil?
   end
 
+
   def self.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction)
     data = nil
     conditions = {}
@@ -54,11 +57,11 @@ class Service < ActiveRecord::Base
     conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
     conditions.merge!(project_id: project_name) if project_name != ""
 
-    if client_name != ""            
+    if client_name != ""
       data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
     else
       data = Service.where(conditions)
-    end        
+    end
 
     if sort_column == "ba"
       data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{sort_direction}")
@@ -69,7 +72,7 @@ class Service < ActiveRecord::Base
         data = data.order("EXTRACT (HOUR from start_at) #{sort_direction}")
       else
         data = data.order(sort_column + " " + sort_direction)
-      end      
+      end
     end
 
     return data
@@ -93,23 +96,23 @@ class Service < ActiveRecord::Base
 
   def self.status_unrespond
     return 5
-  end      
+  end
 
   def self.status_reported
     return 6
-  end      
+  end
 
   def self.status_paid
     return 7
-  end       
+  end
 
   def self.status_ba_paid
     return 8
-  end         
+  end
 
   def self.status_cancelled
     return 9
-  end         
+  end
 
   def self.send_notif_after
     return 2.round
@@ -132,25 +135,25 @@ class Service < ActiveRecord::Base
 
   def self.options_select_status
     [
-      ["Scheduled", Service.status_scheduled], 
-      ["BA Confirmed", Service.status_confirmed], 
-      ["Conducted", Service.status_conducted], 
-      ["Reported", Service.status_reported], 
-      ["Paid", Service.status_paid], 
-      ["BA paid", Service.status_ba_paid], 
+      ["Scheduled", Service.status_scheduled],
+      ["BA Confirmed", Service.status_confirmed],
+      ["Conducted", Service.status_conducted],
+      ["Reported", Service.status_reported],
+      ["Paid", Service.status_paid],
+      ["BA paid", Service.status_ba_paid],
       ["Cancelled", Service.status_cancelled]
     ]
   end
 
   def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
     Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x| {
-        title: x.title_calendar, 
-        start: x.start_at.iso8601, 
+        title: x.title_calendar,
+        start: x.start_at.iso8601,
         end: x.end_at.iso8601,
         color: x.get_color,
         url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
       } }
-  end  
+  end
 
   def title_calendar
     return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
@@ -158,7 +161,7 @@ class Service < ActiveRecord::Base
 
   def update_data(service_params)
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
-    service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?    
+    service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     self.update_attributes(service_params)
   end
 
@@ -193,7 +196,7 @@ class Service < ActiveRecord::Base
       "#E46D0A"
     when 9
       "#FF0000"
-    end        
+    end
   end
 
   def client_and_companyname
@@ -207,7 +210,7 @@ class Service < ActiveRecord::Base
 
   def complete_date_time
     "#{start_at.strftime("%m/%d/%Y")} - #{start_at.strftime("%I:%M %p")}/#{end_at.strftime("%I:%M %p")}"
-  end  
+  end
 
   def start_date_time
     "#{start_at.strftime("%I:%M %p")}"
@@ -233,7 +236,7 @@ class Service < ActiveRecord::Base
       "BA Paid"
     when 9
       "Cancelled"
-    end        
+    end
   end
 
   def time_at
@@ -251,7 +254,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_modify?
-    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected, 
+    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected,
       Service.status_unrespond].include?(status)
   end
 
@@ -260,7 +263,7 @@ class Service < ActiveRecord::Base
   end
 
   def is_not_complete?
-    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected, 
+    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected,
       Service.status_unrespond].include?(status)
   end
 

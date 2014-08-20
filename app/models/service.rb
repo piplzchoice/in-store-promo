@@ -39,7 +39,7 @@ class Service < ActiveRecord::Base
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
-  self.per_page = 3
+  self.per_page = 10
 
   before_create do |service|
     service.token = Devise.friendly_token

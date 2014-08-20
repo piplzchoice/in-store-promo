@@ -29,8 +29,9 @@ class ReportsController < ApplicationController
         client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
         project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
         @services = Service.filter_and_order(params[:status], ba_id, params[:client_name], params[:project_name], sort_column, sort_direction)
-        headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}\""
-        headers['Content-Type'] ||= 'text/csv'        
+        
+        headers['Content-Type'] ||= 'text/csv'
+        headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}.csv\""           
       end
     end
   end

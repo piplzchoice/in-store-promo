@@ -12,6 +12,7 @@
 #  start_at     :date
 #  end_at       :date
 #  rate         :decimal(8, 2)
+#  is_active    :boolean          default(TRUE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

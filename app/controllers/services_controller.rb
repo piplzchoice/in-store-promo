@@ -1,5 +1,6 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
+  before_filter :check_project_status, except: [:show]
   
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
 
@@ -141,6 +142,11 @@ class ServicesController < ApplicationController
 
   def service_params
     params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details)
+  end
+
+  def check_project_status
+    project = Project.find(params[:project_id])
+    redirect_to(projects_path, :flash => { :error => "Project is not active" }) unless project.is_active
   end
 
 end

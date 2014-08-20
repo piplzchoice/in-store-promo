@@ -129,8 +129,6 @@ GEM
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     orm_adapter (0.5.0)
-    paranoia (2.0.2)
-      activerecord (~> 4.0)
     pdfkit (0.6.2)
     pg (0.17.1)
     polyglot (0.3.5)
@@ -224,7 +222,6 @@ DEPENDENCIES
   letter_opener
   momentjs-rails (~> 2.5.0)
   nokogiri
-  paranoia (~> 2.0)
   pdfkit
   pg
   rails (= 4.1.2)

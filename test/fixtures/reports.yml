@@ -58,6 +58,7 @@
 #  product_six_sold        :integer
 #  table_image_one_img     :string(255)
 #  table_image_two_img     :string(255)
+#  is_active               :boolean          default(TRUE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

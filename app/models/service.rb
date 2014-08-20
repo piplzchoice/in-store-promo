@@ -14,6 +14,7 @@
 #  details             :text
 #  status              :integer          default(1)
 #  token               :string(255)
+#  is_active           :boolean          default(TRUE)
 #
 
 # note for field "status"
@@ -29,6 +30,7 @@
 #
 
 class Service < ActiveRecord::Base
+  
   belongs_to :user
   belongs_to :brand_ambassador
   belongs_to :location
@@ -277,6 +279,14 @@ class Service < ActiveRecord::Base
 
   def can_create_report?
     [Service.status_conducted, Service.status_paid, Service.status_ba_paid].include?(status)
+  end
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
   end
 
 end

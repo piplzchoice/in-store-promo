@@ -58,10 +58,12 @@
 #  product_six_sold        :integer
 #  table_image_one_img     :string(255)
 #  table_image_two_img     :string(255)
+#  is_active               :boolean          default(TRUE)
 #
 
 require 'carrierwave/orm/activerecord'
 class Report < ActiveRecord::Base
+  
   belongs_to :service
   
   mount_uploader :expense_one_img, ImageUploader
@@ -72,4 +74,12 @@ class Report < ActiveRecord::Base
   def sum_expense
     expense_one.to_f + expense_two.to_f
   end
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
+  end  
 end

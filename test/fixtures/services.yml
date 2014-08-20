@@ -14,6 +14,7 @@
 #  details             :text
 #  status              :integer          default(1)
 #  token               :string(255)
+#  is_active           :boolean          default(TRUE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

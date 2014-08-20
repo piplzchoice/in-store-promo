@@ -11,6 +11,7 @@
 #  created_at :datetime
 #  updated_at :datetime
 #  user_id    :integer
+#  is_active  :boolean          default(TRUE)
 #
 
 class Location < ActiveRecord::Base
@@ -27,5 +28,13 @@ class Location < ActiveRecord::Base
 
   def complete_location
     "#{name} - #{address}, #{city}"
+  end  
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
   end  
 end

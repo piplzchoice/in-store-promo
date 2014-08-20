@@ -12,9 +12,11 @@
 #  start_at     :date
 #  end_at       :date
 #  rate         :decimal(8, 2)
+#  is_active    :boolean          default(TRUE)
 #
 
 class Project < ActiveRecord::Base
+  
   belongs_to :user
   belongs_to :client
   has_many :services
@@ -43,4 +45,12 @@ class Project < ActiveRecord::Base
     project_params[:end_at] = Date.strptime(project_params[:end_at], '%m/%d/%Y')  unless project_params[:end_at].blank?    
     self.update_attributes(project_params)    
   end
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
+  end  
 end

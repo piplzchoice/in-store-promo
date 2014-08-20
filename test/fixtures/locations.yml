@@ -11,6 +11,7 @@
 #  created_at :datetime
 #  updated_at :datetime
 #  user_id    :integer
+#  is_active  :boolean          default(TRUE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

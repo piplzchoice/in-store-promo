@@ -1,5 +1,6 @@
 class LocationsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :check_location_status, :only => [:show, :edit, :update]
   
   authorize_resource class: LocationsController
 
@@ -61,12 +62,19 @@ class LocationsController < ApplicationController
 
   def destroy
     @location = Location.find(params[:id])
-    if @location.destroy
-      redirect_to locations_url, {notice: "Location deleted"}
+    if @location.set_data_false
+      redirect_to locations_url, {notice: "Location de-activated"}
     end    
   end
 
   def location_params
     params.require(:location).permit(:name, :address, :city, :state, :zipcode)
   end    
+
+  private
+
+  def check_location_status
+    location = Location.find(params[:id])
+    redirect_to(locations_path, :flash => { :error => "Location is not active" }) unless location.is_active
+  end  
 end

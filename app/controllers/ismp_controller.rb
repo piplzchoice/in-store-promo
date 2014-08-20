@@ -58,8 +58,8 @@ class IsmpController < ApplicationController
 
   def destroy
     assign_user
-    if @user.destroy
-      redirect_to ismp_index_url, {notice: "ISMP deleted"}
+    if @user.set_data_false
+      redirect_to ismp_index_url, {notice: "ISMP de-activated"}
     end
   end
 

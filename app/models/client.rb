@@ -19,6 +19,7 @@
 #  created_at   :datetime
 #  updated_at   :datetime
 #  account_id   :integer
+#  is_active    :boolean          default(TRUE)
 #
 
 class Client < ActiveRecord::Base
@@ -69,4 +70,12 @@ class Client < ActiveRecord::Base
     account.password_confirmation = password
     return password    
   end
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
+  end  
 end

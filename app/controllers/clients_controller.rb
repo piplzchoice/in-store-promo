@@ -1,6 +1,7 @@
 class ClientsController < ApplicationController
   before_filter :authenticate_user!
   authorize_resource class: ClientsController
+  before_filter :check_client_status, only: [:show, :edit, :update]
 
   def index
     @clients = Client.all
@@ -63,8 +64,8 @@ class ClientsController < ApplicationController
   def destroy
     @client = Client.find(params[:id])
     @account = @client.account
-    if @client.destroy && @account.destroy
-      redirect_to clients_url, {notice: "Client deleted"}
+    if @client.set_data_false
+      redirect_to clients_url, {notice: "Client de-activated"}
     end    
   end
 
@@ -93,5 +94,11 @@ class ClientsController < ApplicationController
     params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
       :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])
   end  
+
+  private
+  def check_client_status
+    client = Client.find(params[:id])
+    redirect_to(clients_path, :flash => { :error => "Client is not active" }) unless client.is_active
+  end
 
 end

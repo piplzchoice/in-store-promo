@@ -15,9 +15,11 @@
 #  last_sign_in_ip        :string(255)
 #  created_at             :datetime
 #  updated_at             :datetime
+#  is_active              :boolean          default(TRUE)
 #
 
 class User < ActiveRecord::Base
+
   rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -59,5 +61,13 @@ class User < ActiveRecord::Base
       user_params.delete("password_confirmation")
     end
     self.update_attributes(user_params)
+  end
+
+  def set_data_true
+    self.update_attribute(:is_active, true)
+  end
+
+  def set_data_false
+    self.update_attribute(:is_active, false)
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140805172752) do
+ActiveRecord::Schema.define(version: 20140820145249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20140805172752) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
+    t.boolean  "is_active",    default: true
   end
 
   create_table "default_values", force: true do |t|
@@ -84,6 +85,7 @@ ActiveRecord::Schema.define(version: 20140805172752) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.boolean  "is_active",  default: true
   end
 
   create_table "projects", force: true do |t|
@@ -96,6 +98,7 @@ ActiveRecord::Schema.define(version: 20140805172752) do
     t.date     "start_at"
     t.date     "end_at"
     t.decimal  "rate",         precision: 8, scale: 2
+    t.boolean  "is_active",                            default: true
   end
 
   create_table "redactor_assets", force: true do |t|
@@ -170,6 +173,7 @@ ActiveRecord::Schema.define(version: 20140805172752) do
     t.integer  "product_six_sold"
     t.string   "table_image_one_img"
     t.string   "table_image_two_img"
+    t.boolean  "is_active",                                       default: true
   end
 
   create_table "roles", force: true do |t|
@@ -195,21 +199,23 @@ ActiveRecord::Schema.define(version: 20140805172752) do
     t.text     "details"
     t.integer  "status",              default: 1
     t.string   "token"
+    t.boolean  "is_active",           default: true
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                  default: "",   null: false
+    t.string   "encrypted_password",     default: "",   null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,    null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_active",              default: true
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

@@ -1,10 +1,36 @@
 $(function() {  
 
-  $("#view-calendar-filter").on("click", function(){
+  $("#view-calendar-filter").on("click", function(){  
     url = $(this).data("url") + "?&status=" + $("#status").val() + "&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val();
     // var win = window.open(url, '_blank');
     // win.focus();
     window.location = url;
+  });
+
+  $(document).on("click", ".pagination li a", function(){
+    $("#page").val(getParameterByName("page", $(this).prop("href")));
+    $("#filter-data").submit();
+    return false
+  });
+
+  $(document).on("click", ".order-data", function(){
+    column = $(this).data("sort")
+    if(column === $("#sort").val()) {
+      if($("#direction").val() === "desc") {
+        $("#direction").val("asc")
+      } else {
+        $("#direction").val("desc")
+      }
+    } else {
+      $("#sort").val(column)
+      $("#direction").val("desc")
+    }
+    $("#page").val(1);
+    $("#filter-data").submit();
+  })
+
+  $(".filter-params").on("change", function(){
+    $("#page").val(1);
   });
 
   $(".tooltip-legend").tooltip();
@@ -240,20 +266,6 @@ $(function() {
 
 });  
 
-$(".order-data").on("click", function(){
-  column = $(this).data("sort")
-  if(column === $("#sort").val()) {
-    if($("#direction").val() === "desc") {
-      $("#direction").val("asc")
-    } else {
-      $("#direction").val("desc")
-    }
-  } else {
-    $("#sort").val(column)
-    $("#direction").val("desc")
-  }
-  $("#filter-data").submit();
-})
 
 function generate_select_ba(){
   $.ajax({
@@ -332,4 +344,11 @@ function checkbox_avalaible_click(){
     //     $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
     // });      
   });  
+}
+
+function getParameterByName(name, url) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(url);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }

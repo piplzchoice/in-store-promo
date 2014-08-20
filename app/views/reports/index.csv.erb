@@ -5,11 +5,11 @@
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.start_at.strftime("%I:%M %p"),
-      service.company_name,
-      service.brand_ambassador.name,
-      number_to_currency(service.project.rate),
+      (service.project.nil? ? "-" : service.company_name),
+      (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
+      (service.project.nil? ? "-" : number_to_currency(service.project.rate)),
       service.report.nil? ? "-" : number_to_currency(service.report.sum_expense),
-      service.brand_ambassador.mileage,
+      (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.mileage),
       service.current_status
     ]) %>
   <%- end -%>
@@ -20,7 +20,7 @@
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.time_at,
-      service.company_name,
+      (service.project.nil? ? "-" : service.company_name),
       service.details
     ]) %>
   <%- end -%>

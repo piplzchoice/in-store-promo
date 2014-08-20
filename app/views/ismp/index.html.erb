@@ -20,7 +20,7 @@
             <%= link_to "Edit", edit_ismp_path(user) %> || 
             <%= link_to "Deactivate", ismp_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
           <% else %>
-            <%= link_to (user.is_active ? "Deactivate" : "Reactivated"), ismp_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+            <%= link_to (user.is_active ? "Deactivate" : "Reactivate"), ismp_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
           <% end %>          
         </td>
       </tr>

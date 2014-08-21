@@ -1,0 +1,31 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Name</th>
+      <th>Company Name</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each_with_index do |project, i|  %>
+    <tr>
+      <td><%= i + 1 %></td>
+      <td><%= project.name %></td>
+      <td><%= project.client.company_name %></td>
+      <td><%= project.current_status %></td>
+      <td>
+        <% if project.is_active %>
+          <%= link_to "Display", project_path(project) %> ||
+          <%= link_to "Edit", edit_project_path(project) %> ||
+          <%= link_to "Deactivate", project_path(project), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        <% else %>
+          <%= link_to (project.is_active ? "Deactivate" : "Reactivate"), project_path(project), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @projects, renderer: BootstrapPagination::Rails %>

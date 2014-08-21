@@ -30,7 +30,7 @@
 #
 
 class Service < ActiveRecord::Base
-  
+
   belongs_to :user
   belongs_to :brand_ambassador
   belongs_to :location
@@ -40,8 +40,6 @@ class Service < ActiveRecord::Base
   has_one :client, :through => :project
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
-
-  self.per_page = 10
 
   before_create do |service|
     service.token = Devise.friendly_token
@@ -148,13 +146,17 @@ class Service < ActiveRecord::Base
   end
 
   def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
-    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x| {
-        title: x.title_calendar,
-        start: x.start_at.iso8601,
-        end: x.end_at.iso8601,
-        color: x.get_color,
-        url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
-      } }
+    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x|
+        if x.status != Service.status_cancelled
+          {
+            title: x.title_calendar,
+            start: x.start_at.iso8601,
+            end: x.end_at.iso8601,
+            color: x.get_color,
+            url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
+          } 
+        end
+    }.compact.flatten
   end
 
   def title_calendar
@@ -261,7 +263,11 @@ class Service < ActiveRecord::Base
   end
 
   def can_reassign?
-    self.status == Service.status_rejected || self.status == Service.status_unrespond
+    self.status == Service.status_rejected || self.status == Service.status_unrespond || self.status == Service.status_scheduled || self.status == Service.status_confirmed
+  end
+
+  def can_rescheduled?
+    self.status == Service.status_scheduled || self.status == Service.status_confirmed
   end
 
   def is_not_complete?

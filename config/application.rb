@@ -21,3 +21,5 @@ module Ism
     # config.i18n.default_locale = :de
   end
 end
+
+WillPaginate.per_page = 10

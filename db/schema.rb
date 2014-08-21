@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140820145249) do
+ActiveRecord::Schema.define(version: 20140821054752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(version: 20140820145249) do
     t.date     "end_at"
     t.decimal  "rate",         precision: 8, scale: 2
     t.boolean  "is_active",                            default: true
+    t.integer  "status",                               default: 1
   end
 
   create_table "redactor_assets", force: true do |t|

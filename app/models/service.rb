@@ -30,7 +30,7 @@
 #
 
 class Service < ActiveRecord::Base
-  
+
   belongs_to :user
   belongs_to :brand_ambassador
   belongs_to :location
@@ -40,8 +40,6 @@ class Service < ActiveRecord::Base
   has_one :client, :through => :project
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
-
-  self.per_page = 10
 
   before_create do |service|
     service.token = Devise.friendly_token

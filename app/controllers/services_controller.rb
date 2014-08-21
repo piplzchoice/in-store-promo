@@ -1,7 +1,8 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
   before_filter :check_project_status, except: [:show]
-  
+  before_filter :check_project_completed, except: [:show, :index]
+
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
 
   def index
@@ -13,7 +14,7 @@ class ServicesController < ApplicationController
     @service = @project.services.build
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def create
@@ -22,13 +23,14 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html do
         if @service.save
+          @project.set_as_active if @project.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to project_path(@project), notice: "Service created"
         else
           render :new
         end
       end
-    end    
+    end
   end
 
   def edit
@@ -36,13 +38,13 @@ class ServicesController < ApplicationController
     @service = @project.services.find(params[:id])
     respond_to do |format|
       format.html
-    end        
+    end
   end
 
   def update
     @project = Project.find(params[:project_id])
     @service = @project.services.find(params[:id])
-    # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?    
+    # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
     respond_to do |format|
       format.html do
         if @service.can_modify?
@@ -50,13 +52,13 @@ class ServicesController < ApplicationController
             if @service.can_reassign?
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
               @service.update_attribute(:status, Service.status_scheduled)
-            end            
+            end
             redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated" and return
-          end                    
-        end        
+          end
+        end
         render :edit
       end
-    end        
+    end
   end
 
   def show
@@ -66,20 +68,20 @@ class ServicesController < ApplicationController
 
   def update_status_after_reported
     @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])    
+    @service = @project.services.find(params[:id])
     @service.update_attributes({status: params[:service_status]})
     redirect_to project_service_path(project_id: @project.id, id: @service.id)
   end
 
   def destroy
     @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])    
+    @service = @project.services.find(params[:id])
     if @service.cancelled
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service).deliver
       redirect_to project_path(@project), {notice: "Service Cancelled"}
     else
       render :show
-    end            
+    end
   end
 
   def autocomplete_location_name
@@ -87,50 +89,50 @@ class ServicesController < ApplicationController
       format.json do
         render json: Location.autocomplete_search(params[:q])
       end
-    end        
+    end
   end
 
   def generate_select_ba
     @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at])
     @brand_ambassadors.push BrandAmbassador.find params[:ba_id] if params[:action_method] == "edit" || params[:action_method] == "update"
 
-    render layout: false    
+    render layout: false
   end
 
   def confirm_respond
     @project = Project.find(params[:project_id])
     unless @project.nil?
-      @service = @project.services.find(params[:id])    
+      @service = @project.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: Service.status_confirmed, token: Devise.friendly_token})          
+          @service.update_attributes({status: Service.status_confirmed, token: Devise.friendly_token})
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
     end
-    
+
     redirect_to root_path
   end
 
   def rejected_respond
     @project = Project.find(params[:project_id])
     unless @project.nil?
-      @service = @project.services.find(params[:id])    
+      @service = @project.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_attributes({status: Service.status_rejected, token: Devise.friendly_token})
         end
       end
     end
-    
-    redirect_to root_path    
+
+    redirect_to root_path
   end
 
   def mark_service_as_complete
     msg = "Service update failed"
     @project = Project.find(params[:project_id])
     unless @project.nil?
-      @service = @project.services.find(params[:id])    
+      @service = @project.services.find(params[:id])
       unless @service.nil?
         @service.update_attributes({status: Service.status_conducted})
         msg = "Service set at completed"
@@ -147,6 +149,11 @@ class ServicesController < ApplicationController
   def check_project_status
     project = Project.find(params[:project_id])
     redirect_to(projects_path, :flash => { :error => "Project is not active" }) unless project.is_active
+  end
+
+  def check_project_completed
+    project = Project.find(params[:project_id])
+    redirect_to(projects_path, :flash => { :error => "Project is complete" }) unless project.is_not_complete?
   end
 
 end

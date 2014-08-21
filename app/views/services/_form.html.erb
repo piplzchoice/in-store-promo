@@ -1,29 +1,4 @@
 <%= form_for [@project, @service], html: {role: "form"} do |f| %>
-  <div class="form-group">
-    <%= f.label :location_id, "Select Location", {class: "control-label"} %>
-    <% if @service.new_record? %>
-      <%= f.hidden_field :location_id, {class: "select-2-box", data: {
-        url: autocomplete_location_name_project_services_path(project_id: @project.id),
-        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
-        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
-        state: "new"
-      }} %>
-    <% else %>
-      <%= @service.location.name %>
-    <% end %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :brand_ambassador_id, "Select BA", {class: "control-label"} %>
-    <% if @service.new_record? || @service.can_reassign? %>
-      <div id="select-ba"
-        data-id="<%= @service.brand_ambassador_id.nil? ? "" : @service.brand_ambassador_id %>"
-        data-action="<%= controller.action_name %>"
-        data-old-id="<%= @service.old_id %>"></div>
-    <% else %>
-      <%= @service.brand_ambassador.name %>
-    <% end %>
-  </div>
 
   <div class="checkbox">
     <label>
@@ -49,6 +24,32 @@
           <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
         <% end %>
       </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :location_id, "Select Location", {class: "control-label"} %>
+    <% if @service.new_record? %>
+      <%= f.hidden_field :location_id, {class: "select-2-box", data: {
+        url: autocomplete_location_name_project_services_path(project_id: @project.id),
+        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
+        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
+        state: "new"
+      }} %>
+    <% else %>
+      <%= @service.location.name %>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :brand_ambassador_id, "Select BA", {class: "control-label"} %>
+    <% if @service.new_record? || @service.can_reassign? %>
+      <div id="select-ba"
+        data-id="<%= @service.brand_ambassador_id.nil? ? "" : @service.brand_ambassador_id %>"
+        data-action="<%= controller.action_name %>"
+        data-old-id="<%= @service.old_id %>"></div>
+    <% else %>
+      <%= @service.brand_ambassador.name %>
+    <% end %>
   </div>
 
   <div class="form-group">

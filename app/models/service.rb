@@ -146,13 +146,17 @@ class Service < ActiveRecord::Base
   end
 
   def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
-    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x| {
-        title: x.title_calendar,
-        start: x.start_at.iso8601,
-        end: x.end_at.iso8601,
-        color: x.get_color,
-        url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
-      } }
+    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x|
+        if x.status != Service.status_cancelled
+          {
+            title: x.title_calendar,
+            start: x.start_at.iso8601,
+            end: x.end_at.iso8601,
+            color: x.get_color,
+            url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
+          } 
+        end
+    }.compact.flatten
   end
 
   def title_calendar

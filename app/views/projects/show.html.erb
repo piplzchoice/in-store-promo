@@ -21,11 +21,18 @@
     <p><%= @project.end_at %></p>
   </div>
 
+  <div class="col-md-3">
+    <label>Description :</label>
+    <p><%= @project.descriptions %></p>
+  </div>
+
+  <div class="col-md-3">
+    <% if @project.status == Project.status_active %>
+      <%= link_to("Set as completed", set_as_complete_project_path(@project), {class: "btn btn-primary", role: "button", data: { confirm: "Are you sure?" }}) %>
+    <% end %>
+  </div>  
+
 </div>
-
-
-<label>Description :</label>
-<p><%= @project.descriptions %></p>
 
 
 <h2 class="sub-header">Services</h2>

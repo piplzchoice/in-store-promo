@@ -44,12 +44,15 @@ class ServicesController < ApplicationController
   def update
     @project = Project.find(params[:project_id])
     @service = @project.services.find(params[:id])
+    old_ba = @service.brand_ambassador
+    old_date = @service.date
     # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
     respond_to do |format|
       format.html do
         if @service.can_modify?
           if @service.update_data(service_params)
             if @service.can_reassign?
+              ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver if old_ba.id != @service.brand_ambassador_id
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
               @service.update_attribute(:status, Service.status_scheduled)
             end
@@ -77,7 +80,7 @@ class ServicesController < ApplicationController
     @project = Project.find(params[:project_id])
     @service = @project.services.find(params[:id])
     if @service.cancelled
-      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service).deliver
+      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
       redirect_to project_path(@project), {notice: "Service Cancelled"}
     else
       render :show

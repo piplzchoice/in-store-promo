@@ -12,7 +12,7 @@ class ApplicationMailer < ActionMailer::Base
     et = EmailTemplate.find_by_name("reset_password")
     @content = et.content.gsub(".email", email).gsub(".password", password)
     mail(to: email, subject: et.subject)
-  end  
+  end
 
   def ba_assignment_notification(ba, service)
     et = EmailTemplate.find_by_name("ba_assignment_notification")
@@ -29,11 +29,11 @@ class ApplicationMailer < ActionMailer::Base
   # def reminder_to_ba(ba_email, ba_name, date)
   # end
 
-  def cancel_assignment_notification(ba, service)
+  def cancel_assignment_notification(ba, service, date)
     et = EmailTemplate.find_by_name("cancel_assignment_notification")
 
     @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", service.client.company_name)
-    @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_date", service.date)    
+    @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_date", date)
 
     mail(to: ba.account.email, subject: et.subject)
   end
@@ -45,7 +45,7 @@ class ApplicationMailer < ActionMailer::Base
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
     @content = @content.gsub(".service_details", service.details).gsub(".project_link", edit_project_service_url(project_id: service.project.id, id: service.id ))
 
-    mail(to: "carol.wellins@gmail.com", subject: et.subject)    
+    mail(to: "carol.wellins@gmail.com", subject: et.subject)
   end
 
   def send_ics(ba, service)
@@ -59,21 +59,21 @@ class ApplicationMailer < ActionMailer::Base
          e.description = <<-EOF
            Date: #{service.complete_date_time}
            Client: #{service.client.company_name}
-           Location: #{service.location.complete_location}           
+           Location: #{service.location.complete_location}
            BA: #{ba.name}
            Details : #{service.details}
          EOF
          ical.add_event(e)
-         ical.publish         
+         ical.publish
         render :text => ical.to_ical, :layout => false
       }
-    end    
+    end
   end
 
   def send_reminder_to_add_availablty_date(ba)
     et = EmailTemplate.find_by_name("send_reminder_to_add_availablty_date")
     @content = et.content.gsub(".ba_name", ba.name)
-    mail(to: ba.account.email, subject: et.subject)    
+    mail(to: ba.account.email, subject: et.subject)
   end
 
 end

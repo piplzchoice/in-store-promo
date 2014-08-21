@@ -259,7 +259,11 @@ class Service < ActiveRecord::Base
   end
 
   def can_reassign?
-    self.status == Service.status_rejected || self.status == Service.status_unrespond
+    self.status == Service.status_rejected || self.status == Service.status_unrespond || self.status == Service.status_scheduled || self.status == Service.status_confirmed
+  end
+
+  def can_rescheduled?
+    self.status == Service.status_scheduled || self.status == Service.status_confirmed
   end
 
   def is_not_complete?

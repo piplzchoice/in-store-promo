@@ -10,7 +10,7 @@ class ReportsController < ApplicationController
         unless current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           @services = current_user.brand_ambassador.services.order(created_at: :desc).paginate(:page => params[:page])
         else
-          @services = Service.all.order(created_at: :desc).paginate(:page => params[:page])
+          @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
           @brand_ambassadors = BrandAmbassador.all
           @clients = Client.all
           @projects = Project.all
@@ -135,7 +135,7 @@ class ReportsController < ApplicationController
   private
   
   def sort_column
-    params[:sort].nil? ? "created_at" : params[:sort]
+    params[:sort].nil? ? "start_at" : params[:sort]
   end
   
   def sort_direction

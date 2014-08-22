@@ -31,6 +31,8 @@ $(function() {
 
   $(".filter-params").on("change", function(){
     $("#page").val(1);
+    $("#direction").val("desc");
+    $("#sort").val("start_at");
   });
 
   $(".tooltip-legend").tooltip();

@@ -127,3 +127,10 @@ if DefaultValue.first.service_hours_est.nil?
   dv.save
   puts "service_hours_est added"
 end
+
+if DefaultValue.first.send_unrespond.nil?
+  dv = DefaultValue.first
+  dv.send_unrespond = 12
+  dv.save
+  puts "send_unrespond added"
+end

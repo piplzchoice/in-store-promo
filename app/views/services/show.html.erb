@@ -50,9 +50,9 @@
   <% if @project.is_not_complete? %>
     <% if @service.can_modify? %>
       <%= link_to("Edit", edit_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
-
-      <%= link_to("Cancel", project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>
     <% end %>
+    
+    <%= link_to("Cancel", project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
   <% end %>
 
 </div>

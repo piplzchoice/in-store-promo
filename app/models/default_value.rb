@@ -9,11 +9,12 @@
 #  traffic           :string(255)
 #  sample_product    :string(255)
 #  service_hours_est :integer
+#  send_unrespond    :integer
 #
 
 class DefaultValue < ActiveRecord::Base
-  validates :rate_project, :service_hours_est, presence: true
-  validates :rate_project, :service_hours_est, numericality: true  
+  validates :rate_project, :service_hours_est, :send_unrespond, presence: true
+  validates :rate_project, :service_hours_est, :send_unrespond, numericality: true  
 
   def self.rate_project
     DefaultValue.first.rate_project
@@ -30,4 +31,8 @@ class DefaultValue < ActiveRecord::Base
   def self.service_hours_est
     DefaultValue.first.service_hours_est
   end  
+
+  def self.send_unrespond
+    DefaultValue.first.send_unrespond
+  end    
 end

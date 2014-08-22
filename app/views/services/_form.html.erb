@@ -10,7 +10,7 @@
     <%= f.label :start_at, {class: "control-label"} %>
     <div class='input-group date dp-service' id='start_at_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
       <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
-      <% if @service.new_record? || @service.can_rescheduled? %>
+      <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
       <% end %>
     </div>
@@ -20,7 +20,7 @@
     <%= f.label :end_at, {class: "control-label"} %>
       <div class='input-group date dp-service' id='end_at_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
         <%= f.text_field :end_at, {class: "form-control", readonly: true} %>
-        <% if @service.new_record? || @service.can_rescheduled? %>
+        <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
           <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
         <% end %>
       </div>
@@ -28,7 +28,7 @@
 
   <div class="form-group">
     <%= f.label :location_id, "Select Location", {class: "control-label"} %>
-    <% if @service.new_record? %>
+    <% if @service.new_record? || current_user.has_role?(:admin) %>
       <%= f.hidden_field :location_id, {class: "select-2-box", data: {
         url: autocomplete_location_name_project_services_path(project_id: @project.id),
         name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
@@ -42,7 +42,7 @@
 
   <div class="form-group">
     <%= f.label :brand_ambassador_id, "Select BA", {class: "control-label"} %>
-    <% if @service.new_record? || @service.can_reassign? %>
+    <% if @service.new_record? || @service.can_reassign? || current_user.has_role?(:admin) %>
       <div id="select-ba"
         data-id="<%= @service.brand_ambassador_id.nil? ? "" : @service.brand_ambassador_id %>"
         data-action="<%= controller.action_name %>"

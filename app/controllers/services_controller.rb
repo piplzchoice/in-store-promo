@@ -46,13 +46,16 @@ class ServicesController < ApplicationController
     @service = @project.services.find(params[:id])
     old_ba = @service.brand_ambassador
     old_date = @service.date
+    old_location_id = @service.location_id
     # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
     respond_to do |format|
       format.html do
-        if @service.can_modify?
+        if @service.can_modify? || user.has_role?(:admin)
           if @service.update_data(service_params)
-            if @service.can_reassign?
-              ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver if old_ba.id != @service.brand_ambassador_id
+            if @service.can_reassign? || user.has_role?(:admin)              
+              if old_ba.id != @service.brand_ambassador_id || old_location_id != @service.location_id
+                ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
+              end
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
               @service.update_attribute(:status, Service.status_scheduled)
             end
@@ -146,7 +149,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details)
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
   end
 
   def check_project_status

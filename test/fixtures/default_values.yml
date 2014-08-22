@@ -9,6 +9,7 @@
 #  traffic           :string(255)
 #  sample_product    :string(255)
 #  service_hours_est :integer
+#  send_unrespond    :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

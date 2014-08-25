@@ -284,7 +284,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_create_report?
-    [Service.status_conducted, Service.status_paid, Service.status_ba_paid].include?(status)
+    [Service.status_conducted, Service.status_ba_paid].include?(status)
   end
 
   def set_data_true

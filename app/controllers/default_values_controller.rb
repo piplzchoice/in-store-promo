@@ -23,7 +23,7 @@ class DefaultValuesController < ApplicationController
   end
 
   def default_value_params
-    params.require(:default_value).permit(:rate_project, :sample_product, :traffic, :service_hours_est)
+    params.require(:default_value).permit(:rate_project, :sample_product, :traffic, :service_hours_est, :send_unrespond)
   end
 
 end

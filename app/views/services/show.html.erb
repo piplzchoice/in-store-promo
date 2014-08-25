@@ -48,7 +48,7 @@
   <%= link_to("Back", (params[:report].nil? ? project_path(@project) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
   <% if @project.is_not_complete? %>
-    <% if @service.can_modify? %>
+    <% if @service.can_modify?  || current_user.has_role?(:admin) %>
       <%= link_to("Edit", edit_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
     <% end %>
     

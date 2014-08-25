@@ -252,9 +252,7 @@ class Service < ActiveRecord::Base
   end
 
   def cancelled
-    if can_modify?
-      update_attribute(:status, Service.status_cancelled)
-    end
+    update_attribute(:status, Service.status_cancelled)
   end
 
   def can_modify?

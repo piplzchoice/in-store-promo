@@ -50,9 +50,9 @@ class ServicesController < ApplicationController
     # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
     respond_to do |format|
       format.html do
-        if @service.can_modify? || user.has_role?(:admin)
+        if @service.can_modify? || current_user.has_role?(:admin)
           if @service.update_data(service_params)
-            if @service.can_reassign? || user.has_role?(:admin)              
+            if @service.can_reassign? || current_user.has_role?(:admin)              
               if old_ba.id != @service.brand_ambassador_id || old_location_id != @service.location_id
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end

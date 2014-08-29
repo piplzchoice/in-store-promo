@@ -119,14 +119,38 @@ class BrandAmbassador < ActiveRecord::Base
     dates = []
     self.all.each do |ba|
       ba.available_dates.each do |available_date| 
-        hash = {
-          title: ba.name, 
-          start: available_date.availablty.strftime("%Y-%m-%d"),
-          url: Rails.application.routes.url_helpers.brand_ambassador_path(ba),
-          color: available_date.get_color
-        }
+        time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day)
+        services = ba.services.where({start_at: time_range})
 
-        dates.push hash
+        show = true
+        if services.blank?
+          color = "#3c763d"
+        else
+          periods = services.collect{|x| x.start_at.strftime("%p") }
+          if periods.size == 2
+            show = false
+          else
+            if periods.include?("AM")
+              color = "#428bca"
+            elsif periods.include?("PM")              
+              if available_date.am
+                color = "#f0ad4e"
+              else
+                show = false
+              end
+            end          
+          end          
+        end
+
+        if show
+          hash = {
+            title: ba.name,
+            start: available_date.availablty.strftime("%Y-%m-%d"),
+            url: Rails.application.routes.url_helpers.brand_ambassador_path(ba),
+            color: color
+          }
+          dates.push hash
+        end
       end
     end
     return dates

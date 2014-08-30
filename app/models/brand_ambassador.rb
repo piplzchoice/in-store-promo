@@ -124,20 +124,36 @@ class BrandAmbassador < ActiveRecord::Base
 
         show = true
         if services.blank?
-          color = "#3c763d"
+          if available_date.am && available_date.pm
+            color = "#3c763d"
+          elsif available_date.am && !available_date.pm
+            color = "#f0ad4e"
+          elsif !available_date.am && available_date.pm
+            color = "#428bca"
+          end          
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
           if periods.size == 2
             show = false
           else
-            if periods.include?("AM")
-              color = "#428bca"
-            elsif periods.include?("PM")              
-              if available_date.am
+            if services.first.is_assigned?
+              if periods.include?("AM")
+                color = "#428bca"
+              elsif periods.include?("PM")            
+                if available_date.am
+                  color = "#f0ad4e"
+                else
+                  show = false
+                end
+              end                        
+            else
+              if available_date.am && available_date.pm
+                color = "#3c763d"
+              elsif available_date.am && !available_date.pm
                 color = "#f0ad4e"
-              else
-                show = false
-              end
+              elsif !available_date.am && available_date.pm
+                color = "#428bca"
+              end                        
             end          
           end          
         end

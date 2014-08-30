@@ -285,6 +285,10 @@ class Service < ActiveRecord::Base
     [Service.status_conducted, Service.status_ba_paid].include?(status)
   end
 
+  def is_assigned?
+    ![Service.status_rejected, Service.status_cancelled].include?(status)
+  end
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

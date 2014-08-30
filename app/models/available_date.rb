@@ -39,14 +39,41 @@ class AvailableDate < ActiveRecord::Base
     end
   end
 
-  def get_color
-    if am && pm
-      "#3c763d"
-    elsif am && !pm
-      "#f0ad4e"
-    elsif !am && pm
-      "#428bca" 
+  def get_color(services)
+    # "#3c763d" => green    
+    # "#428bca" => blue
+    # "#f0ad4e" => yellow
+    color = nil
+
+    if services.blank?
+      if am
+        color = "#3c763d"
+      else
+        color = "#428bca"
+      end
+      # if am && pm
+      #   color = "#3c763d"
+      # elsif am && !pm
+      #   color = "#f0ad4e"
+      # elsif !am && pm
+      #   color = "#428bca"
+      # end
+    else
+      service = services.first     
+      period = service.start_at.strftime("%p")
+      if period == "AM"
+        # if pm
+          color = "#428bca"
+        # end
+      elsif period == "PM"
+        # if am
+          color = "#f0ad4e"
+        # end
+      end
+      color = "red"
     end
+
+    return color
   end
 
 end

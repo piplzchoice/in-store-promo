@@ -18,6 +18,12 @@
       <% end %>
     <% end %>
   <% end %>
+  <% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
+    <div class="link-new-btn">
+        <%= link_to("Create Report", new_report_path(service_id: @service.id), 
+          {class: "btn btn-success", role: "button"}) %>         
+    </div>  
+  <% end %>         
 <% end %>
 
 <label>Status :</label>

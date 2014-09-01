@@ -2,7 +2,9 @@
 
 <div class="row" style="margin: 0px;">
   <%= link_to "Download as PDF", download_pdf_report_path(id: @report.id), {class: "btn btn-primary", role: "button"} %>
-  <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>
+  <% unless current_user.has_role?(:client) %>
+    <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>
+  <% end %>
 </div>
 <hr>
 

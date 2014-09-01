@@ -1,33 +1,52 @@
 require "csv"
 class ReportsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :check_role, except: [:index, :view_calendar, :show, :download_pdf, :print_pdf]
   helper_method :sort_column, :sort_direction
   authorize_resource class: ReportsController 
 
   def index
     respond_to do |format|
       format.html do
-        unless current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-          @services = current_user.brand_ambassador.services.order(created_at: :desc).paginate(:page => params[:page])
-        else
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
           @brand_ambassadors = BrandAmbassador.all
           @clients = Client.all
-          @projects = Project.all
+          @projects = Project.all        
+        elsif current_user.has_role?(:client)
+          @services = current_user.client.services.order(created_at: :desc).paginate(:page => params[:page])
+          @brand_ambassadors = @services.collect{|x| x.brand_ambassador }.flatten.uniq
+        else
+          @services = current_user.brand_ambassador.services.order(created_at: :desc).paginate(:page => params[:page])
         end        
       end
       
       format.js do
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
-        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        
+        client_name = ""
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          client_name = params[:client_name]
+        elsif current_user.has_role?(:client)
+          client_name = current_user.client.id
+        end
+        
         project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
         @services = Service.filter_and_order(params[:status], ba_id, client_name, project_name, sort_column, sort_direction).paginate(:page => params[:page])
       end
 
       format.csv do
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
-        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        
+        client_name = ""
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          client_name = params[:client_name]
+        elsif current_user.has_role?(:client)
+          client_name = current_user.client.id
+        end
+        
         project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
+        
         @services = Service.filter_and_order(params[:status], ba_id, params[:client_name], params[:project_name], sort_column, sort_direction)
         
         headers['Content-Type'] ||= 'text/csv'
@@ -40,9 +59,16 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {}
       format.json { 
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:assigned_to] : current_user.brand_ambassador.id)
-        client_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:client_name] : "")
-        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")        
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        
+        client_name = ""
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          client_name = params[:client_name]
+        elsif current_user.has_role?(:client)
+          client_name = current_user.client.id
+        end
+        
+        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
         render json: Service.calendar_services(params[:status], ba_id, client_name, project_name, sort_column, sort_direction)
       }
     end
@@ -141,4 +167,8 @@ class ReportsController < ApplicationController
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end  
+
+  def check_role
+    redirect_to(reports_path) if current_user.has_role?(:client)
+  end
 end

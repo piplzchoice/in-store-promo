@@ -13,6 +13,17 @@
       service.current_status
     ]) %>
   <%- end -%>
+<% elsif current_user.has_role?(:client) %>
+  <%- headers = ["Date", "Times", "BA", "Job Details"] -%>
+  <%= CSV.generate_line headers %>
+  <%- @services.each do |service| -%>
+    <%= CSV.generate_line([
+      service.start_at.strftime('%m/%d/%Y'), 
+      service.time_at,
+      (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
+      service.details
+    ]) %>
+  <%- end -%>  
 <% else %>
   <%- headers = ["Date", "Times", "Client Name", "Job Details"] -%>
   <%= CSV.generate_line headers %>

@@ -4,6 +4,8 @@
   <%= render "filter" %>
 <% elsif current_user.has_role?(:ba) %>
   <%= render "filter_ba" %>
+<% elsif current_user.has_role?(:client) %>
+  <%= render "filter_client" %>  
 <% end %>
 
 <div class="table-responsive">
@@ -11,6 +13,8 @@
     <%= render "grid" %>
   <% elsif current_user.has_role?(:ba) %>
     <%= render "grid_ba" %>
+  <% elsif current_user.has_role?(:client) %>
+    <%= render "grid_client" %>    
   <% end %>
 </div>
 

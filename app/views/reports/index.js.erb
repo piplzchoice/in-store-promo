@@ -1,5 +1,7 @@
 <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
   $(".table-responsive").html("<%= escape_javascript render('grid') %>");
+<% elsif current_user.has_role?(:client) %>  
+  $(".table-responsive").html("<%= escape_javascript render('grid_client') %>");  
 <% else %>
   $(".table-responsive").html("<%= escape_javascript render('grid_ba') %>");  
 <% end %>

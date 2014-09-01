@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   mount RedactorRails::Engine => '/redactor_rails'
-  devise_for :users
+
+  devise_for :users,
+    :controllers => {
+      sessions: "sessions"
+    }
 
   root 'home#index'
   resources :clients do
@@ -13,6 +17,7 @@ Rails.application.routes.draw do
   resources :brand_ambassadors do
     member do
       patch "reset_password"
+      delete "logged_as"
     end
 
     collection do

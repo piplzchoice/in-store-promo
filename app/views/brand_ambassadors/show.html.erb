@@ -1,4 +1,7 @@
 <h1 class="page-header">Show BA</h1>
+  <div class="link-new-btn">
+    <%= link_to("Login as BA", logged_as_brand_ambassador_path(@brand_ambassador), {class: "btn btn-primary", role: "button", :method => :delete}) %>
+  </div>
 <label>Name :</label>
 <p><%= @brand_ambassador.name %></p>
 

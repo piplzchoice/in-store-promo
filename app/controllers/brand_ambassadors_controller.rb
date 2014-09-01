@@ -72,6 +72,13 @@ class BrandAmbassadorsController < ApplicationController
     redirect_to brand_ambassadors_url, {notice: msg}
   end
 
+  def logged_as
+    brand_ambassador = BrandAmbassador.find(params[:id])
+    session[:prev_current_user_id] = current_user.id
+    sign_in(:user, brand_ambassador.account)    
+    redirect_to root_url, {notice: "Login as BA #{brand_ambassador.name}"}
+  end
+
   def reset_password
     @brand_ambassador, msg = BrandAmbassador.find(params[:id]), nil
     password = @brand_ambassador.reset_password

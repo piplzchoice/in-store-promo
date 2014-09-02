@@ -81,6 +81,13 @@ class ClientsController < ApplicationController
     redirect_to clients_url, {notice: msg}
   end
 
+  def logged_as
+    client = Client.find(params[:id])
+    session[:prev_current_user_id] = current_user.id
+    sign_in(:user, client.account)    
+    redirect_to root_url, {notice: "Login as Client #{client.company_name}"}
+  end  
+
   def autocomplete_client_name
     respond_to do |format|
       format.json do

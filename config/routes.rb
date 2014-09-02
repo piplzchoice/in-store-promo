@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     get :autocomplete_client_name, :on => :collection
     member do
       patch "reset_password"
+      delete "logged_as"
     end
   end
 

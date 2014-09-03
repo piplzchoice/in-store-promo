@@ -28,6 +28,7 @@ class Client < ActiveRecord::Base
   accepts_nested_attributes_for :account, allow_destroy: true
 
   has_many :projects  
+  has_many :services, :through => :projects
 
   validates :company_name, :first_name, :last_name, :phone, presence: true
 

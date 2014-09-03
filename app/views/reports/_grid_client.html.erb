@@ -1,0 +1,31 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= sortable "start_at", "Date" %></th>
+      <th><%= sortable "time", "Time" %></th>
+      <th><%= sortable "client", "Client Name" %></th>
+      <th><%= sortable "ba", "BA" %></th>
+      <th>Demo Rate</th>
+      <th>Expense 1</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+    <tr>
+      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td><%= service.start_at.strftime("%I:%M %p") %></td>
+      <td><%= service.company_name %></td> 
+      <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
+      <td><%= number_to_currency((service.project.nil? ? "" : service.project.rate)) %></td> 
+      <td><%= service.report.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+      <td><%= service.current_status %></td>
+      <td>
+        <%= service.report.nil? ? "-" : link_to("Show Report", report_path(service.report)) %>
+      </td> 
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @services, renderer: BootstrapPagination::Rails %>

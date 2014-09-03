@@ -33,12 +33,11 @@ class ClientsController < ApplicationController
   end
 
   def create
-    debugger
     @client, password = Client.new_with_account(client_params, current_user.id)
     respond_to do |format|
       format.html do
         if @client.save
-          # ApplicationMailer.welcome_email(@client.account.email, @client.name ,password).deliver
+          ApplicationMailer.welcome_email(@client.account.email, @client.name ,password).deliver
           redirect_to clients_url, notice: "Client created"
         else
           render :new
@@ -81,6 +80,13 @@ class ClientsController < ApplicationController
 
     redirect_to clients_url, {notice: msg}
   end
+
+  def logged_as
+    client = Client.find(params[:id])
+    session[:prev_current_user_id] = current_user.id
+    sign_in(:user, client.account)    
+    redirect_to root_url, {notice: "Login as Client #{client.company_name}"}
+  end  
 
   def autocomplete_client_name
     respond_to do |format|

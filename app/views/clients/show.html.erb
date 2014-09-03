@@ -1,4 +1,7 @@
 <h1 class="page-header">Show Client</h1>
+<div class="link-new-btn">
+  <%= link_to("Login as Client", logged_as_client_path(@client), {class: "btn btn-primary", role: "button", :method => :delete}) %>
+</div>
 <label>Company Name :</label>
 <p><%= @client.company_name %></p>
 
@@ -18,7 +21,7 @@
     <thead>
       <tr>
         <th>No</th>
-        <th>Email</th>
+        <th>Project Name</th>
         <th>Action</th>
       </tr>
     </thead>

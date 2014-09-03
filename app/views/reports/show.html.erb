@@ -242,14 +242,13 @@
     </div>
   </div>  
 
-  <div class="row report">
-    <div id="report-expense-one">
-      <span class="report-title">Expense 2</span>: <%= number_to_currency @report.expense_two %>
-      <% unless @report.expense_two_img.nil? %>
-        <%= image_tag @report.expense_two_img.url %>
-      <% end %>      
-    </div>
-  </div>      
+  <% unless @report.travel_expense.nil? %>
+    <div class="row report">
+      <div id="report-expense-one">
+        <span class="report-title">Travel Expense</span>: <%= number_to_currency @report.travel_expense %>
+      </div>
+    </div>      
+  <% end %>
 
   <div class="row report">
     <div id="report-expense-two">

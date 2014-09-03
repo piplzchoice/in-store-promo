@@ -13,12 +13,18 @@ $(function() {
     return false
   });
 
-  $("#new_report").submit(function(){
+  $("#new_report, .edit_report").submit(function(){
     if($("#submit-report-data").data("mileage")) {
       if($("#can_submit").val() === "0") {
         if(!$("#no-travel-expense").prop('checked')) {
+          if($("#report_travel_expense").val() !== "") {
+            $("#travel-expense-field").val($("#report_travel_expense").val());
+          }
+
           $("#travel-expense-modal").modal("show");  
           return false;
+        } else {
+          $("#report_travel_expense").val("");
         }
       }
     }
@@ -30,7 +36,7 @@ $(function() {
     }
     $("#report_travel_expense").val($("#travel-expense-field").val());
     $("#can_submit").val(1);
-    $("#new_report").submit();
+    $("#new_report, .edit_report").submit();
   });
 
   $(document).on("click", ".order-data", function(){

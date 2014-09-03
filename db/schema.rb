@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140822025118) do
+ActiveRecord::Schema.define(version: 20140903120333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -176,6 +176,7 @@ ActiveRecord::Schema.define(version: 20140822025118) do
     t.string   "table_image_one_img"
     t.string   "table_image_two_img"
     t.boolean  "is_active",                                       default: true
+    t.decimal  "travel_expense",          precision: 8, scale: 2
   end
 
   create_table "roles", force: true do |t|

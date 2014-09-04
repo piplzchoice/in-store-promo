@@ -21,6 +21,11 @@ $(function() {
             $("#travel-expense-field").val($("#report_travel_expense").val());
           }
 
+          $('#travel-expense-modal').modal({
+            backdrop: 'static',
+            keyboard: true
+          })
+          
           $("#travel-expense-modal").modal("show");  
           return false;
         } else {

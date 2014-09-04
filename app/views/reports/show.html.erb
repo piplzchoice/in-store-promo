@@ -235,7 +235,7 @@
 
   <div class="row report">
     <div id="report-sample-product">
-      <span class="report-title">Expense 1</span>: <%= number_to_currency @report.expense_one %>
+      <span class="report-title">Expense</span>: <%= number_to_currency @report.expense_one %>
       <% unless @report.expense_one_img.nil? %>
         <%= image_tag @report.expense_one_img.url %>
       <% end %>

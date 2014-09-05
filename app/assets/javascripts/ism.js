@@ -13,6 +13,37 @@ $(function() {
     return false
   });
 
+  $("#new_report, .edit_report").submit(function(){
+    if($("#submit-report-data").data("mileage")) {
+      if($("#can_submit").val() === "0") {
+        if(!$("#no-travel-expense").prop('checked')) {
+          if($("#report_travel_expense").val() !== "") {
+            $("#travel-expense-field").val($("#report_travel_expense").val());
+          }
+
+          $('#travel-expense-modal').modal({
+            backdrop: 'static',
+            keyboard: true
+          })
+          
+          $("#travel-expense-modal").modal("show");  
+          return false;
+        } else {
+          $("#report_travel_expense").val("");
+        }
+      }
+    }
+  });
+  
+  $("#submit-travel-expense").click(function(){
+    if($("#travel-expense-field").val() === "") {
+      $("#travel-expense-field").val(0)
+    }
+    $("#report_travel_expense").val($("#travel-expense-field").val());
+    $("#can_submit").val(1);
+    $("#new_report, .edit_report").submit();
+  });
+
   $(document).on("click", ".order-data", function(){
     column = $(this).data("sort")
     if(column === $("#sort").val()) {

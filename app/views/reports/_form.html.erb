@@ -227,19 +227,12 @@
 
     <div class="row report">
       <div id="report-sample-product">
-        <span class="report-title">Expense 1</span>:
+        <span class="report-title">Expense</span>:
         <%= f.text_field(:expense_one) %>
         <%= f.file_field(:expense_one_img) %>
       </div>
     </div>  
-
-    <div class="row report">
-      <div id="report-sample-product">
-        <span class="report-title">Expense 2</span>:
-        <%= f.text_field(:expense_two) %>
-        <%= f.file_field(:expense_two_img) %>
-      </div>
-    </div>      
+    
 
     <div class="row report">
       <div id="report-sample-product">
@@ -263,8 +256,37 @@
       </div>
     </div>         
 
+    <% if @service.brand_ambassador.mileage %>
+      <div class="row report">
+        <div id="travel-expense">
+            <input type="checkbox" id="no-travel-expense"> No travel expenses
+        </div>
+      </div>  
+      <%= f.hidden_field(:travel_expense) %>                 
+      <input type="hidden" id="can_submit" value="0">
+    <% end %>
+
   </div>
 
   <hr>
-  <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
+  <%= f.button "Submit", {type: "submit", class: "btn btn-default", id: "submit-report-data", data: {mileage: @service.brand_ambassador.mileage}} %>
+<% end %>
+
+<% if @service.brand_ambassador.mileage %>
+  <div id="travel-expense-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Please multiply the number of miles over 35 per demo times the agreed rate and enter here.
+          </h4>
+        </div>
+        <div class="modal-body">
+          $ <input type="text" id="travel-expense-field">
+          <button id="submit-travel-expense" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
 <% end %>

@@ -138,7 +138,7 @@ class BrandAmbassador < ActiveRecord::Base
           if periods.size == 2
             show = false
           else
-            # if services.first.is_assigned?
+            if services.first.status != Service.status_rejected
               if periods.include?("AM")
                 color = "#428bca"
               elsif periods.include?("PM")            
@@ -168,15 +168,9 @@ class BrandAmbassador < ActiveRecord::Base
                 end
 
               end                        
-            # else
-            #   if available_date.am && available_date.pm
-            #     color = "#3c763d"
-            #   elsif available_date.am && !available_date.pm
-            #     color = "#f0ad4e"
-            #   elsif !available_date.am && available_date.pm
-            #     color = "#428bca"
-            #   end                        
-            # end          
+            else
+              show = false                      
+            end          
           end          
         end
 

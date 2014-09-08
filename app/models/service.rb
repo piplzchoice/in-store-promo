@@ -160,7 +160,8 @@ class Service < ActiveRecord::Base
   end
 
   def title_calendar
-    return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
+    # return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
+    return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{self.start_date_time}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
   end
 
   def update_data(service_params)

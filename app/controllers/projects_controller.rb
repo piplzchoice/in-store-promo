@@ -7,7 +7,7 @@ class ProjectsController < ApplicationController
   def index
     respond_to do |format|
       format.html {
-        @projects = Project.all.paginate(:page => params[:page])
+        @projects = Project.with_status_active.paginate(:page => params[:page])
         @clients = Client.all
       }
       format.js {

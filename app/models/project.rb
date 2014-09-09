@@ -29,6 +29,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :descriptions, :client_id, presence: true
   default_scope { order("created_at ASC") }
+  scope :with_status_active, -> { where(status: Project.status_active) }
 
   def self.status_planned
     return 1
@@ -69,8 +70,12 @@ class Project < ActiveRecord::Base
 
   def self.filter_and_order(status, client_name)
     data = nil
-    conditions = {}
-    conditions.merge!(status: status) if status != ""
+    conditions = {}    
+    if status != ""
+      conditions.merge!(status: status) 
+    else
+      conditions.merge!(status: Project.status_active) 
+    end
 
     if client_name != ""
       data = Project.joins(:client).where(clients: {id: client_name}).where(conditions)

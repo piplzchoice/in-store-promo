@@ -121,7 +121,21 @@ class Service < ActiveRecord::Base
   def self.build_data(service_params)
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
-    self.new(service_params)
+
+    service = Service.where({
+      project_id: service_params[:project_id], 
+      location_id: service_params[:location_id], 
+      brand_ambassador_id: service_params[:brand_ambassador_id],
+      start_at: service_params[:start_at],
+      end_at: service_params[:end_at]
+    })    
+
+    if service.blank?
+      self.new(service_params)
+    else
+      false
+    end    
+    
   end
 
   def self.invited_and_unrespond_status

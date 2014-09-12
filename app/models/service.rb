@@ -317,4 +317,8 @@ class Service < ActiveRecord::Base
     self.update_attribute(:is_active, false)
   end
 
+  def grand_total
+    project.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
+  end
+
 end

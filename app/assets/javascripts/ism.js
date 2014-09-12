@@ -13,6 +13,21 @@ $(function() {
     return false
   });
 
+  $(document).on("change", ".reconcile-checkbox", function(){    
+    sum = 0
+    $(".reconcile-checkbox:checked").each(function(i, obj) {
+      sum += parseFloat($(obj).data("total"))
+    });      
+
+    if(sum !== 0) {
+      total = "$" + sum
+    } else {
+      total = 0
+    }
+
+    $("#reconcile-grand-total").html("<strong>" + total + "</strong>");
+  });  
+
   $("#new_report, .edit_report").submit(function(){
     if($("#submit-report-data").data("mileage")) {
       if($("#can_submit").val() === "0") {

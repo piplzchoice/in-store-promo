@@ -15,7 +15,12 @@
     <tbody>
       <% @services.each_with_index do |service, i|  %>
       <tr>
-        <td><%= check_box_tag "service_ids[]", service.id, false, class: 'reconcile-checkbox' %></td>
+        <td>
+          <%= 
+            check_box_tag("service_ids[]", service.id, false, 
+            {class: 'reconcile-checkbox', data: {total: service.grand_total}})
+          %>
+        </td>
         <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
         <td><%= service.start_at.strftime("%I:%M %p") %></td>
         <td><%= service.location.name %></td> 
@@ -29,7 +34,11 @@
   </table>
 
   <div class="link-new-btn">
+    <span>Grand Total :</span>
+    <span id="reconcile-grand-total">0</span>
+  </div>
+  <br /><br />
+  <div class="link-new-btn">
     <%= submit_tag("Update Status to Paid", class: "btn btn-primary") %>
   </div>
-  <%= will_paginate @services, renderer: BootstrapPagination::Rails %>
 <% end %>

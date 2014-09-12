@@ -138,6 +138,11 @@ class Service < ActiveRecord::Base
     
   end
 
+  def self.update_status_to_paid(service_id)
+    service = Service.find(service_id)
+    service.update_attribute(:status, Service.status_paid)
+  end  
+
   def self.invited_and_unrespond_status
     # where status = 1 and created_at >= 12 hours
     # update status to 5 and send notification to admin

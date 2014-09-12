@@ -55,6 +55,30 @@ class ReportsController < ApplicationController
     end
   end
 
+  def reconcile_payments
+    respond_to do |format|
+      format.html do
+        @clients = Client.all
+        @services = Service.all.where({status: Service.status_reported}).order(start_at: :desc).paginate(:page => params[:page])
+      end    
+
+      format.js do
+        ba_id = ""
+        project_name = ""
+        @services = Service.filter_and_order(Service.status_reported, ba_id, params[:client_name], project_name, sort_column, sort_direction).paginate(:page => params[:page])
+      end
+    end
+  end
+
+  def update_service_paid
+    unless params[:service_ids].nil?
+      params[:service_ids].each do |service_id|
+        Service.update_status_to_paid(service_id)
+      end
+    end
+    redirect_to reconcile_payments_reports_path
+  end
+
   def view_calendar
     respond_to do |format|
       format.html {}

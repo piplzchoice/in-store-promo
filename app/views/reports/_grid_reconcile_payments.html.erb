@@ -1,0 +1,35 @@
+<%= form_tag(update_service_paid_reports_path, method: :patch, id: "filter-data") do %>
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th><%= sortable "start_at", "Date" %></th>
+        <th><%= sortable "time", "Time" %></th>
+        <th>Location</th>
+        <th>Demo Rate</th>
+        <th>Expenses</th>
+        <th>Travel Expense</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+      <tr>
+        <td><%= check_box_tag "service_ids[]", service.id, false, class: 'reconcile-checkbox' %></td>
+        <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+        <td><%= service.start_at.strftime("%I:%M %p") %></td>
+        <td><%= service.location.name %></td> 
+        <td><%= number_to_currency((service.project.nil? ? "" : service.project.rate)) %></td> 
+        <td><%= number_to_currency service.report.expense_one %></td>
+        <td><%= service.brand_ambassador.mileage ? number_to_currency(service.report.travel_expense) : "-" %></td>
+        <td><%= link_to("Show Report", report_path(service.report)) %></td> 
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="link-new-btn">
+    <%= submit_tag("Update Status to Paid", class: "btn btn-primary") %>
+  </div>
+  <%= will_paginate @services, renderer: BootstrapPagination::Rails %>
+<% end %>

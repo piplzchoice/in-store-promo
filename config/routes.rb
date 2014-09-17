@@ -62,6 +62,8 @@ Rails.application.routes.draw do
 
     collection do
       get :view_calendar
+      get :reconcile_payments
+      patch :update_service_paid
     end
   end
 

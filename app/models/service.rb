@@ -138,6 +138,11 @@ class Service < ActiveRecord::Base
     
   end
 
+  def self.update_status_to_paid(service_id)
+    service = Service.find(service_id)
+    service.update_attribute(:status, Service.status_paid)
+  end  
+
   def self.invited_and_unrespond_status
     # where status = 1 and created_at >= 12 hours
     # update status to 5 and send notification to admin
@@ -310,6 +315,10 @@ class Service < ActiveRecord::Base
 
   def set_data_false
     self.update_attribute(:is_active, false)
+  end
+
+  def grand_total
+    project.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
   end
 
 end

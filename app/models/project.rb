@@ -119,6 +119,10 @@ class Project < ActiveRecord::Base
     self.update_attribute(:status, Project.status_active)
   end
 
+  def set_as_planned
+    self.update_attribute(:status, Project.status_planned)
+  end
+
   def is_not_complete?
     self.status != Project.status_completed
   end

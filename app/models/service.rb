@@ -285,7 +285,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_rescheduled?
-    self.status == Service.status_scheduled || self.status == Service.status_confirmed
+    self.status == Service.status_scheduled || self.status == Service.status_confirmed || self.status == Service.status_rejected
   end
 
   def is_not_complete?

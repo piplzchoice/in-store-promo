@@ -78,4 +78,15 @@ namespace :stuff do
     end
   end
 
+  desc "Update projects deactivated status"
+  task :update_projects_deactivated_status => :environment do
+    Project.all.each do |project|
+      if project.status == Project.status_completed
+        project.set_data_false
+      elsif !project.is_active
+        project.set_as_complete
+      end
+    end
+  end
+
 end

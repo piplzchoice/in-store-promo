@@ -49,25 +49,23 @@ class BrandAmbassador < ActiveRecord::Base
       available_date = ba.available_dates.where({availablty: time}).first
 
       if services.blank?
-        if time.strftime("%p") == "AM"
-          ba if available_date.am
-        elsif time.strftime("%p") == "PM"
-          # ba if available_date.pm
-          ba if available_date.am || available_date.pm
+        if time.strftime("%p") == "AM" && available_date.am
+          ba
+        elsif time.strftime("%p") == "PM" && available_date.pm
+          ba
         end
       else
-        service = services.first     
-        if service.status == Service.status_cancelled  
-          ba if available_date.am || available_date.pm
-        else
-          unless time.strftime("%p") == service.start_at.strftime("%p")          
-            if time.strftime("%p") == "AM"
-              ba if available_date.am
-            elsif time.strftime("%p") == "PM"
-              ba if available_date.am || available_date.pm
-            end            
+        periods = services.collect{|x| x.start_at.strftime("%p") }
+        unless periods.size == 2
+          if services.first.status != Service.status_rejected
+            service = services.first
+            if periods.include?("AM")
+              ba if time.strftime("%p") != "AM"
+            elsif periods.include?("PM")
+              ba if time.strftime("%p") != "PM" && available_date.am
+            end                        
           end          
-        end
+        end   
       end
 
     }.compact.flatten

@@ -70,9 +70,16 @@ class ProjectsController < ApplicationController
     msg = nil
     if @project.is_active
       @project.set_data_false
+      @project.set_as_complete
       msg = "Project is deactivated"
     else
       @project.set_data_true
+      if @project.services.size != 0
+        @project.set_as_active
+      else
+        @project.set_as_planned
+      end      
+
       msg = "Project is reactivated"
     end
     redirect_to projects_url, {notice: msg}
@@ -81,6 +88,7 @@ class ProjectsController < ApplicationController
   def set_as_complete
     @project = Project.find(params[:id])
     @project.set_as_complete
+    @project.set_data_false
     redirect_to projects_url, notice: "Project set as Completed"
   end
 

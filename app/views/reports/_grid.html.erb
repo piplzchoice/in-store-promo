@@ -4,11 +4,10 @@
       <th><%= sortable "start_at", "Date" %></th>
       <th><%= sortable "time", "Time" %></th>
       <th><%= sortable "client", "Client Name" %></th>
+      <th>Location Name</th>
       <th><%= sortable "ba", "BA" %></th>
-      <th>Demo Rate</th>
       <th>Expense</th>
       <th>Travel Expense</th>
-      <th>Mileage</th>
       <th>Status</th>
       <th></th>
     </tr>
@@ -19,8 +18,8 @@
       <td><%= link_to service.start_at.strftime('%m/%d/%Y'), project_service_path(project_id:  (service.project.nil? ? "" : service.project.id), id: service.id, report: true) %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
+      <td><%= service.location.nil? ? "" : service.location.name %></td>
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <td><%= number_to_currency((service.project.nil? ? "" : service.project.rate)) %></td> 
       <% unless service.report.nil? %>
         <td><%= number_to_currency service.report.expense_one %></td>
         <td><%= service.brand_ambassador.mileage ? number_to_currency(service.report.travel_expense) : "-" %></td>
@@ -28,7 +27,6 @@
         <td>-</td>
         <td>-</td>      
       <% end %>
-      <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.mileage %></td> 
       <td><%= service.current_status %></td>
       <td>
       <% if service.can_create_report? || service.report.nil? %>

@@ -164,6 +164,15 @@ class Service < ActiveRecord::Base
     ]
   end
 
+  def self.options_select_status_client
+    [
+      ["BA Confirmed", Service.status_confirmed],
+      ["Conducted", Service.status_conducted],
+      ["Reported", Service.status_reported],
+      ["Paid", Service.status_paid]
+    ]
+  end
+
   def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
     Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x|
         if x.status != Service.status_cancelled

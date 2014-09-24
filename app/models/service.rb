@@ -18,16 +18,16 @@
 #
 
 # note for field "status"
-# 1. Scheduled => this state mean new service has been created and notification has send to BA
-# 2. Confirmed => BA accepted the assignment
-# 3. rejected => BA rejected the assignment
-# 4. Conducted => BA delivered service and added report
-# 5. unrespond => BA did not respond after 12 hours
-# 6. Reported => when report is created
-# 7. Paid => when service has been paid
-# 8. BA Paid =>
-# 9. Cancelled
-#
+# 1. Scheduled => this state mean new service has been created and notification has send to BA ---> "#8DB4E3"
+# 2. Confirmed => BA accepted the assignment ---> "#92D050"
+# 3. rejected => BA rejected the assignment ---> "#FFFF00"
+# 4. Conducted => BA delivered service and added report ---> "#0070C0"
+# 5. unrespond => BA did not respond after 12 hours ---> "#A5A5A5"
+# 6. Reported => when report is created ---> "#FFC000"
+# 7. Paid => when service has been paid ---> "#00B050"
+# 8. BA Paid => ---> "#E46D0A"
+# 9. Cancelled ---> "#FF0000"
+#     
 
 class Service < ActiveRecord::Base
 

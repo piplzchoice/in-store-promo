@@ -164,65 +164,72 @@ body {
   background-color: yellow;
 }
 
-// #colour-legend {}
+#colour-legend {
+  position: absolute;
+  left: 220px;
+  top: 220px;
+}
 
 #colour-legend div{  
-  float: left;
-  margin: 5px;
+  display: inline-block;
+  margin-bottom: 0;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.428571429;
+  border-radius: 4px;
+  -webkit-user-select: none;  
+  // color: white;
 }
 
 .scheduled {
   background-color: #8DB4E3;
-  width: 30px;
-  height: 30px;
+  border-color: #8DB4E3;
 }
 
 .confirmed {
   background-color: #92D050;
-  width: 30px;
-  height: 30px;  
+  border-color: #92D050;
 }
 
 .rejected {
   background-color: #FFFF00;
-  width: 30px;
-  height: 30px;  
+  border-color: #FFFF00;
 }
 
 .conducted {
   background-color: #0070C0;
-  width: 30px;
-  height: 30px;  
+  border-color: #0070C0;
 }
 
 .unrespond {
   background-color: #A5A5A5;
-  width: 30px;
-  height: 30px;  
+  border-color: #A5A5A5;
 }
 
 .reported {
   background-color: #FFC000;
-  width: 30px;
-  height: 30px;  
+  border-color: #FFC000;
 }
 
 .paid {
   background-color: #00B050;
-  width: 30px;
-  height: 30px;  
+  border-color: #00B050;
 }
 
 .ba-paid {
   background-color: #E46D0A;
-  width: 30px;
-  height: 30px;  
+  border-color: #E46D0A;
 }
 
 .cancelled {
   background-color: #FF0000;
-  width: 30px;
-  height: 30px;  
+  border-color: #FF0000;
 }
 
 .width_50 {

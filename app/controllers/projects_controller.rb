@@ -92,6 +92,20 @@ class ProjectsController < ApplicationController
     redirect_to projects_url, notice: "Project set as Completed"
   end
 
+  def export_calendar
+    @project = Project.find(params[:id])
+    
+    file = "project-calendar-#{@project.name}-#{Time.now.to_i}.pdf"
+    html = render_to_string(:layout => "print_calendar", :action => "print_calendar", :id => @project.id)
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
+  end
+
+  def print_calendar
+    @project = Project.find(params[:id])
+  end
+
   def project_params
     params.require(:project).permit(:name, :descriptions, :client_id, :rate, :start_at, :end_at)
   end

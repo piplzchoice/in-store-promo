@@ -32,10 +32,25 @@
     <% end %>
   </div>  
 
+  <div class="col-md-3">
+    <%= link_to("Export", export_calendar_project_path(@project), {class: "btn btn-primary", role: "button"}) %>
+  </div>
+
 </div>
 
 
 <h2 class="sub-header">Services</h2>
+<div id="colour-legend">
+  <div class="scheduled">Scheduled</div>
+  <div class="confirmed">Confirmed</div>
+  <div class="rejected">Rejected</div>
+  <div class="conducted">Conducted</div>
+  <div class="unrespond">Unrespond</div>
+  <div class="reported">Reported</div>
+  <div class="paid">Paid</div>
+  <div class="ba-paid">BA Paid</div>
+  <div class="cancelled">Cancelled</div>
+</div>
 
 <% if @project.is_not_complete? %>
   <div class="link-new-btn"><%= link_to("New Service", new_project_service_path(project_id: @project.id), {class: "btn btn-primary", role: "button"}) %></div>

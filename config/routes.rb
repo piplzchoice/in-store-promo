@@ -45,6 +45,8 @@ Rails.application.routes.draw do
     end
     get :autocomplete_client_name, :on => :collection
     get :set_as_complete, :on => :member
+    get :export_calendar, :on => :member
+    get :print_calendar, :on => :member
   end
 
   resources :ismp do

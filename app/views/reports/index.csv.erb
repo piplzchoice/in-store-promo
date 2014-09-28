@@ -1,15 +1,15 @@
 <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-  <%- headers = ["Date", "Time", "Client Name", "BA", "Demo Rate", "Expenses", "Mileage", "Status"] -%>
+  <%- headers = ["Date", "Time", "Client Name", "Location Name", "BA", "Expenses", "Travel Expense", "Status"] -%>
   <%= CSV.generate_line headers %>
   <%- @services.each do |service| -%>
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.start_at.strftime("%I:%M %p"),
       (service.project.nil? ? "-" : service.company_name),
+      (service.location.nil? ? "" : service.location.name),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
-      (service.project.nil? ? "-" : number_to_currency(service.project.rate)),
-      service.report.nil? ? "-" : number_to_currency(service.report.sum_expense),
-      (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.mileage),
+      (service.report.nil? ? "-" : number_to_currency(service.report.expense_one)),
+      (service.brand_ambassador.mileage? ? number_to_currency(service.report.travel_expense) : "-"),
       service.current_status
     ]) %>
   <%- end -%>

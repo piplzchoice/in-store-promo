@@ -67,6 +67,8 @@ class Service < ActiveRecord::Base
       data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{sort_direction}")
     elsif sort_column == "client"
       data = data.joins(:client).order("clients.company_name #{sort_direction}")
+    elsif sort_column == "location_name"
+      data = data.joins(:location).order("locations.name #{sort_direction}")      
     else
       if sort_column == "time"
         data = data.order("EXTRACT (HOUR from start_at) #{sort_direction}")

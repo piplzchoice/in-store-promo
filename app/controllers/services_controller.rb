@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
-  before_filter :check_project_status, except: [:show]
-  before_filter :check_project_completed, except: [:show, :index]
+  before_filter :check_project_status, except: [:show, :mark_service_as_complete, :update_status_after_reported]
+  before_filter :check_project_completed, except: [:show, :index, :mark_service_as_complete, :update_status_after_reported]
 
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
 

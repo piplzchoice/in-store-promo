@@ -9,7 +9,7 @@
       (service.location.nil? ? "" : service.location.name),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
       (service.report.nil? ? "-" : number_to_currency(service.report.expense_one)),
-      (service.brand_ambassador.mileage? ? number_to_currency(service.report.travel_expense) : "-"),
+      (service.report.nil? ? "-" :  (service.brand_ambassador.mileage ? number_to_currency(service.report.travel_expense) : "-")),
       service.current_status
     ]) %>
   <%- end -%>

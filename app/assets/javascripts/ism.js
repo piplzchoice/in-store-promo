@@ -1,5 +1,14 @@
 $(function() {  
 
+  $("#print_calendar_as_pdf").on("click", function(){
+    html2canvas(document.getElementById("calendar-and-legend"), {
+      onrendered: function(canvas) {
+        $("#dataurl").val(canvas.toDataURL("image/png"));
+        $("#export-calendar").submit();
+      }
+    });
+  });  
+
   $("#view-calendar-filter").on("click", function(){  
     url = $(this).data("url") + "?&status=" + $("#status").val() + "&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val();
     // var win = window.open(url, '_blank');

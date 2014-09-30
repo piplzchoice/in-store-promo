@@ -94,16 +94,18 @@ class ProjectsController < ApplicationController
 
   def export_calendar
     @project = Project.find(params[:id])
+    @dataurl = params[:dataurl]
     
-    file = "project-calendar-#{@project.name}-#{Time.now.to_i}.pdf"
-    html = render_to_string(:layout => "print_calendar", :action => "print_calendar", :id => @project.id)
+    file = "project-calendar-#{@project.id}-#{Time.now.to_i}.pdf"
+    html = render_to_string(:layout => "print_calendar", :action => "print_calendar", :id => @project.id, :dataurl => @dataurl)
     kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    # kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
     send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
   end
 
-  def print_calendar
+  def print_calendar    
     @project = Project.find(params[:id])
+    @dataurl = params[:dataurl]
   end
 
   def project_params

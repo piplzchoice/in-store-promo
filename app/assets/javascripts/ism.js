@@ -1,7 +1,7 @@
 $(function() {  
 
   $("#print_calendar_as_pdf").on("click", function(){
-    html2canvas(document.getElementById("calendar"), {
+    html2canvas(document.getElementById("calendar-and-legend"), {
       onrendered: function(canvas) {
         $("#dataurl").val(canvas.toDataURL("image/png"));
         $("#export-calendar").submit();

@@ -46,25 +46,26 @@
 </div>
 
 
-<h2 class="sub-header no-print">Services</h2>
-<div id="colour-legend" class="no-print">
-  <div class="scheduled">Scheduled</div>
-  <div class="confirmed">Confirmed</div>
-  <div class="rejected">Rejected</div>
-  <div class="conducted">Conducted</div>
-  <div class="unrespond">Unrespond</div>
-  <div class="reported">Reported</div>
-  <div class="paid">Paid</div>
-  <div class="ba-paid">BA Paid</div>
-  <div class="cancelled">Cancelled</div>
-</div>
+<h2 class="sub-header no-print">Services</h2> 
 
 <% if @project.is_not_complete? %>
   <div class="link-new-btn no-print"><%= link_to("New Service", new_project_service_path(project_id: @project.id), {class: "btn btn-primary", role: "button"}) %></div>
 <% end %>
 
-<div id="calendar" data-url="<%= project_services_path(project_id: @project.id) %>"></div>
-
+<div id="calendar-and-legend">  
+  <div id="colour-legend" class="no-print">
+    <div class="scheduled">Scheduled</div>
+    <div class="confirmed">Confirmed</div>
+    <div class="rejected">Rejected</div>
+    <div class="conducted">Conducted</div>
+    <div class="unrespond">Unrespond</div>
+    <div class="reported">Reported</div>
+    <div class="paid">Paid</div>
+    <div class="ba-paid">BA Paid</div>
+    <div class="cancelled">Cancelled</div>
+  </div>
+  <div id="calendar" data-url="<%= project_services_path(project_id: @project.id) %>"></div>
+</div>
 <%= form_tag(export_calendar_project_path(@project), method: :post, remote: false, id: "export-calendar") do %>
 <%= hidden_field_tag(:dataurl) %>
 <% end %>

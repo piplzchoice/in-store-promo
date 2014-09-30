@@ -164,13 +164,15 @@ body {
   background-color: yellow;
 }
 
-#colour-legend {
-  position: absolute;
-  left: 220px;
-  top: 220px;
+#calendar-and-legend {
+  margin-top: 75px;
 }
 
-#colour-legend div{  
+#colour-legend {
+  padding-bottom: 25px;
+}
+
+#colour-legend div{    
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;

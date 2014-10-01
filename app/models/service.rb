@@ -320,6 +320,10 @@ class Service < ActiveRecord::Base
     ![Service.status_rejected, Service.status_cancelled].include?(status)
   end
 
+  def is_overlap?(interval_start_at, interval_end_at)
+    (start_at.to_datetime - interval_end_at) * (interval_start_at - end_at.to_datetime) >= 0
+  end
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

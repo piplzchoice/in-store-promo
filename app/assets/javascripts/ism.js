@@ -328,7 +328,8 @@ function generate_select_ba(){
   $.ajax({
     url: $("#service_start_at").data("url"),
     data: { 
-      start_at: $("#service_start_at").val(), 
+      start_at: $("#service_start_at").val(),
+      end_at: $("#service_end_at").val(),
       action_method: $("#select-ba").data("action"),
       ba_id: $("#select-ba").data("old-id")
     }

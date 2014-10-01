@@ -99,9 +99,7 @@ class ServicesController < ApplicationController
   end
 
   def generate_select_ba
-    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at])
-    @brand_ambassadors.push BrandAmbassador.find params[:ba_id] if params[:action_method] == "edit" || params[:action_method] == "update"
-
+    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id])
     render layout: false
   end
 

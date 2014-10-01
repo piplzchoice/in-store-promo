@@ -1,6 +1,6 @@
 <%= form_for [@project, @service], html: {role: "form"} do |f| %>
 
-  <div class="checkbox">
+  <div class="checkbox" id="checkbox-service" data-service-id="<%= @service.new_record? ? "" : @service.id %>">
     <label>
       <input type="checkbox" id="manual-override"> Default Overwrite
     </label>

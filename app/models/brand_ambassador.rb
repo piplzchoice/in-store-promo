@@ -38,7 +38,7 @@ class BrandAmbassador < ActiveRecord::Base
     return brand_ambassador, password
   end
 
-  def self.get_available_people(start_at, end_at)
+  def self.get_available_people(start_at, end_at, service_id)
     start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
     end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
     time_range = start_time.midnight..(start_time.midnight + 1.day)
@@ -67,6 +67,13 @@ class BrandAmbassador < ActiveRecord::Base
             ba
           end          
         end
+      end
+    end
+
+    unless service_id == ""
+      service = Service.find service_id
+      if service.start_at.strftime("%m/%d/%Y") == start_time.strftime("%m/%d/%Y")
+        filtered_ba_data.push service.brand_ambassador
       end
     end
 

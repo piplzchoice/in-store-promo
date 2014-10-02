@@ -8,7 +8,7 @@
 #  phone      :string(255)
 #  address    :string(255)
 #  grade      :integer
-#  created_at :datetime
+#  created_at :start_at
 #  updated_at :datetime
 #  account_id :integer
 #  mileage    :boolean
@@ -31,44 +31,53 @@ class BrandAmbassador < ActiveRecord::Base
     brand_ambassador = self.new(brand_ambassador_params)
     brand_ambassador.user_id = user_id
     brand_ambassador.build_account(brand_ambassador_params["account_attributes"])
-    password =  Devise.friendly_token.first(8)
+    password = Devise.friendly_token.first(8)
     brand_ambassador.account.password = password
     brand_ambassador.account.password_confirmation = password
     brand_ambassador.account.add_role :ba   
     return brand_ambassador, password
   end
 
-  def self.get_available_people(datetime)
-    time = DateTime.strptime(datetime, '%m/%d/%Y %I:%M %p')
-    time_range = time.midnight..(time.midnight + 1.day)
+  def self.get_available_people(start_at, end_at, service_id)
+    start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
+    end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
+    time_range = start_time.midnight..(start_time.midnight + 1.day)
 
-    ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time})
+    ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
     
-    ba_data.collect{|ba|
+    filtered_ba_data = ba_data.collect do |ba|
       services = ba.services.where({start_at: time_range})
-      available_date = ba.available_dates.where({availablty: time}).first
+      available_date = ba.available_dates.where({availablty: time_range}).first
 
       if services.blank?
-        if time.strftime("%p") == "AM" && available_date.am
+        if start_time.strftime("%p") == "AM" && available_date.am
           ba
-        elsif time.strftime("%p") == "PM" && available_date.pm
+        elsif start_time.strftime("%p") == "PM"
           ba
         end
       else
-        periods = services.collect{|x| x.start_at.strftime("%p") }
-        unless periods.size == 2
-          if services.first.status != Service.status_rejected
-            service = services.first
-            if periods.include?("AM")
-              ba if time.strftime("%p") != "AM"
-            elsif periods.include?("PM")
-              ba if time.strftime("%p") != "PM" && available_date.am
-            end                        
-          end          
-        end   
-      end
+        statement = services.collect do |service|
+          service.is_overlap?(start_time, end_time)
+        end
 
-    }.compact.flatten
+        if !statement.include?(true)
+          if start_time.strftime("%p") == "AM" && available_date.am
+            ba
+          elsif start_time.strftime("%p") == "PM"
+            ba
+          end          
+        end
+      end
+    end
+
+    unless service_id == ""
+      service = Service.find service_id
+      if service.start_at.strftime("%m/%d/%Y") == start_time.strftime("%m/%d/%Y")
+        filtered_ba_data.push service.brand_ambassador
+      end
+    end
+
+    filtered_ba_data.uniq.compact.flatten
   end
 
   def email

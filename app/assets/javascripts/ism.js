@@ -328,17 +328,23 @@ function generate_select_ba(){
   $.ajax({
     url: $("#service_start_at").data("url"),
     data: { 
-      start_at: $("#service_start_at").val(), 
+      start_at: $("#service_start_at").val(),
+      end_at: $("#service_end_at").val(),
       action_method: $("#select-ba").data("action"),
-      ba_id: $("#select-ba").data("old-id")
+      service_id: $("#checkbox-service").data("service-id")
     }
   })
   .done(function( html ) {    
     $("#select-ba").html("");
     $("#select-ba").append(html);
 
-    if($("#select-ba").data("id") !== "")
+    if($("#select-ba").data("id") !== "") {
       $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
+    }
+
+    if($("#service_brand_ambassador_id").val() === null) {
+      $("#service_brand_ambassador_id").val("");
+    }
   });  
 }
 

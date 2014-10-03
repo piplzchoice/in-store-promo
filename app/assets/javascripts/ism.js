@@ -101,19 +101,39 @@ $(function() {
     $('.dp-service').datetimepicker();
 
     $(".dp-service#start_at_datetimepicker").on("dp.change",function (e) {   
+      e.date.minute(00);
+
+      start_date = e.date.date();
+// 
+
       if(!$("#manual-override").prop('checked')) {
         e.date.hour(e.date.hour() + $("#start_at_datetimepicker").data("est-service"));
         $('.dp-service#end_at_datetimepicker').data("DateTimePicker").setDate(e.date);
       }
-      generate_select_ba();
+
+      // end_date = e.date.date();
+
+      if($('.dp-service#start_at_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service#end_at_datetimepicker').data("DateTimePicker").getDate().date()) {
+        generate_select_ba();
+      } else {
+        $("#select-ba").html("");
+      }
+      
     });
 
-    $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) {     
+    $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) { 
+      e.date.minute(00);
+
       if(!$("#manual-override").prop('checked')) {
         e.date.hour(e.date.hour() - $("#start_at_datetimepicker").data("est-service"));
         $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);
       }      
-      generate_select_ba();
+
+      if($('.dp-service#start_at_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service#end_at_datetimepicker').data("DateTimePicker").getDate().date()) {
+        generate_select_ba();
+      } else {
+        $("#select-ba").html("");
+      }
     });
 
     if($("#start_at_datetimepicker").data("date") !== "")

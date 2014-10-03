@@ -101,11 +101,7 @@ $(function() {
     $('.dp-service').datetimepicker();
 
     $(".dp-service#start_at_datetimepicker").on("dp.change",function (e) {   
-      if(e.date.minute() > 15) {
-        e.date.minute(30);
-      } else {
-        e.date.minute(00);
-      }
+      e.date.minute(00);
 
       start_date = e.date.date();
 // 
@@ -126,12 +122,7 @@ $(function() {
     });
 
     $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) { 
-      if(e.date.minute() > 15) {
-        e.date.minute(30);
-      } else {
-        e.date.minute(00);
-      }
-
+      e.date.minute(00);
 
       if(!$("#manual-override").prop('checked')) {
         e.date.hour(e.date.hour() - $("#start_at_datetimepicker").data("est-service"));

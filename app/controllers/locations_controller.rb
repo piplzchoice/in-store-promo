@@ -5,9 +5,13 @@ class LocationsController < ApplicationController
   authorize_resource class: LocationsController
 
   def index
-    @locations = Location.all
     respond_to do |format|
-      format.html
+      format.html {
+        @locations = Location.with_status_active.paginate(:page => params[:page])
+      }
+      format.js {
+        @locations = Location.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+      }      
     end    
   end
 

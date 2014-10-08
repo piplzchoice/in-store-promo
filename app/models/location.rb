@@ -17,6 +17,11 @@
 class Location < ActiveRecord::Base
   belongs_to :user
   validates :name, :address, :city, :state, :zipcode, presence: true
+  scope :with_status_active, -> { where(is_active: true) }
+
+  def self.filter_and_order(is_active)
+    Location.where(is_active: is_active)
+  end  
 
   def self.autocomplete_search(q)
     Location.where("name ILIKE ?", "%#{q}%")    

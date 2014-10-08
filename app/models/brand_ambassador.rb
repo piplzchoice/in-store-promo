@@ -26,6 +26,11 @@ class BrandAmbassador < ActiveRecord::Base
   
   has_many :services
   has_many :available_dates
+  scope :with_status_active, -> { where(is_active: true) }
+
+  def self.filter_and_order(is_active)
+    BrandAmbassador.where(is_active: is_active)
+  end    
 
   def self.new_with_account(brand_ambassador_params, user_id)
     brand_ambassador = self.new(brand_ambassador_params)

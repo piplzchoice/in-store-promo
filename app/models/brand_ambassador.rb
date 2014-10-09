@@ -44,9 +44,14 @@ class BrandAmbassador < ActiveRecord::Base
   end
 
   def self.get_available_people(start_at, end_at, service_id)
+
+    # start_at = "10/18/2014 03:00 PM"
+    # end_at = "10/18/2014 7:00 PM"
+    # service_id = ""
+
     start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
     end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
-    time_range = start_time.midnight..(start_time.midnight + 1.day)
+    time_range = start_time.midnight..(start_time.midnight + 1.day - 1.minutes)
 
     ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
     
@@ -135,15 +140,15 @@ class BrandAmbassador < ActiveRecord::Base
     dates = []
     self.all.each do |ba|
       ba.available_dates.each do |available_date| 
-        time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day)
-        services = ba.services.where({start_at: time_range})
+        time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
+        services = ba.services.where({start_at: time_range}).where.not({status: 9})
 
         show = true
         if services.blank?
           if available_date.am
             color = "#3c763d"
           elsif !available_date.am && available_date.pm
-            color = "#f0ad4e"
+            color = "#428bca" #cek disini #f0ad4e
           end          
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
@@ -186,6 +191,9 @@ class BrandAmbassador < ActiveRecord::Base
           end          
         end
 
+        # show = true
+        # color = "#3c763d"
+
         if show
           hash = {
             title: ba.name,
@@ -197,6 +205,6 @@ class BrandAmbassador < ActiveRecord::Base
         end
       end
     end
-    return dates
+    return dates.uniq
   end
 end

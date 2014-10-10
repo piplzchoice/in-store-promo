@@ -101,17 +101,14 @@ $(function() {
     $('.dp-service').datetimepicker();
 
     $(".dp-service#start_at_datetimepicker").on("dp.change",function (e) {   
-      e.date.minute(00);
-
-      start_date = e.date.date();
-// 
+      e.date.minute(0);
+      $(this).data("DateTimePicker").setDate(e.date);
 
       if(!$("#manual-override").prop('checked')) {
-        e.date.hour(e.date.hour() + $("#start_at_datetimepicker").data("est-service"));
-        $('.dp-service#end_at_datetimepicker').data("DateTimePicker").setDate(e.date);
+        end_at_date = moment(e.date.format());
+        end_at_date.hour(end_at_date.hour() + $("#start_at_datetimepicker").data("est-service"));
+        $('.dp-service#end_at_datetimepicker').data("DateTimePicker").setDate(end_at_date);
       }
-
-      // end_date = e.date.date();
 
       if($('.dp-service#start_at_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service#end_at_datetimepicker').data("DateTimePicker").getDate().date()) {
         generate_select_ba();
@@ -122,11 +119,13 @@ $(function() {
     });
 
     $(".dp-service#end_at_datetimepicker").on("dp.change",function (e) { 
-      e.date.minute(00);
+      // e.date.minute(0);
+      // $(this).data("DateTimePicker").setDate(e.date);
 
       if(!$("#manual-override").prop('checked')) {
-        e.date.hour(e.date.hour() - $("#start_at_datetimepicker").data("est-service"));
-        $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(e.date);
+        start_at_date = moment(e.date.format());
+        start_at_date.hour(start_at_date.hour() - $("#start_at_datetimepicker").data("est-service"));
+        $('.dp-service#start_at_datetimepicker').data("DateTimePicker").setDate(start_at_date);
       }      
 
       if($('.dp-service#start_at_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service#end_at_datetimepicker').data("DateTimePicker").getDate().date()) {

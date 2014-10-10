@@ -1,30 +1,20 @@
 <h1 class="page-header">List Locations</h1>
 <div class="link-new-btn"><%= link_to("New Location", new_location_path, {class: "btn btn-primary", role: "button"}) %></div>
+
+<div class="row" style="margin-bottom: 30px;">
+  <div class="col-md-3">
+    <%= form_tag(locations_path, method: :get, remote: true, id: "filter-data") do %>
+      <div class="form-group">
+        <label class="control-label">Status</label>
+        <%= select_tag("is_active", options_for_select([["Active", true], ["Inactive", false]]), {class: "form-control filter-params"}) %>
+      </div>
+      <%= hidden_field_tag(:page, 1) %>
+      <%= submit_tag("Filter", class: "btn btn-default", id: "filter-submit") %>
+    <% end %>
+  </div>
+</div>
+<hr>
+
 <div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Name</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @locations.each_with_index do |location, i|  %>
-      <tr>
-        <td><%= i + 1 %></td>
-        <td><%= location.name %></td>
-        <td>
-          <% if location.is_active %>
-            <%= link_to "Display", location_path(location) %> || 
-            <%= link_to "Edit", edit_location_path(location) %> || 
-            <%= link_to "Deactivate", location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-          <% else %>
-            <%= link_to (location.is_active ? "Deactivate" : "Reactivate"), location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-          <% end %>          
-        </td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%= render "table" %>
 </div>

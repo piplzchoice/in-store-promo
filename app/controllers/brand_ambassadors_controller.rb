@@ -3,9 +3,13 @@ class BrandAmbassadorsController < ApplicationController
   authorize_resource class: BrandAmbassadorsController
 
   def index
-    @brand_ambassadors = BrandAmbassador.all
     respond_to do |format|
-      format.html
+      format.html {
+        @brand_ambassadors = BrandAmbassador.with_status_active.paginate(:page => params[:page])
+      }
+      format.js {
+        @brand_ambassadors = BrandAmbassador.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+      }      
     end    
   end
 

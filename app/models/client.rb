@@ -33,6 +33,7 @@ class Client < ActiveRecord::Base
   validates :company_name, :first_name, :last_name, :phone, presence: true
 
   default_scope { order("created_at ASC") }
+  scope :with_status_active, -> { where(is_active: true) }
 
   def self.new_with_account(client_params, user_id)
     client = self.new(client_params)
@@ -48,6 +49,10 @@ class Client < ActiveRecord::Base
   def self.autocomplete_search(q)
     Client.where("first_name ILIKE ? OR last_name ILIKE ? OR company_name ILIKE ?", "%#{q}%", "%#{q}%", "%#{q}%")    
   end
+
+  def self.filter_and_order(is_active)
+    Client.where(is_active: is_active)
+  end  
 
   def email
     account.email

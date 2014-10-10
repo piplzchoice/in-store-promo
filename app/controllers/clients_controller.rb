@@ -3,10 +3,14 @@ class ClientsController < ApplicationController
   authorize_resource class: ClientsController
   before_filter :check_client_status, only: [:show, :edit, :update]
 
-  def index
-    @clients = Client.all
+  def index    
     respond_to do |format|
-      format.html
+      format.html {
+        @clients = Client.with_status_active.paginate(:page => params[:page])
+      }
+      format.js {
+        @clients = Client.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+      }      
     end    
   end
 

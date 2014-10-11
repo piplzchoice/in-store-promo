@@ -18,6 +18,7 @@ class Location < ActiveRecord::Base
   belongs_to :user
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
+  default_scope { order("created_at ASC") }
 
   def self.filter_and_order(is_active)
     Location.where(is_active: is_active)

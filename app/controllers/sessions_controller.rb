@@ -4,7 +4,18 @@ class SessionsController < Devise::SessionsController
   end
 
   def create
-    super
+    self.resource = warden.authenticate!(auth_options)
+    set_flash_message(:notice, :signed_in) if is_flashing_format?
+    
+    if resource.is_not_active?
+      flash.delete(:notice)
+      sign_out(resource_name)
+      redirect_to root_path and return
+    end
+
+    sign_in(resource_name, resource)    
+    yield self.resource if block_given?
+    respond_with resource, location: after_sign_in_path_for(resource)
   end
 
     # DELETE /resource/sign_out

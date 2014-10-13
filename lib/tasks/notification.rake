@@ -24,7 +24,7 @@ namespace :notification do
   task :add_availblty_date => :environment do
     current_time = Time.now.to_time
     if current_time.strftime("%d") == "15"
-      BrandAmbassador.all.each do |ba|
+      BrandAmbassador.with_status_active.each do |ba|
         ApplicationMailer.send_reminder_to_add_availablty_date(ba).deliver!
       end
     end

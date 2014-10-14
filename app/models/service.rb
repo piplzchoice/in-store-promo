@@ -316,7 +316,7 @@ class Service < ActiveRecord::Base
   end
 
   def can_create_report?
-    [Service.status_conducted, Service.status_ba_paid].include?(status)
+    [Service.status_conducted].include?(status)
   end
 
   def is_assigned?

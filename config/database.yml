@@ -23,7 +23,20 @@ default: &default
 
 development:
   <<: *default
-  database: ism_development
+  # database: ism_development
+  database: instorem_server
   username: postgresql
   password:
   host: localhost
+
+production:
+  <<: *default
+  # database: ism_development
+  database: instorem_server
+  username: postgresql
+  password:
+  host: localhost
+
+# heroku pgbackups:capture --app in-store-marketing && curl -o latest.dump `heroku pgbackups:url --app in-store-marketing` && rake db:drop db:create && pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgresql -d instorem_server latest.dump && rake stuff:update_users_password
+
+# heroku pgbackups:restore DATABASE 'https://dl.dropboxusercontent.com/u/34533306/latest.dump' --app instorem && heroku run rake stuff:update_users_password --app instorem

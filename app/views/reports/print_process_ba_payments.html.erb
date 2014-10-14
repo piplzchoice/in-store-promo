@@ -1,31 +1,36 @@
-<table id="table-data" class="table table-striped">
+<div class="link-new-btn">
+  <span>Assigned To</span><br />
+  <span><strong><%= @ba.name %></strong></span>
+</div>
+<br /><br />
+<table id="table-data" class="table table-striped" border="1" width="100%">
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Client Name</th>
-      <th>Location</th>
-      <th>Rate</th>
-      <th>Expenses</th>
-      <th>Travel Expense</th>
-      <th>Total</th>
+      <th style="text-align: center;">Date</th>
+      <th style="text-align: center;">Client Name</th>
+      <th style="text-align: center;">Location</th>
+      <th style="text-align: center;">Rate</th>
+      <th style="text-align: center;">Expenses</th>
+      <th style="text-align: center;">Travel Expense</th>
+      <th style="text-align: center;">Total</th>
     </tr>
   </thead>
   <tbody>
     <% @services.each_with_index do |service, i|  %>
     <tr>
-      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-      <td><%= service.location.name %></td> 
-      <td><%= service.company_name %></td> 
-      <td><%= number_to_currency(service.ba_rate) %></td> 
-      <td><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
-      <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
-      <td><%= number_to_currency service.total_ba_paid %></td> 
+      <td style="text-align: center;"><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td style="text-align: center;"><%= service.location.name %></td> 
+      <td style="text-align: center;"><%= service.company_name %></td> 
+      <td style="text-align: center;"><%= number_to_currency(service.ba_rate) %></td> 
+      <td style="text-align: center;"><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+      <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+      <td style="text-align: center;"><%= number_to_currency service.total_ba_paid %></td> 
     </tr>
     <% end %>
   </tbody>
 </table>
-
+<br /><br />
 <div class="link-new-btn">
   <span>Total Payment Processed :</span>
-  <span id="total-ba-paid"><strong><%= number_to_currency(@totals_ba_paid) %></strong></span>
+  <span id="total-ba-paid" style="float: right;"><strong><%= number_to_currency(@totals_ba_paid) %></strong></span>
 </div>

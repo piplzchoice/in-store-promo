@@ -1,7 +1,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>No</th>
+      <th>ID</th>
       <!-- <th>Email</th> -->
       <th>Name</th>
       <th>Action</th>
@@ -10,7 +10,7 @@
   <tbody>
     <% @brand_ambassadors.each_with_index do |brand_ambassador, i|  %>
     <tr>
-      <td><%= i + 1 %></td>
+      <td><%= brand_ambassador.id %></td>
       <!-- <td><%#= brand_ambassador.email %></td> -->
       <td><%= brand_ambassador.name %></td>
       <td>

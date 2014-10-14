@@ -51,13 +51,15 @@ class Project < ActiveRecord::Base
 
   def self.calendar_services(project_id)
     project = find(project_id)
-    project.services.collect{|x| {
+    project.services.collect{|x|       
+      {
         title: x.title_calendar,
         start: x.start_at.iso8601,
         end: x.end_at.iso8601,
         color: x.get_color,
         url: Rails.application.routes.url_helpers.project_service_path({project_id: project_id, id: x.id})
-      } }
+      } if x.is_ba_active?
+    }.uniq.compact
   end
 
   def self.options_select_status

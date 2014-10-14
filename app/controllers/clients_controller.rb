@@ -67,9 +67,16 @@ class ClientsController < ApplicationController
   def destroy
     @client = Client.find(params[:id])
     @account = @client.account
-    if @client.set_data_false
-      redirect_to clients_url, {notice: "Client de-activated"}
+    msg = ""
+    if @client.is_active
+      @client.set_data_false
+      msg = "Client de-activated"      
+    else
+      @client.set_data_true
+      msg = "Client re-activated"      
     end    
+
+    redirect_to clients_url, {notice: msg}
   end
 
   def reset_password

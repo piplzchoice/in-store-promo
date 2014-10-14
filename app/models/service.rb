@@ -327,6 +327,10 @@ class Service < ActiveRecord::Base
     (start_at.to_datetime - interval_end_at) * (interval_start_at - end_at.to_datetime) >= 0
   end
 
+  def is_ba_active?
+    brand_ambassador.is_active
+  end
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

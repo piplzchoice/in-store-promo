@@ -66,9 +66,16 @@ class LocationsController < ApplicationController
 
   def destroy
     @location = Location.find(params[:id])
-    if @location.set_data_false
-      redirect_to locations_url, {notice: "Location de-activated"}
-    end    
+    msg = ""
+    if @location.is_active
+      @location.set_data_false
+      msg = "Location de-activated"      
+    else
+      @location.set_data_true
+      msg = "Location re-activated"      
+    end  
+
+    redirect_to locations_url, {notice: msg}      
   end
 
   def location_params

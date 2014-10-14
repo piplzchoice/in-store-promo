@@ -63,6 +63,16 @@ class User < ActiveRecord::Base
     self.update_attributes(user_params)
   end
 
+  def is_not_active?
+    resp = false
+    if self.has_role?(:ba)
+      unless self.brand_ambassador.is_active
+        resp = true
+      end
+    end
+    resp
+  end
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

@@ -47,7 +47,7 @@ class Client < ActiveRecord::Base
   end
 
   def self.autocomplete_search(q)
-    Client.where("first_name ILIKE ? OR last_name ILIKE ? OR company_name ILIKE ?", "%#{q}%", "%#{q}%", "%#{q}%")    
+    Client.with_status_active.where("first_name ILIKE ? OR last_name ILIKE ? OR company_name ILIKE ?", "%#{q}%", "%#{q}%", "%#{q}%")    
   end
 
   def self.filter_and_order(is_active)

@@ -55,6 +55,49 @@ class ReportsController < ApplicationController
     end
   end
 
+  def ba_payments    
+    respond_to do |format|
+      format.html do
+        @brand_ambassadors = BrandAmbassador.all
+        @services = Service.all.where({status: Service.status_paid}).order(start_at: :desc)
+      end    
+
+      format.js do
+        ba_id = params[:assigned_to]
+        project_name = ""
+        @services = Service.filter_and_order(Service.status_paid, ba_id, "", project_name, sort_column, sort_direction)
+      end
+    end    
+  end
+
+  def process_ba_payments
+    unless params[:service_ids].nil?
+      hash_data = BrandAmbassador.process_payments(params[:service_ids])
+      hash_data.each_key do |key|
+        @ba = BrandAmbassador.find(key)
+        @services = @ba.services.find(hash_data[key])
+        @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
+        # Service.update_to_ba_paid(hash_data[key])
+
+        file = "ba-#{@ba.id}-paid-#{Time.now.to_i}.pdf"
+
+        html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments", :id => key, service_ids: hash_data[key].join("-"))
+        kit = PDFKit.new(html)
+        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"      
+        ApplicationMailer.ba_is_paid(@ba, kit.to_pdf).deliver
+      end      
+    end
+    redirect_to ba_payments_reports_path    
+  end
+
+  def print_process_ba_payments
+    # {"8"=>["102", "60"], "17"=>["57"], "2"=>["65", "66"]}
+    @ba = BrandAmbassador.find(params[:id])
+    @services = @ba.services.find(params[:service_ids].split("-"))
+    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))    
+    render layout: "print_report"
+  end
+
   def reconcile_payments
     respond_to do |format|
       format.html do

@@ -1,0 +1,44 @@
+<%= form_tag(process_ba_payments_reports_path, method: :patch, id: "filter-data") do %>
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th><%= sortable "start_at", "Date" %></th>
+        <th><%= sortable "client", "Client Name" %></th>
+        <th>Location</th>
+        <th>Rate</th>
+        <th>Expenses</th>
+        <th>Travel Expense</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+      <tr>
+        <td>
+          <%= 
+            check_box_tag("service_ids[]", "#{service.brand_ambassador.id}-#{service.id}", false, 
+            {class: 'ba-payments-checkbox', data: {total: service.total_ba_paid}})
+          %>
+        </td>
+        <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+        <td><%= service.location.name %></td> 
+        <td><%= service.company_name %></td> 
+        <td><%= number_to_currency(service.ba_rate) %></td> 
+        <td><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+        <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+        <td><%= number_to_currency service.total_ba_paid %></td> 
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="link-new-btn">
+    <span>Total Payment Processed :</span>
+    <span id="total-ba-paid">0</span>
+  </div>
+  <br /><br />
+  <div class="link-new-btn">
+    <%= submit_tag("Process BA Payment", class: "btn btn-primary") %>
+  </div>
+<% end %>

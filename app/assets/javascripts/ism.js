@@ -37,6 +37,21 @@ $(function() {
     $("#reconcile-grand-total").html("<strong>" + total + "</strong>");
   });  
 
+  $(document).on("change", ".ba-payments-checkbox", function(){    
+    sum = 0
+    $(".ba-payments-checkbox:checked").each(function(i, obj) {
+      sum += parseFloat($(obj).data("total"))
+    });      
+
+    if(sum !== 0) {
+      total = "$" + sum
+    } else {
+      total = 0
+    }
+
+    $("#total-ba-paid").html("<strong>" + total + "</strong>");
+  });    
+
   $("#new_report, .edit_report").submit(function(){
     if($("#submit-report-data").data("mileage")) {
       if($("#can_submit").val() === "0") {

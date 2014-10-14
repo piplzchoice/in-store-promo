@@ -1,0 +1,31 @@
+<table id="table-data" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Client Name</th>
+      <th>Location</th>
+      <th>Rate</th>
+      <th>Expenses</th>
+      <th>Travel Expense</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+    <tr>
+      <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+      <td><%= service.location.name %></td> 
+      <td><%= service.company_name %></td> 
+      <td><%= number_to_currency(service.ba_rate) %></td> 
+      <td><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+      <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+      <td><%= number_to_currency service.total_ba_paid %></td> 
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="link-new-btn">
+  <span>Total Payment Processed :</span>
+  <span id="total-ba-paid"><strong><%= number_to_currency(@totals_ba_paid) %></strong></span>
+</div>

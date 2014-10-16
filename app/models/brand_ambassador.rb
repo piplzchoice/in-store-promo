@@ -54,7 +54,7 @@ class BrandAmbassador < ActiveRecord::Base
     ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
     
     filtered_ba_data = ba_data.collect do |ba|
-      services = ba.services.where({start_at: time_range}).where.not({status: 9})
+      services = ba.services.where({start_at: time_range}).where.not({status: [Service.status_cancelled, Service.status_rejected]})
       available_date = ba.available_dates.where({availablty: time_range}).first
 
       if services.blank?

@@ -1,5 +1,5 @@
 <div class="link-new-btn">
-  <span>Assigned To</span><br />
+  <span>Payable To</span><br />
   <span><strong><%= @ba.name %></strong></span>
 </div>
 <br /><br />
@@ -11,7 +11,9 @@
       <th style="text-align: center;">Location</th>
       <th style="text-align: center;">Rate</th>
       <th style="text-align: center;">Expenses</th>
-      <th style="text-align: center;">Travel Expense</th>
+      <% if @ba.mileage %>
+        <th style="text-align: center;">Travel Expense</th>
+      <% end %>
       <th style="text-align: center;">Total</th>
     </tr>
   </thead>
@@ -19,11 +21,13 @@
     <% @services.each_with_index do |service, i|  %>
     <tr>
       <td style="text-align: center;"><%= service.start_at.strftime('%m/%d/%Y') %></td>
-      <td style="text-align: center;"><%= service.location.name %></td> 
       <td style="text-align: center;"><%= service.company_name %></td> 
+      <td style="text-align: center;"><%= service.location.name %></td>       
       <td style="text-align: center;"><%= number_to_currency(service.ba_rate) %></td> 
       <td style="text-align: center;"><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
-      <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+      <% if @ba.mileage %>
+        <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+      <% end %>
       <td style="text-align: center;"><%= number_to_currency service.total_ba_paid %></td> 
     </tr>
     <% end %>

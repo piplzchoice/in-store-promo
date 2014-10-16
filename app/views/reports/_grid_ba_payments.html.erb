@@ -22,8 +22,8 @@
           %>
         </td>
         <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-        <td><%= service.location.name %></td> 
-        <td><%= service.company_name %></td> 
+        <td><%= service.company_name %></td>
+        <td><%= service.location.name %></td>         
         <td><%= number_to_currency(service.ba_rate) %></td> 
         <td><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
         <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>

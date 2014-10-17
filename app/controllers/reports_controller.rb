@@ -77,7 +77,7 @@ class ReportsController < ApplicationController
         @ba = BrandAmbassador.find(key)
         @services = @ba.services.find(hash_data[key])
         @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
-        # Service.update_to_ba_paid(hash_data[key])
+        Service.update_to_ba_paid(hash_data[key])
 
         file = "ba-#{@ba.id}-paid-#{Time.now.to_i}.pdf"
 

@@ -88,6 +88,20 @@ class BrandAmbassador < ActiveRecord::Base
     filtered_ba_data.uniq.compact.flatten
   end
 
+  def self.process_payments(service_ids)
+    data = service_ids.collect{|x| x.split("-")}
+    hash_data = {}
+    data.each do |x|
+      if hash_data.has_key?(x.first)
+        hash_data[x.first].push x.last
+      else
+        hash_data[x.first] = [x.last]
+      end
+    end    
+
+    return hash_data
+  end
+
   def email
     account.email
   end  

@@ -76,4 +76,11 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: ba.account.email, subject: et.subject)
   end
 
+  def ba_is_paid(ba, file)
+    et = EmailTemplate.find_by_name("ba_is_paid")
+    attachments["ba-#{ba.id}-paid-#{Time.now.to_i}.pdf"] = file
+    @content = et.content.gsub(".ba_name", ba.name)
+    mail(to: ba.account.email, subject: et.subject)    
+  end
+
 end

@@ -143,9 +143,29 @@ class Service < ActiveRecord::Base
     end  
   end
 
+  def self.calculate_total_ba_paid(service_ids)
+    total_paid = 0
+    Service.find(service_ids).each do |service|
+      total_paid += service.total_ba_paid
+    end
+    return total_paid
+  end
+
+  def self.update_to_ba_paid(service_ids)
+    Service.find(service_ids).each do |service|
+      service.update_attribute(:status, Service.status_ba_paid)
+    end    
+  end
+
   def self.update_status_to_paid(service_id)
     service = Service.find(service_id)
     service.update_attribute(:status, Service.status_paid)
+  end  
+
+  def self.update_status_to_ba_paid(service_id)
+    service = Service.find(service_id)
+    # ApplicationMailer.ba_is_paid(@client.account.email, @client.name ,password).deliver
+    # service.update_attribute(:status, Service.status_ba_paid)
   end  
 
   def self.invited_and_unrespond_status
@@ -288,6 +308,14 @@ class Service < ActiveRecord::Base
   def cancelled
     update_attribute(:status, Service.status_cancelled)
   end
+
+  def ba_rate
+    brand_ambassador.rate * TimeDifference.between(start_at, end_at).in_hours
+  end
+
+  def total_ba_paid
+    ba_rate + (report.expense_one.nil? ? 0 : report.expense_one) + (brand_ambassador.mileage ? (report.travel_expense.nil? ? 0 : report.travel_expense) : 0)
+  end  
 
   def can_modify?
     [Service.status_scheduled, Service.status_confirmed, Service.status_rejected,

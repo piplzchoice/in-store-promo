@@ -134,3 +134,18 @@ if DefaultValue.first.send_unrespond.nil?
   dv.save
   puts "send_unrespond added"
 end
+
+if EmailTemplate.find_by_name("ba_is_paid").nil?
+  ba_is_paid = {
+    name: "ba_is_paid", 
+    subject: "You have been paided",
+    content: "
+      <p>Hello .ba_name,</p>
+      <p>Payment was processed today to pay you for the following services (see attached).</p>
+      <p>You should expect the check from our bank within 5-6 days.</p>
+    "  
+  }  
+  EmailTemplate.create(ba_is_paid)
+
+  puts "created email template for ba_is_paid"
+end

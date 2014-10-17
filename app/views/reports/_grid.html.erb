@@ -22,7 +22,7 @@
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
       <% unless service.report.nil? %>
         <td><%= number_to_currency service.report.expense_one %></td>
-        <td><%= service.brand_ambassador.mileage ? number_to_currency(service.report.travel_expense) : "-" %></td>
+        <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
       <% else %>
         <td>-</td>
         <td>-</td>      

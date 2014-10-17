@@ -1,7 +1,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>No</th>
+      <th>ID</th>
       <th>Company Name</th>
       <th>Name</th>
       <th>Action</th>
@@ -10,7 +10,7 @@
   <tbody>
     <% @clients.each_with_index do |client, i|  %>
     <tr>
-      <td><%= i + 1 %></td>
+      <td><%= client.id %></td>
       <td><%= client.company_name %></td>
       <td><%= client.name %></td>
       <td>

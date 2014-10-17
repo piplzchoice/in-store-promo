@@ -91,7 +91,6 @@ class ReportsController < ApplicationController
   end
 
   def print_process_ba_payments
-    # {"8"=>["102", "60"], "17"=>["57"], "2"=>["65", "66"]}
     @ba = BrandAmbassador.find(params[:id])
     @services = @ba.services.find(params[:service_ids].split("-"))
     @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))    

@@ -10,7 +10,7 @@ class LocationsController < ApplicationController
         @locations = Location.with_status_active.paginate(:page => params[:page])
       }
       format.js {
-        @locations = Location.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+        @locations = Location.filter_and_order(params[:is_active], params[:name]).paginate(:page => params[:page])
       }      
     end    
   end

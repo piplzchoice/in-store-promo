@@ -58,7 +58,7 @@ class ReportsController < ApplicationController
   def ba_payments    
     respond_to do |format|
       format.html do
-        @brand_ambassadors = BrandAmbassador.all
+        @brand_ambassadors = Service.all.where({status: Service.status_paid}).collect{|x| x.brand_ambassador}.uniq
         @services = Service.all.where({status: Service.status_paid}).order(start_at: :desc)
       end    
 

@@ -31,8 +31,7 @@ class ReportsController < ApplicationController
           client_name = current_user.client.id
         end
         
-        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
-        @services = Service.filter_and_order(params[:status], ba_id, client_name, project_name, sort_column, sort_direction).paginate(:page => params[:page])
+        @services = Service.filter_and_order(params[:status], ba_id, client_name, sort_column, sort_direction).paginate(:page => params[:page])
       end
 
       format.csv do
@@ -45,9 +44,8 @@ class ReportsController < ApplicationController
           client_name = current_user.client.id
         end
         
-        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
         
-        @services = Service.filter_and_order(params[:status], ba_id, params[:client_name], params[:project_name], sort_column, sort_direction)
+        @services = Service.filter_and_order(params[:status], ba_id, params[:client_name], sort_column, sort_direction)
         
         headers['Content-Type'] ||= 'text/csv'
         headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}.csv\""           
@@ -64,8 +62,7 @@ class ReportsController < ApplicationController
 
       format.js do
         ba_id = params[:assigned_to]
-        project_name = ""
-        @services = Service.filter_and_order(Service.status_paid, ba_id, "", project_name, sort_column, sort_direction)
+        @services = Service.filter_and_order(Service.status_paid, ba_id, "", sort_column, sort_direction)
       end
     end    
   end
@@ -106,8 +103,7 @@ class ReportsController < ApplicationController
 
       format.js do
         ba_id = ""
-        project_name = ""
-        @services = Service.filter_and_order(Service.status_reported, ba_id, params[:client_name], project_name, sort_column, sort_direction)
+        @services = Service.filter_and_order(Service.status_reported, ba_id, params[:client_name], sort_column, sort_direction)
       end
     end
   end
@@ -134,8 +130,7 @@ class ReportsController < ApplicationController
           client_name = current_user.client.id
         end
         
-        project_name = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) ? params[:project_name] : "")
-        render json: Service.calendar_services(params[:status], ba_id, client_name, project_name, sort_column, sort_direction)
+        render json: Service.calendar_services(params[:status], ba_id, client_name, sort_column, sort_direction)
       }
     end
   end

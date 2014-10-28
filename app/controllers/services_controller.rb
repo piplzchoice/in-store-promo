@@ -1,31 +1,29 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
-  before_filter :check_project_status, except: [:show, :mark_service_as_complete, :update_status_after_reported]
-  before_filter :check_project_completed, except: [:show, :index, :mark_service_as_complete, :update_status_after_reported]
 
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
 
   def index
-    render json: Project.calendar_services(params[:project_id])
+    render json: Client.calendar_services(params[:client_id])
   end
 
   def new
-    @project = Project.find(params[:project_id])
-    @service = @project.services.build
+    @client = Client.find(params[:client_id])
+    @service = @client.services.build
     respond_to do |format|
       format.html
     end
   end
 
   def create
-    @project = Project.find(params[:project_id])
-    @service = @project.services.build_data(service_params)
+    @client = Client.find(params[:client_id])
+    @service = @client.services.build_data(service_params, params[:client_id])
     respond_to do |format|
       format.html do
         if @service.save
-          @project.set_as_active if @project.services.size == 1
+          @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-          redirect_to project_path(@project), notice: "Service created"
+          redirect_to client_path(@client), notice: "Service created"
         else
           render :new
         end
@@ -34,16 +32,16 @@ class ServicesController < ApplicationController
   end
 
   def edit
-    @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
     old_ba = @service.brand_ambassador
     old_date = @service.date
     old_location_id = @service.location_id
@@ -59,7 +57,7 @@ class ServicesController < ApplicationController
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
               @service.update_attribute(:status, Service.status_scheduled)
             end
-            redirect_to project_service_path({project_id: params[:project_id], id: params[:id]}), notice: "Service Updated" and return
+            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
           end
         end
         render :edit
@@ -68,23 +66,23 @@ class ServicesController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
   end
 
   def update_status_after_reported
-    @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
     @service.update_attributes({status: params[:service_status]})
-    redirect_to project_service_path(project_id: @project.id, id: @service.id)
+    redirect_to client_service_path(client_id: @client.id, id: @service.id)
   end
 
   def destroy
-    @project = Project.find(params[:project_id])
-    @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
     if @service.cancelled
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
-      redirect_to project_path(@project), {notice: "Service Cancelled"}
+      redirect_to client_path(@client), {notice: "Service Cancelled"}
     else
       render :show
     end
@@ -104,9 +102,9 @@ class ServicesController < ApplicationController
   end
 
   def confirm_respond
-    @project = Project.find(params[:project_id])
-    unless @project.nil?
-      @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    unless @client.nil?
+      @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_attributes({status: Service.status_confirmed, token: Devise.friendly_token})
@@ -119,9 +117,9 @@ class ServicesController < ApplicationController
   end
 
   def rejected_respond
-    @project = Project.find(params[:project_id])
-    unless @project.nil?
-      @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    unless @client.nil?
+      @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_attributes({status: Service.status_rejected, token: Devise.friendly_token})
@@ -134,30 +132,25 @@ class ServicesController < ApplicationController
 
   def mark_service_as_complete
     msg = "Service update failed"
-    @project = Project.find(params[:project_id])
-    unless @project.nil?
-      @service = @project.services.find(params[:id])
+    @client = Client.find(params[:client_id])
+    unless @client.nil?
+      @service = @client.services.find(params[:id])
       unless @service.nil?
         @service.update_attributes({status: Service.status_conducted})
         msg = "Service set at completed"
       end
     end
 
-    redirect_to project_service_path(:project_id => params[:project_id], :id => params[:id]), {notice: msg}
+    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
   end
 
   def service_params
     params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
   end
 
-  def check_project_status
-    project = Project.find(params[:project_id])
-    redirect_to(projects_path, :flash => { :error => "Project is not active" }) unless project.is_active
-  end
-
-  def check_project_completed
-    project = Project.find(params[:project_id])
-    redirect_to(projects_path, :flash => { :error => "Project is complete" }) unless project.is_not_complete?
+  def check_client_status
+    client = Client.find(params[:client_id])
+    redirect_to(clients_path, :flash => { :error => "Client is not active" }) unless client.is_active
   end
 
 end

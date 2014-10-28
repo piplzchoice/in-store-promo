@@ -15,7 +15,7 @@
   <tbody>
     <% @services.each_with_index do |service, i|  %>
     <tr>
-      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), project_service_path(project_id:  (service.project.nil? ? "" : service.project.id), id: service.id, report: true) %></td>
+      <td><%= link_to service.start_at.strftime('%m/%d/%Y'), client_service_path(client_id:  (service.client.nil? ? "" : service.client.id), id: service.id, report: true) %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
       <td><%= service.location.nil? ? "" : service.location.name %></td>

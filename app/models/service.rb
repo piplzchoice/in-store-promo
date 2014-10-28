@@ -3,7 +3,6 @@
 # Table name: services
 #
 #  id                  :integer          not null, primary key
-#  project_id          :integer
 #  location_id         :integer
 #  brand_ambassador_id :integer
 #  user_id             :integer
@@ -31,13 +30,10 @@
 
 class Service < ActiveRecord::Base
 
-  belongs_to :user
+  belongs_to :client
   belongs_to :brand_ambassador
   belongs_to :location
-  belongs_to :project
   has_one :report
-
-  has_one :client, :through => :project
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
@@ -50,12 +46,11 @@ class Service < ActiveRecord::Base
   end
 
 
-  def self.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction)
+  def self.filter_and_order(status, assigned_to, client_name, sort_column, sort_direction)
     data = nil
     conditions = {}
     conditions.merge!(status: status) if status != ""
     conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
-    conditions.merge!(project_id: project_name) if project_name != ""
 
     if client_name != ""
       data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
@@ -128,7 +123,7 @@ class Service < ActiveRecord::Base
       service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')
 
       service = Service.where({
-        project_id: service_params[:project_id], 
+        client_id: service_params[:client_id], 
         location_id: service_params[:location_id], 
         brand_ambassador_id: service_params[:brand_ambassador_id],
         start_at: service_params[:start_at],
@@ -198,15 +193,15 @@ class Service < ActiveRecord::Base
     ]
   end
 
-  def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
-    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x|
+  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction)
+    Service.filter_and_order(status, assigned_to, client_name, sort_column, sort_direction).collect{|x|
         if x.status != Service.status_cancelled
           {
             title: x.title_calendar,
             start: x.start_at.iso8601,
             end: x.end_at.iso8601,
             color: x.get_color,
-            url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
+            url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
           } 
         end
     }.compact.flatten
@@ -368,7 +363,7 @@ class Service < ActiveRecord::Base
   end
 
   def grand_total
-    project.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
+    client.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
   end
 
 end

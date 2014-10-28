@@ -89,4 +89,14 @@ namespace :stuff do
     end
   end
 
+  desc "merge service to client"
+  task :merge_service_to_client => :environment do
+    Service.all.each do |service|
+      unless service.project.nil?
+        client = service.project.client
+        service.update_attribute(:client_id, client.id)
+      end
+    end
+  end
+
 end

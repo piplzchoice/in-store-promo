@@ -15,7 +15,6 @@
       </div>             
       <%= hidden_field_tag(:sort, "start_at",) %>
       <%= hidden_field_tag(:direction, "desc") %>
-      <%= hidden_field_tag(:project_name, "") %>
       <%= hidden_field_tag(:page, 1) %>
       <%= submit_tag("Filter", class: "btn btn-default", id: "filter-submit") %>               
       <%= link_to("Export CSV", "#", {id: "export-csv" ,class: "btn btn-primary", role: "button"}) %>   

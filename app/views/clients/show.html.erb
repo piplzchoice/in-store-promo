@@ -15,26 +15,21 @@
 <label>Billing Address :</label>
 <p><%= @client.billing_address %></p>
 
-<h3 class="sub-header">List Projects</h3>
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Project Name</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @client.projects.each_with_index do |project, i|  %>
-      <tr>
-        <td><%= i + 1 %></td>
-        <td><%= project.name %></td>
-        <td>
-          <%= link_to "Show", project_path(project) %>
-        </td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+<h2 class="sub-header no-print">Services</h2> 
+
+<div class="link-new-btn no-print"><%= link_to("New Service", new_client_service_path(@client), {class: "btn btn-primary", role: "button"}) %></div>
+
+<div id="calendar-and-legend">  
+  <div id="colour-legend" class="no-print">
+    <div class="scheduled">Scheduled</div>
+    <div class="confirmed">Confirmed</div>
+    <div class="rejected">Rejected</div>
+    <div class="conducted">Conducted</div>
+    <div class="unrespond">Unrespond</div>
+    <div class="reported">Reported</div>
+    <div class="paid">Paid</div>
+    <div class="ba-paid">BA Paid</div>
+    <div class="cancelled">Cancelled</div>
+  </div>
+  <div id="calendar" data-url="<%= client_services_path(@client) %>"></div>
 </div>

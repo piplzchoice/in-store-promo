@@ -31,6 +31,7 @@
 class Service < ActiveRecord::Base
 
   belongs_to :client
+  belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
   has_one :report

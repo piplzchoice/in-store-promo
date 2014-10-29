@@ -3,9 +3,9 @@
 # Table name: services
 #
 #  id                  :integer          not null, primary key
+#  project_id          :integer
 #  location_id         :integer
 #  brand_ambassador_id :integer
-#  user_id             :integer
 #  created_at          :datetime
 #  updated_at          :datetime
 #  start_at            :datetime
@@ -14,6 +14,7 @@
 #  status              :integer          default(1)
 #  token               :string(255)
 #  is_active           :boolean          default(TRUE)
+#  client_id           :integer
 #
 
 # note for field "status"

@@ -28,6 +28,11 @@
     <%= f.text_field :phone, {class: "form-control", placeholder: "Phone"} %>
   </div>  
 
+  <div class="form-group">
+    <%= f.label :rate, "Project Rate", {class: "control-label"} %>
+    <%= f.number_field :rate, {class: "form-control", placeholder: "Rate", value: DefaultValue.rate_project} %>
+  </div>  
+
   <h3 class="sub-header">Billing Address</h3>
   <div class="form-group">
     <%= f.label :billing_name, {class: "control-label"} %>

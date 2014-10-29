@@ -8,7 +8,7 @@
 #  phone      :string(255)
 #  address    :string(255)
 #  grade      :integer
-#  created_at :start_at
+#  created_at :datetime
 #  updated_at :datetime
 #  account_id :integer
 #  mileage    :boolean

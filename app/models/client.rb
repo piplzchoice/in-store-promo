@@ -20,6 +20,7 @@
 #  updated_at   :datetime
 #  account_id   :integer
 #  is_active    :boolean          default(TRUE)
+#  rate         :decimal(8, 2)
 #
 
 class Client < ActiveRecord::Base

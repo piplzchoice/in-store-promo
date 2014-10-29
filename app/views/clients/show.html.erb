@@ -1,19 +1,40 @@
+<style type="text/css">
+@media print
+{
+  .no-print { visibility: hidden; }
+  .no-print { display: none; }
+}
+</style>
 <h1 class="page-header">Show Client</h1>
-<div class="link-new-btn">
-  <%= link_to("Login as Client", logged_as_client_path(@client), {class: "btn btn-primary", role: "button", :method => :delete}) %>
+
+<div class="row no-print">
+  <div class="col-md-3">
+    <label>Company Name :</label>
+    <p><%= @client.company_name %></p>
+  </div>
+
+  <div class="col-md-3">
+    <label>Name :</label>
+    <p><%= @client.name %></p>
+  </div>
+
+  <div class="col-md-3">
+    <label>Status :</label><br />
+    <%= link_to (@client.is_active ? "Deactivate" : "Reactivate"), client_path(@client), {class: "btn btn-primary", role: "button", data: { confirm: "Are you sure?" }, :method => :delete} %>
+  </div>
+
+  <div class="col-md-3">
+    <label>Login :</label><br />
+    <%= link_to("Login as Client", logged_as_client_path(@client), {class: "btn btn-primary", role: "button", :method => :delete}) %>
+  </div>
+
+  <div class="col-md-3">
+    <label>Export :</label><br />
+    <%= link_to("Export", "#", {id: "print_calendar_as_pdf",class: "btn btn-primary", role: "button"}) %>
+  </div>
+
 </div>
-<label>Company Name :</label>
-<p><%= @client.company_name %></p>
 
-<label>Name :</label>
-<p><%= @client.name %></p>
-
-<label>Billing Name :</label>
-<p><%= @client.billing_name %></p>
-
-
-<label>Billing Address :</label>
-<p><%= @client.billing_address %></p>
 
 <h2 class="sub-header no-print">Services</h2> 
 
@@ -33,3 +54,6 @@
   </div>
   <div id="calendar" data-url="<%= client_services_path(@client) %>"></div>
 </div>
+<%= form_tag(export_calendar_client_path(@client), method: :post, remote: false, id: "export-calendar") do %>
+<%= hidden_field_tag(:dataurl) %>
+<% end %>

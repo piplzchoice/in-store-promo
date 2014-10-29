@@ -112,6 +112,22 @@ class ClientsController < ApplicationController
       :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])
   end  
 
+  def export_calendar
+    @client = Client.find(params[:id])
+    @dataurl = params[:dataurl]
+    
+    file = "client-calendar-#{@client.id}-#{Time.now.to_i}.pdf"
+    html = render_to_string(:layout => "print_calendar", :action => "print_calendar", :id => @client.id, :dataurl => @dataurl)
+    kit = PDFKit.new(html)
+    # kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
+  end
+
+  def print_calendar    
+    @client = Client.find(params[:id])
+    @dataurl = params[:dataurl]
+  end  
+
   private
   def check_client_status
     client = Client.find(params[:id])

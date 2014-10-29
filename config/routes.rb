@@ -14,6 +14,9 @@ Rails.application.routes.draw do
       delete "logged_as"
     end
 
+    post :export_calendar, :on => :member
+    get :print_calendar, :on => :member    
+
     resources :services do
       collection do
         get :autocomplete_location_name
@@ -25,7 +28,7 @@ Rails.application.routes.draw do
         get :rejected_respond
         get :mark_service_as_complete
         patch :update_status_after_reported
-      end
+      end      
     end    
   end
 

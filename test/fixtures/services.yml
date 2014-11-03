@@ -15,6 +15,7 @@
 #  token               :string(255)
 #  is_active           :boolean          default(TRUE)
 #  client_id           :integer
+#  co_op_client_id     :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

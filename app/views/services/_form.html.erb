@@ -53,6 +53,14 @@
   </div>
 
   <div class="form-group">
+    <%= check_box_tag("co-op-price-box", true, params["co-op-price-box"]) %>&nbsp;Co-op
+  </div>
+
+  <div class="form-group" id="co-op-client-name">
+    <%= f.select(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name", selected: @service.co_op_client_id), {class: "form-control"}) %>    
+  </div>
+
+  <div class="form-group">
     <%= f.label :details, {class: "control-label"} %>
     <%= f.text_area :details, {class: "form-control"} %>
   </div>

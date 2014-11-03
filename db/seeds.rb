@@ -135,6 +135,13 @@ if DefaultValue.first.send_unrespond.nil?
   puts "send_unrespond added"
 end
 
+if DefaultValue.first.co_op_price.nil?
+  dv = DefaultValue.first
+  dv.co_op_price = 100
+  dv.save
+  puts "co_op_price added"  
+end
+
 if EmailTemplate.find_by_name("ba_is_paid").nil?
   ba_is_paid = {
     name: "ba_is_paid", 

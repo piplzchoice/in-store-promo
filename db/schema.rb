@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141024153913) do
+ActiveRecord::Schema.define(version: 20141103091344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20141024153913) do
     t.string   "sample_product"
     t.integer  "service_hours_est"
     t.integer  "send_unrespond"
+    t.decimal  "co_op_price",       precision: 8, scale: 2
   end
 
   create_table "email_templates", force: true do |t|
@@ -204,6 +205,7 @@ ActiveRecord::Schema.define(version: 20141024153913) do
     t.string   "token"
     t.boolean  "is_active",           default: true
     t.integer  "client_id"
+    t.integer  "co_op_client_id"
   end
 
   create_table "users", force: true do |t|

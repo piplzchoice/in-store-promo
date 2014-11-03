@@ -9,6 +9,7 @@ class ServicesController < ApplicationController
 
   def new
     @client = Client.find(params[:client_id])
+    @clients = Client.all.where.not(id: params[:client_id])
     @service = @client.services.build
     respond_to do |format|
       format.html
@@ -17,7 +18,8 @@ class ServicesController < ApplicationController
 
   def create
     @client = Client.find(params[:client_id])
-    @service = @client.services.build_data(service_params, params[:client_id])
+    @clients = Client.all.where.not(id: params[:client_id])
+    @service = @client.services.build_data(service_params, params["co-op-price-box"])
     respond_to do |format|
       format.html do
         if @service.save
@@ -145,7 +147,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status, :co_op_client_id)
   end
 
   def check_client_status

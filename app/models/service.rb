@@ -15,6 +15,7 @@
 #  token               :string(255)
 #  is_active           :boolean          default(TRUE)
 #  client_id           :integer
+#  co_op_client_id     :integer
 #
 
 # note for field "status"
@@ -36,6 +37,8 @@ class Service < ActiveRecord::Base
   belongs_to :brand_ambassador
   belongs_to :location
   has_one :report
+
+  belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
@@ -117,26 +120,27 @@ class Service < ActiveRecord::Base
     return 2.round
   end
 
-  def self.build_data(service_params)
+  def self.build_data(service_params, co_op_price_box)
+    service_params[:co_op_client_id] = nil unless co_op_price_box
     if service_params[:start_at].blank? || service_params[:end_at].blank?
       self.new(service_params)
     else
       service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p')
       service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')
 
-      service = Service.where({
-        client_id: service_params[:client_id], 
-        location_id: service_params[:location_id], 
-        brand_ambassador_id: service_params[:brand_ambassador_id],
-        start_at: service_params[:start_at],
-        end_at: service_params[:end_at]
-      })    
+      # service = Service.where({
+      #   client_id: service_params[:client_id], 
+      #   location_id: service_params[:location_id], 
+      #   brand_ambassador_id: service_params[:brand_ambassador_id],
+      #   start_at: service_params[:start_at],
+      #   end_at: service_params[:end_at]
+      # })    
 
-      if service.blank?
+      # if service.blank?
         self.new(service_params)
-      else
-        self.new
-      end          
+      # else
+      #   self.new
+      # end          
     end  
   end
 
@@ -356,6 +360,10 @@ class Service < ActiveRecord::Base
   def is_ba_active?
     brand_ambassador.is_active
   end
+
+  def is_co_op?
+    !co_op_client_id.nil?
+  end  
 
   def set_data_true
     self.update_attribute(:is_active, true)

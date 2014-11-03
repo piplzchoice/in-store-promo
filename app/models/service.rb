@@ -48,29 +48,29 @@ class Service < ActiveRecord::Base
   end
 
 
-  def self.filter_and_order(status, assigned_to, client_name, sort_column, sort_direction)
+  def self.filter_and_order(parameters)
     data = nil
     conditions = {}
-    conditions.merge!(status: status) if status != ""
-    conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
+    conditions.merge!(status: parameters["status"]) if parameters["status"] != ""
+    conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
 
-    if client_name != ""
-      data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
+    if parameters["client_name"] != ""
+      data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
       data = Service.where(conditions)
     end
 
-    if sort_column == "ba"
-      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{sort_direction}")
-    elsif sort_column == "client"
-      data = data.joins(:client).order("clients.company_name #{sort_direction}")
-    elsif sort_column == "location_name"
-      data = data.joins(:location).order("locations.name #{sort_direction}")      
+    if parameters["sort_column"] == "ba"
+      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
+    elsif parameters["sort_column"] == "client"
+      data = data.joins(:client).order("clients.company_name #{parameters["sort_direction"]}")
+    elsif parameters["sort_column"] == "location_name"
+      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")      
     else
-      if sort_column == "time"
-        data = data.order("EXTRACT (HOUR from start_at) #{sort_direction}")
+      if parameters["sort_column"] == "time"
+        data = data.order("EXTRACT (HOUR from start_at) #{parameters["sort_direction"]}")
       else
-        data = data.order(sort_column + " " + sort_direction)
+        data = data.order("#{parameters["sort_column"]} #{parameters["sort_direction"]}")
       end
     end
 
@@ -196,7 +196,8 @@ class Service < ActiveRecord::Base
   end
 
   def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction)
-    Service.filter_and_order(status, assigned_to, client_name, sort_column, sort_direction).collect{|x|
+    data = {"status" => status, "assigned_to" => assigned_to, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction}
+    Service.filter_and_order(data).collect{|x|
         if x.status != Service.status_cancelled
           {
             title: x.title_calendar,

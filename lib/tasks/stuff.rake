@@ -95,6 +95,7 @@ namespace :stuff do
       unless service.project.nil?
         client = service.project.client
         service.update_attribute(:client_id, client.id)
+        client.update_attribute(:rate, 150)
       end
     end
   end

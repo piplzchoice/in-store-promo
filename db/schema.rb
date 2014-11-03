@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140903120333) do
+ActiveRecord::Schema.define(version: 20141024153913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,8 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
-    t.boolean  "is_active",    default: true
+    t.boolean  "is_active",                            default: true
+    t.decimal  "rate",         precision: 8, scale: 2
   end
 
   create_table "default_values", force: true do |t|
@@ -194,7 +195,6 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.integer  "project_id"
     t.integer  "location_id"
     t.integer  "brand_ambassador_id"
-    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "start_at"
@@ -203,6 +203,7 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.integer  "status",              default: 1
     t.string   "token"
     t.boolean  "is_active",           default: true
+    t.integer  "client_id"
   end
 
   create_table "users", force: true do |t|

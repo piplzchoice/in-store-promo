@@ -5,11 +5,18 @@ class ClientsController < ApplicationController
 
   def index    
     respond_to do |format|
-      format.html {
-        @clients = Client.with_status_active.paginate(:page => params[:page])
+      format.html {        
+        if session[:filter_history_clients].nil?
+          @clients = Client.with_status_active.paginate(:page => params[:page])
+        else
+          @clients = Client.filter_and_order(session[:filter_history_clients]["is_active"]).paginate(:page => session[:filter_history_clients]["page"])          
+          @is_active = session[:filter_history_clients]["is_active"]
+          session[:filter_history_clients] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "clients"
+        end
       }
       format.js {
-        @clients = Client.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+        session[:filter_history_clients] = {"is_active" => params[:is_active], "page" => params[:page]}
+        @clients = Client.filter_and_order(session[:filter_history_clients]["is_active"]).paginate(:page => session[:filter_history_clients]["page"])
       }      
     end    
   end

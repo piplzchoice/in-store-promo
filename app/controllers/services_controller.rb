@@ -147,7 +147,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status, :co_op_client_id)
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
   end
 
   def check_client_status

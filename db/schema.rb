@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140903120333) do
+ActiveRecord::Schema.define(version: 20141103091344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,7 +56,8 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
-    t.boolean  "is_active",    default: true
+    t.boolean  "is_active",                            default: true
+    t.decimal  "rate",         precision: 8, scale: 2
   end
 
   create_table "default_values", force: true do |t|
@@ -67,6 +68,7 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.string   "sample_product"
     t.integer  "service_hours_est"
     t.integer  "send_unrespond"
+    t.decimal  "co_op_price",       precision: 8, scale: 2
   end
 
   create_table "email_templates", force: true do |t|
@@ -194,7 +196,6 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.integer  "project_id"
     t.integer  "location_id"
     t.integer  "brand_ambassador_id"
-    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "start_at"
@@ -203,6 +204,8 @@ ActiveRecord::Schema.define(version: 20140903120333) do
     t.integer  "status",              default: 1
     t.string   "token"
     t.boolean  "is_active",           default: true
+    t.integer  "client_id"
+    t.integer  "co_op_client_id"
   end
 
   create_table "users", force: true do |t|

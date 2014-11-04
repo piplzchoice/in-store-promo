@@ -4,11 +4,18 @@ class BrandAmbassadorsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html {
-        @brand_ambassadors = BrandAmbassador.with_status_active.paginate(:page => params[:page])
+      format.html {        
+        if session[:filter_history_ba].nil?
+          @brand_ambassadors = BrandAmbassador.with_status_active.paginate(:page => params[:page])
+        else
+          @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]["is_active"]).paginate(:page => session[:filter_history_ba]["page"])
+          @is_active = session[:filter_history_ba]["is_active"]
+          session[:filter_history_ba] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "brand_ambassadors"
+        end        
       }
       format.js {
-        @brand_ambassadors = BrandAmbassador.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+        session[:filter_history_ba] = {"is_active" => params[:is_active], "page" => params[:page]}
+        @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]["is_active"]).paginate(:page => session[:filter_history_ba]["page"])
       }      
     end    
   end

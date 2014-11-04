@@ -1,15 +1,11 @@
 <%= form_for @report, html: {role: "form", style: "margin: 35px;", "multipart" => true} do |f| %>
   <%= f.hidden_field(:service_id) %>
   <div class="row">    
+    
     <div class="row report">
       <div id="report-client" class="report-left">
         <span class="report-title">Client</span>: 
-        <span class="report-option-details"><%= @service.project.client.company_name %></span>
-      </div>
-
-      <div id="report-project">
-        <span class="report-title">Project</span>: 
-        <span class="report-option-details"><%= @service.project.name %></span>
+        <span class="report-option-details"><%= @service.company_name %></span>
       </div>
     </div>
 

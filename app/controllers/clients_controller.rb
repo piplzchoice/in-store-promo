@@ -5,11 +5,18 @@ class ClientsController < ApplicationController
 
   def index    
     respond_to do |format|
-      format.html {
-        @clients = Client.with_status_active.paginate(:page => params[:page])
+      format.html {        
+        if session[:filter_history_clients].nil?
+          @clients = Client.with_status_active.paginate(:page => params[:page])
+        else
+          @clients = Client.filter_and_order(session[:filter_history_clients]["is_active"]).paginate(:page => session[:filter_history_clients]["page"])          
+          @is_active = session[:filter_history_clients]["is_active"]
+          session[:filter_history_clients] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "clients"
+        end
       }
       format.js {
-        @clients = Client.filter_and_order(params[:is_active]).paginate(:page => params[:page])
+        session[:filter_history_clients] = {"is_active" => params[:is_active], "page" => params[:page]}
+        @clients = Client.filter_and_order(session[:filter_history_clients]["is_active"]).paginate(:page => session[:filter_history_clients]["page"])
       }      
     end    
   end
@@ -110,6 +117,22 @@ class ClientsController < ApplicationController
   def client_params
     params.require(:client).permit(:company_name, :title, :first_name, :last_name, 
       :street_one, :street_two, :city, :state, :zipcode, :country, :phone, :billing_name, account_attributes: [:email, :id])
+  end  
+
+  def export_calendar
+    @client = Client.find(params[:id])
+    @dataurl = params[:dataurl]
+    
+    file = "client-calendar-#{@client.id}-#{Time.now.to_i}.pdf"
+    html = render_to_string(:layout => "print_calendar", :action => "print_calendar", :id => @client.id, :dataurl => @dataurl)
+    kit = PDFKit.new(html)
+    # kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
+  end
+
+  def print_calendar    
+    @client = Client.find(params[:id])
+    @dataurl = params[:dataurl]
   end  
 
   private

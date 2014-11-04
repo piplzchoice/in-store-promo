@@ -13,6 +13,23 @@ Rails.application.routes.draw do
       patch "reset_password"
       delete "logged_as"
     end
+
+    post :export_calendar, :on => :member
+    get :print_calendar, :on => :member    
+
+    resources :services do
+      collection do
+        get :autocomplete_location_name
+        get :generate_select_ba
+      end
+
+      member do
+        get :confirm_respond
+        get :rejected_respond
+        get :mark_service_as_complete
+        patch :update_status_after_reported
+      end      
+    end    
   end
 
   resources :brand_ambassadors do
@@ -29,20 +46,8 @@ Rails.application.routes.draw do
   resources :locations
   resources :email_templates, only: [:index, :edit, :update]
 
-  resources :projects do
-    resources :services do
-      collection do
-        get :autocomplete_location_name
-        get :generate_select_ba
-      end
+  resources :projects do  
 
-      member do
-        get :confirm_respond
-        get :rejected_respond
-        get :mark_service_as_complete
-        patch :update_status_after_reported
-      end
-    end
     get :autocomplete_client_name, :on => :collection
     get :set_as_complete, :on => :member
     post :export_calendar, :on => :member

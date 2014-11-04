@@ -6,11 +6,19 @@ class LocationsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html {
-        @locations = Location.with_status_active.paginate(:page => params[:page])
+      format.html {        
+        if session[:filter_history_locations].nil?
+          @locations = Location.with_status_active.paginate(:page => params[:page])
+        else
+          @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+          @is_active = session[:filter_history_locations]["is_active"]
+          @name = session[:filter_history_locations]["name"]
+          session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
+        end        
       }
       format.js {
-        @locations = Location.filter_and_order(params[:is_active], params[:name]).paginate(:page => params[:page])
+        session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
+        @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
       }      
     end    
   end

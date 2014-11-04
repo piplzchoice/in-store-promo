@@ -20,6 +20,7 @@
 #  updated_at   :datetime
 #  account_id   :integer
 #  is_active    :boolean          default(TRUE)
+#  rate         :decimal(8, 2)
 #
 
 class Client < ActiveRecord::Base
@@ -27,8 +28,8 @@ class Client < ActiveRecord::Base
   belongs_to :account, :class_name => "User", :foreign_key => :account_id
   accepts_nested_attributes_for :account, allow_destroy: true
 
-  has_many :projects  
-  has_many :services, :through => :projects
+  has_many :services
+  has_many :co_op_services, foreign_key: 'co_op_client_id', class_name: 'Service'
 
   validates :company_name, :first_name, :last_name, :phone, presence: true
 
@@ -52,6 +53,19 @@ class Client < ActiveRecord::Base
 
   def self.filter_and_order(is_active)
     Client.where(is_active: is_active)
+  end  
+
+  def self.calendar_services(client_id)
+    client = find(client_id)
+    client.services.collect{|x|       
+      {
+        title: x.title_calendar,
+        start: x.start_at.iso8601,
+        end: x.end_at.iso8601,
+        color: x.get_color,
+        url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
+      } if x.is_ba_active?
+    }.uniq.compact
   end  
 
   def email

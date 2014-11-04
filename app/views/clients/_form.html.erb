@@ -62,7 +62,12 @@
   <div class="form-group">
     <%= f.label :country, {class: "control-label"} %>
     <%= f.country_select :country, {priority: %w(US CA), prompt: 'Please select a country'}, {class: "form-control"} %>
-  </div>  
+  </div> 
+
+  <div class="form-group">
+    <%= f.label :rate, "Rate", {class: "control-label"} %>
+    <%= f.number_field :rate, {class: "form-control", placeholder: "Rate", value: DefaultValue.rate_project} %>
+  </div>   
 
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>

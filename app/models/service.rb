@@ -6,7 +6,6 @@
 #  project_id          :integer
 #  location_id         :integer
 #  brand_ambassador_id :integer
-#  user_id             :integer
 #  created_at          :datetime
 #  updated_at          :datetime
 #  start_at            :datetime
@@ -15,6 +14,8 @@
 #  status              :integer          default(1)
 #  token               :string(255)
 #  is_active           :boolean          default(TRUE)
+#  client_id           :integer
+#  co_op_client_id     :integer
 #
 
 # note for field "status"
@@ -31,13 +32,13 @@
 
 class Service < ActiveRecord::Base
 
-  belongs_to :user
+  belongs_to :client
+  belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
-  belongs_to :project
   has_one :report
 
-  has_one :client, :through => :project
+  belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
 
@@ -50,30 +51,29 @@ class Service < ActiveRecord::Base
   end
 
 
-  def self.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction)
+  def self.filter_and_order(parameters)
     data = nil
     conditions = {}
-    conditions.merge!(status: status) if status != ""
-    conditions.merge!(brand_ambassador_id: assigned_to) if assigned_to != ""
-    conditions.merge!(project_id: project_name) if project_name != ""
+    conditions.merge!(status: parameters["status"]) if parameters["status"] != ""
+    conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
 
-    if client_name != ""
-      data = Service.joins(:client).where(clients: {id: client_name}).where(conditions)
+    if parameters["client_name"] != ""
+      data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
       data = Service.where(conditions)
     end
 
-    if sort_column == "ba"
-      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{sort_direction}")
-    elsif sort_column == "client"
-      data = data.joins(:client).order("clients.company_name #{sort_direction}")
-    elsif sort_column == "location_name"
-      data = data.joins(:location).order("locations.name #{sort_direction}")      
+    if parameters["sort_column"] == "ba"
+      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
+    elsif parameters["sort_column"] == "client"
+      data = data.joins(:client).order("clients.company_name #{parameters["sort_direction"]}")
+    elsif parameters["sort_column"] == "location_name"
+      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")      
     else
-      if sort_column == "time"
-        data = data.order("EXTRACT (HOUR from start_at) #{sort_direction}")
+      if parameters["sort_column"] == "time"
+        data = data.order("EXTRACT (HOUR from start_at) #{parameters["sort_direction"]}")
       else
-        data = data.order(sort_column + " " + sort_direction)
+        data = data.order("#{parameters["sort_column"]} #{parameters["sort_direction"]}")
       end
     end
 
@@ -120,26 +120,27 @@ class Service < ActiveRecord::Base
     return 12.round
   end
 
-  def self.build_data(service_params)
+  def self.build_data(service_params, co_op_price_box)
+    service_params[:co_op_client_id] = nil unless co_op_price_box
     if service_params[:start_at].blank? || service_params[:end_at].blank?
       self.new(service_params)
     else
       service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p')
       service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')
 
-      service = Service.where({
-        project_id: service_params[:project_id], 
-        location_id: service_params[:location_id], 
-        brand_ambassador_id: service_params[:brand_ambassador_id],
-        start_at: service_params[:start_at],
-        end_at: service_params[:end_at]
-      })    
+      # service = Service.where({
+      #   client_id: service_params[:client_id], 
+      #   location_id: service_params[:location_id], 
+      #   brand_ambassador_id: service_params[:brand_ambassador_id],
+      #   start_at: service_params[:start_at],
+      #   end_at: service_params[:end_at]
+      # })    
 
-      if service.blank?
+      # if service.blank?
         self.new(service_params)
-      else
-        self.new
-      end          
+      # else
+      #   self.new
+      # end          
     end  
   end
 
@@ -198,15 +199,16 @@ class Service < ActiveRecord::Base
     ]
   end
 
-  def self.calendar_services(status, assigned_to, client_name, project_name, sort_column, sort_direction)
-    Service.filter_and_order(status, assigned_to, client_name, project_name, sort_column, sort_direction).collect{|x|
+  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction)
+    data = {"status" => status, "assigned_to" => assigned_to, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction}
+    Service.filter_and_order(data).collect{|x|
         if x.status != Service.status_cancelled
           {
             title: x.title_calendar,
             start: x.start_at.iso8601,
             end: x.end_at.iso8601,
             color: x.get_color,
-            url: Rails.application.routes.url_helpers.project_service_path({project_id: x.project_id, id: x.id})
+            url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
           } 
         end
     }.compact.flatten
@@ -359,6 +361,10 @@ class Service < ActiveRecord::Base
     brand_ambassador.is_active
   end
 
+  def is_co_op?
+    !co_op_client_id.nil?
+  end  
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end
@@ -368,7 +374,7 @@ class Service < ActiveRecord::Base
   end
 
   def grand_total
-    project.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
+    client.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
   end
 
 end

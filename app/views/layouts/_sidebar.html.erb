@@ -3,7 +3,6 @@
     <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
       <li><%= link_to "Manage Clients", clients_path %></li>    
       <li><%= link_to "Manage Locations", locations_path %></li>
-      <li><%= link_to "Manage Projects", projects_path %></li>
       <li><%= link_to "Manage BA", brand_ambassadors_path %></li> 
       <li><%= link_to("Manage ISMP", ismp_index_path) if current_user.has_role? :admin %></li>
       <li><%= link_to("Manage Default Values", edit_default_value_path(DefaultValue.first)) if current_user.has_role? :admin %></li>            

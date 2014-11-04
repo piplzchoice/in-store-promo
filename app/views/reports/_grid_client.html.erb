@@ -18,7 +18,7 @@
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
       <td><%= service.company_name %></td> 
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <td><%= number_to_currency((service.project.nil? ? "" : service.project.rate)) %></td> 
+      <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
       <td><%= service.report.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
       <td><%= service.current_status %></td>
       <td>

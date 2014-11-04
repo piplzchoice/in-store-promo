@@ -10,6 +10,7 @@
 #  sample_product    :string(255)
 #  service_hours_est :integer
 #  send_unrespond    :integer
+#  co_op_price       :decimal(8, 2)
 #
 
 class DefaultValue < ActiveRecord::Base
@@ -35,4 +36,8 @@ class DefaultValue < ActiveRecord::Base
   def self.send_unrespond
     DefaultValue.first.send_unrespond
   end    
+
+  def self.co_op_price
+    DefaultValue.first.co_op_price
+  end
 end

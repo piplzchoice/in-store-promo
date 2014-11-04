@@ -1,39 +1,35 @@
 <h1 class="page-header">Show Service</h1>
 
-<%# if @project.is_not_complete? %>  
-  <% if @service.is_not_complete? %>
-    <div class="link-new-btn">
-      <%= link_to("Set as Conducted", mark_service_as_complete_project_service_path(project_id: @project.id,
-        id: @service.id), {class: "btn btn-primary", role: "button"}) %>
-    </div>
-  <% else %>    
-    <% unless @service.is_cancelled? %>
-      <% if @service.is_reported? %>
-        <div class="link-new-btn">
-          <%= form_tag(update_status_after_reported_project_service_path(project_id: @project.id, id: @service.id), method: :patch) do -%>
-            <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
-            <%= submit_tag 'Update' %>
-          <% end -%>
-        </div>
-      <% end %>
+<% if @service.is_not_complete? %>
+  <div class="link-new-btn">
+    <%= link_to("Set as Conducted", mark_service_as_complete_client_service_path(client_id: @client.id,
+      id: @service.id), {class: "btn btn-primary", role: "button"}) %>
+  </div>
+<% else %>    
+  <% unless @service.is_cancelled? %>
+    <% if @service.is_reported? %>
+      <div class="link-new-btn">
+        <%= form_tag(update_status_after_reported_client_service_path(client_id: @client.id, id: @service.id), method: :patch) do -%>
+          <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
+          <%= submit_tag 'Update' %>
+        <% end -%>
+      </div>
     <% end %>
   <% end %>
-  <% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
-    <div class="link-new-btn">
-        <%= link_to("Create Report", new_report_path(service_id: @service.id), 
-          {class: "btn btn-success", role: "button"}) %>         
-    </div>  
-  <% end %>         
-<%# end %>
+<% end %>
+<% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
+  <div class="link-new-btn">
+      <%= link_to("Create Report", new_report_path(service_id: @service.id), 
+        {class: "btn btn-success", role: "button"}) %>         
+  </div>  
+<% end %>         
 
 <label>Status :</label>
 <p><%= @service.current_status %></p>
 
 <label>Client :</label>
-<p><%= @project.client.company_name %></p>
+<p><%= @client.company_name %></p>
 
-<label>Project Name :</label>
-<p><%= @project.name %></p>
 
 <label>Location</label>
 <p><%= @service.location.name %></p>
@@ -51,14 +47,12 @@
 <p><%= @service.details %></p>
 
 <div class="link-new-btn">
-  <%= link_to("Back", (params[:report].nil? ? project_path(@project) : reports_path), {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("Back", (params[:report].nil? ? client_path(@client) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
-  <% if @project.is_not_complete? %>
-    <% if @service.can_modify?  || current_user.has_role?(:admin) %>
-      <%= link_to("Edit", edit_project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
-    <% end %>
-    
-    <%= link_to("Cancel", project_service_path(project_id: @project.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
+  <% if @service.can_modify?  || current_user.has_role?(:admin) %>
+    <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
   <% end %>
+  
+  <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
 
 </div>

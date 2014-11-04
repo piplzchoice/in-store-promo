@@ -22,7 +22,21 @@ $(function() {
     return false
   });
 
-  $(document).on("change", ".reconcile-checkbox", function(){    
+  // if($("#co-op-price-box").is(':checked')) {
+  //   $("#co-op-client-name").show();
+  // } else {
+  //   $("#co-op-client-name").hide();
+  // }
+
+  $(document).on("change", "#co-op-price-box", function(){
+    if($("#co-op-price-box").is(':checked')) {
+      $("#co-op-client-name").show();
+    } else {
+      $("#co-op-client-name").hide();
+    }
+  });  
+
+  $(document).on("change", ".reconcile-checkbox", function(){
     sum = 0
     $(".reconcile-checkbox:checked").each(function(i, obj) {
       sum += parseFloat($(obj).data("total"))

@@ -19,8 +19,8 @@ class ApplicationMailer < ActionMailer::Base
 
     @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", service.client.company_name)
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
-    @content = @content.gsub(".link_confirm_respond", confirm_respond_project_service_url(project_id: service.project.id, id: service.id, token: service.token))
-    @content = @content.gsub(".link_rejected_respond", rejected_respond_project_service_url(project_id: service.project.id, id: service.id, token: service.token))
+    @content = @content.gsub(".link_confirm_respond", confirm_respond_client_service_url(client_id: service.client.id, id: service.id, token: service.token))
+    @content = @content.gsub(".link_rejected_respond", rejected_respond_client_service_url(client_id: service.client.id, id: service.id, token: service.token))
     @content = @content.gsub(".service_details", service.details)
 
     mail(to: ba.account.email, subject: et.subject)
@@ -43,7 +43,7 @@ class ApplicationMailer < ActionMailer::Base
 
     @content = et.content.gsub(".ba_name", service.brand_ambassador.name).gsub(".service_company_name", service.client.company_name)
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
-    @content = @content.gsub(".service_details", service.details).gsub(".project_link", edit_project_service_url(project_id: service.project.id, id: service.id ))
+    @content = @content.gsub(".service_details", service.details).gsub(".project_link", edit_project_client_url(client_id: service.client.id, id: service.id ))
 
     mail(to: "carol.wellins@gmail.com", subject: et.subject)
   end

@@ -10,6 +10,7 @@
 #  sample_product    :string(255)
 #  service_hours_est :integer
 #  send_unrespond    :integer
+#  co_op_price       :decimal(8, 2)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

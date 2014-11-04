@@ -1,4 +1,4 @@
-<%= form_for [@project, @service], html: {role: "form"} do |f| %>
+<%= form_for [@client, @service], html: {role: "form"} do |f| %>
 
   <div class="checkbox" id="checkbox-service" data-service-id="<%= @service.new_record? ? "" : @service.id %>">
     <label>
@@ -9,7 +9,7 @@
   <div class="form-group">
     <%= f.label :start_at, {class: "control-label"} %>
     <div class='input-group date dp-service' id='start_at_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
-      <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_project_services_path(project_id: @project.id)}} %>
+      <%= f.text_field :start_at, {class: "form-control", readonly: true, data: {url: generate_select_ba_client_services_path(client_id: @client.id)}} %>
       <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
         <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
       <% end %>
@@ -30,7 +30,7 @@
     <%= f.label :location_id, "Select Location", {class: "control-label"} %>
     <% if @service.new_record? || current_user.has_role?(:admin) %>
       <%= f.hidden_field :location_id, {class: "select-2-box", data: {
-        url: autocomplete_location_name_project_services_path(project_id: @project.id),
+        url: autocomplete_location_name_client_services_path(client_id: @client.id),
         name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
         location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
         state: "new"
@@ -50,6 +50,14 @@
     <% else %>
       <%= @service.brand_ambassador.name %>
     <% end %>
+  </div>
+
+  <div class="form-group">
+    <%#= check_box_tag("co-op-price-box", true, params["co-op-price-box"]) %>&nbsp;Co-op
+  </div>
+
+  <div class="form-group" id="co-op-client-name">
+    <%#= f.select(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name", selected: @service.co_op_client_id), {class: "form-control"}) %>    
   </div>
 
   <div class="form-group">

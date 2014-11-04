@@ -110,8 +110,8 @@ class ReportsController < ApplicationController
       end    
 
       format.js do
-        ba_id = ""
-        @services = Service.filter_and_order(Service.status_reported, ba_id, params[:client_name], sort_column, sort_direction)
+        ba_id = ""        
+        @services = Service.filter_and_order({"status" => Service.status_reported, "assigned_to" => ba_id, "client_name" => params[:client_name], "sort_column" => sort_column, "sort_direction" => sort_direction})
       end
     end
   end

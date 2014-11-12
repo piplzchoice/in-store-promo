@@ -10,6 +10,7 @@ class Ability
       can :manage, LocationsController
       can :manage, ClientsController
       can :manage, BrandAmbassadorsController
+      can :manage, StatementsController
       can :manage, IsmpController
       can :manage, DefaultValuesController
       can :manage, ReportsController
@@ -21,6 +22,7 @@ class Ability
       can :manage, LocationsController
       can :manage, ClientsController
       can :manage, BrandAmbassadorsController
+      can :manage, StatementsController
       can :manage, ReportsController
       can :manage, UsersController
     elsif user.has_role? :ba

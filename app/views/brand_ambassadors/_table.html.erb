@@ -2,9 +2,9 @@
   <thead>
     <tr>
       <th>ID</th>
-      <!-- <th>Email</th> -->
       <th>Name</th>
       <th>Action</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -15,8 +15,11 @@
       <td><%= brand_ambassador.name %></td>
       <td>
         <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
-        <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> || 
+        <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> ||         
         <%= link_to (brand_ambassador.is_active ? "Deactivate" : "Reactivate"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+      </td>
+      <td>
+        <%= link_to "View Statements", brand_ambassador_statements_path(brand_ambassador_id: brand_ambassador.id) %>
       </td>
     </tr>
     <% end %>

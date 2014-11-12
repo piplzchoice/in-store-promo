@@ -76,11 +76,11 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: ba.account.email, subject: et.subject)
   end
 
-  def ba_is_paid(ba, file)
+  def ba_is_paid(statement)
     et = EmailTemplate.find_by_name("ba_is_paid")
-    attachments["ba-#{ba.id}-paid-#{Time.now.to_i}.pdf"] = file
-    @content = et.content.gsub(".ba_name", ba.name)
-    mail(to: ba.account.email, subject: et.subject)    
+    attachments["#{statement.file.filename}"] = File.read(statement.file.path)
+    @content = et.content.gsub(".ba_name", statement.brand_ambassador.name)
+    mail(to: statement.brand_ambassador.account.email, subject: et.subject)    
   end
 
 end

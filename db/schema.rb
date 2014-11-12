@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141103091344) do
+ActiveRecord::Schema.define(version: 20141112142516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -206,6 +206,14 @@ ActiveRecord::Schema.define(version: 20141103091344) do
     t.boolean  "is_active",           default: true
     t.integer  "client_id"
     t.integer  "co_op_client_id"
+  end
+
+  create_table "statements", force: true do |t|
+    t.integer  "brand_ambassador_id"
+    t.string   "file"
+    t.string   "state_no"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|

@@ -1,0 +1,20 @@
+<h1 class="page-header">List BA Statements</h1>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @statements.each_with_index do |statement, i|  %>
+      <tr>
+        <td><%= statement.created_at.strftime("%m/%d/%Y") %></td>
+        <td><%= link_to "Show", brand_ambassador_statement_path(brand_ambassador_id: statement.brand_ambassador.id, id: statement.id) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,24 @@
+# == Schema Information
+#
+# Table name: statements
+#
+#  id                  :integer          not null, primary key
+#  brand_ambassador_id :integer
+#  file                :string(255)
+#  state_no            :string(255)
+#  created_at          :datetime
+#  updated_at          :datetime
+#  services_ids        :text
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  brand_ambassador_id: 1
+  file: MyString
+  state_no: MyString
+
+two:
+  brand_ambassador_id: 1
+  file: MyString
+  state_no: MyString

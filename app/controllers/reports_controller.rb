@@ -84,12 +84,15 @@ class ReportsController < ApplicationController
         @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
         Service.update_to_ba_paid(hash_data[key])
 
-        file = "ba-#{@ba.id}-paid-#{Time.now.to_i}.pdf"
+        time_no = Time.now.to_i
+        file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
 
         html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments", :id => key, service_ids: hash_data[key].join("-"))
         kit = PDFKit.new(html)
-        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"      
-        ApplicationMailer.ba_is_paid(@ba, kit.to_pdf).deliver
+        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+        statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
+        statement.save
+        ApplicationMailer.ba_is_paid(statement).deliver
       end      
     end
     redirect_to ba_payments_reports_path    
@@ -98,7 +101,7 @@ class ReportsController < ApplicationController
   def print_process_ba_payments
     @ba = BrandAmbassador.find(params[:id])
     @services = @ba.services.find(params[:service_ids].split("-"))
-    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))    
+    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))
     render layout: "print_report"
   end
 

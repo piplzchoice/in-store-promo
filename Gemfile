@@ -51,3 +51,4 @@ gem "fog"
 
 gem 'debugger', group: [:development, :test]
 
+gem 'exception_notification'

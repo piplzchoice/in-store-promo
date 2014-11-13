@@ -71,6 +71,9 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     erubis (2.7.0)
+    exception_notification (4.0.1)
+      actionmailer (>= 3.0.4)
+      activesupport (>= 3.0.4)
     excon (0.38.0)
     execjs (2.2.1)
     fog (1.23.0)
@@ -214,6 +217,7 @@ DEPENDENCIES
   coffee-rails (~> 4.0.0)
   debugger
   devise
+  exception_notification
   fog
   fullcalendar-rails
   icalendar

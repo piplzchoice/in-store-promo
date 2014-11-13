@@ -94,3 +94,10 @@ Rails.application.configure do
   }
   
 end
+
+Ism::Application.config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[ISM Error Production] ",
+    :sender_address => %{"notifier" <notifier@app.in-store-promo.com>},
+    :exception_recipients => %w{behtea@gmail.com}
+  }

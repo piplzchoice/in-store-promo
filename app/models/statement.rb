@@ -8,9 +8,11 @@
 #  state_no            :string(255)
 #  created_at          :datetime
 #  updated_at          :datetime
+#  services_ids        :text
 #
 
 class Statement < ActiveRecord::Base
+  serialize :services_ids  
   belongs_to :brand_ambassador
   mount_uploader :file, ImageUploader
 end

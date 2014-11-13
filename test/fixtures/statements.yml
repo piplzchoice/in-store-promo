@@ -8,6 +8,7 @@
 #  state_no            :string(255)
 #  created_at          :datetime
 #  updated_at          :datetime
+#  services_ids        :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

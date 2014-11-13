@@ -90,7 +90,7 @@ class ReportsController < ApplicationController
         html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments", :id => key, service_ids: hash_data[key].join("-"))
         kit = PDFKit.new(html)
         kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-        statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"))
+        statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
         statement.save
         ApplicationMailer.ba_is_paid(statement).deliver
       end      
@@ -101,7 +101,7 @@ class ReportsController < ApplicationController
   def print_process_ba_payments
     @ba = BrandAmbassador.find(params[:id])
     @services = @ba.services.find(params[:service_ids].split("-"))
-    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))    
+    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))
     render layout: "print_report"
   end
 

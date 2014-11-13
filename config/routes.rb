@@ -33,7 +33,12 @@ Rails.application.routes.draw do
   end
 
   resources :brand_ambassadors do
-    resources :statements, :only => [:index, :show]
+    resources :statements, :only => [:index, :show] do
+      collection do
+        get "download"
+      end
+    end
+
     member do
       patch "reset_password"
       delete "logged_as"

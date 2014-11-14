@@ -78,7 +78,8 @@ class ApplicationMailer < ActionMailer::Base
 
   def ba_is_paid(statement)
     et = EmailTemplate.find_by_name("ba_is_paid")
-    attachments["#{statement.file.filename}"] = statement.file.url
+    data = open(statement.file.url)
+    attachments["#{statement.file.filename}"] = data.read
     @content = et.content.gsub(".ba_name", statement.brand_ambassador.name)
     mail(to: statement.brand_ambassador.account.email, subject: et.subject)    
   end

@@ -17,7 +17,7 @@ class StatementsController < ApplicationController
   def download
     brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
     statement = brand_ambassador.statements.find(params[:id])    
-    send_data(File.read(statement.file.path), :filename => statement.file.path.split("/").last, :type => 'application/pdf')        
+    send_data(File.read(statement.file.url), :filename => statement.file.path.split("/").last, :type => 'application/pdf')        
   end
 
 end

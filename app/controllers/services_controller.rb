@@ -23,7 +23,7 @@ class ServicesController < ApplicationController
     respond_to do |format|
       format.html do
         if @service.save
-          @client.set_as_active if @client.services.size == 1
+          # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
         else

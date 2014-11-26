@@ -83,6 +83,10 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :invoices do
+    post "new", :on => :collection, as: :new
+  end
+
   resources :users, only: [:edit, :update]
   resources :default_values, only: [:edit, :update]
   resources :assignments, only: [:index, :show]

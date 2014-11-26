@@ -38,11 +38,15 @@ class InvoicesController < ApplicationController
         line_items.push({desc: line_item["desc"], amount: line_item["amount"]})
       end      
     end
-    @client = Client.find(params[:client_id])
-    @services = @client.services.find(params[:service_ids])
+
+    # @client = Client.find(params[:client_id])
+    # @services = @client.services.find(params[:service_ids])
     invoice = Invoice.new_data(params[:client_id], params[:service_ids], line_items)
 
     if invoice.save
+      params[:service_ids].split(",").each do |service_id|
+        Service.update_status_to_paid(service_id)
+      end      
       redirect_to invoices_path
     else
       render :new

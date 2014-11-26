@@ -16,6 +16,7 @@ class Ability
       can :manage, ReportsController
       can :manage, UsersController
       can :manage, EmailTemplatesController
+      can :manage, InvoicesController
     elsif user.has_role? :ismp
       can :manage, ServicesController
       can :manage, ProjectsController
@@ -25,6 +26,7 @@ class Ability
       can :manage, StatementsController
       can :manage, ReportsController
       can :manage, UsersController
+      can :manage, InvoicesController
     elsif user.has_role? :ba
       can :manage, UsersController
       can :manage, ReportsController

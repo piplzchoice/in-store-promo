@@ -374,7 +374,9 @@ class Service < ActiveRecord::Base
   end
 
   def grand_total
-    client.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
+    expense = 0
+    expense = report.expense_one.to_f + report.travel_expense.to_f unless report.nil?
+    client.rate.to_f + expense
   end
 
 end

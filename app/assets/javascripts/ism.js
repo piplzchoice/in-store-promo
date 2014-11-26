@@ -87,6 +87,49 @@ $(function() {
       }
     }
   });
+
+  $("#insert_add_item").on("click", function(){
+    $('#insert-add-item-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+    
+    $("#insert-add-item-modal").modal("show");  
+    return false;    
+  });
+
+  $("#submit-insert-add-item-amount").on("click", function(){
+    row = "<tr>" +
+        "<td>&nbsp;</td>" +
+        "<td>" + $("#insert-add-item-description").val() + "</td>" +
+        "<td><input type='hidden' name='line-items[]desc' value='" + $("#insert-add-item-description").val() + "' /></td>" +
+        "<td>&nbsp;</td>" +
+        "<td>&nbsp;</td>" +
+        "<td><input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' /></td>" +
+        "<td class='amount-add-item' data-amout='" + $("#insert-add-item-amount").val() + "'>$" + 
+          $("#insert-add-item-amount").val() + " <a href='#add-item-result' class='remove-line-item'>(X)</a></td>" +
+      "</tr>";
+    $("#add-item-result").before(row);
+
+    sum = 0;
+    $.each($(".amount-add-item"), function( index, value ) { 
+      sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
+    });
+    $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+
+    $("#insert-add-item-modal").modal("hide");
+    $("#insert-add-item-description").val("");
+    $("#insert-add-item-amount").val("");
+  });
+
+  $(document).on("click", ".remove-line-item", function(){
+    $(this).parent().parent().remove();
+    sum = 0;
+    $.each($(".amount-add-item"), function( index, value ) { 
+      sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
+    });
+    $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
+  });
   
   $("#submit-travel-expense").click(function(){
     if($("#travel-expense-field").val() === "") {

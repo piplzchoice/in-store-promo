@@ -82,6 +82,9 @@
 
       </tbody>
     </table>
+    <%= hidden_field_tag("rate_total_all", @services.collect{|x| x.client.rate.to_f}.sum) %>
+    <%= hidden_field_tag("expsense_total_all", @services.collect{|x| x.report.expense_one.to_f}.sum) %>
+    <%= hidden_field_tag("travel_total_all", @services.collect{|x| x.report.travel_expense.to_f}.sum) %>
     <%= hidden_field_tag("grand_total_all", @services.collect{|x| x.grand_total}.sum) %>
     <%= hidden_field_tag("service_ids", @service_ids.join(",")) %>    
     <%= hidden_field_tag("client_id", @client.id) %>    

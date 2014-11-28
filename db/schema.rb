@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141126101145) do
+ActiveRecord::Schema.define(version: 20141128091228) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,10 @@ ActiveRecord::Schema.define(version: 20141126101145) do
     t.text     "line_items"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "rate_total_all",     precision: 8, scale: 2
+    t.decimal  "expsense_total_all", precision: 8, scale: 2
+    t.decimal  "travel_total_all",   precision: 8, scale: 2
+    t.decimal  "grand_total_all",    precision: 8, scale: 2
   end
 
   create_table "locations", force: true do |t|

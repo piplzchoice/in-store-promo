@@ -116,7 +116,8 @@ $(function() {
       sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
     });
     $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
-
+    $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+    
     $("#insert-add-item-modal").modal("hide");
     $("#insert-add-item-description").val("");
     $("#insert-add-item-amount").val("");
@@ -129,6 +130,7 @@ $(function() {
       sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
     });
     $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
+    $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
   });
   
   $("#submit-travel-expense").click(function(){

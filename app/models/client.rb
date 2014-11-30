@@ -29,6 +29,7 @@ class Client < ActiveRecord::Base
   accepts_nested_attributes_for :account, allow_destroy: true
 
   has_many :services
+  has_many :invoices
   has_many :co_op_services, foreign_key: 'co_op_client_id', class_name: 'Service'
 
   validates :company_name, :first_name, :last_name, :phone, presence: true

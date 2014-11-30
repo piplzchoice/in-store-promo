@@ -25,6 +25,38 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def list
+    respond_to do |format|
+      format.html do
+        @invoices = Invoice.all.where({status: 0}).order(created_at: :desc)
+        @clients = @invoices.collect{|x|x.client}.uniq
+      end    
+
+      format.js do
+        @invoices = Invoice.filter_and_order({
+          "client_name" => params[:client_name], 
+          "sort_column" => sort_column, 
+          "sort_direction" => sort_direction}
+        )
+      end
+    end
+  end
+
+  def update
+    @invoice = Invoice.find(params[:id])
+    @invoice.service_ids.split(",").each do |service_id|
+      Service.update_status_to_paid(service_id)
+    end     
+    @invoice.update_attribute(:status, 1)
+    redirect_to invoices_path
+  end
+
+  def show
+    @invoice = Invoice.find(params[:id])
+    @client = @invoice.client
+    @services = Service.find(@invoice.service_ids.split(","))
+  end
+
   def new
     @client = Client.find(params[:client_id])
     @services = @client.services.find(params[:service_ids])
@@ -44,14 +76,14 @@ class InvoicesController < ApplicationController
     invoice = Invoice.new_data(
       params[:client_id], params[:service_ids], line_items, 
       params[:rate_total_all], params[:expsense_total_all], 
-      params[:travel_total_all], params[:grand_total_all]
-    )
-    
+      params[:travel_total_all], params[:grand_total_all], 
+      params[:grand_total])
+
     if invoice.save
-      # params[:service_ids].split(",").each do |service_id|
-      #   Service.update_status_to_paid(service_id)
-      # end      
-      redirect_to invoices_path
+      params[:service_ids].split(",").each do |service_id|
+        Service.update_status_to_invoiced(service_id)
+      end      
+      redirect_to list_invoices_path
     else
       render :new
     end    

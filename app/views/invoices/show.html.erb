@@ -1,0 +1,112 @@
+<h1 class="page-header">Show Invoice</h1>
+
+<div class="row">
+  <div class="link-new-btn">
+    <%= link_to("Invoiced List", list_invoices_path, {class: "btn btn-primary", role: "button"}) %>
+  </div>  
+</div>
+
+<div class="row">
+  <div class="col-md-3">
+    <label>Bill To :</label>
+    <p><%= @client.company_name %></p>
+    <p><%= @client.company_name %></p>
+    <p><%= @client.street_one %> <%= @client.street_one %></p>
+  </div>
+</div>
+
+<hr />
+
+<div class="table-responsive">
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Demo Date</th>
+        <th>Location</th>
+        <th>Start Time</th>        
+        <th>Rate</th>
+        <th>Product Expenses</th>
+        <th>Travel Expense</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+        <tr>
+          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= link_to(service.location.name, report_url(service.report)) %></td> 
+          <td><%= service.start_at.strftime("%I:%M %p") %></td>        
+          <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
+          <td><%= number_to_currency service.report.expense_one %></td>
+          <td><%= service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-" %></td>
+          <td><%= number_to_currency(service.grand_total) %></td>
+        </tr>
+      <% end %>
+
+      <tr style="border-top: 2px; border-top-style: dashed; border-bottom: 2px; border-bottom-style: dashed;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Sub Total</strong></td>
+        <td><%= number_to_currency @invoice.rate_total_all %></td>
+        <td><%= number_to_currency @invoice.expsense_total_all %></td>
+        <td><%= number_to_currency @invoice.travel_total_all %></td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>                
+        <td>&nbsp;</td>
+      </tr>
+
+      <% unless @invoice.line_items.blank? %>
+        <% @invoice.line_items.each do |item| %>
+          <tr>
+            <td>&nbsp;</td>
+            <td><%= item["desc"] %></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td><%= number_to_currency item["amount"] %></td>
+          </tr>
+        <% end %>
+      <% end %>
+
+      <tr id="add-item-result" style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Total</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>
+          <%= number_to_currency @invoice.grand_total %>
+        </td>
+      </tr>
+
+      <tr style="border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Balance Due</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="due-total-all"><%= number_to_currency @invoice.grand_total_all %></td>
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+<div class="row">
+  <div class="link-new-btn">
+    <%= form_tag(invoice_path(@invoice), method: :patch) do %>
+      <%= submit_tag("Update Invoice to Paid", class: "btn btn-primary") %>
+    <% end %>
+  </div>  
+</div>

@@ -64,11 +64,11 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    # @invoice = Invoice.find(params[:id])
-    # @invoice.service_ids.split(",").each do |service_id|
-    #   Service.update_status_to_paid(service_id)
-    # end     
-    # @invoice.update_data(invoice_params.merge(status: 1))
+    @invoice = Invoice.find(params[:id])
+    @invoice.service_ids.split(",").each do |service_id|
+      Service.update_status_to_paid(service_id)
+    end     
+    @invoice.update_data(invoice_params.merge(status: 1))
     # @invoice.update_attribute(:status, 1)
     # redirect_to invoices_path
     redirect_to list_invoices_path

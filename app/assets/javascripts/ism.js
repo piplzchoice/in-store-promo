@@ -144,6 +144,21 @@ $(function() {
 
   $('.date-received-invoice').datetimepicker({pickTime: false});
 
+  $(".update-invoice").on("click", function(){
+    if($(this).parent().parent().find("input#invoice_amount_received").val() === "") {
+      $(this).parent().parent().find("input#invoice_date_received").val("");
+    } else {
+      if($(this).parent().parent().find("input#invoice_amount_received")[0].checkValidity() && $(this).parent().parent().find("input#invoice_date_received").val() === "") {
+        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity('Please fill Date Received');
+        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = false;
+      } else {
+        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity("");
+        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = true;
+      }
+    }
+    return true;
+  });
+
   $(document).on("click", ".order-data", function(){
     column = $(this).data("sort")
     if(column === $("#sort").val()) {

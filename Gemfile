@@ -51,3 +51,4 @@ gem "fog"
 
 gem 'debugger', group: [:development, :test]
 
+gem 'zoho_invoice', '~> 0.3.5.2'

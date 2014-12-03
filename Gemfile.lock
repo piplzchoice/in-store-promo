@@ -73,6 +73,10 @@ GEM
     erubis (2.7.0)
     excon (0.38.0)
     execjs (2.2.1)
+    faraday (0.9.0)
+      multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.9.1)
+      faraday (>= 0.7.4, < 0.10)
     fog (1.23.0)
       fog-brightbox
       fog-core (~> 1.23)
@@ -123,6 +127,8 @@ GEM
     momentjs-rails (2.5.1)
       railties (>= 3.1)
     multi_json (1.10.1)
+    multi_xml (0.5.5)
+    multipart-post (2.0.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.1)
@@ -199,6 +205,11 @@ GEM
     will_paginate-bootstrap (1.0.1)
       will_paginate (>= 3.0.3)
     wkhtmltopdf-binary (0.9.9.3)
+    zoho_invoice (0.3.5.2)
+      faraday (>= 0.8.0)
+      faraday_middleware (>= 0.8.7)
+      multi_xml
+      nokogiri
 
 PLATFORMS
   ruby
@@ -236,3 +247,4 @@ DEPENDENCIES
   will_paginate (~> 3.0)
   will_paginate-bootstrap
   wkhtmltopdf-binary
+  zoho_invoice (~> 0.3.5.2)

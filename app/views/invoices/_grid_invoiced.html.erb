@@ -20,14 +20,14 @@
           <td><%= number_to_currency invoice.grand_total_all %></td> 
           <td><%= invoice.due_date.nil? ? "-" : invoice.due_date.strftime('%m/%d/%Y') %></td>            
           <td>
-            <%= @paid ? (invoice.amount_received.nil? ? "-" : number_to_currency(invoice.amount_received)) : f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', required: true}) %>            
+            <%= @paid ? (invoice.amount_received.nil? ? "-" : number_to_currency(invoice.amount_received)) : f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+'}) %>
           </td>
           <td>
-            <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice", required: true}) %>
+            <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice"}) %>
           </td>
           <!-- <td><%#= link_to("Show Invoice", invoice_path(invoice) ) %></td>  -->
           <td>        
-            <%= f.submit("Update Invoice to Paid", class: "btn btn-primary") unless @paid %>
+            <%= f.submit("Update Invoice to Paid", class: "btn btn-primary update-invoice") unless @paid %>
           </td> 
         <% end  %>
       </tr>      

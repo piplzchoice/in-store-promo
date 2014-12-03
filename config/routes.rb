@@ -86,6 +86,7 @@ Rails.application.routes.draw do
   resources :invoices do
     post "new", :on => :collection, as: :new
     get :list, :on => :collection
+    get :paid, :on => :collection
   end
 
   resources :users, only: [:edit, :update]

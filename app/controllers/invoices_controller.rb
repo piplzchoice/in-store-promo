@@ -26,6 +26,7 @@ class InvoicesController < ApplicationController
   end
 
   def list
+    @paid = false
     respond_to do |format|
       format.html do
         @invoices = Invoice.all.where({status: 0}).order(created_at: :desc)
@@ -35,6 +36,26 @@ class InvoicesController < ApplicationController
       format.js do
         @invoices = Invoice.filter_and_order({
           "client_name" => params[:client_name], 
+          "status" => 0,
+          "sort_column" => sort_column, 
+          "sort_direction" => sort_direction}
+        )
+      end
+    end
+  end
+
+  def paid
+    @paid = true
+    respond_to do |format|
+      format.html do
+        @invoices = Invoice.all.where({status: 1}).order(created_at: :desc)
+        @clients = @invoices.collect{|x|x.client}.uniq
+      end    
+
+      format.js do
+        @invoices = Invoice.filter_and_order({
+          "client_name" => params[:client_name], 
+          "status" => 1,
           "sort_column" => sort_column, 
           "sort_direction" => sort_direction}
         )
@@ -43,12 +64,14 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    @invoice = Invoice.find(params[:id])
-    @invoice.service_ids.split(",").each do |service_id|
-      Service.update_status_to_paid(service_id)
-    end     
-    @invoice.update_attribute(:status, 1)
-    redirect_to invoices_path
+    # @invoice = Invoice.find(params[:id])
+    # @invoice.service_ids.split(",").each do |service_id|
+    #   Service.update_status_to_paid(service_id)
+    # end     
+    # @invoice.update_data(invoice_params.merge(status: 1))
+    # @invoice.update_attribute(:status, 1)
+    # redirect_to invoices_path
+    redirect_to list_invoices_path
   end
 
   def show
@@ -98,5 +121,9 @@ class InvoicesController < ApplicationController
   def sort_direction
     %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
   end  
+
+  def invoice_params
+    params.require(:invoice).permit(:amount_received, :date_received)
+  end    
 
 end

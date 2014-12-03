@@ -15,6 +15,8 @@
 #  status             :integer          default(0)
 #  grand_total        :decimal(8, 2)
 #  due_date           :date
+#  amount_received    :decimal(8, 2)
+#  date_received      :date
 #
 
 class Invoice < ActiveRecord::Base
@@ -38,7 +40,7 @@ class Invoice < ActiveRecord::Base
   def self.filter_and_order(parameters)
     data = nil
     conditions = {}
-    conditions.merge!(status: 0)
+    conditions.merge!(status: parameters["status"])
 
     if parameters["client_name"] != ""
       data = Invoice.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
@@ -49,5 +51,10 @@ class Invoice < ActiveRecord::Base
     data = data.order("#{parameters["sort_column"]} #{parameters["sort_direction"]}")
 
     return data
+  end  
+
+  def update_data(invoice_params)
+    invoice_params[:date_received] = Date.strptime(invoice_params[:date_received], '%m/%d/%Y') unless invoice_params[:date_received].blank?
+    self.update_attributes(invoice_params)
   end  
 end

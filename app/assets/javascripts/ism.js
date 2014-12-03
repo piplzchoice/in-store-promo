@@ -142,6 +142,8 @@ $(function() {
     $("#new_report, .edit_report").submit();
   });
 
+  $('.date-received-invoice').datetimepicker({pickTime: false});
+
   $(document).on("click", ".order-data", function(){
     column = $(this).data("sort")
     if(column === $("#sort").val()) {

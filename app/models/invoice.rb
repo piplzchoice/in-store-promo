@@ -13,6 +13,8 @@
 #  travel_total_all   :decimal(8, 2)
 #  grand_total_all    :decimal(8, 2)
 #  status             :integer          default(0)
+#  grand_total        :decimal(8, 2)
+#  due_date           :date
 #
 
 class Invoice < ActiveRecord::Base
@@ -29,6 +31,7 @@ class Invoice < ActiveRecord::Base
     data.travel_total_all = travel_total_all
     data.grand_total_all = grand_total_all
     data.grand_total = grand_total
+    data.due_date = 15.days.from_now
     data
   end
 

@@ -4,6 +4,8 @@
       <th>Client Name</th>
       <th><%= sortable "created_at", "Date" %></th>
       <th>Grand Total</th>
+      <th>Due Date</th>
+      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -13,7 +15,13 @@
       <td><%= invoice.client.company_name %></td>
       <td><%= invoice.created_at.strftime('%m/%d/%Y') %></td>      
       <td><%= number_to_currency invoice.grand_total_all %></td> 
+      <td><%= invoice.due_date.nil? ? "-" : invoice.due_date.strftime('%m/%d/%Y') %></td>            
       <td><%= link_to("Show Invoice", invoice_path(invoice) ) %></td> 
+      <td>
+        <%= form_tag(invoice_path(invoice), method: :patch) do %>
+          <%= submit_tag("Update Invoice to Paid", class: "btn btn-primary") %>
+        <% end %>        
+      </td> 
     </tr>
     <% end %>
   </tbody>

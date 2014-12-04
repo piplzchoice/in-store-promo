@@ -91,6 +91,14 @@ class Client < ActiveRecord::Base
     return password    
   end
 
+  def rate
+    if read_attribute(:rate).nil?
+      DefaultValue.rate_project
+    else
+      read_attribute(:rate)
+    end
+  end
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

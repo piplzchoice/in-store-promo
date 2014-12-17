@@ -98,29 +98,33 @@ $(function() {
     return false;    
   });
 
-  $("#submit-insert-add-item-amount").on("click", function(){
-    row = "<tr>" +
-        "<td>&nbsp;</td>" +
-        "<td>" + $("#insert-add-item-description").val() + "</td>" +
-        "<td><input type='hidden' name='line-items[]desc' value='" + $("#insert-add-item-description").val() + "' /></td>" +
-        "<td>&nbsp;</td>" +
-        "<td>&nbsp;</td>" +
-        "<td><input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' /></td>" +
-        "<td class='amount-add-item' data-amout='" + $("#insert-add-item-amount").val() + "'>$" + 
-          $("#insert-add-item-amount").val() + " <a href='#add-item-result' class='remove-line-item'>(X)</a></td>" +
-      "</tr>";
-    $("#add-item-result").before(row);
+  $("#form-add-item").on("submit", function(){
+    if(document.getElementById('insert-add-item-description').checkValidity() && 
+      document.getElementById('insert-add-item-amount').checkValidity()) {
+        row = "<tr>" +
+            "<td>&nbsp;</td>" +
+            "<td>" + $("#insert-add-item-description").val() + "</td>" +
+            "<td><input type='hidden' name='line-items[]desc' value='" + $("#insert-add-item-description").val() + "' /></td>" +
+            "<td>&nbsp;</td>" +
+            "<td>&nbsp;</td>" +
+            "<td><input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' /></td>" +
+            "<td class='amount-add-item' data-amout='" + $("#insert-add-item-amount").val() + "'>$" + 
+              $("#insert-add-item-amount").val() + " <a href='#add-item-result' class='remove-line-item'>(X)</a></td>" +
+          "</tr>";
+        $("#add-item-result").before(row);
 
-    sum = 0;
-    $.each($(".amount-add-item"), function( index, value ) { 
-      sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
-    });
-    $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
-    $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
-    
-    $("#insert-add-item-modal").modal("hide");
-    $("#insert-add-item-description").val("");
-    $("#insert-add-item-amount").val("");
+        sum = 0;
+        $.each($(".amount-add-item"), function( index, value ) { 
+          sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
+        });
+        $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        
+        $("#insert-add-item-modal").modal("hide");
+        $("#insert-add-item-description").val("");
+        $("#insert-add-item-amount").val("");
+        return false;
+      }
   });
 
   $(document).on("click", ".remove-line-item", function(){
@@ -143,6 +147,19 @@ $(function() {
   });
 
   $('.date-received-invoice').datetimepicker({pickTime: false});
+  
+  $('#invoice-date').datetimepicker({pickTime: false});
+  // $("#invoice-date").on("dp.change", function (e) {  
+  //   inv_date = e.date.calendar();
+  //   due_date = moment(inv_date);
+  //   toDate = new Date(inv_date);
+  //   toDate.setDate(toDate.getDate() + 15);
+  //   $("#invoice-due-date").val(toDate);
+  // });
+
+  $(".inv-upper").on("keyup", function(){
+    $(this).val($(this).val().toUpperCase());
+  });
 
   $(".update-invoice").on("click", function(){
     if($(this).parent().parent().find("input#invoice_amount_received").val() === "") {

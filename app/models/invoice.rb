@@ -17,13 +17,18 @@
 #  due_date           :date
 #  amount_received    :decimal(8, 2)
 #  date_received      :date
+#  number             :string(255)
+#  issue_date         :date
+#  terms              :string(255)
+#  po                 :string(255)
 #
 
 class Invoice < ActiveRecord::Base
   serialize :line_items, JSON
   belongs_to :client
 
-  def self.new_data(client_id, service_ids, line_items, rate_total_all, expsense_total_all, travel_total_all, grand_total_all, grand_total)
+  def self.new_data(client_id, service_ids, line_items, rate_total_all, 
+    expsense_total_all, travel_total_all, grand_total_all, grand_total, invoice_params)
     data = self.new
     data.client_id = client_id
     data.service_ids = service_ids
@@ -32,8 +37,13 @@ class Invoice < ActiveRecord::Base
     data.expsense_total_all = expsense_total_all
     data.travel_total_all = travel_total_all
     data.grand_total_all = grand_total_all
-    data.grand_total = grand_total
-    data.due_date = 15.days.from_now
+    data.grand_total = grand_total    
+    data.number = invoice_params[:invoice_number] 
+    data.issue_date = Date.strptime(invoice_params[:invoice_date], '%m/%d/%Y')
+    data.due_date = data.issue_date.to_time + 15.days
+    data.terms = invoice_params[:terms]
+    # data.due_date = Date.strptime(invoice_params[:due_date], '%m/%d/%Y')
+    data.po = invoice_params[:po]
     data
   end
 

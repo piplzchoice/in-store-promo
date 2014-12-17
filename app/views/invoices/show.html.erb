@@ -13,6 +13,29 @@
     <p><%= @client.company_name %></p>
     <p><%= @client.street_one %> <%= @client.street_one %></p>
   </div>
+
+  <div class="col-md-4" style="float: right;">    
+    <div class="form-group">
+      <label>Invoice# : </label> 
+      <%= @invoice.number %>
+    </div>
+    <div class="form-group">
+      <label>Invoice Date : </label>
+      <%= @invoice.issue_date.nil? ? @invoice.created_at.strftime('%m/%d/%Y') : @invoice.issue_date.strftime('%m/%d/%Y') %>
+    </div>    
+    <div class="form-group">
+      <label>Terms : </label>
+      <%= @invoice.terms %>
+    </div>    
+    <div class="form-group">
+      <label>Due Date : </label>
+      <%= @invoice.due_date.strftime('%m/%d/%Y') %>
+    </div>        
+    <div class="form-group">
+      <label>P.O.# : </label>
+      <%= @invoice.po %>
+    </div>                
+  </div>  
 </div>
 
 <hr />

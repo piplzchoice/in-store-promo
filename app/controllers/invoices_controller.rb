@@ -84,14 +84,14 @@ class InvoicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @services = @client.services.find(params[:service_ids])
     @service_ids = params[:service_ids]
-    @invoice_number = "INV-%05d" % (Invoice.last.id + 1)
+    @invoice_number = "INV-%05d" % ((Invoice.all.size == 0 ? 0 : Invoice.last.id) + 1)
   end
 
   def create
     line_items = []
     unless params["line-items"].nil?
       params["line-items"].each do |line_item|
-        line_items.push({desc: line_item["desc"], amount: line_item["amount"]})
+        line_items.push({desc: line_item["desc"], amount: line_item["amount"], reduction: line_item["reduction"]})
       end      
     end
 
@@ -107,40 +107,40 @@ class InvoicesController < ApplicationController
       params[:service_ids].split(",").each do |service_id|
         Service.update_status_to_invoiced(service_id)
       end      
+  
+      @client = @invoice.client
+      @services = Service.find(@invoice.service_ids.split(","))
+      file = "invoice-#{Time.now.to_i}.pdf"
+      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+      ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
+
       redirect_to list_invoices_path
     else
       render :new
     end    
   end
 
-  def process_ba_payments
-    unless params[:service_ids].nil?
-      hash_data = BrandAmbassador.process_payments(params[:service_ids])
-      hash_data.each_key do |key|
-        @ba = BrandAmbassador.find(key)
-        @services = @ba.services.find(hash_data[key])
-        @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
-        Service.update_to_ba_paid(hash_data[key])
+  def download
+    file = "invoice-#{Time.now.to_i}.pdf"
 
-        time_no = Time.now.to_i
-        file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
+    @invoice = Invoice.find(params[:id])
+    @client = @invoice.client
+    @services = Service.find(@invoice.service_ids.split(","))
 
-        html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments", :id => key, service_ids: hash_data[key].join("-"))
-        kit = PDFKit.new(html)
-        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-        statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
-        statement.save
-        ApplicationMailer.ba_is_paid(statement).deliver
-      end      
-    end
-    redirect_to ba_payments_reports_path    
+    html = render_to_string(:layout => "print_invoice", :action => "print", :id => params[:id])
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
   end
 
-  def print_process_ba_payments
-    @ba = BrandAmbassador.find(params[:id])
-    @services = @ba.services.find(params[:service_ids].split("-"))
-    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))
-    render layout: "print_report"
+  def print
+    @invoice = Invoice.find(params[:id])
+    @client = @invoice.client
+    @services = Service.find(@invoice.service_ids.split(","))
+    render layout: "print_invoice"
   end 
 
   private

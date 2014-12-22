@@ -87,6 +87,8 @@ Rails.application.routes.draw do
     post "new", :on => :collection, as: :new
     get :list, :on => :collection
     get :paid, :on => :collection
+    get :print, :on => :member
+    get :download, :on => :member    
   end
 
   resources :users, only: [:edit, :update]

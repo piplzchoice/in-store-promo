@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141203034701) do
+ActiveRecord::Schema.define(version: 20141221024541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,6 +94,11 @@ ActiveRecord::Schema.define(version: 20141203034701) do
     t.date     "due_date"
     t.decimal  "amount_received",    precision: 8, scale: 2
     t.date     "date_received"
+    t.string   "number"
+    t.date     "issue_date"
+    t.string   "terms"
+    t.string   "po"
+    t.string   "file"
   end
 
   create_table "locations", force: true do |t|

@@ -5,7 +5,7 @@
   <div class="col-md-3">
     <label>Bill To :</label>
     <p><%= @client.company_name %></p>
-    <p><%= @client.company_name %></p>
+    <p><%= "#{@client.first_name} #{@client.last_name}" %></p>
     <p><%= @client.street_one %> <%= @client.street_one %></p>
   </div>
 
@@ -17,7 +17,7 @@
       <%= text_field_tag "invoice[invoice_date]", nil, {class: "form-control", placeholder: "Invoice Date", required: "true", id: "invoice-date"} %>
     </div>    
     <div class="form-group">
-      <%= text_field_tag "invoice[terms]", "Due on Receipt", {class: "form-control", placeholder: "Terms", required: "true"} %>
+      <%= select_tag "invoice[terms]", options_for_select(Invoice.options_select_terms), {class: "form-control", placeholder: "Terms", required: "true"} %>
     </div>    
     <div class="form-group">
       <%= text_field_tag "invoice[po]", nil, {class: "form-control inv-upper", placeholder: "PO #"} %>
@@ -104,7 +104,9 @@
   <%= hidden_field_tag("grand_total_all", @services.collect{|x| x.grand_total}.sum) %>
   <%= hidden_field_tag("service_ids", @service_ids.join(",")) %>    
   <%= hidden_field_tag("client_id", @client.id) %>    
-  <%= submit_tag("Create Invoice", class: "btn btn-primary") %>  
+  <%= hidden_field_tag("list_emails") %>    
+  <%= check_box_tag 'add-email' %>&nbsp;Add Email Addresses Of Additional Client Employees. <br />
+  <%= submit_tag("Create Invoice & Send To Client", class: "btn btn-primary", id: "create-invoice") %>    
 </div>
 <% end %>
 <hr />
@@ -133,9 +135,36 @@
           <p><input type="text" required pattern="\d+(\.\d{2})?" id="insert-add-item-amount" class="form-control"></p>
         </div>
         <div class="modal-body">
+          <p><input type="checkbox" id="reduction" value="reduction">&nbsp;Reduction</p>
+        </div>        
+        <div class="modal-body">
           <button type="submit" id="submit-insert-add-item-amount" class="btn btn-primary">Submit</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<div id="insert-add-email-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form id="form-add-email">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Additional Email
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Email : </label>
+          <p><input type="email" required id="insert-add-email" class="form-control"></p>
+        </div>   
+        <div class="modal-body" id="list-add-email">
+        </div>
+        <div class="modal-body">
+          <button type="submit" id="btn-add-item-email" class="btn btn-primary">Add</button>
+          <button type="button" id="btn-generate-invoice" class="btn btn-primary">Generate Invoice</button>
+        </div>
+      </form>      
     </div>
   </div>
 </div>

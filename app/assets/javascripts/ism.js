@@ -98,31 +98,87 @@ $(function() {
     return false;    
   });
 
+  $("#create-invoice").on("click", function(){
+
+    if(document.getElementById('invoice_invoice_number').checkValidity() && 
+      document.getElementById('invoice-date').checkValidity()) {    
+      if($("#add-email").prop('checked')) {
+        $('#insert-add-email-modal').modal({
+          backdrop: 'static',
+          keyboard: true
+        })
+        
+        $("#insert-add-email-modal").modal("show");  
+        return false;        
+      }
+    }      
+  });
+
+  $("#btn-add-item-email").on("click", function(){    
+    if(document.getElementById('insert-add-email').checkValidity()) {
+      elm = "<span class='email-lists' data-email='" + $("#insert-add-email").val() + "'>" + $("#insert-add-email").val() + " <a href='#' class='rm-add-email'>(x)</a></span><br />";
+      $("#list-add-email").append(elm);
+      $("#insert-add-email").val("");
+      return false
+    }    
+  });
+
+  $("#btn-generate-invoice").on("click", function(){
+    val_list_emails = "";
+    $(".email-lists").each(function(i, obj) {
+      val_list_emails = val_list_emails + $(obj).data("email") + ";";      
+    });   
+    $("#list_emails").val(val_list_emails);
+    $("#form-invoice").submit();
+  });
+
+  $(document).on("click", ".rm-add-email", function(){
+    $(this).parent().remove()
+  });
+
   $("#form-add-item").on("submit", function(){
     if(document.getElementById('insert-add-item-description').checkValidity() && 
       document.getElementById('insert-add-item-amount').checkValidity()) {
+        
+        valAmount = "$" + $("#insert-add-item-amount").val();
+        if($("#reduction").prop('checked')) {
+          valAmount = "($" + $("#insert-add-item-amount").val() + ")";
+        }
+
         row = "<tr>" +
             "<td>&nbsp;</td>" +
             "<td>" + $("#insert-add-item-description").val() + "</td>" +
             "<td><input type='hidden' name='line-items[]desc' value='" + $("#insert-add-item-description").val() + "' /></td>" +
             "<td>&nbsp;</td>" +
             "<td>&nbsp;</td>" +
-            "<td><input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' /></td>" +
-            "<td class='amount-add-item' data-amout='" + $("#insert-add-item-amount").val() + "'>$" + 
-              $("#insert-add-item-amount").val() + " <a href='#add-item-result' class='remove-line-item'>(X)</a></td>" +
+            "<td>" +
+            "<input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' />" +
+            "<input type='hidden' name='line-items[]reduction' value='" + $("#reduction").prop('checked') + "' />" +
+            "</td>" +
+            "<td class='amount-add-item' data-reduction='" + $("#reduction").prop('checked') + "' data-amout='" + $("#insert-add-item-amount").val() + "'> " + 
+              valAmount + " <a href='#add-item-result' class='remove-line-item'>(X)</a> " + 
+            "</td>" +
           "</tr>";
         $("#add-item-result").before(row);
 
         sum = 0;
         $.each($(".amount-add-item"), function( index, value ) { 
-          sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
+          if($($(".amount-add-item")[index]).data("reduction")) {
+            sum -= parseFloat($($(".amount-add-item")[index]).data("amout"));
+          } else {
+            sum += parseFloat($($(".amount-add-item")[index]).data("amout"));            
+          }
         });
+
+        
+
         $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
         $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
         
         $("#insert-add-item-modal").modal("hide");
         $("#insert-add-item-description").val("");
         $("#insert-add-item-amount").val("");
+        $("#reduction").prop('checked', false);
         return false;
       }
   });
@@ -131,7 +187,11 @@ $(function() {
     $(this).parent().parent().remove();
     sum = 0;
     $.each($(".amount-add-item"), function( index, value ) { 
-      sum += parseFloat($($(".amount-add-item")[index]).data("amout"));
+      if($($(".amount-add-item")[index]).data("reduction")) {
+        sum -= parseFloat($($(".amount-add-item")[index]).data("amout"));
+      } else {
+        sum += parseFloat($($(".amount-add-item")[index]).data("amout"));            
+      }
     });
     $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
     $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));

@@ -104,7 +104,7 @@
   <%= hidden_field_tag("grand_total_all", @services.collect{|x| x.grand_total}.sum) %>
   <%= hidden_field_tag("service_ids", @service_ids.join(",")) %>    
   <%= hidden_field_tag("client_id", @client.id) %>    
-  <%= hidden_field_tag("list_emails") %>    
+  <%= hidden_field_tag("list_emails", (@client.additional_emails.blank? ? nil : "#{@client.additional_emails.join(";");}")) %>    
   <%= check_box_tag 'add-email' %>&nbsp;Add Email Addresses Of Additional Client Employees. <br />
   <%= submit_tag("Create Invoice & Send To Client", class: "btn btn-primary", id: "create-invoice") %>    
 </div>
@@ -159,6 +159,13 @@
           <p><input type="email" required id="insert-add-email" class="form-control"></p>
         </div>   
         <div class="modal-body" id="list-add-email">
+          <% unless @client.additional_emails.blank? %>
+            <% @client.additional_emails.each do |email| %>
+              <span class='email-lists' data-email='<%= email %>'>
+               <%= email %><a href='#' class='rm-add-email'>(x)</a>
+              </span><br />            
+            <% end %>
+          <% end %>
         </div>
         <div class="modal-body">
           <button type="submit" id="btn-add-item-email" class="btn btn-primary">Add</button>

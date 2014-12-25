@@ -115,6 +115,7 @@ class InvoicesController < ApplicationController
       kit = PDFKit.new(html)
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+      @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
       ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
 
       redirect_to list_invoices_path

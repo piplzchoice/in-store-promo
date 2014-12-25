@@ -7,9 +7,7 @@
       <th>Due Date</th>
       <th>Amount Rec</th>
       <th>Data Rec</th>
-      <% if @paid %>
-        <th></th>
-      <% end %>
+      <th></th>
       <th></th>
     </tr>
   </thead>
@@ -26,13 +24,11 @@
           </td>
           <td>
             <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice form-control"}) %>
-          </td>
-          <% if @paid %>
-            <td><%= link_to("Show Invoice", invoice_path(invoice) ) %></td>
-          <% end %>
+          </td>          
           <td>        
             <%= f.submit("Update Invoice to Paid", class: "btn btn-primary update-invoice") unless @paid %>
-          </td> 
+          </td>
+          <td><%= link_to("Show Invoice", invoice_path(invoice), class: "btn btn-primary update-invoice" ) %></td> 
         <% end  %>
       </tr>      
     <% end %>

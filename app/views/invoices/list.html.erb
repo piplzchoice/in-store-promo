@@ -12,8 +12,8 @@
         <label class="control-label">Client Name</label>
         <%= select_tag("client_name", options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control filter-params", :include_blank => true}) %>
       </div>                 
-      <%= hidden_field_tag(:sort, "created_at", {id: "sort-invoiced"}) %>
-      <%= hidden_field_tag(:direction, "desc") %>
+      <%= hidden_field_tag(:sort, "issue_date", {id: "sort-invoiced"}) %>
+      <%= hidden_field_tag(:direction, "asc") %>
       <%= hidden_field_tag(:page, 1) %>
       <%= submit_tag("Filter", class: "btn btn-default", id: "filter-submit") %>               
     <% end %>

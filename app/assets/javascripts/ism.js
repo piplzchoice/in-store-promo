@@ -140,9 +140,10 @@ $(function() {
     if(document.getElementById('insert-add-item-description').checkValidity() && 
       document.getElementById('insert-add-item-amount').checkValidity()) {
         
-        valAmount = "$" + $("#insert-add-item-amount").val();
+        // valAmount = "$" + $("#insert-add-item-amount").val();
+        valAmount = accounting.formatMoney($("#insert-add-item-amount").val());        
         if($("#reduction").prop('checked')) {
-          valAmount = "($" + $("#insert-add-item-amount").val() + ")";
+          valAmount = "(" + valAmount + ")";
         }
 
         row = "<tr>" +
@@ -172,7 +173,8 @@ $(function() {
 
         
 
-        $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        // $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        $("#due-total-all").html(accounting.formatMoney((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum))));
         $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
         
         $("#insert-add-item-modal").modal("hide");
@@ -193,7 +195,8 @@ $(function() {
         sum += parseFloat($($(".amount-add-item")[index]).data("amout"));            
       }
     });
-    $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
+    // $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
+    $("#due-total-all").html(accounting.formatMoney((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum))));
     $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
   });
   

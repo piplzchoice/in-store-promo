@@ -29,7 +29,7 @@ class InvoicesController < ApplicationController
     @paid = false
     respond_to do |format|
       format.html do
-        @invoices = Invoice.all.where({status: 0}).order(issue_date: :desc)
+        @invoices = Invoice.all.where({status: 0}).order(issue_date: :asc)
         @clients = @invoices.collect{|x|x.client}.uniq
       end    
 

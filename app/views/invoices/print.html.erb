@@ -76,14 +76,16 @@
           <td class="pad-tab border-bott right-align"></td>
         </tr>      
 
-        <tr>
+        <tr id="add-item-result" style="">
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>                
-          <td>&nbsp;</td>
+          <td class="border-bott-strong"><strong>Total</strong></td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="right-align border-bott-strong">
+            <%= number_to_currency @invoice.grand_total %>
+          </td>
         </tr>
 
         <% unless @invoice.line_items.blank? %>
@@ -100,17 +102,15 @@
           <% end %>
         <% end %>
 
-        <tr id="add-item-result" style="">
+        <tr>
           <td>&nbsp;</td>
           <td>&nbsp;</td>
-          <td class="border-bott-strong"><strong>Total</strong></td>
-          <td class="border-bott-strong">&nbsp;</td>
-          <td class="border-bott-strong">&nbsp;</td>
-          <td class="border-bott-strong">&nbsp;</td>
-          <td class="right-align border-bott-strong">
-            <%= number_to_currency @invoice.grand_total %>
-          </td>
-        </tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>                
+          <td>&nbsp;</td>
+        </tr>        
 
         <tr style="">
           <td>&nbsp;</td>

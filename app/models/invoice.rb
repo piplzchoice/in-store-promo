@@ -85,6 +85,10 @@ class Invoice < ActiveRecord::Base
     return data
   end  
 
+  def list_email
+    client.additional_emails
+  end
+
   def update_data(invoice_params)
     invoice_params[:date_received] = Date.strptime(invoice_params[:date_received], '%m/%d/%Y') unless invoice_params[:date_received].blank?
     self.update_attributes(invoice_params)

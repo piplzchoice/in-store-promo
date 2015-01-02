@@ -87,6 +87,118 @@ $(function() {
       }
     }
   });
+
+  $("#insert_add_item").on("click", function(){
+    $('#insert-add-item-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+    
+    $("#insert-add-item-modal").modal("show");  
+    return false;    
+  });
+
+  $("#create-invoice").on("click", function(){
+
+    if(document.getElementById('invoice_invoice_number').checkValidity() && 
+      document.getElementById('invoice-date').checkValidity()) {    
+      if($("#add-email").prop('checked')) {
+        $('#insert-add-email-modal').modal({
+          backdrop: 'static',
+          keyboard: true
+        })
+        
+        $("#insert-add-email-modal").modal("show");  
+        return false;        
+      }
+    }      
+  });
+
+  $("#btn-add-item-email").on("click", function(){    
+    if(document.getElementById('insert-add-email').checkValidity()) {
+      elm = "<span class='email-lists' data-email='" + $("#insert-add-email").val() + "'>" + $("#insert-add-email").val() + " <a href='#' class='rm-add-email'>(x)</a></span><br />";
+      $("#list-add-email").append(elm);
+      $("#insert-add-email").val("");
+      return false
+    }    
+  });
+
+  $("#btn-generate-invoice").on("click", function(){
+    val_list_emails = "";
+    $(".email-lists").each(function(i, obj) {
+      val_list_emails = val_list_emails + $(obj).data("email") + ";";      
+    });   
+    $("#list_emails").val(val_list_emails);
+    $("#form-invoice").submit();
+  });
+
+  $(document).on("click", ".rm-add-email", function(){
+    $(this).parent().remove()
+  });
+
+  $("#form-add-item").on("submit", function(){
+    if(document.getElementById('insert-add-item-description').checkValidity() && 
+      document.getElementById('insert-add-item-amount').checkValidity()) {
+        
+        // valAmount = "$" + $("#insert-add-item-amount").val();
+        valAmount = accounting.formatMoney($("#insert-add-item-amount").val());        
+        if($("#reduction").prop('checked')) {
+          valAmount = "(" + valAmount + ")";
+        }
+
+        row = "<tr>" +
+            "<td>&nbsp;</td>" +
+            "<td>" + $("#insert-add-item-description").val() + "</td>" +
+            "<td><input type='hidden' name='line-items[]desc' value='" + $("#insert-add-item-description").val() + "' /></td>" +
+            "<td>&nbsp;</td>" +
+            "<td>&nbsp;</td>" +
+            "<td>" +
+            "<input type='hidden' name='line-items[]amount' value='" + $("#insert-add-item-amount").val() + "' />" +
+            "<input type='hidden' name='line-items[]reduction' value='" + $("#reduction").prop('checked') + "' />" +
+            "</td>" +
+            "<td class='amount-add-item' data-reduction='" + $("#reduction").prop('checked') + "' data-amout='" + $("#insert-add-item-amount").val() + "'> " + 
+              valAmount + " <a href='#add-item-result' class='remove-line-item'>(X)</a> " + 
+            "</td>" +
+          "</tr>";
+        $("#add-item-result").before(row);
+
+        sum = 0;
+        $.each($(".amount-add-item"), function( index, value ) { 
+          if($($(".amount-add-item")[index]).data("reduction")) {
+            sum -= parseFloat($($(".amount-add-item")[index]).data("amout"));
+          } else {
+            sum += parseFloat($($(".amount-add-item")[index]).data("amout"));            
+          }
+        });
+
+        
+
+        // $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        $("#due-total-all").html(accounting.formatMoney((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum))));
+        $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+        
+        $("#insert-add-item-modal").modal("hide");
+        $("#insert-add-item-description").val("");
+        $("#insert-add-item-amount").val("");
+        $("#reduction").prop('checked', false);
+        return false;
+      }
+  });
+
+  $(document).on("click", ".remove-line-item", function(){
+    $(this).parent().parent().remove();
+    sum = 0;
+    $.each($(".amount-add-item"), function( index, value ) { 
+      if($($(".amount-add-item")[index]).data("reduction")) {
+        sum -= parseFloat($($(".amount-add-item")[index]).data("amout"));
+      } else {
+        sum += parseFloat($($(".amount-add-item")[index]).data("amout"));            
+      }
+    });
+    // $("#due-total-all").html("$" + (parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));       
+    $("#due-total-all").html(accounting.formatMoney((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum))));
+    $("#grand_total_all").val((parseFloat($("#grand-total-all").data("total")) + parseFloat(sum)));
+  });
   
   $("#submit-travel-expense").click(function(){
     if($("#travel-expense-field").val() === "") {
@@ -95,6 +207,36 @@ $(function() {
     $("#report_travel_expense").val($("#travel-expense-field").val());
     $("#can_submit").val(1);
     $("#new_report, .edit_report").submit();
+  });
+
+  $('.date-received-invoice').datetimepicker({pickTime: false});
+  
+  $('#invoice-date').datetimepicker({pickTime: false});
+  // $("#invoice-date").on("dp.change", function (e) {  
+  //   inv_date = e.date.calendar();
+  //   due_date = moment(inv_date);
+  //   toDate = new Date(inv_date);
+  //   toDate.setDate(toDate.getDate() + 15);
+  //   $("#invoice-due-date").val(toDate);
+  // });
+
+  $(".inv-upper").on("keyup", function(){
+    $(this).val($(this).val().toUpperCase());
+  });
+
+  $(".update-invoice").on("click", function(){
+    if($(this).parent().parent().find("input#invoice_amount_received").val() === "") {
+      $(this).parent().parent().find("input#invoice_date_received").val("");
+    } else {
+      if($(this).parent().parent().find("input#invoice_amount_received")[0].checkValidity() && $(this).parent().parent().find("input#invoice_date_received").val() === "") {
+        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity('Please fill Date Received');
+        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = false;
+      } else {
+        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity("");
+        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = true;
+      }
+    }
+    return true;
   });
 
   $(document).on("click", ".order-data", function(){

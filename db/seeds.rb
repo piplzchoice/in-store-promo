@@ -156,3 +156,17 @@ if EmailTemplate.find_by_name("ba_is_paid").nil?
 
   puts "created email template for ba_is_paid"
 end
+
+if EmailTemplate.find_by_name("send_invoice").nil?
+  send_invoice = {
+    name: "send_invoice", 
+    subject: "You have been paided",
+    content: "
+      <p>Hello</p>
+      <p>Here is the invoice</p>
+    "  
+  }  
+  EmailTemplate.create(send_invoice)
+
+  puts "created email template for send_invoice"  
+end

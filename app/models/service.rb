@@ -28,7 +28,7 @@
 # 7. Paid => when service has been paid ---> "#00B050"
 # 8. BA Paid => ---> "#E46D0A"
 # 9. Cancelled ---> "#FF0000"
-#     
+# 10. Invoiced
 
 class Service < ActiveRecord::Base
 
@@ -116,6 +116,10 @@ class Service < ActiveRecord::Base
     return 9
   end
 
+  def self.status_invoiced
+    return 10
+  end
+
   def self.send_notif_after
     return 12.round
   end
@@ -161,6 +165,11 @@ class Service < ActiveRecord::Base
   def self.update_status_to_paid(service_id)
     service = Service.find(service_id)
     service.update_attribute(:status, Service.status_paid)
+  end  
+
+  def self.update_status_to_invoiced(service_id)
+    service = Service.find(service_id)
+    service.update_attribute(:status, Service.status_invoiced)
   end  
 
   def self.update_status_to_ba_paid(service_id)
@@ -296,6 +305,8 @@ class Service < ActiveRecord::Base
       "BA Paid"
     when 9
       "Cancelled"
+    when 10
+      "Invoiced"      
     end
   end
 
@@ -374,7 +385,9 @@ class Service < ActiveRecord::Base
   end
 
   def grand_total
-    client.rate.to_f + report.expense_one.to_f + report.travel_expense.to_f
+    expense = 0
+    expense = report.expense_one.to_f + report.travel_expense.to_f unless report.nil?
+    client.rate.to_f + expense
   end
 
 end

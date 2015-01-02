@@ -107,9 +107,9 @@ class ReportsController < ApplicationController
 
   def reconcile_payments
     respond_to do |format|
-      format.html do
-        @clients = Client.all
+      format.html do        
         @services = Service.all.where({status: Service.status_reported}).order(start_at: :desc)
+        @clients = @services.collect{|x| x.client}.uniq
       end    
 
       format.js do

@@ -52,3 +52,5 @@ gem "fog"
 gem 'debugger', group: [:development, :test]
 
 gem 'exception_notification'
+gem "rest_client", :require => "rest_client"
+gem "addressable", :require => "addressable/uri"

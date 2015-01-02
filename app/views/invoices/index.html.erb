@@ -1,0 +1,27 @@
+<h1 class="page-header">Invoices</h1>
+<div class="row">
+  <div class="link-new-btn">
+    <%= link_to("Outstanding Invoices", list_invoices_path, {class: "btn btn-primary", role: "button"}) %>
+    <%= link_to("Paid Invoices", paid_invoices_path, {class: "btn btn-primary", role: "button"}) %>
+  </div>  
+</div>
+<div class="row" style="margin-bottom: 30px;">
+  <div class="col-md-3">
+    <%= form_tag(invoices_path, method: :get, remote: true, id: "filter-data") do %>
+      <div class="form-group">
+        <label class="control-label">Client Name</label>
+        <%= select_tag("client_name", options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control filter-params", :include_blank => true}) %>
+      </div>                 
+      <%= hidden_field_tag(:sort, "start_at",) %>
+      <%= hidden_field_tag(:direction, "desc") %>
+      <%= hidden_field_tag(:page, 1) %>
+      <%= submit_tag("Filter", class: "btn btn-default", id: "filter-submit") %>               
+    <% end %>
+  </div>
+</div>
+
+<hr>
+
+<div class="table-responsive">
+  <%= render "grid_invoices" %>
+</div>

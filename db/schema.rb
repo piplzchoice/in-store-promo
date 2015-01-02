@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141113005748) do
+ActiveRecord::Schema.define(version: 20141225221049) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,8 +56,9 @@ ActiveRecord::Schema.define(version: 20141113005748) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "account_id"
-    t.boolean  "is_active",                            default: true
-    t.decimal  "rate",         precision: 8, scale: 2
+    t.boolean  "is_active",                                 default: true
+    t.decimal  "rate",              precision: 8, scale: 2
+    t.text     "additional_emails"
   end
 
   create_table "default_values", force: true do |t|
@@ -77,6 +78,28 @@ ActiveRecord::Schema.define(version: 20141113005748) do
     t.text     "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "invoices", force: true do |t|
+    t.integer  "client_id"
+    t.string   "service_ids"
+    t.text     "line_items"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "rate_total_all",     precision: 8, scale: 2
+    t.decimal  "expsense_total_all", precision: 8, scale: 2
+    t.decimal  "travel_total_all",   precision: 8, scale: 2
+    t.decimal  "grand_total_all",    precision: 8, scale: 2
+    t.integer  "status",                                     default: 0
+    t.decimal  "grand_total",        precision: 8, scale: 2
+    t.date     "due_date"
+    t.decimal  "amount_received",    precision: 8, scale: 2
+    t.date     "date_received"
+    t.string   "number"
+    t.date     "issue_date"
+    t.string   "terms"
+    t.string   "po"
+    t.string   "file"
   end
 
   create_table "locations", force: true do |t|

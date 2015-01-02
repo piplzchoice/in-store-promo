@@ -84,4 +84,18 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: statement.brand_ambassador.account.email, subject: et.subject)    
   end
 
+  def send_invoice(invoice, list_emails)
+    emails = [invoice.client.email]
+    unless list_emails == ""
+      list_emails.split(";").each{|x| emails.push(x)}      
+    end
+    et = EmailTemplate.find_by_name("send_invoice")
+    attachments["#{invoice.file.filename}"] = File.read(invoice.file.path)
+    @content = et.content.gsub(".client_first_name", invoice.client.first_name)
+    mail(to: emails, subject: et.subject)        
+  end
+
+  def report_is_already_due
+  end
+
 end

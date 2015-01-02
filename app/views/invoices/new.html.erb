@@ -1,0 +1,177 @@
+<h1 class="page-header">New Invoice</h1>
+
+<%= form_tag(invoices_path, {method: :post, id: "form-invoice"} ) do %>
+<div class="row">
+  <div class="col-md-3">
+    <label>Bill To :</label>
+    <p><%= @client.company_name %></p>
+    <p><%= "#{@client.first_name} #{@client.last_name}" %></p>
+    <p><%= @client.street_one %> <%= @client.street_one %></p>
+  </div>
+
+  <div class="col-md-4" style="float: right;">    
+    <div class="form-group">
+      <%= text_field_tag "invoice[invoice_number]", @invoice_number, {class: "form-control inv-upper", placeholder: "Invoice #", required: "true", style: "text-transform: uppercase"} %>
+    </div>
+    <div class="form-group">
+      <%= text_field_tag "invoice[invoice_date]", nil, {class: "form-control", placeholder: "Invoice Date", required: "true", id: "invoice-date"} %>
+    </div>    
+    <div class="form-group">
+      <%= select_tag "invoice[terms]", options_for_select(Invoice.options_select_terms), {class: "form-control", placeholder: "Terms", required: "true"} %>
+    </div>    
+    <div class="form-group">
+      <%= text_field_tag "invoice[po]", nil, {class: "form-control inv-upper", placeholder: "PO #"} %>
+    </div>                
+  </div>  
+</div>
+
+<hr />
+
+<div class="table-responsive">  
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Demo Date</th>
+        <th>Location</th>
+        <th>Start Time</th>        
+        <th>Rate</th>
+        <th>Product Expenses</th>
+        <th>Travel Expense</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+        <tr>
+          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= link_to(service.location.name, report_url(service.report)) %></td> 
+          <td><%= service.start_at.strftime("%I:%M %p") %></td>        
+          <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
+          <td><%= number_to_currency service.report.expense_one %></td>
+          <td><%= service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-" %></td>
+          <td><%= number_to_currency(service.grand_total) %></td>
+        </tr>
+      <% end %>
+
+      <tr style="border-top: 2px; border-top-style: dashed; border-bottom: 2px; border-bottom-style: dashed;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Sub Total</strong></td>
+        <td><%= number_to_currency @services.collect{|x| x.client.rate.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report.expense_one.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report.travel_expense.to_f}.sum %></td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Total</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="grand-total-all" data-total="<%= @services.collect{|x| x.grand_total}.sum %>">
+          <%= number_to_currency @services.collect{|x| x.grand_total}.sum %>
+        </td>
+      </tr>
+
+      <tr id="add-item-result" >
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>                
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Balance Due</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="due-total-all"><%= number_to_currency @services.collect{|x| x.grand_total}.sum %></td>
+      </tr>
+
+    </tbody>
+  </table>
+  <%= hidden_field_tag("rate_total_all", @services.collect{|x| x.client.rate.to_f}.sum) %>
+  <%= hidden_field_tag("expsense_total_all", @services.collect{|x| x.report.expense_one.to_f}.sum) %>
+  <%= hidden_field_tag("travel_total_all", @services.collect{|x| x.report.travel_expense.to_f}.sum) %>
+  <%= hidden_field_tag("grand_total", @services.collect{|x| x.grand_total}.sum) %>
+  <%= hidden_field_tag("grand_total_all", @services.collect{|x| x.grand_total}.sum) %>
+  <%= hidden_field_tag("service_ids", @service_ids.join(",")) %>    
+  <%= hidden_field_tag("client_id", @client.id) %>    
+  <%= hidden_field_tag("list_emails", (@client.additional_emails.blank? ? nil : "#{@client.additional_emails.join(";");}")) %>    
+  <%= check_box_tag 'add-email' %>&nbsp;Add Email Addresses Of Additional Client Employees. <br />
+  <%= submit_tag("Create Invoice & Send To Client", class: "btn btn-primary", id: "create-invoice") %>    
+</div>
+<% end %>
+<hr />
+<div class="row">
+  <div class="link-new-btn">
+    <%= link_to("Insert Additional Line Item", "#", {id: "insert_add_item", class: "btn btn-primary", role: "button"}) %>
+  </div>
+</div>  
+
+
+<div id="insert-add-item-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form id="form-add-item">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Additional Line Item
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Description : </label>
+          <p><input type="text" required id="insert-add-item-description" class="form-control"></p>
+        </div>
+        <div class="modal-body">
+          <label>Amount : </label>
+          <p><input type="text" required pattern="\d+(\.\d{2})?" id="insert-add-item-amount" class="form-control"></p>
+        </div>
+        <div class="modal-body">
+          <p><input type="checkbox" id="reduction" value="reduction">&nbsp;Credit</p>
+        </div>        
+        <div class="modal-body">
+          <button type="submit" id="submit-insert-add-item-amount" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="insert-add-email-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form id="form-add-email">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Additional Email
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Email : </label>
+          <p><input type="email" required id="insert-add-email" class="form-control"></p>
+        </div>   
+        <div class="modal-body" id="list-add-email">
+          <% unless @client.additional_emails.blank? %>
+            <% @client.additional_emails.each do |email| %>
+              <span class='email-lists' data-email='<%= email %>'>
+               <%= email %><a href='#' class='rm-add-email'>(x)</a>
+              </span><br />            
+            <% end %>
+          <% end %>
+        </div>
+        <div class="modal-body">
+          <button type="submit" id="btn-add-item-email" class="btn btn-primary">Add</button>
+          <button type="button" id="btn-generate-invoice" class="btn btn-primary">Generate Invoice</button>
+        </div>
+      </form>      
+    </div>
+  </div>
+</div>

@@ -89,6 +89,7 @@ Rails.application.routes.draw do
     get :paid, :on => :collection
     get :print, :on => :member
     get :download, :on => :member    
+    post "resend", :on => :member
   end
 
   resources :users, only: [:edit, :update]

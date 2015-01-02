@@ -117,7 +117,6 @@ class InvoicesController < ApplicationController
       @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
       @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
       ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
-
       redirect_to list_invoices_path
     else
       render :new
@@ -143,6 +142,12 @@ class InvoicesController < ApplicationController
     @services = Service.find(@invoice.service_ids.split(","))
     render layout: "print_invoice"
   end 
+
+  def resend
+    @invoice = Invoice.find(params[:id])
+    ApplicationMailer.send_invoice(@invoice, @invoice.list_email).deliver
+    redirect_to invoice_path(@invoice), notice: "Invoice sent"
+  end
 
   private
   

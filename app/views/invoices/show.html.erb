@@ -128,8 +128,8 @@
 
 <div class="row">
   <div class="link-new-btn">
-    <%#= form_tag(invoice_path(@invoice), method: :patch) do %>
-      <%#= submit_tag("Update Invoice to Paid", class: "btn btn-primary") %>
-    <%# end %>
+    <%= form_tag(resend_invoice_path(@invoice), method: :post) do %>
+      <%= submit_tag("Resend Invoice", class: "btn btn-primary") %>
+    <% end %>
   </div>  
 </div>

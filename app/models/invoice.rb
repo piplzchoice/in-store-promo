@@ -95,6 +95,10 @@ class Invoice < ActiveRecord::Base
   end  
 
   def is_paid_match?
-    grand_total == amount_received    
+    if amount_received.nil?
+      true
+    else
+      grand_total == amount_received    
+    end    
   end
 end

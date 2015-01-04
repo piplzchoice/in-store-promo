@@ -97,7 +97,7 @@ class ApplicationMailer < ActionMailer::Base
   def report_over_due_alert(service, admin = false)
     et = EmailTemplate.find_by_name("report_over_due_alert")
     if admin
-      emails = User.all_ismp.collect{|a| a.email}      
+      emails = ["gregy@cx-iq.com"]
     else
       emails = [service.brand_ambassador.account.email] << User.all_ismp.collect{|a| a.email}
     end    

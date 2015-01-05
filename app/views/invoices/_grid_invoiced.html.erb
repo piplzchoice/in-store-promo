@@ -17,10 +17,24 @@
         <%= form_for(invoice) do |f| %>
           <td><%= invoice.client.company_name %></td>
           <td><%= invoice.issue_date.nil? ? invoice.created_at.strftime('%m/%d/%Y') : invoice.issue_date.strftime('%m/%d/%Y') %></td>      
-          <td><%= number_to_currency invoice.grand_total_all %></td> 
+          <td>
+            <% if @paid %>
+              <%= invoice.is_paid_match? ? number_to_currency(invoice.grand_total_all) : content_tag(:strong, number_to_currency(invoice.grand_total_all)) %>
+            <% else %>
+              <%= number_to_currency invoice.grand_total_all %>
+            <% end %>                        
+          </td> 
           <td><%= invoice.due_date.nil? ? "-" : invoice.due_date.strftime('%m/%d/%Y') %></td>            
           <td>
-            <%= @paid ? (invoice.amount_received.nil? ? "-" : number_to_currency(invoice.amount_received)) : f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control"}) %>
+            <% if @paid %>
+              <% if invoice.amount_received.nil? %> 
+                <%= "-" %>
+              <% else %>
+                <%= invoice.is_paid_match? ? number_to_currency(invoice.amount_received) : content_tag(:strong, number_to_currency(invoice.amount_received)) %>
+              <% end %>
+            <% else %>
+              <%= f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control"}) %>
+            <% end %>
           </td>
           <td>
             <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice form-control"}) %>

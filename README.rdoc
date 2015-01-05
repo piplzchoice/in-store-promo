@@ -15,3 +15,9 @@ Here is guide for setup In Store Promo Application :
 * add command 'rake notification:change_to_conduceted' on cronjob, make it run for every 10 minutes
 
 * add command 'rake notification:add_availblty_date' on cronjob, make it run for every day
+
+* add command 'rake notification:report_over_due_alert' on cronjob, make it run for every day
+
+* add command 'rake notification:report_over_due_alert_admin' on cronjob, make it run for every day
+
+

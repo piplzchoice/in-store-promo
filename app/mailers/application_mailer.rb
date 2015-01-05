@@ -96,7 +96,15 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: emails, subject: et.subject)        
   end
 
-  def report_is_already_due
+  def report_over_due_alert(service, admin = false)
+    et = EmailTemplate.find_by_name("report_over_due_alert")
+    if admin
+      emails = ["gregy@cx-iq.com"]
+    else
+      emails = [service.brand_ambassador.account.email] << User.all_ismp.collect{|a| a.email}
+    end    
+    @content = et.content.gsub(".demo_date", service.complete_date_time).gsub(".service_company_name", service.client.company_name).gsub(".service_location", service.location.complete_location)
+    mail(to: emails.flatten.uniq, subject: et.subject)    
   end
 
 end

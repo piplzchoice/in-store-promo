@@ -93,4 +93,12 @@ class Invoice < ActiveRecord::Base
     invoice_params[:date_received] = Date.strptime(invoice_params[:date_received], '%m/%d/%Y') unless invoice_params[:date_received].blank?
     self.update_attributes(invoice_params)
   end  
+
+  def is_paid_match?
+    if amount_received.nil?
+      true
+    else
+      grand_total_all == amount_received    
+    end    
+  end
 end

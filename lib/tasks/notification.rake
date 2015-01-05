@@ -29,5 +29,27 @@ namespace :notification do
       end
     end
   end  
+
+  desc "Send BA and ISMP when a service report is not created by the BA 36 hours after the service was completed / conducted"
+  task :report_over_due_alert => :environment do
+    current_time = Time.now.to_time
+    Service.where("status = ?", 4).each do |service|
+      if TimeDifference.between(service.updated_at.to_time, current_time).in_hours > 36.round
+        service.update_attributes({alert_sent: true, alert_sent_date: 35.hours.from_now.to_time})
+        ApplicationMailer.report_over_due_alert(service).deliver!
+      end
+    end    
+  end  
+
+  desc "Send the copy of the alert to Admin when the report is not created 12 hours after the initial alert was sent"
+  task :report_over_due_alert_admin => :environment do
+    current_time = Time.now.to_time
+    Service.where("status = ? AND alert_sent = ? AND alert_sent_admin = ?", 4, true, false).each do |service|
+      if TimeDifference.between(service.alert_sent_date.to_time, current_time).in_hours > 12.round
+        service.update_attributes({alert_sent_admin: true, alert_sent_admin_date: current_time})
+        ApplicationMailer.report_over_due_alert(service, true).deliver!
+      end
+    end    
+  end  
   
 end

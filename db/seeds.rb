@@ -170,3 +170,17 @@ if EmailTemplate.find_by_name("send_invoice").nil?
 
   puts "created email template for send_invoice"  
 end
+
+if EmailTemplate.find_by_name("report_over_due_alert").nil?
+  report_over_due_alert = {
+    name: "report_over_due_alert", 
+    subject: "Alert, Report Over Due",
+    content: "
+      <p>The report for the demo conducted on <strong>.demo_date</strong> for <strong>.service_company_name</strong> at <strong>.service_location</strong> is over due.</p>
+      <p>Please complete the report ASAP as it cannot be invoiced for without you doing it.</p>
+    "  
+  }  
+  EmailTemplate.create(report_over_due_alert)
+
+  puts "created email template for report_over_due_alert"  
+end

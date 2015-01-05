@@ -98,7 +98,7 @@ class Invoice < ActiveRecord::Base
     if amount_received.nil?
       true
     else
-      grand_total == amount_received    
+      grand_total_all == amount_received    
     end    
   end
 end

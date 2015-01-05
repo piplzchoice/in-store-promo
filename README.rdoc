@@ -19,3 +19,5 @@ Here is guide for setup In Store Promo Application :
 * add command 'rake notification:report_over_due_alert' on cronjob, make it run for every day
 
 * add command 'rake notification:report_over_due_alert_admin' on cronjob, make it run for every day
+
+

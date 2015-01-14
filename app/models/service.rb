@@ -204,7 +204,8 @@ class Service < ActiveRecord::Base
       ["BA Confirmed", Service.status_confirmed],
       ["Conducted", Service.status_conducted],
       ["Reported", Service.status_reported],
-      ["Paid", Service.status_paid]
+      ["Paid", Service.status_paid],
+      ["BA paid", Service.status_ba_paid],
     ]
   end
 

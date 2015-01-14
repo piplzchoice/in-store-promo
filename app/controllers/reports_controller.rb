@@ -22,7 +22,7 @@ class ReportsController < ApplicationController
           @clients = Client.all
           @projects = Project.all        
         elsif current_user.has_role?(:client)
-          @services = current_user.client.services.order(created_at: :desc).where(services: {status: 2}).paginate(:page => params[:page])
+          @services = current_user.client.services.order(created_at: :desc).paginate(:page => params[:page])
           @brand_ambassadors = @services.collect{|x| x.brand_ambassador }.flatten.uniq
         else
           @services = current_user.brand_ambassador.services.order(created_at: :desc).paginate(:page => params[:page])

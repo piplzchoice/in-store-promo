@@ -121,12 +121,12 @@ if EmailTemplate.find_by_name("send_reminder_to_add_availablty_date").nil?
   puts "created email template for send_reminder_to_add_availablty_date"
 end
 
-if DefaultValue.first.service_hours_est.nil?
-  dv = DefaultValue.first
-  dv.service_hours_est = 4
-  dv.save
-  puts "service_hours_est added"
-end
+# if DefaultValue.first.service_hours_est.nil?
+#   dv = DefaultValue.first
+#   dv.service_hours_est = 4
+#   dv.save
+#   puts "service_hours_est added"
+# end
 
 if DefaultValue.first.send_unrespond.nil?
   dv = DefaultValue.first

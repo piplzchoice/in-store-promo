@@ -54,3 +54,11 @@ gem 'debugger', group: [:development, :test]
 gem 'exception_notification'
 gem "rest_client", :require => "rest_client"
 gem "addressable", :require => "addressable/uri"
+
+
+group :development do
+  gem 'capistrano', '~> 3.0'
+  gem 'capistrano-rvm'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+end

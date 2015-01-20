@@ -81,7 +81,7 @@ Rails.application.routes.draw do
       patch :update_service_paid
       patch :process_ba_payments
       get :export_data
-      post :generate_data
+      get :generate_data
     end
   end
 

@@ -218,10 +218,41 @@ class ReportsController < ApplicationController
   end
 
   def export_data
-    @services = Service.where(status: [6, 7, 8, 10]).paginate(:page => 10)
+    @services = Service.where(status: [6])
+    # @services = Report.all.collect{|x| x.service}
   end
 
   def generate_export_data
+    @services = Service.where(status: [6])
+    
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Data'
+    sheet1.row(0).replace [
+      "Total Units Sold", 
+      "Ave Price", 
+      "Traffic",
+      "Day", 
+      "AM/PM", 
+      "Product 1",
+      "Product 2",
+      "Product 3",
+      "Product 4", 
+      "Product 5",
+      "Product 6",
+      "Sold Product 1",
+      "Sold Product 2",
+      "Sold Product 3",
+      "Sold Product 4",
+      "Sold Product 5",
+      "Sold Product 6",
+      "Estimated 3 of customers touched"
+    ]
+
+    @services.each_with_index do |service, i|
+      sheet1.row(i + 1).replace service.export_data
+    end
+
+    book.write "test-data.xls"
   end
 
   def report_params

@@ -391,4 +391,28 @@ class Service < ActiveRecord::Base
     client.rate.to_f + expense
   end
 
+  def export_data
+    [
+      report.total_units_sold,
+      report.ave_product_price.to_f,
+      report.traffic,
+      start_at.strftime("%A"),
+      start_at.strftime("%p"),
+      report.product_one == "" ? "-" : report.product_one,
+      report.product_two == "" ? "-" : report.product_two,
+      report.product_three == "" ? "-" : report.product_three,
+      report.product_four == "" ? "-" : report.product_four,
+      report.product_five == "" ? "-" : report.product_five,
+      report.product_six == "" ? "-" : report.product_six,
+      report.product_one_sold.nil? ? "-" : report.product_one_sold,
+      report.product_two_sold.nil? ? "-" : report.product_two_sold,
+      report.product_three_sold.nil? ? "-" : report.product_three_sold,
+      report.product_four_sold.nil? ? "-" : report.product_four_sold,
+      report.product_five_sold.nil? ? "-" : report.product_five_sold,
+      report.product_six_sold.nil? ? "-" : report.product_six_sold,
+      report.est_customer_touched
+    ]
+
+  end
+
 end

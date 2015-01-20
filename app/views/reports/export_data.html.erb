@@ -3,7 +3,6 @@
 <table id="table-data" class="table table-striped">
   <thead>
     <tr>
-      <th>Service</th>
       <th>Total Units Sold</th>
       <th>Ave Price</th>
       <th>Traffic</th>
@@ -27,7 +26,28 @@
   <tbody>
     <% @services.each_with_index do |service, i|  %>
       <tr>
-        <td><%= service.current_status %></td>
+        <td><%= service.report.total_units_sold %></td>
+        <td><%= number_to_currency service.report.ave_product_price %></td>        
+        <td><%= service.report.traffic %></td>
+        
+        <td><%= service.start_at.strftime("%A") %></td>
+        <td><%= service.start_at.strftime("%p") %></td>
+
+        <td><%= service.report.product_one == "" ? "-" : service.report.product_one %></td>
+        <td><%= service.report.product_two == "" ? "-" : service.report.product_two %></td>
+        <td><%= service.report.product_three == "" ? "-" : service.report.product_three %></td>
+        <td><%= service.report.product_four == "" ? "-" : service.report.product_four %></td>
+        <td><%= service.report.product_five == "" ? "-" : service.report.product_five %></td>
+        <td><%= service.report.product_six == "" ? "-" : service.report.product_six %></td>                        
+
+        <td><%= service.report.product_one_sold.nil? ? "-" : service.report.product_one_sold %></td>
+        <td><%= service.report.product_two_sold.nil? ? "-" : service.report.product_two_sold %></td>
+        <td><%= service.report.product_three_sold.nil? ? "-" : service.report.product_three_sold %></td>
+        <td><%= service.report.product_four_sold.nil? ? "-" : service.report.product_four_sold %></td>
+        <td><%= service.report.product_five_sold.nil? ? "-" : service.report.product_five_sold %></td>
+        <td><%= service.report.product_six_sold.nil? ? "-" : service.report.product_six_sold %></td>             
+
+        <td><%= service.report.est_customer_touched %></td>        
       </tr>
     <% end %>
   </tbody>

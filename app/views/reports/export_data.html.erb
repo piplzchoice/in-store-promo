@@ -1,0 +1,34 @@
+<h1 class="page-header">Export Data</h1>
+
+<table id="table-data" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>Total Units Sold</th>
+      <th>Ave Price</th>
+      <th>Traffic</th>
+      <th>Day</th>
+      <th>AM/PM</th>
+      <th>Product 1</th>
+      <th>Product 2</th>
+      <th>Product 3</th>
+      <th>Product 4</th>
+      <th>Product 5</th>
+      <th>Product 6</th>
+      <th>Sold Product 1</th>
+      <th>Sold Product 2</th>
+      <th>Sold Product 3</th>
+      <th>Sold Product 4</th>
+      <th>Sold Product 5</th>
+      <th>Sold Product 6</th>
+      <th>Estimated 3 of customers touched</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @services.each_with_index do |service, i|  %>
+      <tr>
+        <td><%= service.current_status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

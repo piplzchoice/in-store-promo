@@ -217,6 +217,13 @@ class ReportsController < ApplicationController
     @service = @report.service
   end
 
+  def export_data
+    @services = Service.where(status: [6, 7, 8, 10]).paginate(:page => 10)
+  end
+
+  def generate_export_data
+  end
+
   def report_params
     params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, 
       :products, :product_one, :product_one_beginning, :product_one_end, :product_one_sold, :product_two, 

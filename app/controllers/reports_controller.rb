@@ -256,7 +256,7 @@ class ReportsController < ApplicationController
       sheet1.row(i + 1).replace service.export_data
     end
 
-    export_file_path = [Rails.root, "public", "uploads", "export-data-#{Time.now.to_i}.xls"].join("/")
+    export_file_path = [Rails.root, "tmp", "export-data-#{Time.now.to_i}.xls"].join("/")
     book.write export_file_path
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
   end

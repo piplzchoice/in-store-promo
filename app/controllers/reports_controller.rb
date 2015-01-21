@@ -217,6 +217,50 @@ class ReportsController < ApplicationController
     @service = @report.service
   end
 
+  def export_data
+    # @services = Service.where(status: [6])
+    # @services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
+  end
+
+  def generate_export_data
+    @services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Data'
+    sheet1.row(0).replace [
+      "Location Name",
+      "Client name",
+      "BA name",
+      "Date",
+      "Total Units Sold", 
+      "Ave Price", 
+      "Traffic",
+      "Day", 
+      "AM/PM", 
+      "Product 1",
+      "Product 2",
+      "Product 3",
+      "Product 4", 
+      "Product 5",
+      "Product 6",
+      "Sold Product 1",
+      "Sold Product 2",
+      "Sold Product 3",
+      "Sold Product 4",
+      "Sold Product 5",
+      "Sold Product 6",
+      "Estimated 3 of customers touched"
+    ]
+
+    @services.each_with_index do |service, i|
+      sheet1.row(i + 1).replace service.export_data
+    end
+
+    export_file_path = [Rails.root, "tmp", "export-data-#{Time.now.to_i}.xls"].join("/")
+    book.write export_file_path
+    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
+  end
+
   def report_params
     params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, 
       :products, :product_one, :product_one_beginning, :product_one_end, :product_one_sold, :product_two, 

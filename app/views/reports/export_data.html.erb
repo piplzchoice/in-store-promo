@@ -1,0 +1,67 @@
+<h1 class="page-header">Export Data</h1>
+<%= link_to("Download Data", generate_export_data_reports_path, {class: "btn btn-primary", role: "button"}) %>
+
+<!-- 
+<table id="table-data" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Location Name</th>
+      <th>Client name</th>
+      <th>BA name</th>
+      <th>Date (MM/DD/YY)</th>
+      <th>Total Units Sold</th>
+      <th>Ave Price</th>
+      <th>Traffic</th>
+      <th>Day</th>
+      <th>AM/PM</th>
+      <th>Product 1</th>
+      <th>Product 2</th>
+      <th>Product 3</th>
+      <th>Product 4</th>
+      <th>Product 5</th>
+      <th>Product 6</th>
+      <th>Sold Product 1</th>
+      <th>Sold Product 2</th>
+      <th>Sold Product 3</th>
+      <th>Sold Product 4</th>
+      <th>Sold Product 5</th>
+      <th>Sold Product 6</th>
+      <th>Estimated 3 of customers touched</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%# @services.each_with_index do |service, i|  %>
+      <tr>
+
+        <td><%#= service.location.name %></td>
+        <td><%#= service.client.company_name %></td>
+        <td><%#= service.brand_ambassador.name %></td>
+        <td><%#= service.start_at.strftime("%m/%d/%y") %></td>        
+
+        <td><%#= service.report.total_units_sold %></td>
+        <td><%#= service.report.ave_product_price %></td>        
+        <td><%#= service.report.traffic %></td>
+        
+        <td><%#= service.start_at.strftime("%A") %></td>
+        <td><%#= service.start_at.strftime("%p") %></td>
+
+        <td><%#= service.report.product_one == "" ? "-" : service.report.product_one %></td>
+        <td><%#= service.report.product_two == "" ? "-" : service.report.product_two %></td>
+        <td><%#= service.report.product_three == "" ? "-" : service.report.product_three %></td>
+        <td><%#= service.report.product_four == "" ? "-" : service.report.product_four %></td>
+        <td><%#= service.report.product_five == "" ? "-" : service.report.product_five %></td>
+        <td><%#= service.report.product_six == "" ? "-" : service.report.product_six %></td>                        
+
+        <td><%#= service.report.product_one_sold.nil? ? "-" : service.report.product_one_sold %></td>
+        <td><%#= service.report.product_two_sold.nil? ? "-" : service.report.product_two_sold %></td>
+        <td><%#= service.report.product_three_sold.nil? ? "-" : service.report.product_three_sold %></td>
+        <td><%#= service.report.product_four_sold.nil? ? "-" : service.report.product_four_sold %></td>
+        <td><%#= service.report.product_five_sold.nil? ? "-" : service.report.product_five_sold %></td>
+        <td><%#= service.report.product_six_sold.nil? ? "-" : service.report.product_six_sold %></td>             
+
+        <td><%#= service.report.est_customer_touched.blank? ? "-" : service.report.est_customer_touched %></td>
+      </tr>
+    <%# end %>
+  </tbody>
+</table> 
+-->

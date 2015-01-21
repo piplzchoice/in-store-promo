@@ -80,6 +80,8 @@ Rails.application.routes.draw do
       get :print_process_ba_payments
       patch :update_service_paid
       patch :process_ba_payments
+      get :export_data
+      get :generate_export_data
     end
   end
 

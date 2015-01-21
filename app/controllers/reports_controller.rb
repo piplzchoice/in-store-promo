@@ -218,16 +218,20 @@ class ReportsController < ApplicationController
   end
 
   def export_data
-    @services = Service.where(status: [6])
-    # @services = Report.all.collect{|x| x.service}
+    # @services = Service.where(status: [6])
+    # @services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
   end
 
   def generate_export_data
-    @services = Service.where(status: [6])
-    
+    @services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
+
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Data'
     sheet1.row(0).replace [
+      "Location Name",
+      "Client name",
+      "BA name",
+      "Date",
       "Total Units Sold", 
       "Ave Price", 
       "Traffic",
@@ -252,7 +256,9 @@ class ReportsController < ApplicationController
       sheet1.row(i + 1).replace service.export_data
     end
 
-    book.write "test-data.xls"
+    export_file_path = [Rails.root, "public", "uploads", "export-data-#{Time.now.to_i}.xls"].join("/")
+    book.write export_file_path
+    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
   end
 
   def report_params

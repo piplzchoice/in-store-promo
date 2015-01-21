@@ -102,6 +102,6 @@ class Report < ActiveRecord::Base
     total_price, available_product = (total_price + product_four_price), (available_product + 1) unless product_four_price.nil?
     total_price, available_product = (total_price + product_five_price), (available_product + 1) unless product_five_price.nil?
     total_price, available_product = (total_price + product_six_price), (available_product + 1) unless product_six_price.nil?
-    return total_price / available_product
+    return (total_price / available_product).round(2) rescue "-"
   end
 end

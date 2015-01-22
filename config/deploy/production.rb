@@ -17,17 +17,6 @@ role :db,  %w{deploy@104.236.182.64}
 
 server '104.236.182.64', user: 'deploy', roles: %w{web app}, my_property: :my_value
 
-set :default_env, { 
-  'AWS_ACCESS_KEY' => 'AKIAIGBBLZ6KTIEL3ZOA',
-  'AWS_DIRECTORY' => "ismp-live",
-  'AWS_REGION' => "us-west-1",
-  'AWS_SECRET_ACCESS_KEY' => "Hb8YGHKvdPKKEQCYNw3Z1gcpgBwcEfkEDGnbZGxA",
-  'RACK_ENV' => "production",
-  'RAILS_ENV' => "production",
-  'SECRET_KEY_BASE' => "7dbfc7d55d44afdda3ff30b8071d40fc441697d4b5a1f2739248e791f82670b0014b25feee1799c6e1ffc684ded1cb5a767d576e882bdb8283bd054876e04f20",
-  'SENDGRID_PASSWORD' => "felicia777",
-  'SENDGRID_USERNAME' => "gregy",
-}
 
 # Custom SSH Options
 # ==================

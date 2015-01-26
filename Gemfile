@@ -65,3 +65,4 @@ end
 
 gem "spreadsheet"
 
+gem 'whenever', :require => false

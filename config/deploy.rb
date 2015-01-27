@@ -4,6 +4,7 @@ lock '3.3.5'
 set :application, 'ism'
 set :repo_url, 'git@github.com:piplzchoice/in-store-promo.git'
 set :tmp_dir, "/home/deploy/tmp"
+set :default_env, { rvm_bin_path: '/home/deploy/.rvm/bin' }
 
 # set :rvm_type, :system
 # set :default_env, { rvm_bin_path: '/home/deploy/.rvm/bin' }

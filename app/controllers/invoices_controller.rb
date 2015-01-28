@@ -124,15 +124,20 @@ class InvoicesController < ApplicationController
   end
 
   def download
-    file = "invoice-#{Time.now.to_i}.pdf"
-
     @invoice = Invoice.find(params[:id])
+
+    file = "invoice-#{Time.now.to_i}.pdf"    
     @client = @invoice.client
     @services = Service.find(@invoice.service_ids.split(","))
 
     html = render_to_string(:layout => "print_invoice", :action => "print", :id => params[:id])
     kit = PDFKit.new(html)
     kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+        
+    if @invoice.file.nil?
+      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+    end
+    
     send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
   end
 

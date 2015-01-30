@@ -80,11 +80,24 @@ class Client < ActiveRecord::Base
   end
 
   def billing_address
-    "#{street_one} #{street_two} #{city} #{state} #{zipcode} #{country}"
+    if street_one.empty? && city.empty? && state.empty? && zipcode.empty?
+      email
+    else
+      "#{street_one} #{street_two} #{city} #{state} #{zipcode}"
+    end    
   end
 
   def fullprofile
     "#{company_name} - #{first_name} #{last_name}"
+  end
+
+  def billing_name
+    if read_attribute(:billing_name).empty?
+      # "#{first_name} #{last_name}"
+      "-"
+    else
+      read_attribute(:billing_name)
+    end    
   end
 
   def rate

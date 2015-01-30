@@ -7,8 +7,8 @@
           <span style="display: block; margin-top: 10px; font-size: 15px;">
             <strong><%= @client.company_name %></strong>
           </span>
-          <span style="display: block;"><%= "#{@client.first_name} #{@client.last_name}" %></span>
-          <span style="display: block;"><%= @client.email %></span>
+          <span style="display: block;"><%= @client.billing_name %></span>
+          <span style="display: block;"><%= @client.billing_address %></span>
         </td>
       </tr>
     </table>
@@ -124,17 +124,3 @@
     </tbody>
   </table>  
 </div>
-
-<!-- <div class="row" style="float: right;">
-  <table class="" style="width: 63%;font-size: 13px;text-align: left;float:right;">
-    <thead>
-      <tr style="border-bottom: 1px solid">       
-        <td style="width: 135px;">Sub Total</td>
-        <td style="text-align:right;width: 105px;"><%#= number_to_currency @invoice.rate_total_all %></td>
-        <td style="text-align:right;width: 230px;"><%#= number_to_currency @invoice.expsense_total_all %></td>
-        <td style="text-align:right;width: 205px;"><%#= number_to_currency @invoice.travel_total_all %></td>
-        <td style="text-align:right;">&nbsp;</td>
-      </tr>
-    </thead>
-  </table>    
-</div> -->

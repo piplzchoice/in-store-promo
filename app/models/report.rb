@@ -73,6 +73,9 @@ class Report < ActiveRecord::Base
   mount_uploader :table_image_one_img, ImageUploader
   mount_uploader :table_image_two_img, ImageUploader
 
+  
+  validates :est_customer_touched, presence: true
+
   serialize :client_products, JSON
 
   def self.new_data(report_params)
@@ -81,7 +84,7 @@ class Report < ActiveRecord::Base
       arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
       product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
     end
-    
+
     report.client_products = report.client_products.compact
     return report
   end

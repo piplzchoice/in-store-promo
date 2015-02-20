@@ -30,6 +30,8 @@ Rails.application.routes.draw do
         patch :update_status_after_reported
       end      
     end    
+
+    resources :products, only: [:create, :destroy, :index]
   end
 
   resources :brand_ambassadors do

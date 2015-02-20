@@ -15,7 +15,8 @@
       <td><%= client.name %></td>
       <td>
         <% if client.is_active %>
-          <%= link_to "Display", client_path(client) %> || 
+          <%= link_to "Display", client_path(client) %> ||           
+          <%= link_to "Products", client_products_path(client) %> ||        
           <%= link_to "Edit", edit_client_path(client) %> || 
           <%= link_to "Deactivate", client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>
         <% else %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150104043333) do
+ActiveRecord::Schema.define(version: 20150219010731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,13 @@ ActiveRecord::Schema.define(version: 20150104043333) do
     t.boolean  "is_active",  default: true
   end
 
+  create_table "products", force: true do |t|
+    t.integer  "client_id"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "projects", force: true do |t|
     t.integer  "user_id"
     t.integer  "client_id"
@@ -202,6 +209,7 @@ ActiveRecord::Schema.define(version: 20150104043333) do
     t.string   "table_image_two_img"
     t.boolean  "is_active",                                       default: true
     t.decimal  "travel_expense",          precision: 8, scale: 2
+    t.text     "client_products"
   end
 
   create_table "roles", force: true do |t|

@@ -60,6 +60,7 @@
 #  table_image_two_img     :string(255)
 #  is_active               :boolean          default(TRUE)
 #  travel_expense          :decimal(8, 2)
+#  client_products         :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -71,6 +72,19 @@ class Report < ActiveRecord::Base
   mount_uploader :expense_two_img, ImageUploader
   mount_uploader :table_image_one_img, ImageUploader
   mount_uploader :table_image_two_img, ImageUploader
+
+  serialize :client_products, JSON
+
+  def self.new_data(report_params)
+    report = self.new(report_params)
+    report.client_products = report.client_products.collect do |product|
+      arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
+      product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
+    end
+    
+    report.client_products = report.client_products.compact
+    return report
+  end
 
   def sum_expense
     expense_one.to_f + expense_two.to_f

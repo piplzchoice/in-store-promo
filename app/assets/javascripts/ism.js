@@ -98,6 +98,10 @@ $(function() {
     return false;    
   });
 
+  $("#add-product-button").on("click", function(){
+    $("#add-product-modal").modal("show");  
+  });
+
   $("#create-invoice").on("click", function(){
 
     if(document.getElementById('invoice_invoice_number').checkValidity() && 
@@ -468,7 +472,7 @@ $(function() {
 
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
 
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })
   
@@ -481,7 +485,7 @@ $(function() {
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 
@@ -494,7 +498,7 @@ $(function() {
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 

@@ -157,8 +157,8 @@ class ReportsController < ApplicationController
   end
 
   def create
-    @report = Report.new(report_params)
-    @service = Service.find(report_params[:service_id])
+    @report = Report.new_data(report_params)
+    @service = Service.find(report_params[:service_id])    
     respond_to do |format|
       format.html do
         if @report.save
@@ -262,16 +262,26 @@ class ReportsController < ApplicationController
   end
 
   def report_params
-    params.require(:report).permit(:service_id, :demo_in_store, :weather, :traffic, :busiest_hours, 
-      :products, :product_one, :product_one_beginning, :product_one_end, :product_one_sold, :product_two, 
-      :product_two_beginning, :product_two_end, :product_two_sold, :product_three, :product_three_beginning, 
-      :product_three_end, :product_three_sold, :product_four, :product_four_beginning, :product_four_end, 
-      :product_four_sold, :sample_product, :est_customer_touched, :est_sample_given, :expense_one, :expense_one_img, 
-      :expense_two, :expense_two_img, :customer_comments, :ba_comments, :product_one_price, :product_two_price, 
-      :product_three_price, :product_four_price, :product_one_sample, :product_two_sample, :product_three_sample, 
-      :product_four_sample, :table_image_one_img, :table_image_two_img, :product_five_sample, :product_five_price, 
-      :product_five, :product_five_beginning, :product_five_end, :product_five_sold, :product_six_sample, 
-      :product_six_price, :product_six, :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense)
+    params.require(:report).permit(:service_id, 
+      :demo_in_store, :weather, :traffic, :busiest_hours, 
+      :products, :product_one, :product_one_beginning, 
+      :product_one_end, :product_one_sold, :product_two, 
+      :product_two_beginning, :product_two_end, :product_two_sold, 
+      :product_three, :product_three_beginning, 
+      :product_three_end, :product_three_sold, :product_four, 
+      :product_four_beginning, :product_four_end, 
+      :product_four_sold, :sample_product, :est_customer_touched, 
+      :est_sample_given, :expense_one, :expense_one_img, 
+      :expense_two, :expense_two_img, :customer_comments, 
+      :ba_comments, :product_one_price, :product_two_price, 
+      :product_three_price, :product_four_price, :product_one_sample, 
+      :product_two_sample, :product_three_sample, 
+      :product_four_sample, :table_image_one_img, :table_image_two_img, 
+      :product_five_sample, :product_five_price, :product_five, 
+      :product_five_beginning, :product_five_end, :product_five_sold, 
+      :product_six_sample, :product_six_price, :product_six, 
+      :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense, 
+      :client_products => [:name, :price, :sample, :beginning, :end, :sold])
   end    
 
   private

@@ -18,7 +18,7 @@ class ReportsController < ApplicationController
             @client_name = session[:filter_history_reports]["client_name"]
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
-          @brand_ambassadors = BrandAmbassador.all
+          @brand_ambassadors = BrandAmbassador.with_status_active
           @clients = Client.all
           @projects = Project.all        
         elsif current_user.has_role?(:client)

@@ -71,6 +71,8 @@ class InvoicesController < ApplicationController
     @invoice.update_data(invoice_params.merge(status: 1))
     # @invoice.update_attribute(:status, 1)
     # redirect_to invoices_path
+
+    ApplicationMailer.thank_you_for_payment(@invoice).deliver
     redirect_to list_invoices_path
   end
 

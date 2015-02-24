@@ -1,27 +1,42 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @locations.each_with_index do |location, i|  %>
-    <tr>
-      <td><%= location.id %></td>
-      <td><%= location.name %></td>
-      <td>
-        <% if location.is_active %>
-          <%= link_to "Display", location_path(location) %> || 
-          <%= link_to "Edit", edit_location_path(location) %> || 
-          <%= link_to "Deactivate", location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-        <% else %>
-          <%= link_to (location.is_active ? "Deactivate" : "Reactivate"), location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-        <% end %>          
-      </td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
-<%= will_paginate @locations, renderer: BootstrapPagination::Rails %>
+<%= form_tag(export_data_locations_path, method: :post, id: "filter-data") do %>
+
+  <div class="link-new-btn">
+    <%= submit_tag("Export List", class: "btn btn-primary") %>
+  </div>  
+  <br /><br />
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th></th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @locations.each_with_index do |location, i|  %>
+      <tr>
+        <td>
+          <%= 
+            check_box_tag("location_ids[]", location.id, false, {class: 'locations-checkbox'})
+          %>
+        </td>      
+        <td><%= location.id %></td>
+        <td><%= location.name %></td>
+        <td>
+          <% if location.is_active %>
+            <%= link_to "Display", location_path(location) %> || 
+            <%= link_to "Edit", edit_location_path(location) %> || 
+            <%= link_to "Deactivate", location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <% else %>
+            <%= link_to (location.is_active ? "Deactivate" : "Reactivate"), location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <% end %>          
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= will_paginate @locations, renderer: BootstrapPagination::Rails %>
+
+<% end %>

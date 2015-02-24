@@ -86,6 +86,32 @@ class LocationsController < ApplicationController
     redirect_to locations_url, {notice: msg}      
   end
 
+  def export_data
+    @locations = Location.find(params[:location_ids])
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Data'
+    sheet1.row(0).replace [
+      "Location Name",
+      "Address",
+      "City",
+      "State",
+      "Zipcode",
+      "Contact Name",
+      "Phone",
+      "Email",
+      "Notes"
+    ]
+
+    @locations.each_with_index do |location, i|
+      sheet1.row(i + 1).replace location.export_data
+    end
+
+    export_file_path = [Rails.root, "tmp", "export-location-data-#{Time.now.to_i}.xls"].join("/")
+    book.write export_file_path
+    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'        
+  end
+
   def location_params
     params.require(:location).permit(:name, :address, :city, :state, :zipcode)
   end    

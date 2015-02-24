@@ -51,7 +51,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :locations
+  resources :locations do 
+    collection do
+      post :export_data
+    end
+  end
   resources :email_templates, only: [:index, :edit, :update]
 
   resources :projects do  

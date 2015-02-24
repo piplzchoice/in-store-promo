@@ -113,7 +113,7 @@ class LocationsController < ApplicationController
   end
 
   def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode)
+    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes)
   end    
 
   private

@@ -74,7 +74,7 @@ class Report < ActiveRecord::Base
   mount_uploader :table_image_two_img, ImageUploader
 
   
-  validates :est_customer_touched, presence: true
+  # validates :est_customer_touched, presence: true
 
   serialize :client_products, JSON
 

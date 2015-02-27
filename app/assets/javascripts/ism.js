@@ -1,5 +1,11 @@
 $(function() {  
 
+  if($("#report-product").size() !== 0) {
+    if($("#report-product").data("size") === 0) {
+      alert("Please notify Admin to add products for this Client");
+    }
+  }
+
   $("#print_calendar_as_pdf").on("click", function(){
     html2canvas(document.getElementById("calendar-and-legend"), {
       onrendered: function(canvas) {

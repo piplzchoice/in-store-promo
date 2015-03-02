@@ -2,20 +2,24 @@
 #
 # Table name: services
 #
-#  id                  :integer          not null, primary key
-#  project_id          :integer
-#  location_id         :integer
-#  brand_ambassador_id :integer
-#  created_at          :datetime
-#  updated_at          :datetime
-#  start_at            :datetime
-#  end_at              :datetime
-#  details             :text
-#  status              :integer          default(1)
-#  token               :string(255)
-#  is_active           :boolean          default(TRUE)
-#  client_id           :integer
-#  co_op_client_id     :integer
+#  id                    :integer          not null, primary key
+#  project_id            :integer
+#  location_id           :integer
+#  brand_ambassador_id   :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  start_at              :datetime
+#  end_at                :datetime
+#  details               :text
+#  status                :integer          default(1)
+#  token                 :string(255)
+#  is_active             :boolean          default(TRUE)
+#  client_id             :integer
+#  co_op_client_id       :integer
+#  alert_sent            :boolean          default(FALSE)
+#  alert_sent_date       :datetime
+#  alert_sent_admin      :boolean          default(FALSE)
+#  alert_sent_admin_date :datetime
 #
 
 # note for field "status"

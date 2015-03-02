@@ -1,5 +1,11 @@
 $(function() {  
 
+  if($("#report-product").size() !== 0) {
+    if($("#report-product").data("size") === 0) {
+      alert("Please notify Admin to add products for this Client");
+    }
+  }
+
   $("#print_calendar_as_pdf").on("click", function(){
     html2canvas(document.getElementById("calendar-and-legend"), {
       onrendered: function(canvas) {
@@ -96,6 +102,10 @@ $(function() {
     
     $("#insert-add-item-modal").modal("show");  
     return false;    
+  });
+
+  $("#add-product-button").on("click", function(){
+    $("#add-product-modal").modal("show");  
   });
 
   $("#create-invoice").on("click", function(){
@@ -468,7 +478,7 @@ $(function() {
 
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
 
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })
   
@@ -481,7 +491,7 @@ $(function() {
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 
@@ -494,7 +504,7 @@ $(function() {
 
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
+  calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
  })  
 

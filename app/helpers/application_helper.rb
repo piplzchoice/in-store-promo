@@ -45,5 +45,10 @@ module ApplicationHelper
     direction = column == sort_column && sort_direction == "asc" ? "desc" : "asc"
     link_to title, "#table-data", {:class => "order-data", data: {sort: column}}
   end  
+
+  def number_to_words(number)
+    words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    words[number]
+  end
   
 end

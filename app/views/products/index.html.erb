@@ -1,0 +1,57 @@
+<h1 class="page-header">Products of <%= @client.company_name %></h1>
+
+<% if @client.products.count != 10 %>
+  <div class="link-new-btn">
+    <%= link_to("Add Product", "#", {id: "add-product-button", class: "btn btn-primary", role: "button"}) %>
+  </div>
+<% end %>
+
+<hr>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @products.each_with_index do |product, i|  %>
+      <tr>
+        <td><%= product.name %></td>
+        <td>
+          <%= link_to "remove", client_product_path({client_id: @client.id, id: product.id}), {data: { confirm: "Are you sure?" }, :method => :delete} %>          
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div id="add-product-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <%= form_for [@client, @product], html: {role: "form", "multipart" => true} do |f| %>
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Add Product
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Name : </label>
+          <p>
+            <%= f.text_field :name, {class: "form-control", required: "required"} %>
+          </p>
+        </div>
+        <div class="modal-body">
+          <!-- <label>Price : </label>
+          <p><input type="text" required pattern="\d+(\.\d{2})?" id="insert-add-item-amount" class="form-control"></p> -->
+        </div>
+        <div class="modal-body">
+          <button type="submit" id="submit-insert-add-item-amount" class="btn btn-primary">Submit</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

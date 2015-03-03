@@ -1,8 +1,11 @@
 $(function() {  
 
   if($("#report-product").size() !== 0) {
-    if($("#report-product").data("size") === 0) {
+    if($("#report-product").data("new") && $("#report-product").data("size") === 0) {
       alert("Please notify Admin to add products for this Client");
+      $("#submit-report-data").hide();
+      $("#new_report").attr("action", "/")
+      $("#new_report").attr("method", "get")
     }
   }
 

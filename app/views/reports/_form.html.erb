@@ -57,7 +57,7 @@
     </div>
 
     <div class="row report">
-      <div id="report-product" class="table-responsive" data-size="<%= @service.client.products.size %>">
+      <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
         <table class="table table-striped">
           <thead>
             <tr>
@@ -144,9 +144,8 @@
   </div>
 
   <hr>
-  <% if @report.new_record? && !@service.client.products.blank? %>
-    <%= f.button "Submit", {type: "submit", class: "btn btn-default", id: "submit-report-data", data: {mileage: @service.brand_ambassador.mileage}} %>
-  <% end %>  
+
+  <%= f.button "Submit", {type: "submit", class: "btn btn-default", id: "submit-report-data", data: {mileage: @service.brand_ambassador.mileage}} %>
 
 <% end %>
 

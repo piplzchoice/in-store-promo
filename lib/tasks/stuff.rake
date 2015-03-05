@@ -100,4 +100,19 @@ namespace :stuff do
     end
   end
 
+  desc "get id data of report"
+  task :id_reports => :environment do
+    Report.where.not(client_products: nil).each do |report|
+      unless report.client_products.nil?
+        report.client_products.each do |client_product|
+          product = Product.find_by_name(client_product["name"])
+          unless product.nil?
+            client_product["id"] = product.id
+          end
+        end
+        report.save!
+      end
+    end
+  end
+
 end

@@ -1,6 +1,6 @@
 <h1 class="page-header">Products of <%= @client.company_name %></h1>
 
-<% if @client.products.count != 10 %>
+<% if @client.products.count != 15 %>
   <div class="link-new-btn">
     <%= link_to("Add Product", "#", {id: "add-product-button", class: "btn btn-primary", role: "button"}) %>
   </div>

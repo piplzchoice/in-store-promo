@@ -11,8 +11,8 @@ class ProductsController < ApplicationController
     @client = Client.find params[:client_id]
     @product = @client.products.build(product_params)
 
-    if @client.products.count == 10
-      msg = "Max Product is 10"
+    if @client.products.count == 15
+      msg = "Max Product is 15"
     else
       msg = "Product Created"
       @product.save      

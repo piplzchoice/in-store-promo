@@ -56,6 +56,9 @@
       </div>
     </div>
 
+    <div class="link-new-btn">
+      <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", id: "add-product-report"}) %>
+    </div>  
     <div class="row report">
       <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
         <table class="table table-striped">
@@ -70,7 +73,7 @@
               <th><span class="report-title">Sold</span></th>
             </tr>
           </thead>
-          <tbody>  
+          <tbody id="row-products">  
             <% if @report.new_record? || !@report.client_products.nil? %>
               <%= render "client_products", f: f, client: @service.client %>
             <% else %>
@@ -167,3 +170,28 @@
     </div>
   </div>
 <% end %>
+
+
+<div id="insert-add-product-report-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="mySmallModalLabel">
+          Insert Products
+        </h4>
+      </div>
+      <div class="modal-body">
+        <% unless @service.client.products.blank? %>
+          <% @service.client.products.each do |product| %>
+            <span id="list-product-<%= product.id %>" style="display: block;" class='product-lists-modal' >
+             <input class="checkbox-products" type="checkbox" data-id='<%= product.id %>' data-name='<%= product.name %>'> <%= product.name %>
+            </span>
+          <% end %>
+        <% end %>
+      </div>
+      <div class="modal-body">
+        <button id="submit-list-products" class="btn btn-primary">Add Product</button>
+      </div>
+    </div>
+  </div>
+</div>

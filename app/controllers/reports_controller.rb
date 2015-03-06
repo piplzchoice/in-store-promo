@@ -281,7 +281,7 @@ class ReportsController < ApplicationController
       :product_five_beginning, :product_five_end, :product_five_sold, 
       :product_six_sample, :product_six_price, :product_six, 
       :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense, 
-      :client_products => [:name, :price, :sample, :beginning, :end, :sold])
+      :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
   end    
 
   private

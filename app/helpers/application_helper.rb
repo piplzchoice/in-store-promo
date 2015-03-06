@@ -47,7 +47,7 @@ module ApplicationHelper
   end  
 
   def number_to_words(number)
-    words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+    words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "tweleve", "thirteen", "fourteen", "fifteen"]
     words[number]
   end
   

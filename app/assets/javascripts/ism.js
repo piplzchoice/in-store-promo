@@ -1,5 +1,31 @@
 $(function() {  
 
+  $("#export-location").on("click", function(){
+    $("#loc_ids").val($("#location_ids").val());
+    $("#export-data-location").submit();
+  })
+
+  $(".filter-location").on("click", function(){
+    $("#location_ids").val("");
+    return true;
+  });
+
+  $(document).on("change", ".locations-checkbox", function(){
+    var arr_ids = [];
+    if($("#location_ids").val() !== "") {
+      arr_ids = $("#location_ids").val().split(",");
+    }
+
+    if($(this).is(':checked')) {
+      arr_ids.push($(this).val());
+    } else {
+      var index = arr_ids.indexOf($(this).val());
+      arr_ids.splice(index, 1);
+    }
+
+    $("#location_ids").val(arr_ids.join(","));
+  });    
+
   if($("#report-product").size() !== 0) {
     if($("#report-product").data("new") && $("#report-product").data("size") === 0) {
       alert("Please notify Admin to add products for this Client");
@@ -35,7 +61,7 @@ $(function() {
   //   $("#co-op-client-name").show();
   // } else {
   //   $("#co-op-client-name").hide();
-  // }
+  // }  
 
   $(document).on("change", "#co-op-price-box", function(){
     if($("#co-op-price-box").is(':checked')) {

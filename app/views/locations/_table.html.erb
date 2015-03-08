@@ -1,9 +1,3 @@
-<%= form_tag(export_data_locations_path, method: :post, id: "filter-data") do %>
-
-  <div class="link-new-btn">
-    <%= submit_tag("Export List", class: "btn btn-primary") %>
-  </div>  
-  <br /><br />
   
   <table class="table table-striped">
     <thead>
@@ -19,7 +13,7 @@
       <tr>
         <td>
           <%= 
-            check_box_tag("location_ids[]", location.id, false, {class: 'locations-checkbox'})
+            check_box_tag("location_#{location.id}", location.id, (@location_ids.nil? ? false : (@location_ids.include?(location.id.to_s) ? true : false)), {class: 'locations-checkbox'})
           %>
         </td>      
         <td><%= location.id %></td>
@@ -38,5 +32,3 @@
     </tbody>
   </table>
   <%= will_paginate @locations, renderer: BootstrapPagination::Rails %>
-
-<% end %>

@@ -440,7 +440,7 @@ class Service < ActiveRecord::Base
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0
 
       report.client_products.each_with_index do |product, i|
-        products.push(product["sold"])
+        products.push(product["sold"].to_i)
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0      

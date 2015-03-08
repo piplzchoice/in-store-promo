@@ -444,6 +444,7 @@ class Service < ActiveRecord::Base
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0      
+      products.push(report.est_customer_touched.blank? ? "-" : report.est_customer_touched)
     end
 
     value_row = [

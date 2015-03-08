@@ -206,10 +206,8 @@ class Service < ActiveRecord::Base
   def self.options_select_status_client
     [
       ["BA Confirmed", Service.status_confirmed],
-      ["Conducted", Service.status_conducted],
       ["Reported", Service.status_reported],
       ["Paid", Service.status_paid],
-      ["BA paid", Service.status_ba_paid],
     ]
   end
 

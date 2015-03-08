@@ -1,2 +1,22 @@
 <h1 class="page-header">In Store Marketing Services Calendar</h1>
-<div id="calendar" data-url="<%= view_calendar_reports_path({format: :json, status: params[:status], assigned_to: params[:assigned_to], client_name: params[:client_name]}) %>"></div>
+
+<div id="calendar-and-legend">  
+  <div id="colour-legend" class="no-print">
+    <% if current_user.has_role?(:client) %>
+      <div class="confirmed">Confirmed</div>
+      <div class="reported">Reported</div>
+      <div class="paid">Paid</div>
+    <% else %>
+      <div class="scheduled">Scheduled</div>
+      <div class="confirmed">Confirmed</div>
+      <div class="rejected">Rejected</div>
+      <div class="conducted">Conducted</div>
+      <div class="unrespond">Unrespond</div>
+      <div class="reported">Reported</div>
+      <div class="paid">Paid</div>
+      <div class="ba-paid">BA Paid</div>
+      <div class="cancelled">Cancelled</div>    
+    <% end %>
+  </div>
+  <div id="calendar" data-url="<%= view_calendar_reports_path({format: :json, status: params[:status], assigned_to: params[:assigned_to], client_name: params[:client_name]}) %>"></div>
+</div>

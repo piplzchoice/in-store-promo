@@ -1,7 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
   include ActionView::Helpers::NumberHelper
-  
-  default :from => "info@app.in-store-promo.com"
+  default :from => "info@in-store-marketing.com"
 
   def welcome_email(email, fullname, password)
     et = EmailTemplate.find_by_name("welcome_email")

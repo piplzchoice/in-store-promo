@@ -1,5 +1,40 @@
 $(function() {  
 
+  $("#export-location").on("click", function(){
+    $("#loc_ids").val($("#location_ids").val());
+    $("#export-data-location").submit();
+  })
+
+  $(".filter-location").on("click", function(){
+    $("#location_ids").val("");
+    return true;
+  });
+
+  $(document).on("change", ".locations-checkbox", function(){
+    var arr_ids = [];
+    if($("#location_ids").val() !== "") {
+      arr_ids = $("#location_ids").val().split(",");
+    }
+
+    if($(this).is(':checked')) {
+      arr_ids.push($(this).val());
+    } else {
+      var index = arr_ids.indexOf($(this).val());
+      arr_ids.splice(index, 1);
+    }
+
+    $("#location_ids").val(arr_ids.join(","));
+  });    
+
+  if($("#report-product").size() !== 0) {
+    if($("#report-product").data("new") && $("#report-product").data("size") === 0) {
+      alert("Please notify Admin to add products for this Client");
+      $("#submit-report-data").hide();
+      $("#new_report").attr("action", "/")
+      $("#new_report").attr("method", "get")
+    }
+  }
+
   $("#print_calendar_as_pdf").on("click", function(){
     html2canvas(document.getElementById("calendar-and-legend"), {
       onrendered: function(canvas) {
@@ -26,7 +61,7 @@ $(function() {
   //   $("#co-op-client-name").show();
   // } else {
   //   $("#co-op-client-name").hide();
-  // }
+  // }  
 
   $(document).on("change", "#co-op-price-box", function(){
     if($("#co-op-price-box").is(':checked')) {
@@ -96,6 +131,10 @@ $(function() {
     
     $("#insert-add-item-modal").modal("show");  
     return false;    
+  });
+
+  $("#add-product-button").on("click", function(){
+    $("#add-product-modal").modal("show");  
   });
 
   $("#create-invoice").on("click", function(){
@@ -457,46 +496,6 @@ $(function() {
     });
   }
 
- $(".product-beginning").keyup(function(){  
-  prod_end = 0;
-  
-  if($("#report_product_" + $(this).data("id") +"_end").val() !== "") {
-    prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
-  }
-
-  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
-
-  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-
-  calculate = prod_beginning - prod_end - prod_sample;
-  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
- })
-  
- $(".product-end").keyup(function(){  
-  prod_beginning = 0;
-  
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
-  }
-
-  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
-  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
-  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
- })  
-
- $(".product-sample").keyup(function(){  
-  prod_beginning = 0;
-  
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
-  }
-
-  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
-  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
-  calculate = prod_beginning - prod_end - prod_sample;
-  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
- })  
 
   $("#export-csv").click(function(){
     $("#status-csv").val($("#status").val())
@@ -518,6 +517,121 @@ $(function() {
 
 });  
 
+
+$(document).on("click", ".remove-product", function(){
+  $("#row-product-" + $(this).data("id")).remove();
+
+  if($(".row-products").length == 0) {
+    alert("Please add products minimum 1");
+    $("#submit-report-data").hide();
+    $("#new_report").attr("action", "/");
+    $("#new_report").attr("method", "get");
+  } else {
+    $.each($(".row-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });
+  }
+
+});
+
+$(document).on("click", "#add-product-report", function(){    
+
+  $.each($(".product-lists-modal"), function(i, v){ 
+    $(v).show();
+  });
+  
+  $.each($(".row-products"), function(i, v) {
+    $("#list-product-" + $(v).data("id")).hide();
+  });    
+
+  $("#insert-add-product-report-modal").modal("show");
+});
+
+$(document).on("click", "#submit-list-products", function(){
+  $(".checkbox-products:checked").each(function(i, v){ 
+    elm =  "" +
+    "<tr class=\"row-products\" id=\"row-product-" + $(v).data("id") + "\" data-id=\"" + $(v).data("id") + "\">" +
+      "<td>Product <span class=\"counter-product\">x</span></td>" +
+      "<td class=\"product-info-id\" data-id=\"" + $(v).data("id") + "\">" +
+        "<div class=\"dropdown\">" +
+          "<button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" " + 
+            "data-toggle=\"dropdown\" aria-expanded=\"true\">" + $(v).data("name") + " <span class=\"caret\"></span></button>" +
+          "<ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">" +
+            "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" data-id=\"" + $(v).data("id") + "\"" + 
+              "class=\"remove-product\" href=\"#add-product-report\">Remove</a></li>" +
+          "</ul>" +
+          "<input id=\"report_client_products_name\" name=\"report[client_products][]name\" type=\"hidden\" value=\"" + $(v).data("name") + "\">" +
+        "</div>" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-price\" data-id=\"" + $(v).data("id") + "\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_price\" name=\"report[client_products][]price\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sample\" data-id=\"" + $(v).data("id") + "\" class=\"product-sample\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sample\" name=\"report[client_products][]sample\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-beginning\" data-id=\"" + $(v).data("id") + "\" class=\"product-beginning\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_beginning\" name=\"report[client_products][]beginning\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-end\" data-id=\"" + $(v).data("id") + "\" class=\"product-end\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_end\" name=\"report[client_products][]end\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sold\" data-id=\"" + $(v).data("id") + "\" class=\"product-sold\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sold\" name=\"report[client_products][]sold\" type=\"text\">" +
+      "</td>" +
+    "</tr>";          
+
+    $("#row-products").append(elm)
+    $.each($(".row-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });      
+
+    $("#submit-report-data").show();
+    $("#new_report").attr("action", "/reports");
+    $("#new_report").attr("method", "post");    
+  });
+
+  $("#insert-add-product-report-modal").modal("hide");
+});
+
+$(document).on("keyup", ".product-beginning", function(){  
+  prod_end = 0;
+
+  if($("#report_product_" + $(this).data("id") +"_end").val() !== "") {
+    prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
+  }
+
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+  calculate = prod_beginning - (prod_end + prod_sample);
+
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+});
+
+$(document).on("keyup", ".product-end", function(){  
+  prod_beginning = 0;
+
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
+    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  }
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
+  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+  calculate = prod_beginning - (prod_end + prod_sample);
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+});
+
+$(document).on("keyup", ".product-sample", function(){  
+  prod_beginning = 0;
+
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
+    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  }
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
+  prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+  calculate = prod_beginning - (prod_end + prod_sample);
+  $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
+});
 
 function generate_select_ba(){
   $.ajax({
@@ -580,27 +694,6 @@ function checkbox_avalaible_click(){
         }
       }
     } 
-
-    // ajax proses
-    // kirim2x data utk create or update date nya          
-
-    // $.ajax({
-    //   url: //benerin,
-    //   data: { 
-    //     available_date: {
-    //       availablty: $("#service_start_at").val(), 
-    //       am: $("#select-ba").data("action"),
-    //       pm: $("#select-ba").data("old-id")
-    //     }
-    //   }
-    // })
-    // .done(function( html ) {    
-    //   $("#select-ba").html("");
-    //   $("#select-ba").append(html);
-
-    //   if($("#select-ba").data("id") !== "")
-    //     $("#service_brand_ambassador_id").val($("#select-ba").data("id"))
-    // });      
   });  
 }
 

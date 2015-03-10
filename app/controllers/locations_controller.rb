@@ -17,6 +17,7 @@ class LocationsController < ApplicationController
         end        
       }
       format.js {
+        @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
         session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
         @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
       }      
@@ -86,8 +87,38 @@ class LocationsController < ApplicationController
     redirect_to locations_url, {notice: msg}      
   end
 
+  def export_data
+    unless params[:loc_ids] == ""
+      @locations = Location.find(params[:loc_ids].split(","))
+
+      book = Spreadsheet::Workbook.new
+      sheet1 = book.create_worksheet :name => 'Data'
+      sheet1.row(0).replace [
+        "Location Name",
+        "Address",
+        "City",
+        "State",
+        "Zipcode",
+        "Contact Name",
+        "Phone",
+        "Email",
+        "Notes"
+      ]
+
+      @locations.each_with_index do |location, i|
+        sheet1.row(i + 1).replace location.export_data
+      end
+
+      export_file_path = [Rails.root, "tmp", "export-location-data-#{Time.now.to_i}.xls"].join("/")
+      book.write export_file_path
+      send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
+    else 
+      redirect_to locations_url, {notice: "Please select location to export"}
+    end
+  end
+
   def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode)
+    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes)
   end    
 
   private

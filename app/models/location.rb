@@ -12,6 +12,10 @@
 #  updated_at :datetime
 #  user_id    :integer
 #  is_active  :boolean          default(TRUE)
+#  contact    :string(255)
+#  phone      :string(255)
+#  email      :string(255)
+#  notes      :text
 #
 
 class Location < ActiveRecord::Base
@@ -43,4 +47,18 @@ class Location < ActiveRecord::Base
   def set_data_false
     self.update_attribute(:is_active, false)
   end  
+
+  def export_data
+    [
+      name,
+      address,
+      city,
+      state,
+      zipcode,
+      contact,
+      phone,
+      email,
+      notes
+    ]    
+  end
 end

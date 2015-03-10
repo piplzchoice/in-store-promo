@@ -184,3 +184,20 @@ if EmailTemplate.find_by_name("report_over_due_alert").nil?
 
   puts "created email template for report_over_due_alert"  
 end
+
+if EmailTemplate.find_by_name("thank_you_for_payment").nil?
+  thank_you_for_payment = {
+    name: "thank_you_for_payment", 
+    subject: "Thank you for payment",
+    content: "
+      <p>Dear .client_first_name ,</p>
+      <p>We have received your payment of .amount_received .</p>
+
+      <p>Thanks for the payment and your business.</p>
+      <p>We look forward to working with you again.</p>
+    "  
+  }  
+  EmailTemplate.create(thank_you_for_payment)
+
+  puts "created email template for thank_you_for_payment"  
+end

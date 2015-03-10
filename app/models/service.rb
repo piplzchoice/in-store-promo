@@ -2,20 +2,24 @@
 #
 # Table name: services
 #
-#  id                  :integer          not null, primary key
-#  project_id          :integer
-#  location_id         :integer
-#  brand_ambassador_id :integer
-#  created_at          :datetime
-#  updated_at          :datetime
-#  start_at            :datetime
-#  end_at              :datetime
-#  details             :text
-#  status              :integer          default(1)
-#  token               :string(255)
-#  is_active           :boolean          default(TRUE)
-#  client_id           :integer
-#  co_op_client_id     :integer
+#  id                    :integer          not null, primary key
+#  project_id            :integer
+#  location_id           :integer
+#  brand_ambassador_id   :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  start_at              :datetime
+#  end_at                :datetime
+#  details               :text
+#  status                :integer          default(1)
+#  token                 :string(255)
+#  is_active             :boolean          default(TRUE)
+#  client_id             :integer
+#  co_op_client_id       :integer
+#  alert_sent            :boolean          default(FALSE)
+#  alert_sent_date       :datetime
+#  alert_sent_admin      :boolean          default(FALSE)
+#  alert_sent_admin_date :datetime
 #
 
 # note for field "status"
@@ -202,10 +206,8 @@ class Service < ActiveRecord::Base
   def self.options_select_status_client
     [
       ["BA Confirmed", Service.status_confirmed],
-      ["Conducted", Service.status_conducted],
       ["Reported", Service.status_reported],
       ["Paid", Service.status_paid],
-      ["BA paid", Service.status_ba_paid],
     ]
   end
 
@@ -392,7 +394,58 @@ class Service < ActiveRecord::Base
   end
 
   def export_data
-    [
+    products = []
+    if report.client_products.nil?
+      products = [
+        report.product_one == "" ? "-" : report.product_one,
+        report.product_two == "" ? "-" : report.product_two,
+        report.product_three == "" ? "-" : report.product_three,
+        report.product_four == "" ? "-" : report.product_four,
+        report.product_five == "" ? "-" : report.product_five,
+        report.product_six == "" ? "-" : report.product_six,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",      
+        report.product_one_sold.nil? ? "-" : report.product_one_sold,
+        report.product_two_sold.nil? ? "-" : report.product_two_sold,
+        report.product_three_sold.nil? ? "-" : report.product_three_sold,
+        report.product_four_sold.nil? ? "-" : report.product_four_sold,
+        report.product_five_sold.nil? ? "-" : report.product_five_sold,
+        report.product_six_sold.nil? ? "-" : report.product_six_sold,
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        "-",
+        report.est_customer_touched.blank? ? "-" : report.est_customer_touched
+      ]
+    else
+      unfill_product = 15 - report.client_products.size
+      report.client_products.each_with_index do |product, i|
+        products.push(product["name"])
+      end
+
+      unfill_product.times{|x| products.push("-")} unless unfill_product == 0
+
+      report.client_products.each_with_index do |product, i|
+        products.push(product["sold"].to_i)
+      end
+
+      unfill_product.times{|x| products.push("-")} unless unfill_product == 0      
+      products.push(report.est_customer_touched.blank? ? "-" : report.est_customer_touched)
+    end
+
+    value_row = [
       location.name,
       client.company_name,
       brand_ambassador.name,
@@ -401,22 +454,11 @@ class Service < ActiveRecord::Base
       report.ave_product_price,
       report.traffic,
       start_at.strftime("%A"),
-      start_at.strftime("%p"),
-      report.product_one == "" ? "-" : report.product_one,
-      report.product_two == "" ? "-" : report.product_two,
-      report.product_three == "" ? "-" : report.product_three,
-      report.product_four == "" ? "-" : report.product_four,
-      report.product_five == "" ? "-" : report.product_five,
-      report.product_six == "" ? "-" : report.product_six,
-      report.product_one_sold.nil? ? "-" : report.product_one_sold,
-      report.product_two_sold.nil? ? "-" : report.product_two_sold,
-      report.product_three_sold.nil? ? "-" : report.product_three_sold,
-      report.product_four_sold.nil? ? "-" : report.product_four_sold,
-      report.product_five_sold.nil? ? "-" : report.product_five_sold,
-      report.product_six_sold.nil? ? "-" : report.product_six_sold,
-      report.est_customer_touched.blank? ? "-" : report.est_customer_touched
-    ]
+      start_at.strftime("%p"),      
+    ].push(products).flatten!
 
+    return value_row
+    
   end
 
 end

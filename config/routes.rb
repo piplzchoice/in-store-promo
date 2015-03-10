@@ -30,6 +30,8 @@ Rails.application.routes.draw do
         patch :update_status_after_reported
       end      
     end    
+
+    resources :products, only: [:create, :destroy, :index]
   end
 
   resources :brand_ambassadors do
@@ -49,7 +51,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :locations
+  resources :locations do 
+    collection do
+      post :export_data
+    end
+  end
   resources :email_templates, only: [:index, :edit, :update]
 
   resources :projects do  

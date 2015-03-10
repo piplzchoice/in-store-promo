@@ -60,6 +60,7 @@
 #  table_image_two_img     :string(255)
 #  is_active               :boolean          default(TRUE)
 #  travel_expense          :decimal(8, 2)
+#  client_products         :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

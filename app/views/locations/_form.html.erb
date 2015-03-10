@@ -24,5 +24,28 @@
     <%= f.text_field :zipcode, {class: "form-control", placeholder: "Zipcode"} %>
   </div>      
 
+  <br /><br />
+  <h2 class="page-header">Contact</h2>
+
+  <div class="form-group">
+    <%= f.label :contact, {class: "control-label"} %>
+    <%= f.text_field :contact, {class: "form-control", placeholder: "Contact Name"} %>
+  </div>    
+
+  <div class="form-group">
+    <%= f.label :phone, {class: "control-label"} %>
+    <%= f.text_field :phone, {class: "form-control", placeholder: "Contact Phone"} %>
+  </div>      
+
+  <div class="form-group">
+    <%= f.label :email, {class: "control-label"} %>
+    <%= f.text_field :email, {class: "form-control", placeholder: "Contact Email"} %>
+  </div>      
+
+  <div class="form-group">
+    <%= f.label :notes, {class: "control-label"} %>
+    <%= f.text_area :notes, {cols: 20, rows: 10, class: "form-control", placeholder: "Notes"} %>
+  </div>      
+
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

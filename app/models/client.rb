@@ -33,6 +33,7 @@ class Client < ActiveRecord::Base
   has_many :services
   has_many :invoices
   has_many :co_op_services, foreign_key: 'co_op_client_id', class_name: 'Service'
+  has_many :products
 
   validates :company_name, :first_name, :last_name, :phone, presence: true
 

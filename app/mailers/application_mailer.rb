@@ -1,4 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
+  include ActionView::Helpers::NumberHelper
+  
   default :from => "info@app.in-store-promo.com"
 
   def welcome_email(email, fullname, password)
@@ -107,6 +109,16 @@ class ApplicationMailer < ActionMailer::Base
     end    
     @content = et.content.gsub(".demo_date", service.complete_date_time).gsub(".service_company_name", service.client.company_name).gsub(".service_location", service.location.complete_location)
     mail(to: emails.flatten.uniq, subject: et.subject)    
-  end
+  end  
 
+  def thank_you_for_payment(invoice)
+    et = EmailTemplate.find_by_name("thank_you_for_payment")
+
+    emails = [invoice.client.email]
+    invoice.client.additional_emails.split(";").each{|x| emails.push(x)}      
+
+        
+    @content = et.content.gsub(".client_first_name", invoice.client.first_name).gsub(".amount_received", number_to_currency(invoice.amount_received))
+    mail(to: emails, subject: et.subject)
+  end
 end

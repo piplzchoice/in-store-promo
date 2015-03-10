@@ -33,14 +33,16 @@
                 <%= invoice.is_paid_match? ? number_to_currency(invoice.amount_received) : content_tag(:strong, number_to_currency(invoice.amount_received)) %>
               <% end %>
             <% else %>
-              <%= f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control"}) %>
+              <%= f.text_field(:amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control"}) if current_user.has_role?(:admin) %>
             <% end %>
           </td>
           <td>
-            <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice form-control"}) %>
+            <%= @paid ? (invoice.date_received.nil? ? "-" : invoice.date_received.strftime('%m/%d/%Y')) : f.text_field(:date_received, {class: "date-received-invoice form-control"}) if current_user.has_role?(:admin) %>
           </td>          
-          <td>        
-            <%= f.submit("Update Invoice to Paid", class: "btn btn-primary update-invoice") unless @paid %>
+          <td>     
+            <% if current_user.has_role?(:admin) %>
+              <%= f.submit("Update Invoice to Paid", class: "btn btn-primary update-invoice") unless @paid %>
+            <% end %>
           </td>
           <td><%= link_to("Show Invoice", invoice_path(invoice), class: "btn btn-primary update-invoice" ) %></td> 
         <% end  %>

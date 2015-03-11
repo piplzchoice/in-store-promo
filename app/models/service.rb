@@ -57,8 +57,15 @@ class Service < ActiveRecord::Base
 
   def self.filter_and_order(parameters)
     data = nil
-    conditions = {}
-    conditions.merge!(status: parameters["status"]) if parameters["status"] != ""
+    conditions = {}    
+    if parameters["status"] != ""
+      conditions.merge!(status: parameters["status"]) 
+    else
+      if parameters["is_client"]
+        conditions.merge!(status: [2,6,7]) 
+      end
+    end
+
     conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
 
     if parameters["client_name"] != ""
@@ -205,14 +212,22 @@ class Service < ActiveRecord::Base
 
   def self.options_select_status_client
     [
+      ["All", ""],
       ["BA Confirmed", Service.status_confirmed],
       ["Reported", Service.status_reported],
       ["Paid", Service.status_paid],
     ]
   end
 
-  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction)
-    data = {"status" => status, "assigned_to" => assigned_to, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction}
+  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction, is_client = false)
+    data = {
+      "status" => status, 
+      "assigned_to" => assigned_to, 
+      "client_name" => client_name, 
+      "sort_column" => sort_column, 
+      "sort_direction" => sort_direction,
+      "is_client" => is_client
+    }
     Service.filter_and_order(data).collect{|x|
         if x.status != Service.status_cancelled
           {

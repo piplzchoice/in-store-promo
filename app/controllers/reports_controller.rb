@@ -22,7 +22,7 @@ class ReportsController < ApplicationController
           @clients = Client.all
           @projects = Project.all        
         elsif current_user.has_role?(:client)
-          @services = current_user.client.services.where(status: 2).order(created_at: :desc).paginate(:page => params[:page])
+          @services = current_user.client.services.where(status: [2,6,7]).order(created_at: :desc).paginate(:page => params[:page])
           @brand_ambassadors = @services.collect{|x| x.brand_ambassador }.flatten.uniq
         else
           @services = current_user.brand_ambassador.services.order(created_at: :desc).paginate(:page => params[:page])
@@ -33,13 +33,24 @@ class ReportsController < ApplicationController
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
         client_name = ""
+        is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
+          is_client = true
         end
         
-        session[:filter_history_reports] = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page]}
+        session[:filter_history_reports] = {
+          "status" => params[:status], 
+          "assigned_to" => ba_id, 
+          "client_name" => client_name, 
+          "sort_column" => sort_column, 
+          "sort_direction" => sort_direction, 
+          "page" => params[:page],
+          "is_client" => is_client
+        }
+
         @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => params[:page])
       end
 
@@ -135,13 +146,15 @@ class ReportsController < ApplicationController
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
         client_name = ""
+        is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
+          is_client = true
         end
         
-        render json: Service.calendar_services(params[:status], ba_id, client_name, sort_column, sort_direction)
+        render json: Service.calendar_services(params[:status], ba_id, client_name, sort_column, sort_direction, is_client)
       }
     end
   end

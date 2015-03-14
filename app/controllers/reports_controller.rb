@@ -19,7 +19,7 @@ class ReportsController < ApplicationController
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
           @brand_ambassadors = BrandAmbassador.with_status_active
-          @clients = Client.all
+          @clients = Client.with_status_active
           @projects = Project.all        
         elsif current_user.has_role?(:client)
           @services = current_user.client.services.where(status: 2).order(created_at: :desc).paginate(:page => params[:page])

@@ -71,7 +71,7 @@ class Service < ActiveRecord::Base
     if parameters["client_name"] != ""
       data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
-      data = Service.where(conditions)
+      data = Service.joins(:client).where(clients: {is_active: true}).where(conditions)
     end
 
     if parameters["sort_column"] == "ba"

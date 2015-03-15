@@ -88,6 +88,8 @@ Rails.application.routes.draw do
       patch :process_ba_payments
       get :export_data
       get :generate_export_data
+      post "upload/:key/" => "reports#upload_image",  as: "upload_picture"
+      delete "delete_upload/:key/:id" => "reports#delete_image"
     end
   end
 

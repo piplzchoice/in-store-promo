@@ -105,9 +105,24 @@
 
     <div class="row report">
       <div id="report-sample-product">
-        <span class="report-title">Expense</span>:
+        <span class="report-title">Expense</span>:<br />
         <%= f.text_field(:expense_one) %>
-        <%= f.file_field(:expense_one_img) %>
+        <br /><br />
+        <%#= f.file_field(:expense_one_img) %>
+        <input class="fileupload" type="file" name="files[]" data-url="/reports/upload/expense" multiple>
+        <div id="preview-image-expense">
+          <% unless @report.new_record? %>
+            <% @report.report_expense_images.each do |img| %>              
+              <span id='<%= "expense-#{img.id}" %>'>
+              <br />
+              <%= image_tag img.file.url, style: 'width:300px;height:auto' %>
+              <input type='hidden' name='image-expense' value='<%= img.id %>' />&nbsp;&nbsp;
+              <a href='#<%= "expense-#{img.id}" %>' class='remove-report-image' data-id='<%= "expense-#{img.id}" %>' data-url='/reports/delete_upload/expense/<%= img.id %>'>remove</a>
+              <br />
+              </span>
+            <% end %>       
+          <% end %>
+        </div>        
       </div>
     </div>  
     
@@ -128,9 +143,23 @@
 
     <div class="row report">
       <div id="report-attach-table">
-        <span class="report-title">Attach Table Image</span>:
-        <%= f.file_field(:table_image_one_img) %>
-        <%= f.file_field(:table_image_two_img) %>
+        <span class="report-title">Attach Table Image</span>:<br /><br />
+        <%#= f.file_field(:table_image_one_img) %>
+        <%#= f.file_field(:table_image_two_img) %>
+        <input class="fileupload" type="file" name="files[]" data-url="/reports/upload/table" multiple>
+        <div id="preview-image-table">
+          <% unless @report.new_record? %>
+            <% @report.report_table_images.each do |img| %>              
+              <span id='<%= "table-#{img.id}" %>'>
+              <br />
+              <%= image_tag img.file.url, style: 'width:300px;height:auto' %>
+              <input type='hidden' name='image-table' value='<%= img.id %>' />&nbsp;&nbsp;
+              <a href='#<%= "table-#{img.id}" %>' class='remove-report-image' data-id='<%= "table-#{img.id}" %>' data-url='/reports/delete_upload/table/<%= img.id %>'>remove</a>
+              <br />
+              </span>
+            <% end %>       
+          <% end %>          
+        </div>
       </div>
     </div>         
 

@@ -1,5 +1,28 @@
 $(function() {  
 
+  $('.fileupload').fileupload({
+    dataType: 'json',
+    done: function (e, data) {
+      $.each(data.result.files, function (index, file) {
+        span_id = file.key + "-" + file.id;
+        $("#preview-image-" + file.key).append("<span id='" + span_id + "'><br /><img src='" + file.url + 
+          "'style='width:300px;height:auto'><input type='hidden' name='image-" + file.key + "[]' value='"+ file.id +"' />" +
+          "&nbsp;&nbsp;<a href='#" + span_id + "' class='remove-report-image'" + 
+          "data-id='" + span_id + "' data-url='delete_upload/" + file.key + "/" + file.id +  "'>remove</a><br /></span>");
+      });
+    }
+  });
+
+  $(document).on("click", ".remove-report-image", function(){
+    $("#" + $(this).data("id")).remove();
+    $.ajax({
+        url: $(this).data("url"),
+        type: 'DELETE',
+        success: function(res){          
+        },
+    });    
+  });
+
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
     $("#export-data-location").submit();

@@ -116,7 +116,7 @@
               <span id='<%= "expense-#{img.id}" %>'>
               <br />
               <%= image_tag img.file.url, style: 'width:300px;height:auto' %>
-              <input type='hidden' name='image-expense' value='<%= img.id %>' />&nbsp;&nbsp;
+              <input type='hidden' name='image-expense[]' value='<%= img.id %>' />&nbsp;&nbsp;
               <a href='#<%= "expense-#{img.id}" %>' class='remove-report-image' data-id='<%= "expense-#{img.id}" %>' data-url='/reports/delete_upload/expense/<%= img.id %>'>remove</a>
               <br />
               </span>
@@ -153,7 +153,7 @@
               <span id='<%= "table-#{img.id}" %>'>
               <br />
               <%= image_tag img.file.url, style: 'width:300px;height:auto' %>
-              <input type='hidden' name='image-table' value='<%= img.id %>' />&nbsp;&nbsp;
+              <input type='hidden' name='image-table[]' value='<%= img.id %>' />&nbsp;&nbsp;
               <a href='#<%= "table-#{img.id}" %>' class='remove-report-image' data-id='<%= "table-#{img.id}" %>' data-url='/reports/delete_upload/table/<%= img.id %>'>remove</a>
               <br />
               </span>

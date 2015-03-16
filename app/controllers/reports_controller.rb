@@ -349,7 +349,7 @@ class ReportsController < ApplicationController
         image.save
         responses["files"] << {id: image.id, url: image.file.url, key: params[:key]}
       end
-    elsif params[:key] == "expense"
+    elsif params[:key] == "expense"      
       params[:files].each do |file|
         image = ReportExpenseImage.new
         image.file = file

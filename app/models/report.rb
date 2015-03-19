@@ -70,10 +70,10 @@ class Report < ActiveRecord::Base
   has_many :report_expense_images
   has_many :report_table_images
   
-  # mount_uploader :expense_one_img, ImageUploader
-  # mount_uploader :expense_two_img, ImageUploader
-  # mount_uploader :table_image_one_img, ImageUploader
-  # mount_uploader :table_image_two_img, ImageUploader
+  mount_uploader :expense_one_img, ImageUploader
+  mount_uploader :expense_two_img, ImageUploader
+  mount_uploader :table_image_one_img, ImageUploader
+  mount_uploader :table_image_two_img, ImageUploader
 
   
   # validates :est_customer_touched, presence: true

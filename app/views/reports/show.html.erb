@@ -110,9 +110,10 @@
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">Expense</span>: <%= number_to_currency @report.expense_one %>
-      <% unless @report.expense_one_img.nil? %>
-        <%= image_tag @report.expense_one_img.url %>
-      <% end %>
+      <% @report.report_expense_images.each do |img| %>
+        <br />
+        <%= image_tag img.file.url %>
+      <% end %> 
     </div>
   </div>  
 
@@ -141,13 +142,10 @@
   <div class="row report">
     <div id="report-attach-table">
       <span class="report-title">Attach Table Image</span>:
-      <% unless @report.table_image_one_img.nil? %>
-        <%= image_tag @report.table_image_one_img.url %>
+      <% @report.report_table_images.each do |img| %>
+        <br />
+        <%= image_tag img.file.url %>
       <% end %> 
-      <br />
-      <% unless @report.table_image_two_img.nil? %>
-        <%= image_tag @report.table_image_two_img.url %>
-      <% end %>            
     </div>
   </div>             
 

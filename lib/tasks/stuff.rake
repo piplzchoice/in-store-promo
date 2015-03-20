@@ -115,4 +115,35 @@ namespace :stuff do
     end
   end
 
+  desc "import image to new data image report"
+  task :import_image_report => :environment do
+    Report.all.each do |report|
+      puts "importing image for report id: #{report.id}"
+
+      unless report.expense_one_img.nil?
+        expense_image = report.report_expense_images.build
+        expense_image.remote_file_url = report.expense_one_img.url
+        expense_image.save
+      end
+
+      unless report.expense_two_img.nil?
+        expense_image = report.report_expense_images.build
+        expense_image.remote_file_url = report.expense_two_img.url
+        expense_image.save
+      end
+
+      unless report.table_image_one_img.nil?
+        table_image = report.report_table_images.build
+        table_image.remote_file_url = report.table_image_one_img.url
+        table_image.save
+      end
+
+      unless report.table_image_two_img.nil?
+        table_image = report.report_table_images.build
+        table_image.remote_file_url = report.table_image_two_img.url
+        table_image.save
+      end
+    end
+  end
+
 end

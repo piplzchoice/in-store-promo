@@ -67,6 +67,8 @@ require 'carrierwave/orm/activerecord'
 class Report < ActiveRecord::Base
   
   belongs_to :service
+  has_many :report_expense_images
+  has_many :report_table_images
   
   mount_uploader :expense_one_img, ImageUploader
   mount_uploader :expense_two_img, ImageUploader

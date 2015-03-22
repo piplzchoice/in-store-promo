@@ -177,7 +177,7 @@ class ReportsController < ApplicationController
         if @report.save
           @service.update_attribute(:status, Service.status_reported)
           
-          unless params["image-table"].empty?
+          unless params["image-table"].nil?
             params["image-table"].each do |id_table|
               image = ReportTableImage.find(id_table)
               image.report = @report
@@ -185,7 +185,7 @@ class ReportsController < ApplicationController
             end
           end
 
-          unless params["image-expense"].empty?
+          unless params["image-expense"].nil?
             params["image-expense"].each do |id_expense|
               image = ReportExpenseImage.find(id_expense)
               image.report = @report
@@ -213,7 +213,7 @@ class ReportsController < ApplicationController
       format.html do
         if @report.update_attributes(report_params)
 
-          unless params["image-table"].empty?
+          unless params["image-table"].nil?
             if params["image-table"].class == String
               image = ReportTableImage.find(params["image-table"])
               image.report = @report
@@ -227,7 +227,7 @@ class ReportsController < ApplicationController
             end
           end
 
-          unless params["image-expense"].empty?
+          unless params["image-expense"].nil?
             if params["image-expense"].class == String
               image = ReportExpenseImage.find(params["image-expense"])
               image.report = @report

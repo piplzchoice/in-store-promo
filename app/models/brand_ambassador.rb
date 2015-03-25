@@ -27,6 +27,7 @@ class BrandAmbassador < ActiveRecord::Base
   has_many :services
   has_many :available_dates
   has_many :statements
+  has_and_belongs_to_many :territories
 
   default_scope { order("created_at ASC") }
   scope :with_status_active, -> { where(is_active: true) }

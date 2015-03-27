@@ -5,51 +5,50 @@ class TerritoriesController < ApplicationController
   def index
     respond_to do |format|
       format.html {        
-        if session[:filter_history_locations].nil?
-          @locations = Location.with_status_active.paginate(:page => params[:page])
-        else
-          @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
-          @is_active = session[:filter_history_locations]["is_active"]
-          @name = session[:filter_history_locations]["name"]
-          session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
-        end        
+        # if session[:filter_history_locations].nil?
+          @territories = Territory.paginate(:page => params[:page])
+        # else
+        #   @locations = Territory.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+        #   @is_active = session[:filter_history_locations]["is_active"]
+        #   @name = session[:filter_history_locations]["name"]
+        #   session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
+        # end        
       }
       format.js {
         @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
         session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
-        @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+        @locations = Territory.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
       }      
     end    
   end
 
   def new
-    @location = Location.new
+    @territory = Territory.new
     respond_to do |format|
       format.html
     end    
   end
 
   def edit
-    @location = Location.find(params[:id])
+    @territory = Territory.find(params[:id])
     respond_to do |format|
       format.html
     end    
   end
 
   def show
-    @location = Location.find(params[:id])
+    @territory = Territory.find(params[:id])
     respond_to do |format|
       format.html
     end    
   end
 
   def create
-    @location = Location.new(location_params)
-    @location.user_id = current_user.id
+    @territory = Territory.new(territory_params)
     respond_to do |format|
       format.html do
-        if @location.save
-          redirect_to locations_url, notice: "Location created"
+        if @territory.save
+          redirect_to territories_url, notice: "Territory created"
         else
           render :new
         end
@@ -58,11 +57,11 @@ class TerritoriesController < ApplicationController
   end
 
   def update
-    @location = Location.find(params[:id])
+    @territory = Territory.find(params[:id])
     respond_to do |format|
       format.html do
-        if @location.update_attributes(location_params)
-          redirect_to locations_url, notice: "Location updated"
+        if @territory.update_attributes(territory_params)
+          redirect_to territories_url, notice: "Territory updated"
         else
           render :edit
         end
@@ -72,57 +71,28 @@ class TerritoriesController < ApplicationController
   end
 
   def destroy
-    @location = Location.find(params[:id])
-    msg = ""
-    if @location.is_active
-      @location.set_data_false
-      msg = "Location de-activated"      
-    else
-      @location.set_data_true
-      msg = "Location re-activated"      
-    end  
+    # @territory = Territory.find(params[:id])
+    # msg = ""
+    # it @territory.is_active
+    #   @location.set_data_false
+    #   msg = "Territory de-activated"      
+    # else
+    #   @location.set_data_true
+    #   msg = "Territory re-activated"      
+    # end  
 
-    redirect_to locations_url, {notice: msg}      
+    redirect_to territories_url, {notice: msg}      
   end
 
-  def export_data
-    unless params[:loc_ids] == ""
-      @locations = Location.find(params[:loc_ids].split(","))
 
-      book = Spreadsheet::Workbook.new
-      sheet1 = book.create_worksheet :name => 'Data'
-      sheet1.row(0).replace [
-        "Location Name",
-        "Address",
-        "City",
-        "State",
-        "Zipcode",
-        "Contact Name",
-        "Phone",
-        "Email",
-        "Notes"
-      ]
-
-      @locations.each_with_index do |location, i|
-        sheet1.row(i + 1).replace location.export_data
-      end
-
-      export_file_path = [Rails.root, "tmp", "export-location-data-#{Time.now.to_i}.xls"].join("/")
-      book.write export_file_path
-      send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
-    else 
-      redirect_to locations_url, {notice: "Please select location to export"}
-    end
-  end
-
-  def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes)
+  def territory_params
+    params.require(:territory).permit(:name)
   end    
 
   private
 
-  def check_location_status
-    location = Location.find(params[:id])
-    redirect_to(locations_path, :flash => { :error => "Location is not active" }) unless location.is_active
-  end    
+  # def check_location_status
+  #   location = Territory.find(params[:id])
+  #   redirect_to(locations_path, :flash => { :error => "Territory is not active" }) unless location.is_active
+  # end    
 end

@@ -1,0 +1,26 @@
+  
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @territories.each_with_index do |territory, i|  %>
+      <tr>
+        <td><%= territory.name %></td>
+        <td>
+          <%# if territory.is_active %>
+            <%= link_to "Display", territory_path(territory) %> || 
+            <%= link_to "Edit", edit_territory_path(territory) %> || 
+            <%= link_to "Deactivate", territory_path(territory), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <%# else %>
+            <%#= link_to (territory.is_active ? "Deactivate" : "Reactivate"), territory_path(territory), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <%# end %>          
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= will_paginate @territories, renderer: BootstrapPagination::Rails %>

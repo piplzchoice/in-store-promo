@@ -13,5 +13,6 @@
       <li><%= link_to "Reporting", reports_path %></li>          
       <li><%= link_to "Invoicing", invoices_path  if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %></li> 
       <li><%= link_to("Export Data", export_data_reports_path) if current_user.has_role? :admin %></li>
+      <li><%= link_to("Terrorities", territories_path) if current_user.has_role? :admin %></li>
   </ul>
 </div>

@@ -47,13 +47,20 @@ class BrandAmbassador < ActiveRecord::Base
     return brand_ambassador, password
   end
 
-  def self.get_available_people(start_at, end_at, service_id)
+  def self.get_available_people(start_at, end_at, service_id, location_id)
 
     start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
     end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
     time_range = start_time.midnight..(start_time.midnight + 1.day - 1.minutes)
 
-    ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
+    ba_data = nil
+    location = Location.find(location_id)
+    if location.territory.nil? 
+      ba_data = BrandAmbassador.joins(:available_dates, :territories).where(is_active: true, available_dates: {availablty: time_range}, territories: {id: location.territory.id})
+    else
+      ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
+    end
+    
     
     filtered_ba_data = ba_data.collect do |ba|
       services = ba.services.where({start_at: time_range}).where.not({status: [Service.status_cancelled, Service.status_rejected]})

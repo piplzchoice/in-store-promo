@@ -664,7 +664,8 @@ function generate_select_ba(){
       start_at: $("#service_start_at").val(),
       end_at: $("#service_end_at").val(),
       action_method: $("#select-ba").data("action"),
-      service_id: $("#checkbox-service").data("service-id")
+      service_id: $("#checkbox-service").data("service-id"),
+      location_id: $("#service_location_id").val()
     }
   })
   .done(function( html ) {    

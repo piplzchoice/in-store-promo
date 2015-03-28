@@ -16,12 +16,14 @@
 #  phone        :string(255)
 #  email        :string(255)
 #  notes        :text
-#  terorrity_id :integer
+#  territory_id :integer
 #
 
 class Location < ActiveRecord::Base
   belongs_to :user
   belongs_to :location
+  belongs_to :territory
+
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
   default_scope { order("created_at ASC") }

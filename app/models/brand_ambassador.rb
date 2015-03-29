@@ -155,11 +155,18 @@ class BrandAmbassador < ActiveRecord::Base
 
         show = true
         if services.blank?
-          if available_date.am
+          # if available_date.am
+          #   color = "#3c763d"
+          # elsif !available_date.am && available_date.pm
+          #   color = "#428bca" #cek disini #f0ad4e
+          # end          
+          if available_date.am && available_date.pm
             color = "#3c763d"
+          elsif available_date.am && !available_date.pm
+            color = "#f0ad4e"
           elsif !available_date.am && available_date.pm
-            color = "#428bca" #cek disini #f0ad4e
-          end          
+            color = "#428bca"
+          end                  
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
           if periods.size == 2

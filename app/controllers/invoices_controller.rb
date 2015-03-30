@@ -72,7 +72,7 @@ class InvoicesController < ApplicationController
     # @invoice.update_attribute(:status, 1)
     # redirect_to invoices_path
 
-    ApplicationMailer.thank_you_for_payment(@invoice).deliver
+    # ApplicationMailer.thank_you_for_payment(@invoice).deliver
     redirect_to list_invoices_path
   end
 
@@ -118,7 +118,7 @@ class InvoicesController < ApplicationController
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
       @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-      ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
+      # ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
       redirect_to list_invoices_path
     else
       render :new
@@ -147,7 +147,7 @@ class InvoicesController < ApplicationController
 
   def resend
     @invoice = Invoice.find(params[:id])
-    ApplicationMailer.send_invoice(@invoice, @invoice.list_email).deliver
+    # ApplicationMailer.send_invoice(@invoice, @invoice.list_email).deliver
     redirect_to invoice_path(@invoice), notice: "Invoice sent"
   end
 

@@ -103,7 +103,7 @@ class ReportsController < ApplicationController
         kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
         statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
         statement.save
-        ApplicationMailer.ba_is_paid(statement).deliver
+        # ApplicationMailer.ba_is_paid(statement).deliver
       end      
     end
     redirect_to ba_payments_reports_path    

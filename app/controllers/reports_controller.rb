@@ -19,7 +19,7 @@ class ReportsController < ApplicationController
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
           @brand_ambassadors = BrandAmbassador.with_status_active
-          @clients = Client.all
+          @clients = Client.with_status_active
           @projects = Project.all        
         elsif current_user.has_role?(:client)
           @services = current_user.client.services.where(status: [2,6,7]).order(created_at: :desc).paginate(:page => params[:page])
@@ -176,6 +176,23 @@ class ReportsController < ApplicationController
       format.html do
         if @report.save
           @service.update_attribute(:status, Service.status_reported)
+          
+          unless params["image-table"].nil?
+            params["image-table"].each do |id_table|
+              image = ReportTableImage.find(id_table)
+              image.report = @report
+              image.save
+            end
+          end
+
+          unless params["image-expense"].nil?
+            params["image-expense"].each do |id_expense|
+              image = ReportExpenseImage.find(id_expense)
+              image.report = @report
+              image.save
+            end            
+          end          
+
           redirect_to report_path(@report), notice: "Report created"
         else
           render :new
@@ -195,6 +212,35 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         if @report.update_attributes(report_params)
+
+          unless params["image-table"].nil?
+            if params["image-table"].class == String
+              image = ReportTableImage.find(params["image-table"])
+              image.report = @report
+              image.save              
+            else
+              params["image-table"].each do |id_table|
+                image = ReportTableImage.find(id_table)
+                image.report = @report
+                image.save
+              end
+            end
+          end
+
+          unless params["image-expense"].nil?
+            if params["image-expense"].class == String
+              image = ReportExpenseImage.find(params["image-expense"])
+              image.report = @report
+              image.save              
+            else            
+              params["image-expense"].each do |id_expense|
+                image = ReportExpenseImage.find(id_expense)
+                image.report = @report
+                image.save
+              end      
+            end      
+          end          
+
           redirect_to report_path(@report), notice: "Report updated"
         else
           render :edit
@@ -290,6 +336,42 @@ class ReportsController < ApplicationController
     export_file_path = [Rails.root, "tmp", "export-data-#{Time.now.to_i}.xls"].join("/")
     book.write export_file_path
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'    
+  end
+
+  def upload_image
+    responses = {}
+    responses["files"] = []
+
+    if params[:key] == "table"
+      params[:files].each do |file|
+        image = ReportTableImage.new
+        image.file = file
+        image.save
+        responses["files"] << {id: image.id, url: image.file.url, key: params[:key]}
+      end
+    elsif params[:key] == "expense"      
+      params[:files].each do |file|
+        image = ReportExpenseImage.new
+        image.file = file
+        image.save
+        responses["files"] << {id: image.id, url: image.file.url, key: params[:key]}
+      end      
+    end
+
+    render json: responses
+  end
+
+  def delete_image
+
+    if params[:key] == "table"
+      image = ReportTableImage.find(params[:id])
+      image.destroy
+    elsif params[:key] == "expense"
+      image = ReportExpenseImage.find(params[:id])
+      image.destroy
+    end
+
+    render json: {res: true}
   end
 
   def report_params

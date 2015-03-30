@@ -249,3 +249,9 @@ body {
 .width_35px {
   width: 35px;
 }
+
+@media print
+{
+  .no-print { visibility: hidden; }
+  .no-print { display: none; }
+}

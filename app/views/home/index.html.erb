@@ -1,1 +1,33 @@
-<h1 class="page-header">Home</h1>
+<% if current_user.has_role?(:client) %>    
+  <h1 class="page-header">Services Calendar</h1>
+
+  <div class="link-new-btn no-print"><%= link_to("Export", "#", {id: "print_calendar_as_pdf",class: "btn btn-primary", role: "button"}) %></div>
+
+  <div id="calendar-and-legend">  
+    <div id="colour-legend" class="no-print">
+    <% if current_user.has_role?(:client) %>
+      <div class="confirmed">Confirmed</div>
+      <div class="reported">Reported</div>
+      <div class="paid">Paid</div>
+    <% else %>
+      <div class="scheduled">Scheduled</div>
+      <div class="confirmed">Confirmed</div>
+      <div class="rejected">Rejected</div>
+      <div class="conducted">Conducted</div>
+      <div class="unrespond">Unrespond</div>
+      <div class="reported">Reported</div>
+      <div class="paid">Paid</div>
+      <div class="ba-paid">BA Paid</div>
+      <div class="cancelled">Cancelled</div>    
+    <% end %>
+    </div>
+    <div id="calendar" data-url="<%= view_calendar_reports_path({format: :json, status: "", assigned_to: "", client_name: current_user.client.id}) %>"></div>
+  </div>
+
+  <%= form_tag(export_calendar_client_path(current_user.client), method: :post, remote: false, id: "export-calendar") do %>
+    <%= hidden_field_tag(:dataurl) %>  
+  <% end %>
+
+<% else %>
+  <h1 class="page-header">Home</h1>
+<% end %>

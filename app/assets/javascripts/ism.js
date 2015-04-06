@@ -24,6 +24,20 @@ $(function() {
     });    
   });
 
+  $(document).on("click", "#selecctall-location", function(){
+    if(this.checked) { 
+        $('.locations-checkbox').each(function() {
+            this.checked = true;
+            checked_location(this)
+        });
+    }else{
+        $('.locations-checkbox').each(function() {
+            this.checked = false;
+            checked_location(this)
+        });         
+    }
+  });
+
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
     $("#export-data-location").submit();
@@ -35,19 +49,7 @@ $(function() {
   });
 
   $(document).on("change", ".locations-checkbox", function(){
-    var arr_ids = [];
-    if($("#location_ids").val() !== "") {
-      arr_ids = $("#location_ids").val().split(",");
-    }
-
-    if($(this).is(':checked')) {
-      arr_ids.push($(this).val());
-    } else {
-      var index = arr_ids.indexOf($(this).val());
-      arr_ids.splice(index, 1);
-    }
-
-    $("#location_ids").val(arr_ids.join(","));
+    checked_location(this);
   });    
 
   if($("#report-product").size() !== 0) {
@@ -727,4 +729,20 @@ function getParameterByName(name, url) {
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function checked_location(obj) {
+  var arr_ids = [];
+  if($("#location_ids").val() !== "") {
+    arr_ids = $("#location_ids").val().split(",");
+  }
+
+  if($(obj).is(':checked')) {
+    arr_ids.push($(obj).val());
+  } else {
+    var index = arr_ids.indexOf($(obj).val());
+    arr_ids.splice(index, 1);
+  }
+
+  $("#location_ids").val(arr_ids.join(","));    
 }

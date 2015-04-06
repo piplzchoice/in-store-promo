@@ -2,7 +2,11 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th></th>
+        <th>
+          <%= 
+            check_box_tag("select", "all", false, {id: 'selecctall-location'})
+          %>          
+        </th>
         <th>ID</th>
         <th>Name</th>
         <th>Action</th>

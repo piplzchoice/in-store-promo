@@ -26,6 +26,7 @@ class LocationsController < ApplicationController
 
   def new
     @location = Location.new
+    @territories = Territory.all
     respond_to do |format|
       format.html
     end    
@@ -33,6 +34,7 @@ class LocationsController < ApplicationController
 
   def edit
     @location = Location.find(params[:id])
+    @territories = Territory.all
     respond_to do |format|
       format.html
     end    
@@ -53,6 +55,7 @@ class LocationsController < ApplicationController
         if @location.save
           redirect_to locations_url, notice: "Location created"
         else
+          @territories = Territory.all
           render :new
         end
       end
@@ -66,6 +69,7 @@ class LocationsController < ApplicationController
         if @location.update_attributes(location_params)
           redirect_to locations_url, notice: "Location updated"
         else
+          @territories = Territory.all
           render :edit
         end
       end
@@ -118,7 +122,7 @@ class LocationsController < ApplicationController
   end
 
   def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes)
+    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes, :territory_id)
   end    
 
   private

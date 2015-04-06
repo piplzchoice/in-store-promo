@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150314122217) do
+ActiveRecord::Schema.define(version: 20150325151015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,11 @@ ActiveRecord::Schema.define(version: 20150314122217) do
     t.boolean  "mileage"
     t.decimal  "rate",       precision: 8, scale: 2
     t.boolean  "is_active",                          default: true
+  end
+
+  create_table "brand_ambassadors_territories", force: true do |t|
+    t.integer "brand_ambassador_id"
+    t.integer "territory_id"
   end
 
   create_table "clients", force: true do |t|
@@ -111,11 +116,12 @@ ActiveRecord::Schema.define(version: 20150314122217) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
-    t.boolean  "is_active",  default: true
+    t.boolean  "is_active",    default: true
     t.string   "contact"
     t.string   "phone"
     t.string   "email"
     t.text     "notes"
+    t.integer  "territory_id"
   end
 
   create_table "products", force: true do |t|
@@ -268,6 +274,12 @@ ActiveRecord::Schema.define(version: 20150314122217) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "services_ids"
+  end
+
+  create_table "territories", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|

@@ -113,4 +113,6 @@ Rails.application.routes.draw do
     post :update_date, :on => :collection
   end
 
+  resources :territories
+
 end

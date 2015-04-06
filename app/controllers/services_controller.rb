@@ -99,7 +99,7 @@ class ServicesController < ApplicationController
   end
 
   def generate_select_ba
-    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id])
+    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id], params[:location_id])
     render layout: false
   end
 

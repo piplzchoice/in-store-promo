@@ -36,6 +36,11 @@
     <%= f.select :mileage, [["Yes", true], ["No", false]], {}, {class: "form-control"} %>
   </div>  
 
+  <div class="form-group">
+    <%= f.label "Territories", {class: "control-label"} %>
+    <%= f.collection_select :territory_ids, @territories, :id, :name, {}, {:multiple => true, class: "form-control"} %>
+  </div>  
+
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

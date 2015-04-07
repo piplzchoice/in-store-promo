@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
 
-  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond]
+  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show]
 
   def index
     render json: Client.calendar_services(params[:client_id])

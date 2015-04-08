@@ -1,1 +1,7 @@
 $(".table-responsive").html("<%= escape_javascript render('table') %>");
+
+if($("#checked_all_location").val() == "true") {
+  $("#selecctall-location").prop("checked", true)
+} else {
+  $("#selecctall-location").prop("checked", false)
+}

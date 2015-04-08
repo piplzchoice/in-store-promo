@@ -9,8 +9,10 @@ class LocationsController < ApplicationController
       format.html {        
         if session[:filter_history_locations].nil?
           @locations = Location.with_status_active.paginate(:page => params[:page])
+          @loc_id = Location.with_status_active.select(:id).collect(&:id).join(",")
         else
           @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+          @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
           @is_active = session[:filter_history_locations]["is_active"]
           @name = session[:filter_history_locations]["name"]
           session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"

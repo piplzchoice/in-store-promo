@@ -28,12 +28,14 @@ $(function() {
     if(this.checked) { 
         $('.locations-checkbox').each(function() {
             this.checked = true;
-            checked_location(this)
+            $("#location_ids").val($("#all_loc_ids").val());
+            $("#checked_all_location").val(true);
         });
     }else{
         $('.locations-checkbox').each(function() {
+            $("#checked_all_location").val(true);
             this.checked = false;
-            checked_location(this)
+            $("#location_ids").val("");
         });         
     }
   });
@@ -45,6 +47,8 @@ $(function() {
 
   $(".filter-location").on("click", function(){
     $("#location_ids").val("");
+    $("#checked_all_location").val("");
+    $("#selecctall-location").prop("checked", false);
     return true;
   });
 

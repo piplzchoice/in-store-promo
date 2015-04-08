@@ -13,11 +13,13 @@
         <%= select_tag("is_active", options_for_select([["Active", true], ["Inactive", false]], selected: @is_active), {class: "form-control filter-params"}) %>
       </div>
       <%= hidden_field_tag(:page, 1) %>
-      <%= hidden_field_tag(:location_ids) %>
+      <%= hidden_field_tag(:checked_all_location) %>
+      <%= hidden_field_tag(:location_ids) %>      
       <%= submit_tag("Filter", class: "btn btn-default filter-location", id: "filter-submit") %>
     <% end %>
   </div>
 </div>
+  <%= hidden_field_tag(:all_loc_ids, @loc_id) %> 
 <hr>
 
   <div class="link-new-btn">    

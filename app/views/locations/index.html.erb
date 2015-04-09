@@ -22,15 +22,15 @@
   <%= hidden_field_tag(:all_loc_ids, @loc_id) %> 
 <hr>
 
-  <div class="link-new-btn">    
-    <%= link_to("Export List", "#", {id: "export-location" ,class: "btn btn-primary"}) %>
-  </div>  
-  <br /><br />
+<div class="link-new-btn">    
+  <%= link_to("Export List", "#", {id: "export-location" ,class: "btn btn-primary"}) %>
+</div>  
+<br /><br />
 
-  <div class="table-responsive">
-    <%= render "table" %>
-  </div>
+<div class="table-responsive">
+  <%= render "table" %>
+</div>
 
 <%= form_tag(export_data_locations_path, method: :post, id: "export-data-location") do %>
-  <%= hidden_field_tag(:loc_ids) %>
+<%= hidden_field_tag(:loc_ids) %>
 <% end %>

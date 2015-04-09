@@ -23,6 +23,7 @@ class Location < ActiveRecord::Base
   belongs_to :user
   belongs_to :location
   belongs_to :territory
+  has_and_belongs_to_many :brand_ambassadors
 
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }

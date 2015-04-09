@@ -45,8 +45,18 @@ $(function() {
     $("#export-data-location").submit();
   })
 
+  $("#save-ba-location").on("click", function(){
+    $("#location_ids_save").val($("#location_ids").val());
+    $("#create-ba-location").submit();
+  })
+
   $(".filter-location").on("click", function(){
     $("#location_ids").val("");
+
+    if($("#original_location_ids").length === 1) {
+      $("#location_ids").val($("#original_location_ids").val());
+    }
+    
     $("#checked_all_location").val("");
     $("#selecctall-location").prop("checked", false);
     return true;

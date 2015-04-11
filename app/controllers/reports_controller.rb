@@ -288,7 +288,7 @@ class ReportsController < ApplicationController
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
     else
-      send_file(@report.file_pdf.path, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
+      send_file(@report.file_pdf.url, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
     end
     
   end

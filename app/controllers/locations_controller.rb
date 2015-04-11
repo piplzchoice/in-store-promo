@@ -22,6 +22,7 @@ class LocationsController < ApplicationController
         @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
         session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
         @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+        @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
       }      
     end    
   end

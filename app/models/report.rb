@@ -61,6 +61,7 @@
 #  is_active               :boolean          default(TRUE)
 #  travel_expense          :decimal(8, 2)
 #  client_products         :text
+#  file_pdf                :string(255)
 #
 
 require 'carrierwave/orm/activerecord'
@@ -74,7 +75,7 @@ class Report < ActiveRecord::Base
   mount_uploader :expense_two_img, ImageUploader
   mount_uploader :table_image_one_img, ImageUploader
   mount_uploader :table_image_two_img, ImageUploader
-
+  mount_uploader :file_pdf, ImageUploader
   
   # validates :est_customer_touched, presence: true
 

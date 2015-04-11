@@ -61,6 +61,7 @@
 #  is_active               :boolean          default(TRUE)
 #  travel_expense          :decimal(8, 2)
 #  client_products         :text
+#  file_pdf                :string(255)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

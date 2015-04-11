@@ -193,6 +193,15 @@ class ReportsController < ApplicationController
             end            
           end          
 
+          file = "report-#{Time.now.to_i}.pdf"
+
+          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+          kit = PDFKit.new(html)
+          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+          @report.save
+
           redirect_to report_path(@report), notice: "Report created"
         else
           render :new
@@ -241,6 +250,15 @@ class ReportsController < ApplicationController
             end      
           end          
 
+          file = "report-#{Time.now.to_i}.pdf"
+
+          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+          kit = PDFKit.new(html)
+          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+          @report.save
+
           redirect_to report_path(@report), notice: "Report updated"
         else
           render :edit
@@ -261,14 +279,18 @@ class ReportsController < ApplicationController
 
   def download_pdf
     file = "report-#{Time.now.to_i}.pdf"
-
     @report = Report.find(params[:id])
     @service = @report.service
 
-    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-    kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
+    if @report.nil?
+      html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+      send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
+    else
+      send_file(@report.file_pdf.path, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
+    end
+    
   end
 
   def print_pdf

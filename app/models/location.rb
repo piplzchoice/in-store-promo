@@ -54,7 +54,7 @@ class Location < ActiveRecord::Base
   end  
 
   def export_data
-    [
+    data_field = [
       name,
       address,
       city,
@@ -65,5 +65,12 @@ class Location < ActiveRecord::Base
       email,
       notes
     ]    
+
+    brand_ambassadors.each do |ba|
+      data_field << ba.name
+    end
+
+    return data_field
+
   end
 end

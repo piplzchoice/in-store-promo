@@ -96,10 +96,9 @@ class LocationsController < ApplicationController
   def export_data
     unless params[:loc_ids] == ""
       @locations = Location.find(params[:loc_ids].split(","))
-
-      book = Spreadsheet::Workbook.new
-      sheet1 = book.create_worksheet :name => 'Data'
-      sheet1.row(0).replace [
+      total_ba = Location.all.collect{|x| x.brand_ambassadors.size}.max
+      
+      fields = [
         "Location Name",
         "Address",
         "City",
@@ -110,6 +109,16 @@ class LocationsController < ApplicationController
         "Email",
         "Notes"
       ]
+
+      unless total_ba.blank?
+        total_ba.times.each do |itr|
+          fields << "BA #{itr + 1}"
+        end
+      end
+
+      book = Spreadsheet::Workbook.new
+      sheet1 = book.create_worksheet :name => 'Data'
+      sheet1.row(0).replace fields
 
       @locations.each_with_index do |location, i|
         sheet1.row(i + 1).replace location.export_data

@@ -58,7 +58,6 @@ class Location < ActiveRecord::Base
       name,
       address,
       city,
-      state,
       zipcode,
       contact,
       phone,

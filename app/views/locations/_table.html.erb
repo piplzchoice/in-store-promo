@@ -9,6 +9,7 @@
         </th>
         <th>ID</th>
         <th>Name</th>
+        <th>Zipcode</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -22,7 +23,7 @@
         </td>      
         <td><%= location.id %></td>
         <td><%= location.name %></td>
-        <td><%= location.territory.nil? ? "-" : location.territory.name %></td>
+        <td><%= location.zipcode %></td>
         <td>
           <% if location.is_active %>
             <%= link_to "Display", location_path(location) %> || 

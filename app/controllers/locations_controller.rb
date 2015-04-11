@@ -103,7 +103,6 @@ class LocationsController < ApplicationController
         "Location Name",
         "Address",
         "City",
-        "State",
         "Zipcode",
         "Contact Name",
         "Phone",

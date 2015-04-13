@@ -9,7 +9,7 @@ class ServicesController < ApplicationController
 
   def new
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.build
     respond_to do |format|
       format.html
@@ -35,6 +35,7 @@ class ServicesController < ApplicationController
 
   def edit
     @client = Client.find(params[:client_id])
+    @clients = Client.all.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     respond_to do |format|
       format.html
@@ -69,7 +70,9 @@ class ServicesController < ApplicationController
 
   def show
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])
+    @service = @client.services.where(id: params[:id]).first
+    @service = @client.co_op_services.where(id: params[:id]).first if @service.nil?
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
   end
 
   def update_status_after_reported
@@ -147,7 +150,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status, :co_op_client_id)
   end
 
   def check_client_status

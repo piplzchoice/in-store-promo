@@ -33,6 +33,15 @@
 <label>Client :</label>
 <p><%= @client.company_name %></p>
 
+<% if @service.is_co_op? %>
+  <label>Co-Op Client :</label>
+  <% if @service.co_op_client.id == @client.id %>
+    <p><%= @service.client.company_name %></p>
+  <% else %>
+    <p><%= @service.co_op_client.company_name %></p>
+  <% end %>
+<% end %>
+
 
 <label>Location</label>
 <p><%= @service.location.name %></p>

@@ -476,4 +476,8 @@ class Service < ActiveRecord::Base
     
   end
 
+  def is_co_op?
+    !co_op_client.nil?
+  end
+
 end

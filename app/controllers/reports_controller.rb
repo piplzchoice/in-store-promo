@@ -282,14 +282,14 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
     @service = @report.service
 
-    if @report.nil?
+    # if @report.nil?
       html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
       kit = PDFKit.new(html)
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
-    else
-      send_file(@report.file_pdf.path, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
-    end
+    # else
+    #   send_file(@report.file_pdf.path, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
+    # end
     
   end
 
@@ -416,7 +416,8 @@ class ReportsController < ApplicationController
       :product_five_beginning, :product_five_end, :product_five_sold, 
       :product_six_sample, :product_six_price, :product_six, 
       :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense, 
-      :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
+      :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id],
+      :client_coop_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
   end    
 
   private

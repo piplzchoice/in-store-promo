@@ -1,0 +1,23 @@
+<% @report.client_coop_products.each_with_index do |product, i| %>
+  <tr>
+    <td>Product <%= i + 1 %></td>
+    <td id="product-<%= number_to_words(i + 1) %>" data-id="<%= number_to_words(i + 1) %>">            
+      <%= product["name"] %>  
+    </td>
+    <td id="product-<%= number_to_words(i + 1) %>-price" data-id="<%= number_to_words(i + 1) %>" style="text-align: right; width: 10%;">
+      <%= product["price"] %>
+    </td>              
+    <td id="product-<%= number_to_words(i + 1) %>-sample" data-id="<%= number_to_words(i + 1) %>" style="text-align: right; width: 10%;" class="product-sample">
+      <%= product["sample"] %>
+    </td>                            
+    <td id="product-<%= number_to_words(i + 1) %>-beginning" data-id="<%= number_to_words(i + 1) %>" style="text-align: right; width: 10%;" class="product-beginning">
+      <%= product["beginning"] %>
+    </td>
+    <td id="product-<%= number_to_words(i + 1) %>-end" data-id="<%= number_to_words(i + 1) %>" style="text-align: right; width: 10%;" class="product-end">
+      <%= product["end"] %>
+    </td>
+    <td id="product-<%= number_to_words(i + 1) %>-sold" data-id="<%= number_to_words(i + 1) %>" style="text-align: right; width: 10%;" class="product-sold">
+      <%= product["sold"] %>
+    </td>
+  </tr>
+<% end %>

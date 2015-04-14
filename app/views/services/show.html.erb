@@ -36,9 +36,9 @@
 <% if @service.is_co_op? %>
   <label>Co-Op Client :</label>
   <% if @service.co_op_client.id == @client.id %>
-    <p><%= @service.client.company_name %></p>
+    <p><%= link_to @service.client.company_name, client_service_path(client_id: @service.client.id, id: @service.id)  %></p>
   <% else %>
-    <p><%= @service.co_op_client.company_name %></p>
+    <p><%= link_to @service.co_op_client.company_name, client_service_path(client_id: @service.co_op_client.id, id: @service.id)  %></p>
   <% end %>
 <% end %>
 

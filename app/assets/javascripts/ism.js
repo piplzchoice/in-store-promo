@@ -587,6 +587,19 @@ $(document).on("click", "#add-product-report", function(){
   $("#insert-add-product-report-modal").modal("show");
 });
 
+$(document).on("click", "#add-product-coop-report", function(){    
+
+  $.each($(".product-coop-lists-modal"), function(i, v){ 
+    $(v).show();
+  });
+  
+  $.each($(".row-coop-products"), function(i, v) {
+    $("#list-product-coop-" + $(v).data("id")).hide();
+  });    
+
+  $("#insert-add-product-coop-report-modal").modal("show");
+});
+
 $(document).on("click", "#submit-list-products", function(){
   $(".checkbox-products:checked").each(function(i, v){ 
     elm =  "" +
@@ -631,6 +644,82 @@ $(document).on("click", "#submit-list-products", function(){
   });
 
   $("#insert-add-product-report-modal").modal("hide");
+});
+
+$(document).on("click", ".remove-coop-product", function(){
+  $("#row-product-" + $(this).data("id")).remove();
+
+  if($(".row-coop-products").length == 0) {
+    alert("Please add products minimum 1");
+    $("#submit-report-data").hide();
+    $("#new_report").attr("action", "/");
+    $("#new_report").attr("method", "get");
+  } else {
+    $.each($(".row-coop-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });
+  }
+
+});
+
+$(document).on("click", "#add-product-coop-report", function(){    
+
+  $.each($(".product-coop-lists-modal"), function(i, v){ 
+    $(v).show();
+  });
+  
+  $.each($(".row-coop-products"), function(i, v) {
+    $("#list-product-coop-" + $(v).data("id")).hide();
+  });    
+
+  $("#insert-add-product-coop-report-modal").modal("show");
+});
+
+
+$(document).on("click", "#submit-list-coop-products", function(){
+  $(".checkbox-coop-products:checked").each(function(i, v){ 
+    elm =  "" +
+    "<tr class=\"row-coop-products\" id=\"row-product-" + $(v).data("id") + "\" data-id=\"" + $(v).data("id") + "\">" +
+      "<td>Product <span class=\"counter-product\">x</span></td>" +
+      "<td class=\"product-info-id\" data-id=\"" + $(v).data("id") + "\">" +
+        "<div class=\"dropdown\">" +
+          "<button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" " + 
+            "data-toggle=\"dropdown\" aria-expanded=\"true\">" + $(v).data("name") + " <span class=\"caret\"></span></button>" +
+          "<ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">" +
+            "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" data-id=\"" + $(v).data("id") + "\"" + 
+              "class=\"remove-coop-product\" href=\"#add-product-coop-report\">Remove</a></li>" +
+          "</ul>" +
+          "<input id=\"report_client_products_name\" name=\"report[client_coop_products][]name\" type=\"hidden\" value=\"" + $(v).data("name") + "\">" +
+        "</div>" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-price\" data-id=\"" + $(v).data("id") + "\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_price\" name=\"report[client_coop_products][]price\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sample\" data-id=\"" + $(v).data("id") + "\" class=\"product-sample\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sample\" name=\"report[client_coop_products][]sample\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-beginning\" data-id=\"" + $(v).data("id") + "\" class=\"product-beginning\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_beginning\" name=\"report[client_coop_products][]beginning\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-end\" data-id=\"" + $(v).data("id") + "\" class=\"product-end\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_end\" name=\"report[client_coop_products][]end\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sold\" data-id=\"" + $(v).data("id") + "\" class=\"product-sold\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sold\" name=\"report[client_coop_products][]sold\" type=\"text\">" +
+      "</td>" +
+    "</tr>";          
+
+    $("#row-coop-products").append(elm)
+    $.each($(".row-coop-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });      
+
+    $("#submit-report-data").show();
+    $("#new_report").attr("action", "/reports");
+    $("#new_report").attr("method", "post");    
+  });
+
+  $("#insert-add-product-coop-report-modal").modal("hide");
 });
 
 $(document).on("keyup", ".product-beginning", function(){  

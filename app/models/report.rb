@@ -62,6 +62,7 @@
 #  travel_expense          :decimal(8, 2)
 #  client_products         :text
 #  file_pdf                :string(255)
+#  client_coop_products    :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -80,6 +81,7 @@ class Report < ActiveRecord::Base
   # validates :est_customer_touched, presence: true
 
   serialize :client_products, JSON
+  serialize :client_coop_products, JSON
 
   def self.new_data(report_params)
     report = self.new(report_params)
@@ -89,6 +91,13 @@ class Report < ActiveRecord::Base
     end
 
     report.client_products = report.client_products.compact
+
+    report.client_coop_products = report.client_coop_products.collect do |product|
+      arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
+      product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
+    end
+
+    report.client_coop_products = report.client_coop_products.compact    
     return report
   end
 

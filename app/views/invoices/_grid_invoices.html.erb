@@ -26,23 +26,11 @@
         <td><%= service.location.name %></td> 
         <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
         
-        <td>
-          <% if service.is_co_op? && !service.parent.nil? %>
-            <%= service.parent.report.nil? ? "-" : number_to_currency(service.parent.report.expense_one) %>
-          <% else %>
-            <%= service.report.nil? ? "-" : number_to_currency(service.report.expense_one) %>
-          <% end %>
-        </td>
+        <td><%= service.report_service.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
 
-        <td><%= service.brand_ambassador.mileage.nil? ? number_to_currency(service.report.travel_expense) : "-" %></td>
+        <td><%= service.brand_ambassador.mileage.nil? ? number_to_currency(service.report_service.travel_expense) : "-" %></td>
         
-        <td>
-          <% if service.is_co_op? && !service.parent.nil? %>
-            <%= link_to("Show Report", report_path(service.parent.report)) unless service.parent.report.nil? %>
-          <% else %>
-          <%= link_to("Show Report", report_path(service.report)) unless service.report.nil? %>
-          <% end %>
-        </td> 
+        <td><%= link_to("Show Report", report_path(service.report_service)) unless service.report_service.nil? %></td> 
 
       </tr>
       <% end %>

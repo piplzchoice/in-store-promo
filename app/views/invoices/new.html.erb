@@ -44,11 +44,11 @@
       <% @services.each_with_index do |service, i|  %>
         <tr>
           <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-          <td><%= link_to(service.location.name, report_url(service.report)) %></td> 
+          <td><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
           <td><%= service.start_at.strftime("%I:%M %p") %></td>        
           <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-          <td><%= number_to_currency service.report.expense_one %></td>
-          <td><%= service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-" %></td>
+          <td><%= number_to_currency service.report_service.expense_one %></td>
+          <td><%= service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-" %></td>
           <td><%= number_to_currency(service.grand_total) %></td>
         </tr>
       <% end %>
@@ -58,8 +58,8 @@
         <td>&nbsp;</td>
         <td><strong>Sub Total</strong></td>
         <td><%= number_to_currency @services.collect{|x| x.client.rate.to_f}.sum %></td>
-        <td><%= number_to_currency @services.collect{|x| x.report.expense_one.to_f}.sum %></td>
-        <td><%= number_to_currency @services.collect{|x| x.report.travel_expense.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report_service.expense_one.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report_service.travel_expense.to_f}.sum %></td>
         <td>&nbsp;</td>
       </tr>
 
@@ -98,8 +98,8 @@
     </tbody>
   </table>
   <%= hidden_field_tag("rate_total_all", @services.collect{|x| x.client.rate.to_f}.sum) %>
-  <%= hidden_field_tag("expsense_total_all", @services.collect{|x| x.report.expense_one.to_f}.sum) %>
-  <%= hidden_field_tag("travel_total_all", @services.collect{|x| x.report.travel_expense.to_f}.sum) %>
+  <%= hidden_field_tag("expsense_total_all", @services.collect{|x| x.report_service.expense_one.to_f}.sum) %>
+  <%= hidden_field_tag("travel_total_all", @services.collect{|x| x.report_service.travel_expense.to_f}.sum) %>
   <%= hidden_field_tag("grand_total", @services.collect{|x| x.grand_total}.sum) %>
   <%= hidden_field_tag("grand_total_all", @services.collect{|x| x.grand_total}.sum) %>
   <%= hidden_field_tag("service_ids", @service_ids.join(",")) %>    

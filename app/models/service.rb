@@ -246,6 +246,14 @@ class Service < ActiveRecord::Base
     }.compact.flatten
   end
 
+  def report_service
+    if !parent.nil?
+      parent.report
+    else
+      report
+    end
+  end  
+
   def title_calendar
     # return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
     return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{self.start_date_time}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"

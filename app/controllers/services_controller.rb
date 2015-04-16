@@ -85,7 +85,8 @@ class ServicesController < ApplicationController
 
   def destroy
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])
+    # @service = @client.services.find(params[:id])
+    @service = Service.find(params[:id])
     if @service.cancelled
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
       redirect_to client_path(@client), {notice: "Service Cancelled"}

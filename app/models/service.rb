@@ -368,7 +368,7 @@ class Service < ActiveRecord::Base
   end
 
   def total_ba_paid
-    ba_rate + (report.expense_one.nil? ? 0 : report.expense_one) + (brand_ambassador.mileage ? (report.travel_expense.nil? ? 0 : report.travel_expense) : 0)
+    ba_rate + (report_service.expense_one.nil? ? 0 : report_service.expense_one) + (brand_ambassador.mileage ? (report_service.travel_expense.nil? ? 0 : report_service.travel_expense) : 0)
   end  
 
   def can_modify?

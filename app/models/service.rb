@@ -20,6 +20,7 @@
 #  alert_sent_date       :datetime
 #  alert_sent_admin      :boolean          default(FALSE)
 #  alert_sent_admin_date :datetime
+#  parent_id             :integer
 #
 
 # note for field "status"
@@ -41,6 +42,9 @@ class Service < ActiveRecord::Base
   belongs_to :brand_ambassador
   belongs_to :location
   has_one :report
+
+  has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
+  belongs_to :parent, :class_name => "Service", foreign_key: 'parent_id'
 
   belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
@@ -135,8 +139,9 @@ class Service < ActiveRecord::Base
     return 2.round
   end
 
-  def self.build_data(service_params, co_op_price_box)
-    service_params[:co_op_client_id] = nil unless co_op_price_box
+  def self.build_data(service_params)
+    # service_params[:co_op_client_id] = nil unless co_op_price_box
+
     if service_params[:start_at].blank? || service_params[:end_at].blank?
       self.new(service_params)
     else
@@ -476,8 +481,66 @@ class Service < ActiveRecord::Base
     
   end
 
+  def create_coops(co_op_client_id)
+    coop = self.co_op_services.build
+    
+    coop.location = self.location
+    coop.brand_ambassador_id = self.brand_ambassador_id
+    coop.start_at = self.start_at
+    coop.end_at =  self.end_at
+    coop.details = self.details
+    coop.status = self.status
+    coop.is_active = self.is_active
+    coop.client_id = co_op_client_id
+
+    coop.save!
+  end
+
   def is_co_op?
-    !co_op_client.nil?
+    !parent.nil? || !co_op_services.empty?
+  end
+
+  def update_status_to_confirmed(token)
+    self.update_attributes({status: Service.status_confirmed, token: token})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_confirmed, token: token})
+      end
+    end
+  end
+
+  def update_status_to_rejected(token)
+    self.update_attributes({status: Service.status_rejected, token: token})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_rejected, token: token})
+      end
+    end    
+  end
+
+  def update_status_to_reported
+    self.update_attributes({status: Service.status_reported})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_reported})
+      end
+    end    
+  end
+
+
+  def update_status_to_conducted
+    self.update_attributes({status: Service.status_conducted})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_conducted})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_conducted})
+        end
+      end
+    end
+    
   end
 
 end

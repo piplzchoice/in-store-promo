@@ -71,21 +71,6 @@ class Client < ActiveRecord::Base
       } if x.is_ba_active?
     }.uniq.compact
 
-    unless client.co_op_services.empty?
-      co_services =  client.co_op_services.collect{|x|       
-        {
-          title: x.title_calendar,
-          start: x.start_at.iso8601,
-          end: x.end_at.iso8601,
-          color: x.get_color,
-          url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
-        } if x.is_ba_active?
-      }.uniq.compact
-      co_services.each do |x|
-        calendars << x
-      end
-    end
-
     return calendars.uniq.compact
   end  
 

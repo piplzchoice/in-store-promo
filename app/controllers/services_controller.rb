@@ -19,10 +19,11 @@ class ServicesController < ApplicationController
   def create
     @client = Client.find(params[:client_id])
     @clients = Client.all.where.not(id: params[:client_id])
-    @service = @client.services.build_data(service_params, params["co-op-price-box"])
+    @service = @client.services.build_data(service_params)
     respond_to do |format|
       format.html do
         if @service.save
+          @service.create_coops(params["co_op_client_id"]) if params["co-op-price-box"]
           # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
@@ -112,7 +113,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: Service.status_confirmed, token: Devise.friendly_token})
+          @service.update_status_to_confirmed(Devise.friendly_token)
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
@@ -127,7 +128,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: Service.status_rejected, token: Devise.friendly_token})
+          @service.update_status_to_rejected(Devise.friendly_token)
         end
       end
     end
@@ -141,7 +142,7 @@ class ServicesController < ApplicationController
     unless @client.nil?
       @service = @client.services.find(params[:id])
       unless @service.nil?
-        @service.update_attributes({status: Service.status_conducted})
+        @service.update_status_to_conducted
         msg = "Service set at completed"
       end
     end
@@ -150,7 +151,7 @@ class ServicesController < ApplicationController
   end
 
   def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status, :co_op_client_id)
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
   end
 
   def check_client_status

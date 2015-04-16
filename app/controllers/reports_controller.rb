@@ -164,9 +164,15 @@ class ReportsController < ApplicationController
     @service = @report.service
   end
 
-  def new
+  def new    
     @service = Service.find(params[:service_id])
-    @report = @service.build_report
+
+    if @service.is_co_op? && !@service.parent.nil?
+      redirect_to new_report_url(service_id: @service.parent.id)
+    else
+      @report = @service.build_report
+    end    
+
   end
 
   def create
@@ -175,7 +181,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         if @report.save
-          @service.update_attribute(:status, Service.status_reported)
+          @service.update_status_to_reported          
           
           unless params["image-table"].nil?
             params["image-table"].each do |id_table|
@@ -212,7 +218,11 @@ class ReportsController < ApplicationController
 
   def edit
     @report = Report.find(params[:id])
-    @service = @report.service    
+    @service = @report.service
+    
+    if @service.is_co_op? && !@service.parent.nil?
+      redirect_to edit_report_url(@report)
+    end            
   end
 
   def update

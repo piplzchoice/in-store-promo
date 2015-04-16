@@ -11,20 +11,36 @@
     <% unless @service.is_cancelled? %>
       <% if @service.is_reported? %>
         <div class="link-new-btn">
-          <%= form_tag(update_status_after_reported_client_service_path(client_id: @client.id, id: @service.id), method: :patch) do -%>
-            <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
-            <%= submit_tag 'Update' %>
+          <% if @service.is_co_op? && !@service.parent.nil? %>
+            <%= form_tag(update_status_after_reported_client_service_path(client_id: @service.parent.client.id, id: @service.parent.id), method: :patch) do -%>
+              <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
+              <%= submit_tag 'Update' %>
+            <% end -%>
+          <% else %>
+            <%= form_tag(update_status_after_reported_client_service_path(client_id: @client.id, id: @service.id), method: :patch) do -%>
+              <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
+              <%= submit_tag 'Update' %>
+            <% end -%>          
           <% end -%>
         </div>
       <% end %>
     <% end %>
   <% end %>
   <% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
-    <div class="link-new-btn">
-        <%= link_to("Create Report", new_report_path(service_id: @service.id), 
-          {class: "btn btn-success", role: "button"}) %>         
-    </div>  
-  <% end %>         
+
+    <% if @service.is_co_op? && !@service.parent.nil? %>
+      <div class="link-new-btn">
+          <%= link_to("Create Report", new_report_path(service_id: @service.parent.id), 
+            {class: "btn btn-success", role: "button"}) %>         
+      </div>      
+    <% else %>
+      <div class="link-new-btn">
+          <%= link_to("Create Report", new_report_path(service_id: @service.id), 
+            {class: "btn btn-success", role: "button"}) %>         
+      </div>  
+    <% end %>
+
+  <% end %>
 <% end %>     
 
 <label>Status :</label>
@@ -35,10 +51,16 @@
 
 <% if @service.is_co_op? %>
   <label>Co-Op Client :</label>
-  <% if @service.co_op_client.id == @client.id %>
-    <p><%= link_to @service.client.company_name, client_service_path(client_id: @service.client.id, id: @service.id)  %></p>
+  <% if @service.co_op_services.empty? %>
+    <p>
+      <%= link_to @service.parent.client.company_name, client_service_path(client_id: @service.parent.client.id, id: @service.parent.id)  %>
+    </p>
   <% else %>
-    <p><%= link_to @service.co_op_client.company_name, client_service_path(client_id: @service.co_op_client.id, id: @service.id)  %></p>
+    <% @service.co_op_services.each do |service| %>
+      <p>
+        <%= link_to service.company_name, client_service_path(client_id: service.client.id, id: service.id)  %>
+      </p>    
+    <% end %>
   <% end %>
 <% end %>
 
@@ -62,11 +84,22 @@
   <div class="link-new-btn">
     <%= link_to("Back", (params[:report].nil? ? client_path(@client) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
-    <% if @service.can_modify?  || current_user.has_role?(:admin) %>
-      <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
+    <% if @service.is_co_op? && !@service.parent.nil? %>
+
+      <% if @service.parent.can_modify?  || current_user.has_role?(:admin) %>
+        <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-default", role: "button"}) %>
+      <% end %>
+      
+      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>              
+    <% else %>
+
+      <% if @service.can_modify?  || current_user.has_role?(:admin) %>
+        <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
+      <% end %>
+      
+      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
+
     <% end %>
-    
-    <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
 
   </div>
 <% end %>     

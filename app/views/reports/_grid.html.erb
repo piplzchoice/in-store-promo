@@ -20,23 +20,52 @@
       <td><%= service.company_name %></td> 
       <td><%= service.location.nil? ? "" : service.location.name %></td>
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <% unless service.report.nil? %>
-        <td><%= number_to_currency service.report.expense_one %></td>
-        <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+
+      <% if service.is_co_op? && !service.parent.nil? %>
+        <% unless service.parent.report.nil? %>
+          <td><%= number_to_currency service.parent.report.expense_one %></td>
+          <td><%= (service.brand_ambassador.mileage ? (service.parent.report.travel_expense.nil? ? "-" : number_to_currency(service.parent.report.travel_expense)) : "-") %></td>
+        <% else %>
+          <td>-</td>
+          <td>-</td>      
+        <% end %>
       <% else %>
-        <td>-</td>
-        <td>-</td>      
+        <% unless service.report.nil? %>
+          <td><%= number_to_currency service.report.expense_one %></td>
+          <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+        <% else %>
+          <td>-</td>
+          <td>-</td>      
+        <% end %>      
       <% end %>
+
       <td><%= service.current_status %></td>
       <td>
-      <% if service.can_create_report? || service.report.nil? %>
-        <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
-      <% else %>
-        <%= link_to("Show Report", report_path(service.report)) %> ||
-        <%= link_to("Edit Report", edit_report_path(service.report)) %>   
-        <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-          || <%= link_to("Delete Report", report_path(service.report), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+
+      <% if service.is_co_op? && !service.parent.nil? %>
+
+        <% if service.parent.can_create_report? || service.parent.report.nil? %>
+          <%= link_to("Create Report", new_report_path(service_id: service.parent.id)) %>
+        <% else %>
+          <%= link_to("Show Report", report_path(service.parent.report)) %> ||
+          <%= link_to("Edit Report", edit_report_path(service.parent.report)) %>   
+          <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+            || <%= link_to("Delete Report", report_path(service.parent.report), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+          <% end %>
         <% end %>
+
+      <% else %>
+
+        <% if service.can_create_report? || service.report.nil? %>
+          <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
+        <% else %>
+          <%= link_to("Show Report", report_path(service.report)) %> ||
+          <%= link_to("Edit Report", edit_report_path(service.report)) %>   
+          <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+            || <%= link_to("Delete Report", report_path(service.report), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+          <% end %>
+        <% end %>
+
       <% end %>
       </td> 
     </tr>

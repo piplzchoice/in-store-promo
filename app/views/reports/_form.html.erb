@@ -100,7 +100,7 @@
         <div class="row report">
           <div id="report-client" class="report-left">
             <span class="report-title">Co-op Client </span>: 
-            <span class="report-option-details"><%= @service.co_op_client.company_name %></span>
+            <span class="report-option-details"><%= @service.co_op_services.first.client.company_name %></span>
           </div>
         </div>      
 
@@ -108,7 +108,7 @@
           <%= link_to("Add Product", "#add-product-coop-report", {class: "btn btn-primary", role: "button", id: "add-product-coop-report"}) %>
         </div>  
         <div class="row report">
-          <div id="report-coop-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.co_op_client.products.size %>">
+          <div id="report-coop-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.co_op_services.first.client.products.size %>">
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -122,7 +122,7 @@
                 </tr>
               </thead>
               <tbody id="row-coop-products">  
-                <%= render "client_coop_products", f: f, client: @service.co_op_client %>
+                <%= render "client_coop_products", f: f, client: @service.co_op_services.first.client %>
               </tbody>
             </table>
           </div>
@@ -281,7 +281,7 @@
         </div>
         <div class="modal-body">
           <% unless @service.client.products.blank? %>
-            <% @service.co_op_client.products.each do |product| %>
+            <% @service.co_op_services.first.client.products.each do |product| %>
               <span id="list-product-coop-<%= product.id %>" style="display: block;" class='product-coop-lists-modal' >
                <input class="checkbox-coop-products" type="checkbox" data-id='<%= product.id %>' data-name='<%= product.name %>'> <%= product.name %>
               </span>

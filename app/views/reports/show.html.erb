@@ -106,7 +106,7 @@
     <div class="row report">
       <div id="report-client" class="report-left">
         <span class="report-title">Co-op Client </span>: 
-        <span class="report-option-details"><%= @service.co_op_client.company_name %></span>
+        <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
       </div>
     </div>      
 
@@ -125,7 +125,7 @@
             </tr>
           </thead>
           <tbody>  
-            <%= render "client_coop_products" %>
+            <%= render "client_coop_products_show" %>
           </tbody>
         </table>
       </div>

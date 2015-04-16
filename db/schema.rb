@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150325151015) do
+ActiveRecord::Schema.define(version: 20150416013447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,11 @@ ActiveRecord::Schema.define(version: 20150325151015) do
     t.boolean  "mileage"
     t.decimal  "rate",       precision: 8, scale: 2
     t.boolean  "is_active",                          default: true
+  end
+
+  create_table "brand_ambassadors_locations", force: true do |t|
+    t.integer "brand_ambassador_id"
+    t.integer "location_id"
   end
 
   create_table "brand_ambassadors_territories", force: true do |t|
@@ -234,6 +239,8 @@ ActiveRecord::Schema.define(version: 20150325151015) do
     t.boolean  "is_active",                                       default: true
     t.decimal  "travel_expense",          precision: 8, scale: 2
     t.text     "client_products"
+    t.string   "file_pdf"
+    t.text     "client_coop_products"
   end
 
   create_table "roles", force: true do |t|
@@ -265,6 +272,7 @@ ActiveRecord::Schema.define(version: 20150325151015) do
     t.datetime "alert_sent_date"
     t.boolean  "alert_sent_admin",      default: false
     t.datetime "alert_sent_admin_date"
+    t.integer  "parent_id"
   end
 
   create_table "statements", force: true do |t|

@@ -20,6 +20,7 @@
 #  alert_sent_date       :datetime
 #  alert_sent_admin      :boolean          default(FALSE)
 #  alert_sent_admin_date :datetime
+#  parent_id             :integer
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

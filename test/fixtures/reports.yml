@@ -62,6 +62,7 @@
 #  travel_expense          :decimal(8, 2)
 #  client_products         :text
 #  file_pdf                :string(255)
+#  client_coop_products    :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

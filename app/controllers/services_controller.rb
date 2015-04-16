@@ -59,7 +59,7 @@ class ServicesController < ApplicationController
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-              @service.update_attribute(:status, Service.status_scheduled)
+              @service.update_status_scheduled
             end
             redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
           end
@@ -79,7 +79,7 @@ class ServicesController < ApplicationController
   def update_status_after_reported
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
-    @service.update_attributes({status: params[:service_status]})
+    @service.update_status_after_reported(params[:service_status])    
     redirect_to client_service_path(client_id: @client.id, id: @service.id)
   end
 

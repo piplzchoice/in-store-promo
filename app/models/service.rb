@@ -350,7 +350,17 @@ class Service < ActiveRecord::Base
   end
 
   def cancelled
-    update_attribute(:status, Service.status_cancelled)
+    self.update_attributes({status: Service.status_cancelled})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_cancelled})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_cancelled})
+        end
+      end
+    end    
   end
 
   def ba_rate
@@ -547,7 +557,35 @@ class Service < ActiveRecord::Base
           service_coop.update_attributes({status: Service.status_conducted})
         end
       end
-    end
+    end    
+  end
+
+  def update_status_after_reported(status)
+    self.update_attributes({status: status})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: status})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: status})
+        end
+      end
+    end        
+  end
+
+  def update_status_scheduled    
+    self.update_attributes({status: Service.status_scheduled})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_scheduled})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_scheduled})
+        end
+      end
+    end        
     
   end
 

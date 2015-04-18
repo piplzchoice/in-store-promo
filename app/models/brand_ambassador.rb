@@ -57,15 +57,15 @@ class BrandAmbassador < ActiveRecord::Base
     ba_data = nil
     location = Location.find(location_id)
 
-    # if location.brand_ambassadors.empty?
+    if location.brand_ambassadors.empty?
       ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
-    # else
-      # ba_data = BrandAmbassador.joins(:available_dates).where(
-      #   is_active: true, 
-      #   id: location.brand_ambassadors.collect(&:id), 
-      #   available_dates: {availablty: time_range}
-      # )
-    # end
+    else
+      ba_data = BrandAmbassador.joins(:available_dates).where(
+        is_active: true, 
+        id: location.brand_ambassadors.collect(&:id), 
+        available_dates: {availablty: time_range}
+      )
+    end
     
     
     

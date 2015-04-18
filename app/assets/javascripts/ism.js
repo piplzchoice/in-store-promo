@@ -340,6 +340,12 @@ $(function() {
     $("#sort").val("start_at");
   });
 
+  $(".filter-params-invoice").on("change", function(){
+    $("#page").val(1);
+    $("#direction").val("desc");
+    $("#sort").val("issue_date");
+  });
+
   $(".tooltip-legend").tooltip();
   checkbox_avalaible_click();
   generate_select_ba

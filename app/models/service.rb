@@ -503,7 +503,8 @@ class Service < ActiveRecord::Base
     coop = self.co_op_services.build
     
     coop.location = self.location
-    coop.brand_ambassador_id = self.brand_ambassador_id
+    # coop.brand_ambassador_id = self.brand_ambassador_id
+    coop.brand_ambassador = BrandAmbassador.find_by_name("Admin")
     coop.start_at = self.start_at
     coop.end_at =  self.end_at
     coop.details = self.details

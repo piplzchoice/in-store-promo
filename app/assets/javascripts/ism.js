@@ -729,12 +729,20 @@ $(document).on("click", "#submit-list-coop-products", function(){
 });
 
 $(document).on("keyup", ".product-beginning", function(){  
-  prod_end = 0;
-
-  if($("#report_product_" + $(this).data("id") +"_end").val() !== "") {
-    prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
   }
 
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
   prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
   calculate = prod_beginning - (prod_end + prod_sample);
@@ -745,23 +753,40 @@ $(document).on("keyup", ".product-beginning", function(){
 $(document).on("keyup", ".product-end", function(){  
   prod_beginning = 0;
 
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
   }
 
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+
   calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
 });
 
 $(document).on("keyup", ".product-sample", function(){  
-  prod_beginning = 0;
-
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
   }
 
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+  
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
   calculate = prod_beginning - (prod_end + prod_sample);

@@ -260,6 +260,12 @@ class ReportsController < ApplicationController
             end      
           end          
 
+          @report.remove_file_pdf
+          @report.remove_file_pdf = true
+
+          @report.save
+          @report.remove_file_pdf = false
+
           file = "report-#{Time.now.to_i}.pdf"
 
           html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
@@ -292,14 +298,20 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
     @service = @report.service
 
-    # if @report.nil?
+    if @report.file_pdf.blank?
       html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
       kit = PDFKit.new(html)
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+      @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+      @report.save
+
       send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
-    # else
-    #   send_file(@report.file_pdf.path, :filename => @report.file_pdf.file.file.split("/").last, :type => 'application/pdf')    
-    # end
+    else
+      data = open(@report.file_pdf.url)
+      send_file(data, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')    
+      # send_file(@report.file_pdf.url, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')          
+    end
     
   end
 

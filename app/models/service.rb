@@ -33,7 +33,7 @@
 # 7. Paid => when service has been paid ---> "#00B050"
 # 8. BA Paid => ---> "#E46D0A"
 # 9. Cancelled ---> "#FF0000"
-# 10. Invoiced
+# 10. Invoiced --> "#0070C0"
 
 class Service < ActiveRecord::Base
 
@@ -234,6 +234,7 @@ class Service < ActiveRecord::Base
       "is_client" => is_client
     }
     Service.filter_and_order(data).collect{|x|
+      unless x.status == Service.status_conducted
         if x.status != Service.status_cancelled
           {
             title: x.title_calendar,
@@ -243,6 +244,7 @@ class Service < ActiveRecord::Base
             url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
           } 
         end
+      end
     }.compact.flatten
   end
 
@@ -296,6 +298,8 @@ class Service < ActiveRecord::Base
       "#E46D0A"
     when 9
       "#FF0000"
+    when 10
+      "#0070C0"
     end
   end
 

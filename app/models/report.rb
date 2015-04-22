@@ -92,12 +92,14 @@ class Report < ActiveRecord::Base
 
     report.client_products = report.client_products.compact
 
-    report.client_coop_products = report.client_coop_products.collect do |product|
-      arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
-      product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
+    unless report.client_coop_products.nil?
+      report.client_coop_products = report.client_coop_products.collect do |product|
+        arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
+        product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
+      end
+      report.client_coop_products = report.client_coop_products.compact    
     end
 
-    report.client_coop_products = report.client_coop_products.compact    
     return report
   end
 

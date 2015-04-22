@@ -76,7 +76,7 @@ class BrandAmbassador < ActiveRecord::Base
       if services.blank?
         if start_time.strftime("%p") == "AM" && available_date.am
           ba
-        elsif start_time.strftime("%p") == "PM"
+        elsif start_time.strftime("%p") == "PM" && available_date.pm
           ba
         end
       else
@@ -87,7 +87,7 @@ class BrandAmbassador < ActiveRecord::Base
         if !statement.include?(true)
           if start_time.strftime("%p") == "AM" && available_date.am
             ba
-          elsif start_time.strftime("%p") == "PM"
+          elsif start_time.strftime("%p") == "PM" && available_date.pm
             ba
           end          
         end
@@ -161,6 +161,9 @@ class BrandAmbassador < ActiveRecord::Base
   end
 
   def self.get_all_available_dates 
+    # "#3c763d" green
+    # "#f0ad4e" orange
+    # "#428bca" blue
 
     dates = []
     self.with_status_active.all.each do |ba|
@@ -170,17 +173,12 @@ class BrandAmbassador < ActiveRecord::Base
 
         show = true
         if services.blank?
-          # if available_date.am
-          #   color = "#3c763d"
-          # elsif !available_date.am && available_date.pm
-          #   color = "#428bca" #cek disini #f0ad4e
-          # end          
           if available_date.am && available_date.pm
-            color = "#3c763d"
+            color = "#3c763d" #green
           elsif available_date.am && !available_date.pm
-            color = "#f0ad4e"
+            color = "#f0ad4e" #orange
           elsif !available_date.am && available_date.pm
-            color = "#428bca"
+            color = "#428bca" #blue
           end                  
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
@@ -189,33 +187,23 @@ class BrandAmbassador < ActiveRecord::Base
           else
             if services.first.status != Service.status_rejected
               if periods.include?("AM")
-                color = "#428bca"
-              elsif periods.include?("PM")            
-
-                # AM service can only be scheduled to start at 10 am or 11 am. 
-                # If a service is scheduled for any of these times, and the BA was available for the whole day, 
-                # please change the green color to blue color. That means that BA can complete the 
-                # 1st service by as late as 3 pm and still have an opportunity to work another service.
-
-                # If BA is available for whole day and scheduled for service starting at 12 pm or later, 
-                # please change the color from green to none (not available) because this BA cannot be scheduled 
-                # for a service during this day.
-                #
-                # If BA is available for whole day and scheduled for service starting at 3 PM or later, 
-                # please change the color from green to orange because this BA has an opportunity 
-                # to work on a morning service.                
-
-                if available_date.am
-                  service = services.first
-                  if [12, 1, 2].include?(service.start_at.strftime("%I").to_i)
-                    show = false
-                  else
-                    color = "#f0ad4e"
-                  end
+                if available_date.am && available_date.pm
+                  color = "#428bca"
                 else
                   show = false
-                end
-
+                end                     
+              elsif periods.include?("PM")
+                if available_date.am && available_date.pm
+                  # color = "#f0ad4e"
+                  service = services.first
+                  if [12, 1].include?(service.start_at.strftime("%I").to_i)
+                    show = false
+                  else
+                    color = "#f0ad4e" #orange
+                  end                  
+                else
+                  show = false
+                end                      
               end                        
             else
               show = false                      

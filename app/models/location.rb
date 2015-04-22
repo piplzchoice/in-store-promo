@@ -2,24 +2,29 @@
 #
 # Table name: locations
 #
-#  id         :integer          not null, primary key
-#  name       :string(255)
-#  address    :string(255)
-#  city       :string(255)
-#  state      :string(255)
-#  zipcode    :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#  user_id    :integer
-#  is_active  :boolean          default(TRUE)
-#  contact    :string(255)
-#  phone      :string(255)
-#  email      :string(255)
-#  notes      :text
+#  id           :integer          not null, primary key
+#  name         :string(255)
+#  address      :string(255)
+#  city         :string(255)
+#  state        :string(255)
+#  zipcode      :string(255)
+#  created_at   :datetime
+#  updated_at   :datetime
+#  user_id      :integer
+#  is_active    :boolean          default(TRUE)
+#  contact      :string(255)
+#  phone        :string(255)
+#  email        :string(255)
+#  notes        :text
+#  territory_id :integer
 #
 
 class Location < ActiveRecord::Base
   belongs_to :user
+  belongs_to :location
+  belongs_to :territory
+  has_and_belongs_to_many :brand_ambassadors
+
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
   default_scope { order("created_at ASC") }
@@ -49,16 +54,22 @@ class Location < ActiveRecord::Base
   end  
 
   def export_data
-    [
+    data_field = [
       name,
       address,
       city,
-      state,
       zipcode,
       contact,
       phone,
       email,
       notes
     ]    
+
+    brand_ambassadors.each do |ba|
+      data_field << ba.name
+    end
+
+    return data_field
+
   end
 end

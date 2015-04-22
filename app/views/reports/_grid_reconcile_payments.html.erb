@@ -14,7 +14,7 @@
     </thead>
     <tbody>
       <% @services.each_with_index do |service, i|  %>
-        <% unless service.report.nil? %>
+        <% unless service.report_service.nil? %>
           <tr>
             <td>
               <%= 
@@ -26,9 +26,9 @@
             <td><%= service.start_at.strftime("%I:%M %p") %></td>
             <td><%= service.location.name %></td> 
             <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-            <td><%= service.report.nil? ? "" : number_to_currency(service.report.expense_one) %></td>
-            <td><%= service.brand_ambassador.mileage ? number_to_currency(service.report.travel_expense) : "-" %></td>
-            <td><%= link_to("Show Report", report_path(service.report)) %></td> 
+            <td><%= service.report_service.nil? ? "" : number_to_currency(service.report_service.expense_one) %></td>
+            <td><%= service.brand_ambassador.mileage ? number_to_currency(service.report_service.travel_expense) : "-" %></td>
+            <td><%= link_to("Show Report", report_path(service.report_service)) %></td> 
           </tr>
         <% end %>
       <% end %>

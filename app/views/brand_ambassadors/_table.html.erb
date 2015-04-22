@@ -3,6 +3,7 @@
     <tr>
       <th>ID</th>
       <th>Name</th>
+      <th>Territories</th>
       <th>Action</th>
       <th></th>
     </tr>
@@ -13,6 +14,7 @@
       <td><%= brand_ambassador.id %></td>
       <!-- <td><%#= brand_ambassador.email %></td> -->
       <td><%= brand_ambassador.name %></td>
+      <td><%= brand_ambassador.territories.blank? ? "-" : brand_ambassador.territories.collect{|x| x.name }.join(", ") %></td>
       <td>
         <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
         <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> ||         

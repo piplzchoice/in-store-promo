@@ -27,6 +27,8 @@ class BrandAmbassador < ActiveRecord::Base
   has_many :services
   has_many :available_dates
   has_many :statements
+  has_and_belongs_to_many :territories
+  has_and_belongs_to_many :locations
 
   default_scope { order("created_at ASC") }
   scope :with_status_active, -> { where(is_active: true) }
@@ -46,13 +48,26 @@ class BrandAmbassador < ActiveRecord::Base
     return brand_ambassador, password
   end
 
-  def self.get_available_people(start_at, end_at, service_id)
+  def self.get_available_people(start_at, end_at, service_id, location_id)
 
     start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
     end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
     time_range = start_time.midnight..(start_time.midnight + 1.day - 1.minutes)
 
-    ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
+    ba_data = nil
+    location = Location.find(location_id)
+
+    if location.brand_ambassadors.empty?
+      ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
+    else
+      ba_data = BrandAmbassador.joins(:available_dates).where(
+        is_active: true, 
+        id: location.brand_ambassadors.collect(&:id), 
+        available_dates: {availablty: time_range}
+      )
+    end
+    
+    
     
     filtered_ba_data = ba_data.collect do |ba|
       services = ba.services.where({start_at: time_range}).where.not({status: [Service.status_cancelled, Service.status_rejected]})
@@ -61,7 +76,7 @@ class BrandAmbassador < ActiveRecord::Base
       if services.blank?
         if start_time.strftime("%p") == "AM" && available_date.am
           ba
-        elsif start_time.strftime("%p") == "PM"
+        elsif start_time.strftime("%p") == "PM" && available_date.pm
           ba
         end
       else
@@ -72,7 +87,7 @@ class BrandAmbassador < ActiveRecord::Base
         if !statement.include?(true)
           if start_time.strftime("%p") == "AM" && available_date.am
             ba
-          elsif start_time.strftime("%p") == "PM"
+          elsif start_time.strftime("%p") == "PM" && available_date.pm
             ba
           end          
         end
@@ -146,6 +161,9 @@ class BrandAmbassador < ActiveRecord::Base
   end
 
   def self.get_all_available_dates 
+    # "#3c763d" green
+    # "#f0ad4e" orange
+    # "#428bca" blue
 
     dates = []
     self.with_status_active.all.each do |ba|
@@ -155,11 +173,13 @@ class BrandAmbassador < ActiveRecord::Base
 
         show = true
         if services.blank?
-          if available_date.am
-            color = "#3c763d"
+          if available_date.am && available_date.pm
+            color = "#3c763d" #green
+          elsif available_date.am && !available_date.pm
+            color = "#f0ad4e" #orange
           elsif !available_date.am && available_date.pm
-            color = "#428bca" #cek disini #f0ad4e
-          end          
+            color = "#428bca" #blue
+          end                  
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
           if periods.size == 2
@@ -167,33 +187,23 @@ class BrandAmbassador < ActiveRecord::Base
           else
             if services.first.status != Service.status_rejected
               if periods.include?("AM")
-                color = "#428bca"
-              elsif periods.include?("PM")            
-
-                # AM service can only be scheduled to start at 10 am or 11 am. 
-                # If a service is scheduled for any of these times, and the BA was available for the whole day, 
-                # please change the green color to blue color. That means that BA can complete the 
-                # 1st service by as late as 3 pm and still have an opportunity to work another service.
-
-                # If BA is available for whole day and scheduled for service starting at 12 pm or later, 
-                # please change the color from green to none (not available) because this BA cannot be scheduled 
-                # for a service during this day.
-                #
-                # If BA is available for whole day and scheduled for service starting at 3 PM or later, 
-                # please change the color from green to orange because this BA has an opportunity 
-                # to work on a morning service.                
-
-                if available_date.am
-                  service = services.first
-                  if [12, 1, 2].include?(service.start_at.strftime("%I").to_i)
-                    show = false
-                  else
-                    color = "#f0ad4e"
-                  end
+                if available_date.am && available_date.pm
+                  color = "#428bca"
                 else
                   show = false
-                end
-
+                end                     
+              elsif periods.include?("PM")
+                if available_date.am && available_date.pm
+                  # color = "#f0ad4e"
+                  service = services.first
+                  if [12, 1].include?(service.start_at.strftime("%I").to_i)
+                    show = false
+                  else
+                    color = "#f0ad4e" #orange
+                  end                  
+                else
+                  show = false
+                end                      
               end                        
             else
               show = false                      

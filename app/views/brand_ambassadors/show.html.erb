@@ -22,3 +22,25 @@
 
 <label>Mileage :</label>
 <p><%= @brand_ambassador.mileage_choice %></p>
+
+<h3 class="page-header">Locations</h3>
+<div class="link-new-btn">
+  <%= link_to("Add Location", new_location_brand_ambassador_path(id: @brand_ambassador.id), {class: "btn btn-primary", role: "button"}) %>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @brand_ambassador.locations.each_with_index do |location, i|  %>
+    <tr>
+      <td><%= location.id %></td>
+      <td><%= location.name %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

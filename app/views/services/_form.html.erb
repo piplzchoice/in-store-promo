@@ -1,10 +1,28 @@
 <%= form_for [@client, @service], html: {role: "form"} do |f| %>
+  
+  <div class="form-group">
+    <label class="control-label">Client: <%= @client.company_name %></label>
+  </div>
 
   <div class="checkbox" id="checkbox-service" data-service-id="<%= @service.new_record? ? "" : @service.id %>">
     <label>
       <input type="checkbox" id="manual-override"> Default Overwrite
     </label>
   </div>
+
+  <div class="form-group">
+    <%= f.label :location_id, "Select Location", {class: "control-label"} %>
+    <% if @service.new_record? || current_user.has_role?(:admin) %>
+      <%= f.hidden_field :location_id, {class: "select-2-box", data: {
+        url: autocomplete_location_name_client_services_path(client_id: @client.id),
+        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
+        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
+        state: "new"
+      }} %>
+    <% else %>
+      <%= @service.location.name %>
+    <% end %>
+  </div>  
 
   <div class="form-group">
     <%= f.label :start_at, {class: "control-label"} %>
@@ -27,20 +45,6 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :location_id, "Select Location", {class: "control-label"} %>
-    <% if @service.new_record? || current_user.has_role?(:admin) %>
-      <%= f.hidden_field :location_id, {class: "select-2-box", data: {
-        url: autocomplete_location_name_client_services_path(client_id: @client.id),
-        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
-        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
-        state: "new"
-      }} %>
-    <% else %>
-      <%= @service.location.name %>
-    <% end %>
-  </div>
-
-  <div class="form-group">
     <%= f.label :brand_ambassador_id, "Select BA", {class: "control-label"} %>
     <% if @service.new_record? || @service.can_reassign? || current_user.has_role?(:admin) %>
       <div id="select-ba"
@@ -53,12 +57,14 @@
   </div>
 
   <div class="form-group">
-    <%#= check_box_tag("co-op-price-box", true, params["co-op-price-box"]) %>&nbsp;Co-op
+    <%= check_box_tag("co-op-price-box", true, params["co-op-price-box"]) %>&nbsp;Co-op
   </div>
 
   <div class="form-group" id="co-op-client-name">
-    <%#= f.select(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name", selected: @service.co_op_client_id), {class: "form-control"}) %>    
+    <label class="control-label">Co-op Client</label>
+    <%= select_tag(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control"}) %>    
   </div>
+
 
   <div class="form-group">
     <%= f.label :details, {class: "control-label"} %>

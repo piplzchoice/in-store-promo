@@ -9,8 +9,10 @@ class LocationsController < ApplicationController
       format.html {        
         if session[:filter_history_locations].nil?
           @locations = Location.with_status_active.paginate(:page => params[:page])
+          @loc_id = Location.with_status_active.select(:id).collect(&:id).join(",")
         else
           @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+          @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
           @is_active = session[:filter_history_locations]["is_active"]
           @name = session[:filter_history_locations]["name"]
           session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
@@ -20,12 +22,14 @@ class LocationsController < ApplicationController
         @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
         session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
         @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+        @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
       }      
     end    
   end
 
   def new
     @location = Location.new
+    @territories = Territory.all
     respond_to do |format|
       format.html
     end    
@@ -33,6 +37,7 @@ class LocationsController < ApplicationController
 
   def edit
     @location = Location.find(params[:id])
+    @territories = Territory.all
     respond_to do |format|
       format.html
     end    
@@ -53,6 +58,7 @@ class LocationsController < ApplicationController
         if @location.save
           redirect_to locations_url, notice: "Location created"
         else
+          @territories = Territory.all
           render :new
         end
       end
@@ -66,6 +72,7 @@ class LocationsController < ApplicationController
         if @location.update_attributes(location_params)
           redirect_to locations_url, notice: "Location updated"
         else
+          @territories = Territory.all
           render :edit
         end
       end
@@ -90,20 +97,28 @@ class LocationsController < ApplicationController
   def export_data
     unless params[:loc_ids] == ""
       @locations = Location.find(params[:loc_ids].split(","))
-
-      book = Spreadsheet::Workbook.new
-      sheet1 = book.create_worksheet :name => 'Data'
-      sheet1.row(0).replace [
+      total_ba = Location.all.collect{|x| x.brand_ambassadors.size}.max
+      
+      fields = [
         "Location Name",
         "Address",
         "City",
-        "State",
         "Zipcode",
         "Contact Name",
         "Phone",
         "Email",
         "Notes"
       ]
+
+      unless total_ba.blank?
+        total_ba.times.each do |itr|
+          fields << "BA #{itr + 1}"
+        end
+      end
+
+      book = Spreadsheet::Workbook.new
+      sheet1 = book.create_worksheet :name => 'Data'
+      sheet1.row(0).replace fields
 
       @locations.each_with_index do |location, i|
         sheet1.row(i + 1).replace location.export_data
@@ -118,7 +133,7 @@ class LocationsController < ApplicationController
   end
 
   def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes)
+    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes, :territory_id)
   end    
 
   private

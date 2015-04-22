@@ -9,7 +9,7 @@ class ServicesController < ApplicationController
 
   def new
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.build
     respond_to do |format|
       format.html
@@ -19,10 +19,11 @@ class ServicesController < ApplicationController
   def create
     @client = Client.find(params[:client_id])
     @clients = Client.all.where.not(id: params[:client_id])
-    @service = @client.services.build_data(service_params, params["co-op-price-box"])
+    @service = @client.services.build_data(service_params)
     respond_to do |format|
       format.html do
         if @service.save
+          @service.create_coops(params["co_op_client_id"]) if params["co-op-price-box"]
           # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
@@ -35,6 +36,7 @@ class ServicesController < ApplicationController
 
   def edit
     @client = Client.find(params[:client_id])
+    @clients = Client.all.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     respond_to do |format|
       format.html
@@ -57,7 +59,7 @@ class ServicesController < ApplicationController
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end
               ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-              @service.update_attribute(:status, Service.status_scheduled)
+              @service.update_status_scheduled
             end
             redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
           end
@@ -69,19 +71,22 @@ class ServicesController < ApplicationController
 
   def show
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])
+    @service = @client.services.where(id: params[:id]).first
+    @service = @client.co_op_services.where(id: params[:id]).first if @service.nil?
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
   end
 
   def update_status_after_reported
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
-    @service.update_attributes({status: params[:service_status]})
+    @service.update_status_after_reported(params[:service_status])    
     redirect_to client_service_path(client_id: @client.id, id: @service.id)
   end
 
   def destroy
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])
+    # @service = @client.services.find(params[:id])
+    @service = Service.find(params[:id])
     if @service.cancelled
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
       redirect_to client_path(@client), {notice: "Service Cancelled"}
@@ -99,7 +104,7 @@ class ServicesController < ApplicationController
   end
 
   def generate_select_ba
-    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id])
+    @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id], params[:location_id])
     render layout: false
   end
 
@@ -109,7 +114,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: Service.status_confirmed, token: Devise.friendly_token})
+          @service.update_status_to_confirmed(Devise.friendly_token)
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
@@ -124,7 +129,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_attributes({status: Service.status_rejected, token: Devise.friendly_token})
+          @service.update_status_to_rejected(Devise.friendly_token)
         end
       end
     end
@@ -138,7 +143,7 @@ class ServicesController < ApplicationController
     unless @client.nil?
       @service = @client.services.find(params[:id])
       unless @service.nil?
-        @service.update_attributes({status: Service.status_conducted})
+        @service.update_status_to_conducted
         msg = "Service set at completed"
       end
     end

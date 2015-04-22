@@ -24,9 +24,9 @@
       <td style="text-align: center;"><%= service.company_name %></td> 
       <td style="text-align: center;"><%= service.location.name %></td>       
       <td style="text-align: center;"><%= number_to_currency(service.ba_rate) %></td> 
-      <td style="text-align: center;"><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+      <td style="text-align: center;"><%= service.report_service.expense_one.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
       <% if @ba.mileage %>
-        <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+        <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
       <% end %>
       <td style="text-align: center;"><%= number_to_currency service.total_ba_paid %></td> 
     </tr>

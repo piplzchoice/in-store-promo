@@ -44,6 +44,9 @@ Rails.application.routes.draw do
     member do
       patch "reset_password"
       delete "logged_as"
+      get "new_location"
+      post "create_location"
+      delete "/destroy_location/:location_id" => "brand_ambassadors#destroy_location"
     end
 
     collection do
@@ -112,5 +115,7 @@ Rails.application.routes.draw do
     post :manage, :on => :collection
     post :update_date, :on => :collection
   end
+
+  resources :territories
 
 end

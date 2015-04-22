@@ -24,6 +24,11 @@
     <%= f.text_field :zipcode, {class: "form-control", placeholder: "Zipcode"} %>
   </div>      
 
+  <div class="form-group">
+    <%= f.label :terorrity, {class: "control-label"} %>
+    <%= f.select(:territory_id, @territories.collect{|x| [x.name, x.id]}, {}, {class: "form-control filter-params"}) %>
+  </div>      
+
   <br /><br />
   <h2 class="page-header">Contact</h2>
 

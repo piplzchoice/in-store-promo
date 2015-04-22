@@ -20,24 +20,28 @@
       <td><%= service.company_name %></td> 
       <td><%= service.location.nil? ? "" : service.location.name %></td>
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <% unless service.report.nil? %>
-        <td><%= number_to_currency service.report.expense_one %></td>
-        <td><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+
+      <% unless service.report_service.nil? %>
+        <td><%= number_to_currency service.report_service.expense_one %></td>
+        <td><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
       <% else %>
         <td>-</td>
         <td>-</td>      
-      <% end %>
+      <% end %>      
+
       <td><%= service.current_status %></td>
       <td>
-      <% if service.can_create_report? || service.report.nil? %>
-        <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
-      <% else %>
-        <%= link_to("Show Report", report_path(service.report)) %> ||
-        <%= link_to("Edit Report", edit_report_path(service.report)) %>   
-        <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-          || <%= link_to("Delete Report", report_path(service.report), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+
+        <% if service.can_create_report? || service.report_service.nil? %>
+          <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
+        <% else %>
+          <%= link_to("Show Report", report_path(service.report_service)) %> ||
+          <%= link_to("Edit Report", edit_report_path(service.report_service)) %>   
+          <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+            || <%= link_to("Delete Report", report_path(service.report_service), {data: { confirm: "Are you sure?" }, :method => :delete}) %>
+          <% end %>
         <% end %>
-      <% end %>
+        
       </td> 
     </tr>
     <% end %>

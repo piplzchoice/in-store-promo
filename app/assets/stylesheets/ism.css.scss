@@ -230,8 +230,13 @@ body {
 }
 
 .cancelled {
-  background-color: #FF0000;
-  border-color: #FF0000;
+  background-color: #EDEDBA;
+  border-color: #EDEDBA;
+}
+
+.fc-event-title {
+  color: black;
+  font-weight: bold;
 }
 
 .width_50 {

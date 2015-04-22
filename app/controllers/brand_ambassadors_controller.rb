@@ -22,6 +22,7 @@ class BrandAmbassadorsController < ApplicationController
 
   def new
     @brand_ambassador = BrandAmbassador.new
+    @territories = Territory.all
     @brand_ambassador.build_account
     respond_to do |format|
       format.html
@@ -30,6 +31,7 @@ class BrandAmbassadorsController < ApplicationController
 
   def edit
     @brand_ambassador = BrandAmbassador.find(params[:id])
+    @territories = Territory.all
     respond_to do |format|
       format.html
     end    
@@ -50,6 +52,7 @@ class BrandAmbassadorsController < ApplicationController
           ApplicationMailer.welcome_email(@brand_ambassador.account.email, @brand_ambassador.name ,password).deliver
           redirect_to brand_ambassadors_url, notice: "BA created"
         else
+          @territories = Territory.all
           render :new
         end
       end
@@ -63,6 +66,7 @@ class BrandAmbassadorsController < ApplicationController
         if @brand_ambassador.update_attributes(brand_ambassador_params)
           redirect_to brand_ambassadors_url, notice: "BA updated"
         else
+          @territories = Territory.all
           render :edit
         end
       end
@@ -103,8 +107,37 @@ class BrandAmbassadorsController < ApplicationController
     redirect_to brand_ambassadors_url, {notice: msg}
   end
 
+  def new_location
+    @brand_ambassador = BrandAmbassador.find(params[:id])
+    respond_to do |format|
+      format.html {        
+        @location_ids = @brand_ambassador.location_ids.map(&:to_s)
+        @locations = Location.with_status_active.paginate(:page => params[:page])
+      }
+      format.js {
+        @location_ids = (params[:location_ids] == "" ? [] : params[:location_ids].split(",")) 
+        @locations = Location.filter_and_order(true, params[:name]).paginate(:page => params[:page])
+      }      
+    end
+  end
+
+  def create_location
+    @brand_ambassador = BrandAmbassador.find(params[:id])
+    @brand_ambassador.location_ids = params[:location_ids].split(",")
+    if @brand_ambassador.save
+      msg = "Location added"
+    else
+      msg = "Failed add location"
+    end
+
+    redirect_to brand_ambassador_url(id: @brand_ambassador), {notice: msg}
+  end
+
+  def destroy_location
+  end
+
   def brand_ambassador_params
-    params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, account_attributes: [:email, :id])
+    params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, :territory_ids => [], account_attributes: [:email, :id], :location_ids => [])
   end    
 
   def view_ba_calender

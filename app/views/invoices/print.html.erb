@@ -57,11 +57,11 @@
       <% @services.each_with_index do |service, i|  %>
         <tr class="border-inv">
           <td class="pad-tab border-inv"><%= service.start_at.strftime('%m/%d/%Y') %></td>
-          <td class="pad-tab border-inv"><%= link_to(service.location.name, report_url(service.report)) %></td> 
+          <td class="pad-tab border-inv"><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
           <td class="pad-tab border-inv"><%= service.start_at.strftime("%I:%M %p") %></td>        
           <td class="pad-tab border-inv right-align"><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-          <td class="pad-tab border-inv right-align"><%= number_to_currency service.report.expense_one %></td>
-          <td class="pad-tab border-inv right-align"><%= service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-" %></td>
+          <td class="pad-tab border-inv right-align"><%= number_to_currency service.report_service.expense_one %></td>
+          <td class="pad-tab border-inv right-align"><%= service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-" %></td>
           <td class="pad-tab border-inv right-align"><%= number_to_currency(service.grand_total) %></td>
         </tr>
       <% end %>

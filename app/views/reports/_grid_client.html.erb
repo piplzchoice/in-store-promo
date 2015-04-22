@@ -19,10 +19,10 @@
       <td><%= service.company_name %></td> 
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
       <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-      <td><%= service.report.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
+      <td><%= service.report_service.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
       <td><%= service.current_status %></td>
       <td>
-        <%= service.report.nil? ? "-" : link_to("Show Report", report_path(service.report)) %>
+        <%= service.report_service.nil? ? "-" : link_to("Show Report", report_path(service.report_service)) %>
       </td> 
     </tr>
     <% end %>

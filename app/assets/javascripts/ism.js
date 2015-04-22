@@ -24,30 +24,46 @@ $(function() {
     });    
   });
 
+  $(document).on("click", "#selecctall-location", function(){
+    if(this.checked) { 
+        $('.locations-checkbox').each(function() {
+            this.checked = true;
+            $("#location_ids").val($("#all_loc_ids").val());
+            $("#checked_all_location").val(true);
+        });
+    }else{
+        $('.locations-checkbox').each(function() {
+            $("#checked_all_location").val(true);
+            this.checked = false;
+            $("#location_ids").val("");
+        });         
+    }
+  });
+
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
     $("#export-data-location").submit();
   })
 
+  $("#save-ba-location").on("click", function(){
+    $("#location_ids_save").val($("#location_ids").val());
+    $("#create-ba-location").submit();
+  })
+
   $(".filter-location").on("click", function(){
     $("#location_ids").val("");
+
+    if($("#original_location_ids").length === 1) {
+      $("#location_ids").val($("#original_location_ids").val());
+    }
+    
+    $("#checked_all_location").val("");
+    $("#selecctall-location").prop("checked", false);
     return true;
   });
 
   $(document).on("change", ".locations-checkbox", function(){
-    var arr_ids = [];
-    if($("#location_ids").val() !== "") {
-      arr_ids = $("#location_ids").val().split(",");
-    }
-
-    if($(this).is(':checked')) {
-      arr_ids.push($(this).val());
-    } else {
-      var index = arr_ids.indexOf($(this).val());
-      arr_ids.splice(index, 1);
-    }
-
-    $("#location_ids").val(arr_ids.join(","));
+    checked_location(this);
   });    
 
   if($("#report-product").size() !== 0) {
@@ -81,11 +97,11 @@ $(function() {
     return false
   });
 
-  // if($("#co-op-price-box").is(':checked')) {
-  //   $("#co-op-client-name").show();
-  // } else {
-  //   $("#co-op-client-name").hide();
-  // }  
+  if($("#co-op-price-box").is(':checked')) {
+    $("#co-op-client-name").show();
+  } else {
+    $("#co-op-client-name").hide();
+  }  
 
   $(document).on("change", "#co-op-price-box", function(){
     if($("#co-op-price-box").is(':checked')) {
@@ -322,6 +338,12 @@ $(function() {
     $("#page").val(1);
     $("#direction").val("desc");
     $("#sort").val("start_at");
+  });
+
+  $(".filter-params-invoice").on("change", function(){
+    $("#page").val(1);
+    $("#direction").val("desc");
+    $("#sort").val("issue_date");
   });
 
   $(".tooltip-legend").tooltip();
@@ -571,6 +593,19 @@ $(document).on("click", "#add-product-report", function(){
   $("#insert-add-product-report-modal").modal("show");
 });
 
+$(document).on("click", "#add-product-coop-report", function(){    
+
+  $.each($(".product-coop-lists-modal"), function(i, v){ 
+    $(v).show();
+  });
+  
+  $.each($(".row-coop-products"), function(i, v) {
+    $("#list-product-coop-" + $(v).data("id")).hide();
+  });    
+
+  $("#insert-add-product-coop-report-modal").modal("show");
+});
+
 $(document).on("click", "#submit-list-products", function(){
   $(".checkbox-products:checked").each(function(i, v){ 
     elm =  "" +
@@ -617,13 +652,97 @@ $(document).on("click", "#submit-list-products", function(){
   $("#insert-add-product-report-modal").modal("hide");
 });
 
-$(document).on("keyup", ".product-beginning", function(){  
-  prod_end = 0;
+$(document).on("click", ".remove-coop-product", function(){
+  $("#row-product-" + $(this).data("id")).remove();
 
-  if($("#report_product_" + $(this).data("id") +"_end").val() !== "") {
-    prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
+  if($(".row-coop-products").length == 0) {
+    alert("Please add products minimum 1");
+    $("#submit-report-data").hide();
+    $("#new_report").attr("action", "/");
+    $("#new_report").attr("method", "get");
+  } else {
+    $.each($(".row-coop-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });
   }
 
+});
+
+$(document).on("click", "#add-product-coop-report", function(){    
+
+  $.each($(".product-coop-lists-modal"), function(i, v){ 
+    $(v).show();
+  });
+  
+  $.each($(".row-coop-products"), function(i, v) {
+    $("#list-product-coop-" + $(v).data("id")).hide();
+  });    
+
+  $("#insert-add-product-coop-report-modal").modal("show");
+});
+
+
+$(document).on("click", "#submit-list-coop-products", function(){
+  $(".checkbox-coop-products:checked").each(function(i, v){ 
+    elm =  "" +
+    "<tr class=\"row-coop-products\" id=\"row-product-" + $(v).data("id") + "\" data-id=\"" + $(v).data("id") + "\">" +
+      "<td>Product <span class=\"counter-product\">x</span></td>" +
+      "<td class=\"product-info-id\" data-id=\"" + $(v).data("id") + "\">" +
+        "<div class=\"dropdown\">" +
+          "<button class=\"btn btn-default dropdown-toggle\" type=\"button\" id=\"dropdownMenu1\" " + 
+            "data-toggle=\"dropdown\" aria-expanded=\"true\">" + $(v).data("name") + " <span class=\"caret\"></span></button>" +
+          "<ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"dropdownMenu1\">" +
+            "<li role=\"presentation\"><a role=\"menuitem\" tabindex=\"-1\" data-id=\"" + $(v).data("id") + "\"" + 
+              "class=\"remove-coop-product\" href=\"#add-product-coop-report\">Remove</a></li>" +
+          "</ul>" +
+          "<input id=\"report_client_products_name\" name=\"report[client_coop_products][]name\" type=\"hidden\" value=\"" + $(v).data("name") + "\">" +
+        "</div>" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-price\" data-id=\"" + $(v).data("id") + "\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_price\" name=\"report[client_coop_products][]price\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sample\" data-id=\"" + $(v).data("id") + "\" class=\"product-sample\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sample\" name=\"report[client_coop_products][]sample\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-beginning\" data-id=\"" + $(v).data("id") + "\" class=\"product-beginning\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_beginning\" name=\"report[client_coop_products][]beginning\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-end\" data-id=\"" + $(v).data("id") + "\" class=\"product-end\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_end\" name=\"report[client_coop_products][]end\" type=\"text\">" +
+      "</td>" +
+      "<td id=\"product-" + $(v).data("id") + "-sold\" data-id=\"" + $(v).data("id") + "\" class=\"product-sold\">" +
+        "<input class=\"width_35px\" id=\"report_product_" + $(v).data("id") + "_sold\" name=\"report[client_coop_products][]sold\" type=\"text\">" +
+      "</td>" +
+    "</tr>";          
+
+    $("#row-coop-products").append(elm)
+    $.each($(".row-coop-products"), function(i, v) {
+      $(v).find(".counter-product").html(i + 1);
+    });      
+
+    $("#submit-report-data").show();
+    $("#new_report").attr("action", "/reports");
+    $("#new_report").attr("method", "post");    
+  });
+
+  $("#insert-add-product-coop-report-modal").modal("hide");
+});
+
+$(document).on("keyup", ".product-beginning", function(){  
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+
+
+  prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());
   prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
   calculate = prod_beginning - (prod_end + prod_sample);
@@ -634,23 +753,40 @@ $(document).on("keyup", ".product-beginning", function(){
 $(document).on("keyup", ".product-end", function(){  
   prod_beginning = 0;
 
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
   }
 
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
+
   calculate = prod_beginning - (prod_end + prod_sample);
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
 });
 
 $(document).on("keyup", ".product-sample", function(){  
-  prod_beginning = 0;
-
-  if($("#report_product_" + $(this).data("id") +"_beginning").val() !== "") {
-    prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
+  if($("#report_product_" + $(this).data("id") +"_beginning").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_beginning").val(0)
   }
 
+  if($("#report_product_" + $(this).data("id") +"_end").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_end").val(0)
+  }
+
+  if($("#report_product_" + $(this).data("id") +"_sample").val() === "") {
+    $("#report_product_" + $(this).data("id") +"_sample").val(0)
+  }
+  
+  prod_beginning = parseInt($("#report_product_" + $(this).data("id") +"_beginning").val())
   prod_end = parseInt($("#report_product_" + $(this).data("id") +"_end").val());  
   prod_sample = parseInt($("#report_product_" + $(this).data("id") +"_sample").val())
   calculate = prod_beginning - (prod_end + prod_sample);
@@ -664,7 +800,8 @@ function generate_select_ba(){
       start_at: $("#service_start_at").val(),
       end_at: $("#service_end_at").val(),
       action_method: $("#select-ba").data("action"),
-      service_id: $("#checkbox-service").data("service-id")
+      service_id: $("#checkbox-service").data("service-id"),
+      location_id: $("#service_location_id").val()
     }
   })
   .done(function( html ) {    
@@ -726,4 +863,20 @@ function getParameterByName(name, url) {
     var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(url);
     return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function checked_location(obj) {
+  var arr_ids = [];
+  if($("#location_ids").val() !== "") {
+    arr_ids = $("#location_ids").val().split(",");
+  }
+
+  if($(obj).is(':checked')) {
+    arr_ids.push($(obj).val());
+  } else {
+    var index = arr_ids.indexOf($(obj).val());
+    arr_ids.splice(index, 1);
+  }
+
+  $("#location_ids").val(arr_ids.join(","));    
 }

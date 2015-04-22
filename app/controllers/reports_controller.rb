@@ -164,9 +164,15 @@ class ReportsController < ApplicationController
     @service = @report.service
   end
 
-  def new
+  def new    
     @service = Service.find(params[:service_id])
-    @report = @service.build_report
+
+    if @service.is_co_op? && !@service.parent.nil?
+      redirect_to new_report_url(service_id: @service.parent.id)
+    else
+      @report = @service.build_report
+    end    
+
   end
 
   def create
@@ -175,7 +181,7 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html do
         if @report.save
-          @service.update_attribute(:status, Service.status_reported)
+          @service.update_status_to_reported          
           
           unless params["image-table"].nil?
             params["image-table"].each do |id_table|
@@ -193,6 +199,15 @@ class ReportsController < ApplicationController
             end            
           end          
 
+          file = "report-#{Time.now.to_i}.pdf"
+
+          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+          kit = PDFKit.new(html)
+          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+          @report.save
+
           redirect_to report_path(@report), notice: "Report created"
         else
           render :new
@@ -203,7 +218,11 @@ class ReportsController < ApplicationController
 
   def edit
     @report = Report.find(params[:id])
-    @service = @report.service    
+    @service = @report.service
+    
+    if @service.is_co_op? && !@service.parent.nil?
+      redirect_to edit_report_url(@report)
+    end            
   end
 
   def update
@@ -241,6 +260,21 @@ class ReportsController < ApplicationController
             end      
           end          
 
+          @report.remove_file_pdf
+          @report.remove_file_pdf = true
+
+          @report.save
+          @report.remove_file_pdf = false
+
+          file = "report-#{Time.now.to_i}.pdf"
+
+          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+          kit = PDFKit.new(html)
+          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+          @report.save
+
           redirect_to report_path(@report), notice: "Report updated"
         else
           render :edit
@@ -261,14 +295,24 @@ class ReportsController < ApplicationController
 
   def download_pdf
     file = "report-#{Time.now.to_i}.pdf"
-
     @report = Report.find(params[:id])
     @service = @report.service
 
-    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-    kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
+    if @report.file_pdf.blank?
+      html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+      @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+      @report.save
+
+      send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
+    else
+      data = open(@report.file_pdf.url)
+      send_file(data, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')    
+      # send_file(@report.file_pdf.url, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')          
+    end
+    
   end
 
   def print_pdf
@@ -394,7 +438,8 @@ class ReportsController < ApplicationController
       :product_five_beginning, :product_five_end, :product_five_sold, 
       :product_six_sample, :product_six_price, :product_six, 
       :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense, 
-      :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
+      :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id],
+      :client_coop_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
   end    
 
   private

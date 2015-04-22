@@ -61,7 +61,7 @@ class Client < ActiveRecord::Base
 
   def self.calendar_services(client_id)
     client = find(client_id)
-    client.services.collect{|x|       
+    calendars = client.services.collect{|x|       
       {
         title: x.title_calendar,
         start: x.start_at.iso8601,
@@ -70,6 +70,8 @@ class Client < ActiveRecord::Base
         url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
       } if x.is_ba_active?
     }.uniq.compact
+
+    return calendars.uniq.compact
   end  
 
   def email

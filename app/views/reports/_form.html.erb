@@ -2,12 +2,14 @@
   <%= f.hidden_field(:service_id) %>
   <div class="row">    
     
-    <div class="row report">
-      <div id="report-client" class="report-left">
-        <span class="report-title">Client</span>: 
-        <span class="report-option-details"><%= @service.company_name %></span>
+    <% unless @service.is_co_op? %>
+      <div class="row report">
+        <div id="report-client" class="report-left">
+          <span class="report-title">Client</span>: 
+          <span class="report-option-details"><%= @service.company_name %></span>
+        </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="row report">
       <div id="report-ba" class="report-left">
@@ -56,33 +58,76 @@
       </div>
     </div>
 
-    <div class="link-new-btn">
-      <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", id: "add-product-report"}) %>
-    </div>  
-    <div class="row report">
-      <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>&nbsp;</th>
-              <th>&nbsp;</th>
-              <th><span class="report-title">Price</span></th>
-              <th><span class="report-title">Sample</span></th>
-              <th><span class="report-title">Beginning</span></th>
-              <th><span class="report-title">End</span></th>
-              <th><span class="report-title">Sold</span></th>
-            </tr>
-          </thead>
-          <tbody id="row-products">  
-            <% if @report.new_record? || !@report.client_products.nil? %>
-              <%= render "client_products", f: f, client: @service.client %>
-            <% else %>
-              <%= render "products", f: f %>
-            <% end %>
-          </tbody>
-        </table>
+    <% if @service.is_co_op? %>
+      <br /><br /><br />
+        <div class="row report">
+          <div id="report-client" class="report-left">
+            <span class="report-title">Client</span>: 
+            <span class="report-option-details"><%= @service.company_name %></span>
+          </div>
+        </div>
+    <% end %>
+
+      <div class="link-new-btn">
+        <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", id: "add-product-report"}) %>
+      </div>  
+      <div class="row report">
+        <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th><span class="report-title">Price</span></th>
+                <th><span class="report-title">Sample</span></th>
+                <th><span class="report-title">Beginning</span></th>
+                <th><span class="report-title">End</span></th>
+                <th><span class="report-title">Sold</span></th>
+              </tr>
+            </thead>
+            <tbody id="row-products">  
+              <% if @report.new_record? || !@report.client_products.nil? %>
+                <%= render "client_products", f: f, client: @service.client %>
+              <% else %>
+                <%= render "products", f: f %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+
+      <% if @service.is_co_op? %>
+        <div class="row report">
+          <div id="report-client" class="report-left">
+            <span class="report-title">Co-op Client </span>: 
+            <span class="report-option-details"><%= @service.co_op_services.first.client.company_name %></span>
+          </div>
+        </div>      
+
+        <div class="link-new-btn">
+          <%= link_to("Add Product", "#add-product-coop-report", {class: "btn btn-primary", role: "button", id: "add-product-coop-report"}) %>
+        </div>  
+        <div class="row report">
+          <div id="report-coop-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.co_op_services.first.client.products.size %>">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>&nbsp;</th>
+                  <th>&nbsp;</th>
+                  <th><span class="report-title">Price</span></th>
+                  <th><span class="report-title">Sample</span></th>
+                  <th><span class="report-title">Beginning</span></th>
+                  <th><span class="report-title">End</span></th>
+                  <th><span class="report-title">Sold</span></th>
+                </tr>
+              </thead>
+              <tbody id="row-coop-products">  
+                <%= render "client_coop_products", f: f, client: @service.co_op_services.first.client %>
+              </tbody>
+            </table>
+          </div>
+        </div>      
+    <% end %>
 
     <div class="row report">
       <div id="report-sample-product">
@@ -224,3 +269,29 @@
     </div>
   </div>
 </div>
+
+<% if @service.is_co_op? %>
+  <div id="insert-add-product-coop-report-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Products
+          </h4>
+        </div>
+        <div class="modal-body">
+          <% unless @service.client.products.blank? %>
+            <% @service.co_op_services.first.client.products.each do |product| %>
+              <span id="list-product-coop-<%= product.id %>" style="display: block;" class='product-coop-lists-modal' >
+               <input class="checkbox-coop-products" type="checkbox" data-id='<%= product.id %>' data-name='<%= product.name %>'> <%= product.name %>
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="modal-body">
+          <button id="submit-list-coop-products" class="btn btn-primary">Add Product</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end%>

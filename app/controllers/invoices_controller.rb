@@ -7,7 +7,7 @@ class InvoicesController < ApplicationController
     @filter = false
     respond_to do |format|
       format.html do
-        @services = Service.all.where({status: Service.status_reported}).order(start_at: :desc)
+        @services = Service.all.where({status: Service.status_reported}).order(start_at: :desc)        
         @clients = @services.collect{|x|x.client}.uniq
       end    
 

@@ -20,6 +20,7 @@
 #  alert_sent_date       :datetime
 #  alert_sent_admin      :boolean          default(FALSE)
 #  alert_sent_admin_date :datetime
+#  parent_id             :integer
 #
 
 # note for field "status"
@@ -32,7 +33,7 @@
 # 7. Paid => when service has been paid ---> "#00B050"
 # 8. BA Paid => ---> "#E46D0A"
 # 9. Cancelled ---> "#FF0000"
-# 10. Invoiced
+# 10. Invoiced --> "#0070C0"
 
 class Service < ActiveRecord::Base
 
@@ -41,6 +42,9 @@ class Service < ActiveRecord::Base
   belongs_to :brand_ambassador
   belongs_to :location
   has_one :report
+
+  has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
+  belongs_to :parent, :class_name => "Service", foreign_key: 'parent_id'
 
   belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
@@ -135,8 +139,9 @@ class Service < ActiveRecord::Base
     return 12.round
   end
 
-  def self.build_data(service_params, co_op_price_box)
-    service_params[:co_op_client_id] = nil unless co_op_price_box
+  def self.build_data(service_params)
+    # service_params[:co_op_client_id] = nil unless co_op_price_box
+
     if service_params[:start_at].blank? || service_params[:end_at].blank?
       self.new(service_params)
     else
@@ -229,7 +234,8 @@ class Service < ActiveRecord::Base
       "is_client" => is_client
     }
     Service.filter_and_order(data).collect{|x|
-        if x.status != Service.status_cancelled
+      unless x.status == Service.status_conducted
+        # if x.status != Service.status_cancelled
           {
             title: x.title_calendar,
             start: x.start_at.iso8601,
@@ -237,9 +243,18 @@ class Service < ActiveRecord::Base
             color: x.get_color,
             url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
           } 
-        end
+        # end
+      end
     }.compact.flatten
   end
+
+  def report_service
+    if !parent.nil?
+      parent.report
+    else
+      report
+    end
+  end  
 
   def title_calendar
     # return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
@@ -282,7 +297,9 @@ class Service < ActiveRecord::Base
     when 8
       "#E46D0A"
     when 9
-      "#FF0000"
+      "#EDEDBA"
+    when 10
+      "#0070C0"
     end
   end
 
@@ -337,7 +354,17 @@ class Service < ActiveRecord::Base
   end
 
   def cancelled
-    update_attribute(:status, Service.status_cancelled)
+    self.update_attributes({status: Service.status_cancelled})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_cancelled})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_cancelled})
+        end
+      end
+    end    
   end
 
   def ba_rate
@@ -345,7 +372,7 @@ class Service < ActiveRecord::Base
   end
 
   def total_ba_paid
-    ba_rate + (report.expense_one.nil? ? 0 : report.expense_one) + (brand_ambassador.mileage ? (report.travel_expense.nil? ? 0 : report.travel_expense) : 0)
+    ba_rate + (report_service.expense_one.nil? ? 0 : report_service.expense_one) + (brand_ambassador.mileage ? (report_service.travel_expense.nil? ? 0 : report_service.travel_expense) : 0)
   end  
 
   def can_modify?
@@ -473,6 +500,97 @@ class Service < ActiveRecord::Base
     ].push(products).flatten!
 
     return value_row
+    
+  end
+
+  def create_coops(co_op_client_id)
+    coop = self.co_op_services.build
+    
+    coop.location = self.location
+    # coop.brand_ambassador_id = self.brand_ambassador_id
+    coop.brand_ambassador = BrandAmbassador.find_by_name("Admin")
+    coop.start_at = self.start_at
+    coop.end_at =  self.end_at
+    coop.details = self.details
+    coop.status = self.status
+    coop.is_active = self.is_active
+    coop.client_id = co_op_client_id
+
+    coop.save!
+  end
+
+  def is_co_op?
+    !parent.nil? || !co_op_services.empty?
+  end
+
+  def update_status_to_confirmed(token)
+    self.update_attributes({status: Service.status_confirmed, token: token})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_confirmed, token: token})
+      end
+    end
+  end
+
+  def update_status_to_rejected(token)
+    self.update_attributes({status: Service.status_rejected, token: token})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_rejected, token: token})
+      end
+    end    
+  end
+
+  def update_status_to_reported
+    self.update_attributes({status: Service.status_reported})
+    unless self.co_op_services.empty?
+      self.co_op_services.each do |service_coop|
+        service_coop.update_attributes({status: Service.status_reported})
+      end
+    end    
+  end
+
+
+  def update_status_to_conducted
+    self.update_attributes({status: Service.status_conducted})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_conducted})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_conducted})
+        end
+      end
+    end    
+  end
+
+  def update_status_after_reported(status)
+    self.update_attributes({status: status})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: status})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: status})
+        end
+      end
+    end        
+  end
+
+  def update_status_scheduled    
+    self.update_attributes({status: Service.status_scheduled})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_scheduled})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_scheduled})
+        end
+      end
+    end        
     
   end
 

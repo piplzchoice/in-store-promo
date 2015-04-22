@@ -235,7 +235,7 @@ class Service < ActiveRecord::Base
     }
     Service.filter_and_order(data).collect{|x|
       unless x.status == Service.status_conducted
-        if x.status != Service.status_cancelled
+        # if x.status != Service.status_cancelled
           {
             title: x.title_calendar,
             start: x.start_at.iso8601,
@@ -243,7 +243,7 @@ class Service < ActiveRecord::Base
             color: x.get_color,
             url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
           } 
-        end
+        # end
       end
     }.compact.flatten
   end

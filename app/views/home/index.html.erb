@@ -8,6 +8,7 @@
     <% if current_user.has_role?(:client) %>
       <div class="confirmed">Confirmed</div>
       <div class="reported">Reported</div>
+      <div class="conducted">Invoiced</div>
       <div class="paid">Paid</div>
     <% else %>
       <div class="scheduled">Scheduled</div>

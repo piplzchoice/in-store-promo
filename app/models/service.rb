@@ -66,7 +66,7 @@ class Service < ActiveRecord::Base
       conditions.merge!(status: parameters["status"]) 
     else
       if parameters["is_client"]
-        conditions.merge!(status: [2,6,7]) 
+        conditions.merge!(status: [2,6,7,10]) 
       end
     end
 
@@ -220,6 +220,7 @@ class Service < ActiveRecord::Base
       ["All", ""],
       ["BA Confirmed", Service.status_confirmed],
       ["Reported", Service.status_reported],
+      ["Invoiced", Service.status_invoiced],
       ["Paid", Service.status_paid],
     ]
   end

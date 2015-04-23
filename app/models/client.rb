@@ -62,13 +62,17 @@ class Client < ActiveRecord::Base
   def self.calendar_services(client_id)
     client = find(client_id)
     calendars = client.services.collect{|x|       
-      {
-        title: x.title_calendar,
-        start: x.start_at.iso8601,
-        end: x.end_at.iso8601,
-        color: x.get_color,
-        url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
-      } if x.is_ba_active?
+      unless x.status == Service.status_conducted      
+        if x.is_ba_active?
+          {
+            title: x.title_calendar,
+            start: x.start_at.iso8601,
+            end: x.end_at.iso8601,
+            color: x.get_color,
+            url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
+          }
+        end
+      end
     }.uniq.compact
 
     return calendars.uniq.compact

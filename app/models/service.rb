@@ -297,7 +297,7 @@ class Service < ActiveRecord::Base
     when 8
       "#E46D0A"
     when 9
-      "#EDEDBA"
+      "#000000"
     when 10
       "#0070C0"
     end

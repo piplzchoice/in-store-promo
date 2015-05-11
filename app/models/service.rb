@@ -207,8 +207,8 @@ class Service < ActiveRecord::Base
     [
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
-      ["Conducted", Service.status_conducted],
       ["Reported", Service.status_reported],
+      ["Invoiced", Service.status_invoiced],      
       ["Paid", Service.status_paid],
       ["BA paid", Service.status_ba_paid],
       ["Cancelled", Service.status_cancelled]

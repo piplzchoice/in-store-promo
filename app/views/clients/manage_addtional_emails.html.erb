@@ -1,0 +1,20 @@
+<h1 class="page-header">Manage Addtional Clients</h1>
+
+<h2>List emails: </h2>
+<% unless @client.additional_emails.blank? %>
+  <ol>
+  <% @client.additional_emails.each do |email| %>
+    <li>
+      <%= email %>&nbsp;
+      <%= link_to "(x)", remove_addtional_emails_client_path(@client, email: email), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+  <% end %>
+  </ol>
+<% end %>
+
+<hr />
+
+<%= form_tag(update_addtional_emails_client_path(id: @client.id)) do %>
+  <label>Email : </label>
+  <p><input type="email" required id="insert-add-email" name="add-email" class="form-control" autocomplete="off"></p>
+  <button type="submit" class="btn btn-primary">Add</button>
+<% end %>

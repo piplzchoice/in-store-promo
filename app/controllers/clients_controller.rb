@@ -135,6 +135,43 @@ class ClientsController < ApplicationController
     @dataurl = params[:dataurl]
   end  
 
+  def manage_addtional_emails
+    @client = Client.find(params[:id])
+    respond_to do |format|
+      format.html
+    end        
+  end
+
+  def update_addtional_emails  
+    client = Client.find(params[:id])    
+
+    msg = {:error => "Failed update addtional email"}
+
+    if client.additional_emails.include?(params["add-email"])
+      msg = {:error => "Email already been added"}
+    else
+      msg = {:notice => "Addtional email added"}
+      client.additional_emails.push(params["add-email"])
+      client.save(validate: false)            
+    end
+
+    redirect_to manage_addtional_emails_client_path(client), :flash => msg
+  end
+
+  def remove_addtional_emails
+    client = Client.find(params[:id])    
+
+    if client.additional_emails.include?(params["email"])
+      client.additional_emails.delete(params["email"])
+      client.save(validate: false)
+      msg = {:notice => "Email is deleted"}
+    else
+      msg = {:error => "Email not found"}      
+    end    
+
+    redirect_to manage_addtional_emails_client_path(client), :flash => msg
+  end
+
   private
   def check_client_status
     client = Client.find(params[:id])

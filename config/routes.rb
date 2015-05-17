@@ -12,6 +12,9 @@ Rails.application.routes.draw do
     member do
       patch "reset_password"
       delete "logged_as"
+      get "manage_addtional_emails"
+      delete "remove_addtional_emails"
+      post "update_addtional_emails"
     end
 
     post :export_calendar, :on => :member

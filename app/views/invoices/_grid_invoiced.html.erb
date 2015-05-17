@@ -25,7 +25,10 @@
               <%= f.submit("Update Invoice to Paid", {class: "btn btn-primary update-invoice", data: {id: invoice.id}}) %>
             <% end  %>
           </td>
-          <td><%= link_to("Show Invoice", invoice_path(invoice), class: "btn btn-primary" ) %></td>         
+          <td>
+            <%= link_to("Edit Invoice", edit_invoice_path(invoice), class: "btn btn-primary" ) %>
+            <%= link_to("Show Invoice", invoice_path(invoice), class: "btn btn-primary" ) %>
+          </td>         
       </tr>      
     <% end %>
   </tbody>

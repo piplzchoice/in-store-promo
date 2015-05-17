@@ -92,8 +92,8 @@ class ApplicationMailer < ActionMailer::Base
     end
     et = EmailTemplate.find_by_name("send_invoice")
 
-    data = open(invoice.file.url)
-    attachments["#{invoice.file.url.split("/").last}"] = data.read
+    # data = open(invoice.file.url)
+    # attachments["#{invoice.file.url.split("/").last}"] = data.read
 
     @content = et.content.gsub(".client_first_name", invoice.client.first_name)
     mail(to: emails, subject: et.subject)        

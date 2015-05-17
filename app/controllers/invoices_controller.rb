@@ -125,6 +125,38 @@ class InvoicesController < ApplicationController
     end    
   end
 
+  def edit
+    @invoice = Invoice.find(params[:id])
+    @client = @invoice.client
+    @services = Service.find(@invoice.service_ids.split(","))
+  end
+
+  def update
+    line_items = []
+    unless params["line-items"].nil?
+      params["line-items"].each do |line_item|
+        line_items.push({desc: line_item["desc"], amount: line_item["amount"], reduction: line_item["reduction"]})
+      end      
+    end
+
+    @invoice = Invoice.find(params[:id])
+    @client = @invoice.client
+    @services = Service.find(@invoice.service_ids.split(","))
+
+    if @invoice.update_invoice(line_items, params[:rate_total_all], params[:expsense_total_all], params[:travel_total_all], params[:grand_total_all], params[:grand_total])
+      file = "invoice-#{Time.now.to_i}.pdf"
+      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+      @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
+      ApplicationMailer.send_invoice(@invoice, params[:list_emails]).deliver
+      redirect_to list_invoices_path
+    else
+      render :edit
+    end        
+  end
+
   def download
     file = "invoice-#{Time.now.to_i}.pdf"
 

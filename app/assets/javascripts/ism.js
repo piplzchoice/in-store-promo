@@ -193,6 +193,18 @@ $(function() {
     }      
   });
 
+  $("#update-invoice").on("click", function(){
+    if($("#add-email").prop('checked')) {
+      $('#insert-add-email-modal').modal({
+        backdrop: 'static',
+        keyboard: true
+      })
+      
+      $("#insert-add-email-modal").modal("show");  
+      return false;        
+    }
+  });
+
   $("#btn-add-item-email").on("click", function(){    
     if(document.getElementById('insert-add-email').checkValidity()) {
       elm = "<span class='email-lists' data-email='" + $("#insert-add-email").val() + "'>" + $("#insert-add-email").val() + " <a href='#' class='rm-add-email'>(x)</a></span><br />";

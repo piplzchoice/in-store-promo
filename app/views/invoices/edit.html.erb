@@ -1,0 +1,203 @@
+<h1 class="page-header">Edit Invoice</h1>
+
+<%= form_for(@invoice, {html: {id: "form-invoice"}} ) do %>
+<div class="row">
+  <div class="col-md-3">
+    <label>Bill To :</label>
+    <p><%= @client.company_name %></p>
+    <p><%= "#{@client.first_name} #{@client.last_name}" %></p>
+    <p><%= @client.street_one %> <%= @client.street_one %></p>
+  </div>
+
+  <div class="col-md-4" style="float: right;">    
+    <div class="form-group">
+      <label>Invoice# : </label> 
+      <%= @invoice.number %>
+    </div>
+    <div class="form-group">
+      <label>Invoice Date : </label>
+      <%= @invoice.issue_date.nil? ? @invoice.created_at.strftime('%m/%d/%Y') : @invoice.issue_date.strftime('%m/%d/%Y') %>
+    </div>    
+    <div class="form-group">
+      <label>Terms : </label>
+      <%= @invoice.terms %>
+    </div>    
+    <div class="form-group">
+      <label>Due Date : </label>
+      <%= @invoice.due_date.nil? ? "-" : @invoice.due_date.strftime('%m/%d/%Y') %>
+    </div>        
+    <div class="form-group">
+      <label>P.O.# : </label>
+      <%= @invoice.po %>
+    </div>                
+  </div> 
+</div>
+
+<hr />
+
+<div class="table-responsive">  
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Demo Date</th>
+        <th>Location</th>
+        <th>Start Time</th>        
+        <th>Rate</th>
+        <th>Product Expenses</th>
+        <th>Travel Expense</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+        <tr>
+          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
+          <td><%= service.start_at.strftime("%I:%M %p") %></td>        
+          <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
+          <td><%= number_to_currency service.report_service.expense_one %></td>
+          <td><%= service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-" %></td>
+          <td><%= number_to_currency(service.grand_total) %></td>
+        </tr>
+      <% end %>
+
+      <tr style="border-top: 2px; border-top-style: dashed; border-bottom: 2px; border-bottom-style: dashed;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Sub Total</strong></td>
+        <td><%= number_to_currency @services.collect{|x| x.client.rate.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report_service.expense_one.to_f}.sum %></td>
+        <td><%= number_to_currency @services.collect{|x| x.report_service.travel_expense.to_f}.sum %></td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Total</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="grand-total-all" data-total="<%= @invoice.grand_total %>">
+          <%= number_to_currency @invoice.grand_total %>
+        </td>
+      </tr>
+
+      <% unless @invoice.line_items.blank? %>
+        <% @invoice.line_items.each do |item| %>
+          <tr>
+            <td>&nbsp;</td>
+            <td><%= item["desc"] %></td>
+            <td><input type="hidden" name="line-items[]desc" value="<%= item["desc"] %>"></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>
+              <input type="hidden" name="line-items[]amount" value="<%= item["amount"] %>">
+              <input type="hidden" name="line-items[]reduction" value="false">
+            </td>
+            <td class="amount-add-item" data-reduction="<%= item["reduction"] == "true" ? "true" : "false" %>" data-amout="<%= item["amount"] %>"> 
+              <%= item["reduction"] == "true" ? "(#{number_to_currency item["amount"]})" : "#{number_to_currency item["amount"]}" %>
+               <a href="#add-item-result" class="remove-line-item">(X)</a> 
+            </td>
+          </tr>          
+        <% end %>
+      <% end %>      
+
+      <tr id="add-item-result" >
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>                
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Balance Due</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="due-total-all"><%= number_to_currency @invoice.grand_total_all %></td>
+      </tr>
+
+    </tbody>
+  </table>
+  <%= hidden_field_tag("rate_total_all", @invoice.rate_total_all) %>
+  <%= hidden_field_tag("expsense_total_all", @invoice.expsense_total_all) %>
+  <%= hidden_field_tag("travel_total_all", @invoice.travel_total_all) %>
+  <%= hidden_field_tag("grand_total", @invoice.grand_total) %>
+  <%= hidden_field_tag("grand_total_all", @invoice.grand_total_all) %>
+  <%= hidden_field_tag("list_emails", (@client.additional_emails.blank? ? nil : "#{@client.additional_emails.join(";");}")) %>    
+  <%= check_box_tag 'add-email' %>&nbsp;Add Email Addresses Of Additional Client Employees. <br />
+  <%= submit_tag("Update Invoice & Send To Client", class: "btn btn-primary", id: "update-invoice") %>    
+</div>
+<% end %>
+<hr />
+<div class="row">
+  <div class="link-new-btn">
+    <%= link_to("Insert Additional Line Item", "#", {id: "insert_add_item", class: "btn btn-primary", role: "button"}) %>
+  </div>
+</div>  
+
+
+<div id="insert-add-item-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form id="form-add-item">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Additional Line Item
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Description : </label>
+          <p><input type="text" required id="insert-add-item-description" class="form-control"></p>
+        </div>
+        <div class="modal-body">
+          <label>Amount : </label>
+          <p><input type="text" required pattern="\d+(\.\d{2})?" id="insert-add-item-amount" class="form-control"></p>
+        </div>
+        <div class="modal-body">
+          <p><input type="checkbox" id="reduction" value="reduction">&nbsp;Credit</p>
+        </div>        
+        <div class="modal-body">
+          <button type="submit" id="submit-insert-add-item-amount" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="insert-add-email-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <form id="form-add-email">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Insert Additional Email
+          </h4>
+        </div>
+        <div class="modal-body">
+          <label>Email : </label>
+          <p><input type="email" required id="insert-add-email" class="form-control"></p>
+        </div>   
+        <div class="modal-body" id="list-add-email">
+          <% unless @client.additional_emails.blank? %>
+            <% @client.additional_emails.each do |email| %>
+              <span class='email-lists' data-email='<%= email %>'>
+               <%= email %><a href='#' class='rm-add-email'>(x)</a>
+              </span><br />            
+            <% end %>
+          <% end %>
+        </div>
+        <div class="modal-body">
+          <button type="submit" id="btn-add-item-email" class="btn btn-primary">Add</button>
+          <button type="button" id="btn-generate-invoice" class="btn btn-primary">Generate Invoice</button>
+        </div>
+      </form>      
+    </div>
+  </div>
+</div>

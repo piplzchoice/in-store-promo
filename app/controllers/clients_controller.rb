@@ -147,12 +147,18 @@ class ClientsController < ApplicationController
 
     msg = {:error => "Failed update addtional email"}
 
-    if client.additional_emails.include?(params["add-email"])
-      msg = {:error => "Email already been added"}
+    if client.additional_emails.nil?
+        msg = {:notice => "Addtional email added"}
+        client.additional_emails = [params["add-email"]]
+        client.save(validate: false)                  
     else
-      msg = {:notice => "Addtional email added"}
-      client.additional_emails.push(params["add-email"])
-      client.save(validate: false)            
+      if client.additional_emails.include?(params["add-email"])
+        msg = {:error => "Email already been added"}
+      else
+        msg = {:notice => "Addtional email added"}
+        client.additional_emails.push(params["add-email"])
+        client.save(validate: false)            
+      end
     end
 
     redirect_to manage_addtional_emails_client_path(client), :flash => msg

@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       delete "logged_as"
       get "manage_addtional_emails"
       delete "remove_addtional_emails"
-      post "update_addtional_emails"
+      post "update_addtional_emails"      
     end
 
     post :export_calendar, :on => :member
@@ -106,7 +106,8 @@ Rails.application.routes.draw do
     get :list, :on => :collection
     get :paid, :on => :collection
     get :print, :on => :member
-    get :download, :on => :member    
+    get :download, :on => :member
+    patch :update_paid, :on => :member
     post "resend", :on => :member
   end
 

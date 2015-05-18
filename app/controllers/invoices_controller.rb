@@ -63,7 +63,7 @@ class InvoicesController < ApplicationController
     end
   end
 
-  def update
+  def update_paid
     @invoice = Invoice.find(params[:id])
     @invoice.service_ids.split(",").each do |service_id|
       Service.update_status_to_paid(service_id)

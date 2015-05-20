@@ -85,6 +85,17 @@ class Invoice < ActiveRecord::Base
     return data
   end  
 
+  def update_invoice(line_items, rate_total_all, 
+    expsense_total_all, travel_total_all, grand_total_all, grand_total)
+    self.line_items = line_items
+    self.rate_total_all = rate_total_all
+    self.expsense_total_all = expsense_total_all
+    self.travel_total_all = travel_total_all
+    self.grand_total_all = grand_total_all
+    self.grand_total = grand_total    
+    self.save
+  end  
+
   def list_email
     client.additional_emails
   end

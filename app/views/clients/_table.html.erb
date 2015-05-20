@@ -18,6 +18,7 @@
           <%= link_to "Display", client_path(client) %> ||           
           <%= link_to "Products", client_products_path(client) %> ||        
           <%= link_to "Edit", edit_client_path(client) %> || 
+          <%= link_to "Manage Emails", manage_addtional_emails_client_path(client) %> ||           
           <%= link_to "Deactivate", client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>
         <% else %>
           <%= link_to (client.is_active ? "Deactivate" : "Reactivate"), client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>

@@ -193,6 +193,18 @@ $(function() {
     }      
   });
 
+  $("#update-invoice").on("click", function(){
+    if($("#add-email").prop('checked')) {
+      $('#insert-add-email-modal').modal({
+        backdrop: 'static',
+        keyboard: true
+      })
+      
+      $("#insert-add-email-modal").modal("show");  
+      return false;        
+    }
+  });
+
   $("#btn-add-item-email").on("click", function(){    
     if(document.getElementById('insert-add-email').checkValidity()) {
       elm = "<span class='email-lists' data-email='" + $("#insert-add-email").val() + "'>" + $("#insert-add-email").val() + " <a href='#' class='rm-add-email'>(x)</a></span><br />";
@@ -303,16 +315,20 @@ $(function() {
     $(this).val($(this).val().toUpperCase());
   });
 
-  $(".update-invoice").on("click", function(){
-    if($(this).parent().parent().find("input#invoice_amount_received").val() === "") {
-      $(this).parent().parent().find("input#invoice_date_received").val("");
+  $(document).on("click", ".update-invoice", function(){
+    console.log("wew");
+    amount_received = $("#amount_received_" + $(this).data("id"));
+    date_received = $("#date_received_" + $(this).data("id"));
+
+    if(amount_received.val() === "") {
+      date_received.val("");
     } else {
-      if($(this).parent().parent().find("input#invoice_amount_received")[0].checkValidity() && $(this).parent().parent().find("input#invoice_date_received").val() === "") {
-        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity('Please fill Date Received');
-        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = false;
+      if(amount_received[0].checkValidity() && date_received.val() === "") {
+        date_received[0].setCustomValidity('Please fill Date Received');
+        date_received[0].validity.valid = false;
       } else {
-        $(this).parent().parent().find("input#invoice_date_received")[0].setCustomValidity("");
-        $(this).parent().parent().find("input#invoice_date_received")[0].validity.valid = true;
+        date_received[0].setCustomValidity("");
+        date_received[0].validity.valid = true;
       }
     }
     return true;
@@ -322,7 +338,7 @@ $(function() {
     column = $(this).data("sort")
     if(column === $("#sort").val()) {
       if($("#direction").val() === "desc") {
-        $("#direction").val("asc")
+        $("#direction").val("asc")  
       } else {
         $("#direction").val("desc")
       }

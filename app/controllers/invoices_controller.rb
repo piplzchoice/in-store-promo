@@ -184,7 +184,7 @@ class InvoicesController < ApplicationController
 
   def resend
     @invoice = Invoice.find(params[:id])
-    ApplicationMailer.send_invoice(@invoiceil).deliver
+    ApplicationMailer.send_invoice(@invoice).deliver
     redirect_to invoice_path(@invoice), notice: "Invoice sent"
   end
 

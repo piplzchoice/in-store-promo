@@ -66,7 +66,7 @@ class Location < ActiveRecord::Base
     ]    
 
     brand_ambassadors.each do |ba|
-      data_field << ba.name
+      data_field << ba.name_split
     end
 
     return data_field

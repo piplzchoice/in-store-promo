@@ -118,6 +118,11 @@ class BrandAmbassador < ActiveRecord::Base
     return hash_data
   end
 
+  def name_split
+    new_name = name.strip.split(" ")
+    "#{new_name.first} #{new_name.last.first}"
+  end
+
   def email
     account.email
   end  

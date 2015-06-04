@@ -117,22 +117,35 @@ class Report < ActiveRecord::Base
 
   def total_units_sold
     total = 0
-    total += (product_one_sold.nil? ? 0 : product_one_sold)
-    total += (product_two_sold.nil? ? 0 : product_two_sold)
-    total += (product_three_sold.nil? ? 0 : product_three_sold)
-    total += (product_four_sold.nil? ? 0 : product_four_sold)
-    total += (product_five_sold.nil? ? 0 : product_five_sold)
-    total += (product_six_sold.nil? ? 0 : product_six_sold)
+    if client_products.nil?
+      total += (product_one_sold.nil? ? 0 : product_one_sold)
+      total += (product_two_sold.nil? ? 0 : product_two_sold)
+      total += (product_three_sold.nil? ? 0 : product_three_sold)
+      total += (product_four_sold.nil? ? 0 : product_four_sold)
+      total += (product_five_sold.nil? ? 0 : product_five_sold)
+      total += (product_six_sold.nil? ? 0 : product_six_sold)
+    else
+      client_products.each_with_index do |product, i|
+        total += (product["sold"].nil? ? 0 : product["sold"].to_f)
+      end      
+    end
+    return total
   end
 
   def ave_product_price
     total_price, available_product = 0, 0
-    total_price, available_product = (total_price + product_one_price), (available_product + 1) unless product_one_price.nil?
-    total_price, available_product = (total_price + product_two_price), (available_product + 1) unless product_two_price.nil?
-    total_price, available_product = (total_price + product_three_price), (available_product + 1) unless product_three_price.nil?
-    total_price, available_product = (total_price + product_four_price), (available_product + 1) unless product_four_price.nil?
-    total_price, available_product = (total_price + product_five_price), (available_product + 1) unless product_five_price.nil?
-    total_price, available_product = (total_price + product_six_price), (available_product + 1) unless product_six_price.nil?
+    if client_products.nil?
+      total_price, available_product = (total_price + product_one_price), (available_product + 1) unless product_one_price.nil?
+      total_price, available_product = (total_price + product_two_price), (available_product + 1) unless product_two_price.nil?
+      total_price, available_product = (total_price + product_three_price), (available_product + 1) unless product_three_price.nil?
+      total_price, available_product = (total_price + product_four_price), (available_product + 1) unless product_four_price.nil?
+      total_price, available_product = (total_price + product_five_price), (available_product + 1) unless product_five_price.nil?
+      total_price, available_product = (total_price + product_six_price), (available_product + 1) unless product_six_price.nil?
+    else
+      client_products.each_with_index do |product, i|
+        total_price, available_product = (total_price + product["price"].to_f), (available_product + 1) unless product["price"].nil?
+      end         
+    end
     return (total_price / available_product).round(2) rescue "-"
   end
 end

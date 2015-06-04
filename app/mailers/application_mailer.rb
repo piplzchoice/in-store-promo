@@ -85,10 +85,11 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: statement.brand_ambassador.account.email, subject: et.subject)    
   end
 
-  def send_invoice(invoice, list_emails)
-    emails = [invoice.client.email]
-    unless list_emails == ""
-      list_emails.split(";").each{|x| emails.push(x)}      
+  def send_invoice(invoice)
+    client = invoice.client
+    emails = [client.email]
+    unless client.additional_emails.nil?
+      emails.push(client.additional_emails).flatten!
     end
     et = EmailTemplate.find_by_name("send_invoice")
 

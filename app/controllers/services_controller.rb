@@ -49,18 +49,27 @@ class ServicesController < ApplicationController
     old_ba = @service.brand_ambassador
     old_date = @service.date
     old_location_id = @service.location_id
-    # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
+    
+    is_ba_detail_has_changed = @service.check_data_changes(service_params)
+  
     respond_to do |format|
       format.html do
         if @service.can_modify? || current_user.has_role?(:admin)
           if @service.update_data(service_params)
             if @service.can_reassign? || current_user.has_role?(:admin)              
+
               if old_ba.id != @service.brand_ambassador_id || old_location_id != @service.location_id
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end
-              ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-              @service.update_status_scheduled
+
+              if is_ba_detail_has_changed
+                ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+              else
+                ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+                @service.update_status_scheduled
+              end              
             end
+
             redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
           end
         end

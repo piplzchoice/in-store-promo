@@ -268,6 +268,22 @@ class Service < ActiveRecord::Base
     self.update_attributes(service_params)
   end
 
+  def check_data_changes(service_params)
+    service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
+    service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
+    
+    self.location_id = service_params[:location_id]
+    self.brand_ambassador_id = service_params[:brand_ambassador_id]
+    self.start_at = service_params[:start_at]
+    self.end_at =service_params[:end_at]
+    self.details = service_params[:details]
+
+    self.co_op_client_id = service_params[:co_op_client_id]
+    self.parent = service_params[:parent]
+
+    self.changes.size == 1 && !self.changes["details"].nil?
+  end
+
   def old_id
     ret = nil
     unless self.id.nil?

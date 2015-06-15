@@ -458,20 +458,20 @@ class Service < ActiveRecord::Base
 
   def grand_total
     expense = 0
-    expense = report.expense_one.to_f + report.travel_expense.to_f unless report.nil?
+    expense = report_service.expense_one.to_f + report_service.travel_expense.to_f unless report_service.nil?
     client.rate.to_f + expense
   end
 
   def export_data
     products = []
-    if report.client_products.nil?
+    if report_service.client_products.nil?
       products = [
-        report.product_one == "" ? "-" : report.product_one.to_f,
-        report.product_two == "" ? "-" : report.product_two.to_f,
-        report.product_three == "" ? "-" : report.product_three.to_f,
-        report.product_four == "" ? "-" : report.product_four.to_f,
-        report.product_five == "" ? "-" : report.product_five.to_f,
-        report.product_six == "" ? "-" : report.product_six.to_f,
+        report_service.product_one == "" ? "-" : report_service.product_one.to_f,
+        report_service.product_two == "" ? "-" : report_service.product_two.to_f,
+        report_service.product_three == "" ? "-" : report_service.product_three.to_f,
+        report_service.product_four == "" ? "-" : report_service.product_four.to_f,
+        report_service.product_five == "" ? "-" : report_service.product_five.to_f,
+        report_service.product_six == "" ? "-" : report_service.product_six.to_f,
         "-",
         "-",
         "-",
@@ -481,12 +481,12 @@ class Service < ActiveRecord::Base
         "-",
         "-",
         "-",      
-        report.product_one_sold.nil? ? "-" : report.product_one_sold.to_f,
-        report.product_two_sold.nil? ? "-" : report.product_two_sold.to_f,
-        report.product_three_sold.nil? ? "-" : report.product_three_sold.to_f,
-        report.product_four_sold.nil? ? "-" : report.product_four_sold.to_f,
-        report.product_five_sold.nil? ? "-" : report.product_five_sold.to_f,
-        report.product_six_sold.nil? ? "-" : report.product_six_sold.to_f,
+        report_service.product_one_sold.nil? ? "-" : report_service.product_one_sold.to_f,
+        report_service.product_two_sold.nil? ? "-" : report_service.product_two_sold.to_f,
+        report_service.product_three_sold.nil? ? "-" : report_service.product_three_sold.to_f,
+        report_service.product_four_sold.nil? ? "-" : report_service.product_four_sold.to_f,
+        report_service.product_five_sold.nil? ? "-" : report_service.product_five_sold.to_f,
+        report_service.product_six_sold.nil? ? "-" : report_service.product_six_sold.to_f,
         "-",
         "-",
         "-",
@@ -496,22 +496,22 @@ class Service < ActiveRecord::Base
         "-",
         "-",
         "-",
-        report.est_customer_touched.blank? ? "-" : report.est_customer_touched.to_f
+        report_service.est_customer_touched.blank? ? "-" : report_service.est_customer_touched.to_f
       ]
     else
-      unfill_product = 15 - report.client_products.size
-      report.client_products.each_with_index do |product, i|
+      unfill_product = 15 - report_service.client_products.size
+      report_service.client_products.each_with_index do |product, i|
         products.push(product["name"])
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0
 
-      report.client_products.each_with_index do |product, i|
+      report_service.client_products.each_with_index do |product, i|
         products.push(product["sold"].to_f)
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0      
-      products.push(report.est_customer_touched.blank? ? "-" : report.est_customer_touched.to_f)
+      products.push(report_service.est_customer_touched.blank? ? "-" : report_service.est_customer_touched.to_f)
     end
 
     value_row = [
@@ -519,9 +519,9 @@ class Service < ActiveRecord::Base
       client.company_name,
       brand_ambassador.name,
       start_at.strftime("%m/%d/%y"),
-      report.total_units_sold.to_f,
-      report.ave_product_price.to_f,
-      report.traffic,
+      report_service.total_units_sold.to_f,
+      report_service.ave_product_price.to_f,
+      report_service.traffic,
       start_at.strftime("%A"),
       start_at.strftime("%p"),      
     ].push(products).flatten!

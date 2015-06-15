@@ -18,7 +18,7 @@ class ServicesController < ApplicationController
 
   def create
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.build_data(service_params)
     respond_to do |format|
       format.html do

@@ -49,8 +49,9 @@ class ServicesController < ApplicationController
     old_ba = @service.brand_ambassador
     old_date = @service.date
     old_location_id = @service.location_id
-    
+
     is_ba_detail_has_changed = @service.check_data_changes(service_params)
+    msg = "Service Updated"
   
     respond_to do |format|
       format.html do
@@ -62,15 +63,27 @@ class ServicesController < ApplicationController
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end
 
-              if is_ba_detail_has_changed
-                ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+              if params["co-op-price-box"]
+                msg = "Added Coop Client to service"
+                @service.create_coops(params["co_op_client_id"])          
               else
-                ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-                @service.update_status_scheduled
-              end              
+                if is_ba_detail_has_changed
+                  ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+                else
+                  ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+
+                  @service.update_status_scheduled
+
+                  if @service.is_co_op?
+                    @service.co_op_services.each do |srv|
+                      srv.update_status_scheduled
+                    end
+                  end                                                                
+                end                              
+              end
             end
 
-            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
+            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: msg and return
           end
         end
         render :edit

@@ -266,6 +266,16 @@ class Service < ActiveRecord::Base
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     self.update_attributes(service_params)
+
+    if self.is_co_op?
+      service_params.delete(:brand_ambassador_id)
+
+      self.co_op_services.each do |srv|
+        srv.update_attributes(service_params)
+      end
+    else
+      true
+    end
   end
 
   def check_data_changes(service_params)
@@ -278,7 +288,7 @@ class Service < ActiveRecord::Base
     self.end_at =service_params[:end_at]
     self.details = service_params[:details]
 
-    self.co_op_client_id = service_params[:co_op_client_id]
+    # self.co_op_client_id = service_params[:co_op_client_id]
     self.parent = service_params[:parent]
 
     self.changes.size == 1 && !self.changes["details"].nil?
@@ -434,9 +444,9 @@ class Service < ActiveRecord::Base
     brand_ambassador.is_active
   end
 
-  def is_co_op?
-    !co_op_client_id.nil?
-  end  
+  # def is_co_op?
+  #   !co_op_client_id.nil?
+  # end  
 
   def set_data_true
     self.update_attribute(:is_active, true)

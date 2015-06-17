@@ -68,44 +68,48 @@
   </div>
 
   <% if @service.is_co_op? %>
+    <% unless @report.hide_client_name %>
       <div class="row report">
         <div id="report-client" class="report-left">
           <span class="report-title">Client</span>: 
           <span class="report-option-details"><%= @service.company_name %></span>
         </div>
       </div>
+    <% end %>
   <% end %>
 
-  <div class="row report">
-    <div id="report-product" class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-              <th><span class="report-title">Price</span></th>
-              <th><span class="report-title">Sample</span></th>            
-            <th><span class="report-title">Beginning</span></th>
-            <th><span class="report-title">End</span></th>
-            <th><span class="report-title">Sold</span></th>
-          </tr>
-        </thead>
-        <tbody>  
-          <% if !@report.client_products.nil? %>
-            <%= render "client_products_show" %>
-          <% else %>
-            <%= render "products_show" %>
-          <% end %>          
-        </tbody>
-      </table>
+  <% unless @report.hide_client_product %>
+    <div class="row report">
+      <div id="report-product" class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>&nbsp;</th>
+                <th><span class="report-title">Price</span></th>
+                <th><span class="report-title">Sample</span></th>            
+              <th><span class="report-title">Beginning</span></th>
+              <th><span class="report-title">End</span></th>
+              <th><span class="report-title">Sold</span></th>
+            </tr>
+          </thead>
+          <tbody>  
+            <% if !@report.client_products.nil? %>
+              <%= render "client_products_show" %>
+            <% else %>
+              <%= render "products_show" %>
+            <% end %>          
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <% if @service.is_co_op? %>
 
     <div class="row report">
       <div id="report-client" class="report-left">
-        <span class="report-title">Co-op Client </span>: 
+        <span class="report-title">Client </span>: 
         <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
       </div>
     </div>      

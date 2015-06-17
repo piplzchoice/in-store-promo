@@ -201,3 +201,21 @@ if EmailTemplate.find_by_name("thank_you_for_payment").nil?
 
   puts "created email template for thank_you_for_payment"  
 end
+
+
+if EmailTemplate.find_by_name("service_has_been_modified").nil?
+  service_has_been_modified = {
+    name: "service_has_been_modified", 
+    subject: "Service details has been modified",
+    content: "
+      <p>Hello, .ba_name</p>
+      <br />    
+      <p>Details of Demo .service_company_name, .service_date, .service_location was changed. </p>
+      <p><a href=\".link_show_page\">Click here to see changes</a><p>
+      <p>Thanks</p>
+    "  
+  }  
+  EmailTemplate.create(service_has_been_modified)
+
+  puts "created email template for service_has_been_modified"  
+end

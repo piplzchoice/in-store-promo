@@ -266,6 +266,33 @@ class Service < ActiveRecord::Base
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     self.update_attributes(service_params)
+
+    if self.is_co_op?
+      service_params.delete(:brand_ambassador_id)
+
+      self.co_op_services.each do |srv|
+        service_params[:brand_ambassador_id] = srv.brand_ambassador_id
+        srv.update_attributes(service_params)
+      end
+    else
+      true
+    end
+  end
+
+  def check_data_changes(service_params)
+    service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
+    service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
+    
+    self.location_id = service_params[:location_id]
+    self.brand_ambassador_id = service_params[:brand_ambassador_id]
+    self.start_at = service_params[:start_at]
+    self.end_at =service_params[:end_at]
+    self.details = service_params[:details]
+
+    # self.co_op_client_id = service_params[:co_op_client_id]
+    self.parent = service_params[:parent]
+
+    self.changes.size == 1 && !self.changes["details"].nil?
   end
 
   def old_id
@@ -418,9 +445,9 @@ class Service < ActiveRecord::Base
     brand_ambassador.is_active
   end
 
-  def is_co_op?
-    !co_op_client_id.nil?
-  end  
+  # def is_co_op?
+  #   !co_op_client_id.nil?
+  # end  
 
   def set_data_true
     self.update_attribute(:is_active, true)
@@ -432,20 +459,20 @@ class Service < ActiveRecord::Base
 
   def grand_total
     expense = 0
-    expense = report.expense_one.to_f + report.travel_expense.to_f unless report.nil?
+    expense = report_service.expense_one.to_f + report_service.travel_expense.to_f unless report_service.nil?
     client.rate.to_f + expense
   end
 
   def export_data
     products = []
-    if report.client_products.nil?
+    if report_service.client_products.nil?
       products = [
-        report.product_one == "" ? "-" : report.product_one.to_f,
-        report.product_two == "" ? "-" : report.product_two.to_f,
-        report.product_three == "" ? "-" : report.product_three.to_f,
-        report.product_four == "" ? "-" : report.product_four.to_f,
-        report.product_five == "" ? "-" : report.product_five.to_f,
-        report.product_six == "" ? "-" : report.product_six.to_f,
+        report_service.product_one == "" ? "-" : report_service.product_one.to_f,
+        report_service.product_two == "" ? "-" : report_service.product_two.to_f,
+        report_service.product_three == "" ? "-" : report_service.product_three.to_f,
+        report_service.product_four == "" ? "-" : report_service.product_four.to_f,
+        report_service.product_five == "" ? "-" : report_service.product_five.to_f,
+        report_service.product_six == "" ? "-" : report_service.product_six.to_f,
         "-",
         "-",
         "-",
@@ -455,12 +482,12 @@ class Service < ActiveRecord::Base
         "-",
         "-",
         "-",      
-        report.product_one_sold.nil? ? "-" : report.product_one_sold.to_f,
-        report.product_two_sold.nil? ? "-" : report.product_two_sold.to_f,
-        report.product_three_sold.nil? ? "-" : report.product_three_sold.to_f,
-        report.product_four_sold.nil? ? "-" : report.product_four_sold.to_f,
-        report.product_five_sold.nil? ? "-" : report.product_five_sold.to_f,
-        report.product_six_sold.nil? ? "-" : report.product_six_sold.to_f,
+        report_service.product_one_sold.nil? ? "-" : report_service.product_one_sold.to_f,
+        report_service.product_two_sold.nil? ? "-" : report_service.product_two_sold.to_f,
+        report_service.product_three_sold.nil? ? "-" : report_service.product_three_sold.to_f,
+        report_service.product_four_sold.nil? ? "-" : report_service.product_four_sold.to_f,
+        report_service.product_five_sold.nil? ? "-" : report_service.product_five_sold.to_f,
+        report_service.product_six_sold.nil? ? "-" : report_service.product_six_sold.to_f,
         "-",
         "-",
         "-",
@@ -470,22 +497,22 @@ class Service < ActiveRecord::Base
         "-",
         "-",
         "-",
-        report.est_customer_touched.blank? ? "-" : report.est_customer_touched.to_f
+        report_service.est_customer_touched.blank? ? "-" : report_service.est_customer_touched.to_f
       ]
     else
-      unfill_product = 15 - report.client_products.size
-      report.client_products.each_with_index do |product, i|
+      unfill_product = 15 - report_service.client_products.size
+      report_service.client_products.each_with_index do |product, i|
         products.push(product["name"])
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0
 
-      report.client_products.each_with_index do |product, i|
+      report_service.client_products.each_with_index do |product, i|
         products.push(product["sold"].to_f)
       end
 
       unfill_product.times{|x| products.push("-")} unless unfill_product == 0      
-      products.push(report.est_customer_touched.blank? ? "-" : report.est_customer_touched.to_f)
+      products.push(report_service.est_customer_touched.blank? ? "-" : report_service.est_customer_touched.to_f)
     end
 
     value_row = [
@@ -493,9 +520,9 @@ class Service < ActiveRecord::Base
       client.company_name,
       brand_ambassador.name,
       start_at.strftime("%m/%d/%y"),
-      report.total_units_sold.to_f,
-      report.ave_product_price.to_f,
-      report.traffic,
+      report_service.total_units_sold.to_f,
+      report_service.ave_product_price.to_f,
+      report_service.traffic,
       start_at.strftime("%A"),
       start_at.strftime("%p"),      
     ].push(products).flatten!

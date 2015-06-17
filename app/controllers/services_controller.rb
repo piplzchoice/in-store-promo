@@ -18,7 +18,7 @@ class ServicesController < ApplicationController
 
   def create
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.build_data(service_params)
     respond_to do |format|
       format.html do
@@ -36,7 +36,7 @@ class ServicesController < ApplicationController
 
   def edit
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     respond_to do |format|
       format.html
@@ -45,23 +45,46 @@ class ServicesController < ApplicationController
 
   def update
     @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     old_ba = @service.brand_ambassador
     old_date = @service.date
     old_location_id = @service.location_id
-    # is_ba_changed = @service.changed_attributes["brand_ambassador_id"].nil?
+
+    is_ba_detail_has_changed = @service.check_data_changes(service_params)
+    msg = "Service Updated"
+  
     respond_to do |format|
       format.html do
         if @service.can_modify? || current_user.has_role?(:admin)
           if @service.update_data(service_params)
             if @service.can_reassign? || current_user.has_role?(:admin)              
+
               if old_ba.id != @service.brand_ambassador_id || old_location_id != @service.location_id
                 ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
               end
-              ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-              @service.update_status_scheduled
+
+              if params["co-op-price-box"]
+                msg = "Added Coop Client to service"
+                @service.create_coops(params["co_op_client_id"])          
+              else
+                if is_ba_detail_has_changed
+                  ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+                else
+                  ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+
+                  @service.update_status_scheduled
+
+                  if @service.is_co_op?
+                    @service.co_op_services.each do |srv|
+                      srv.update_status_scheduled
+                    end
+                  end                                                                
+                end                              
+              end
             end
-            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
+
+            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: msg and return
           end
         end
         render :edit

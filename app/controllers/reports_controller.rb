@@ -438,6 +438,7 @@ class ReportsController < ApplicationController
       :product_five_beginning, :product_five_end, :product_five_sold, 
       :product_six_sample, :product_six_price, :product_six, 
       :product_six_beginning, :product_six_end, :product_six_sold, :travel_expense, 
+      :hide_client_name, :hide_client_product, :hide_client_coop_name, :hide_client_coop_product,
       :client_products => [:name, :price, :sample, :beginning, :end, :sold, :id],
       :client_coop_products => [:name, :price, :sample, :beginning, :end, :sold, :id])
   end    

@@ -27,6 +27,16 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: ba.account.email, subject: et.subject)
   end
 
+  def service_has_been_modified(ba, service)
+    et = EmailTemplate.find_by_name("service_has_been_modified")
+
+    @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", service.client.company_name)
+    @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_date", service.date)
+    @content = @content.gsub(".link_show_page", client_service_url(client_id: service.client.id, id: service.id))
+
+    mail(to: ba.account.email, subject: et.subject)    
+  end
+
   # def reminder_to_ba(ba_email, ba_name, date)
   # end
 

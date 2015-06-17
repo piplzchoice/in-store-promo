@@ -59,47 +59,58 @@
     </div>
 
     <% if @service.is_co_op? %>
-      <br /><br /><br />
+      <br /><br /><br />      
         <div class="row report">
           <div id="report-client" class="report-left">
             <span class="report-title">Client</span>: 
             <span class="report-option-details"><%= @service.company_name %></span>
+            <span>
+              <%= link_to("(#{@report.hide_client_name ? "Show" : "Hide"} Client)", "#", {id: "show-hide-client-name"}) %>
+              <%= f.hidden_field(:hide_client_name) %>
+            </span>
           </div>
         </div>
-    <% end %>
+    <% end %>    
 
-      <div class="link-new-btn">
-        <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", id: "add-product-report"}) %>
-      </div>  
-      <div class="row report">
-        <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>&nbsp;</th>
-                <th>&nbsp;</th>
-                <th><span class="report-title">Price</span></th>
-                <th><span class="report-title">Sample</span></th>
-                <th><span class="report-title">Beginning</span></th>
-                <th><span class="report-title">End</span></th>
-                <th><span class="report-title">Sold</span></th>
-              </tr>
-            </thead>
-            <tbody id="row-products">  
-              <% if @report.new_record? || !@report.client_products.nil? %>
-                <%= render "client_products", f: f, client: @service.client %>
-              <% else %>
-                <%= render "products", f: f %>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
+    <div class="link-new-btn">
+      <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", id: "add-product-report"}) %>
+    </div>  
+
+    <div class="row report">
+      <% if @service.is_co_op? %>
+        <span>        
+          <%= link_to("(#{@report.hide_client_product ? "Show" : "Hide"} Product)", "#", {id: "show-hide-client-product"}) %>
+          <%= f.hidden_field(:hide_client_product) %>        
+        </span>
+      <% end %>
+      <div id="report-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.client.products.size %>">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>&nbsp;</th>
+              <th><span class="report-title">Price</span></th>
+              <th><span class="report-title">Sample</span></th>
+              <th><span class="report-title">Beginning</span></th>
+              <th><span class="report-title">End</span></th>
+              <th><span class="report-title">Sold</span></th>
+            </tr>
+          </thead>
+          <tbody id="row-products">  
+            <% if @report.new_record? || !@report.client_products.nil? %>
+              <%= render "client_products", f: f, client: @service.client %>
+            <% else %>
+              <%= render "products", f: f %>
+            <% end %>
+          </tbody>
+        </table>
       </div>
+    </div>
 
       <% if @service.is_co_op? %>
         <div class="row report">
           <div id="report-client" class="report-left">
-            <span class="report-title">Co-op Client </span>: 
+            <span class="report-title">Client </span>: 
             <span class="report-option-details"><%= @service.co_op_services.first.client.company_name %></span>
           </div>
         </div>      

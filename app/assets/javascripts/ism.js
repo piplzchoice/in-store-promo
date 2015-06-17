@@ -24,6 +24,26 @@ $(function() {
     });    
   });
 
+  $(document).on("click", "#show-hide-client-name", function(){
+    if($("#report_hide_client_name").val() === "f") {
+      $("#report_hide_client_name").val("t");
+      $("#show-hide-client-name").html("(Show Client)");
+    } else if($("#report_hide_client_name").val() === "t") {
+      $("#report_hide_client_name").val("f");
+      $("#show-hide-client-name").html("(Hide Client)");
+    }
+  });  
+
+  $(document).on("click", "#show-hide-client-product", function(){
+    if($("#report_hide_client_product").val() === "f") {
+      $("#report_hide_client_product").val("t");
+      $("#show-hide-client-product").html("(Show Product)");
+    } else if($("#report_hide_client_product").val() === "t") {
+      $("#report_hide_client_product").val("f");
+      $("#show-hide-client-product").html("(Hide Product)");
+    }    
+  });  
+
   $(document).on("click", "#selecctall-location", function(){
     if(this.checked) { 
         $('.locations-checkbox').each(function() {

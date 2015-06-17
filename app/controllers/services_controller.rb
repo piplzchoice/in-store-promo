@@ -36,7 +36,7 @@ class ServicesController < ApplicationController
 
   def edit
     @client = Client.find(params[:client_id])
-    @clients = Client.all.where.not(id: params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     respond_to do |format|
       format.html
@@ -45,6 +45,7 @@ class ServicesController < ApplicationController
 
   def update
     @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
     old_ba = @service.brand_ambassador
     old_date = @service.date

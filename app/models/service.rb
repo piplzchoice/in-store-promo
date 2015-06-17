@@ -271,6 +271,7 @@ class Service < ActiveRecord::Base
       service_params.delete(:brand_ambassador_id)
 
       self.co_op_services.each do |srv|
+        service_params[:brand_ambassador_id] = srv.brand_ambassador_id
         srv.update_attributes(service_params)
       end
     else

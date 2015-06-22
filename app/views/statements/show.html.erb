@@ -10,38 +10,81 @@
 
 <hr />
 
-<table id="table-data" class="table table-striped" border="1" width="100%">
-  <thead>
-    <tr>
-      <th style="text-align: center;">Date</th>
-      <th style="text-align: center;">Client Name</th>
-      <th style="text-align: center;">Location</th>
-      <th style="text-align: center;">Rate</th>
-      <th style="text-align: center;">Expenses</th>
-      <% if @brand_ambassador.mileage %>
-        <th style="text-align: center;">Travel Expense</th>
+<div class="table-responsive">  
+  <table id="table-data" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Client Name</th>
+        <th>Location</th>
+        <th>Rate</th>
+        <th>Expenses</th>
+        <th>Travel Expense</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each_with_index do |service, i|  %>
+        <tr>
+          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= service.company_name %></td>
+          <td><%= service.location.name %></td>         
+          <td><%= number_to_currency(service.ba_rate) %></td> 
+          <td><%= service.report_service.expense_one.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
+          <td><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
+          <td><%= number_to_currency service.total_ba_paid %></td> 
+        </tr>        
       <% end %>
-      <th style="text-align: center;">Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @services.each_with_index do |service, i|  %>
-    <tr>
-      <td style="text-align: center;"><%= service.start_at.strftime('%m/%d/%Y') %></td>
-      <td style="text-align: center;"><%= service.company_name %></td> 
-      <td style="text-align: center;"><%= service.location.name %></td>       
-      <td style="text-align: center;"><%= number_to_currency(service.ba_rate) %></td> 
-      <td style="text-align: center;"><%= service.report.expense_one.nil? ? "-" : number_to_currency(service.report.expense_one) %></td>
-      <% if @brand_ambassador.mileage %>
-        <td style="text-align: center;"><%= (service.brand_ambassador.mileage ? (service.report.travel_expense.nil? ? "-" : number_to_currency(service.report.travel_expense)) : "-") %></td>
+
+      <tr style="border-top: 2px; border-top-style: dashed; border-bottom: 2px; border-bottom-style: dashed;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Sub Total</strong></td>
+        <td><%= number_to_currency @totals_rate %></td>
+        <td><%= number_to_currency @totals_expense %></td>
+        <td><%= number_to_currency @totals_travel_expense %></td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Total</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="grand-total-all" data-total="<%= @totals_ba_paid %>">
+          <%= number_to_currency @totals_ba_paid %>
+        </td>
+      </tr>
+
+      <% unless @statement.line_items.blank? %>
+        <% @statement.line_items.each do |item| %>
+          <tr>
+            <td>&nbsp;</td>
+            <td><%= item["desc"] %></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td class="right-align"><%= item["reduction"] == "true" ? "(#{number_to_currency item["amount"]})" : "#{number_to_currency item["amount"]}" %></td>
+          </tr>
+        <% end %>
       <% end %>
-      <td style="text-align: center;"><%= number_to_currency service.total_ba_paid %></td> 
-    </tr>
-    <% end %>
-  </tbody>
-</table>
-<br /><br />
-<div class="link-new-btn">
-  <span>Total Payment Processed :</span>
-  <span id="total-ba-paid" style="float: right;"><strong><%= number_to_currency(@totals_ba_paid) %></strong></span>
+
+      <tr style="border-top: 2px; border-top-style: double; border-bottom: 2px; border-bottom-style: double;">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td><strong>Balance Due</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td id="due-total-all"><%= number_to_currency @totals_ba_paid %></td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  
 </div>
+

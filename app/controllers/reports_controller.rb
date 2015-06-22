@@ -132,7 +132,12 @@ class ReportsController < ApplicationController
 
       kit = PDFKit.new(html)
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-      statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
+      statement = @ba.statements.build(
+        file: kit.to_file("#{Rails.root}/tmp/#{file}"), 
+        services_ids: hash_data[key],
+        line_items: @line_items,
+        grand_total: @grand_total_all
+      )
       statement.save
       ApplicationMailer.ba_is_paid(statement).deliver
 

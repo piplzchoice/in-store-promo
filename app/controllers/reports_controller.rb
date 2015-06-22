@@ -136,10 +136,10 @@ class ReportsController < ApplicationController
         file: kit.to_file("#{Rails.root}/tmp/#{file}"), 
         services_ids: hash_data[key],
         line_items: @line_items,
-        grand_total: @grand_total_all
+        grand_total: params[:grand_total_all]
       )
       statement.save
-      ApplicationMailer.ba_is_paid(statement).deliver
+      # ApplicationMailer.ba_is_paid(statement).deliver
 
     end    
 

@@ -9,10 +9,13 @@
 #  created_at          :datetime
 #  updated_at          :datetime
 #  services_ids        :text
+#  line_items          :text
+#  grand_total         :decimal(8, 2)
 #
 
 class Statement < ActiveRecord::Base
   serialize :services_ids  
-  belongs_to :brand_ambassador
+  serialize :line_items, JSON
+  belongs_to :brand_ambassador  
   mount_uploader :file, ImageUploader
 end

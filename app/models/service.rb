@@ -172,6 +172,30 @@ class Service < ActiveRecord::Base
     return total_paid
   end
 
+  def self.calculate_total_rate(service_ids)
+    total_paid = 0
+    Service.find(service_ids).each do |service|
+      total_paid += service.ba_rate.to_f
+    end
+    return total_paid
+  end
+
+  def self.calculate_total_expense(service_ids)
+    total_paid = 0
+    Service.find(service_ids).each do |service|
+      total_paid += service.report_service.expense_one.nil? ? 0 : service.report_service.expense_one.to_f
+    end
+    return total_paid
+  end
+
+  def self.calculate_total_travel_expense(service_ids)
+    total_paid = 0
+    Service.find(service_ids).each do |service|
+      total_paid += (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? 0 : service.report_service.travel_expense.to_f) : 0)
+    end
+    return total_paid
+  end
+
   def self.update_to_ba_paid(service_ids)
     Service.find(service_ids).each do |service|
       service.update_attribute(:status, Service.status_ba_paid)

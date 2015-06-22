@@ -1,33 +1,78 @@
-<!DOCTYPE html>
 <html>
   <head>
     <title><%= content_for?(:title) ? yield(:title) : "In Store Marketing" %></title>
     <style type="text/css">
-      .report {
-        padding-bottom: 10px;
-      }
-
-      .report-title {
-        text-decoration: underline;
-      }
-
-      .report-left {
-        float: left;
-        padding-right: 15px;  
-      }
-
-      .report-option-details {
-        background-color: lime;
-        font-weight: bold;  
-      }
-
-      .report-weather-traffic {
-        background-color: yellow;
+      .row {
+        display: inline-block;
+        width: 100%;        
       }    
+
+      table {
+        border-spacing: 2px;
+        border-collapse: collapse;
+      }
+      td,
+      th {
+        padding: 0;
+      }
+
+      .highlight {
+        background-color: rgb(208, 208, 208);
+      }
+
+      .title-color {
+        color: white;
+      }
+
+      .right-align {
+        text-align: right;
+      }
+
+      .table-bordered {
+        border: 1px solid black;        
+      }
+      .table-bordered > thead > tr > th,
+      .table-bordered > tbody > tr > th,
+      .table-bordered > tfoot > tr > th,
+      .table-bordered > thead > tr > td,
+      .table-bordered > tbody > tr > td,
+      .table-bordered > tfoot > tr > td {
+        border: 1px solid black;
+      }
+      .table-bordered > thead > tr > th,
+      .table-bordered > thead > tr > td {
+        border-bottom-width: 2px;
+      }      
+
+      .pad-tab {
+        padding: 3px;
+      }
+
+      tr.border-inv, td.border-inv {
+        border: 1px solid black;
+      }
+
+      td.border-bott {
+        border-bottom: 1px solid;
+      }
+
+      td.border-bott-strong {
+        border-bottom: 2px solid;
+      }      
     </style>
   </head>
   <body>
       <div class="container-fluid">
+
+        <div class="row" style="margin-top: 15px;margin-bottom: 45px;">
+          <div style="height: 2px; background-color: black; text-align: right;padding-right: 125px;">
+            <span style="background-color: white; position: relative; top: -0.5em; font-size: 15px">
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <strong>STATEMENTS</strong>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </span>
+          </div>          
+        </div>
         <%= yield %>
       </div>
   </body>

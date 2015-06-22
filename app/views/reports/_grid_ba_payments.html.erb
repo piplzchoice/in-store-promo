@@ -1,4 +1,4 @@
-<%= form_tag(process_ba_payments_reports_path, method: :patch, id: "filter-data") do %>
+<%= form_tag(new_ba_payments_reports_path, method: :post, id: "filter-data") do %>
   <table id="table-data" class="table table-striped">
     <thead>
       <tr>
@@ -18,7 +18,7 @@
         <td>
           <%= 
             check_box_tag("service_ids[]", "#{service.brand_ambassador.id}-#{service.id}", false, 
-            {class: 'ba-payments-checkbox', data: {total: service.total_ba_paid}})
+            {class: 'ba-payments-checkbox', data: {total: service.total_ba_paid}}) if @filter
           %>
         </td>
         <td><%= service.start_at.strftime('%m/%d/%Y') %></td>

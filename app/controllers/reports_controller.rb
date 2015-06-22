@@ -76,43 +76,77 @@ class ReportsController < ApplicationController
   def ba_payments    
     respond_to do |format|
       format.html do
+        @filter = false
         @brand_ambassadors = Service.all.where({status: Service.status_paid}).collect{|x| x.brand_ambassador}.uniq
         @services = Service.all.where({status: Service.status_paid}).order(start_at: :desc)
       end    
 
       format.js do
+        @filter = true
         @services = Service.filter_and_order({"status" => Service.status_paid, "assigned_to" => params[:assigned_to], "client_name" => "", "sort_column" => sort_column, "sort_direction" => sort_direction})
       end
     end    
   end
 
-  def process_ba_payments
-    unless params[:service_ids].nil?
-      hash_data = BrandAmbassador.process_payments(params[:service_ids])
-      hash_data.each_key do |key|
-        @ba = BrandAmbassador.find(key)
-        @services = @ba.services.find(hash_data[key])
-        @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
-        Service.update_to_ba_paid(hash_data[key])
-
-        time_no = Time.now.to_i
-        file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
-
-        html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments", :id => key, service_ids: hash_data[key].join("-"))
-        kit = PDFKit.new(html)
-        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-        statement = @ba.statements.build(file: kit.to_file("#{Rails.root}/tmp/#{file}"), services_ids: hash_data[key])
-        statement.save
-        ApplicationMailer.ba_is_paid(statement).deliver
-      end      
+  def new_ba_payments
+    hash_data = BrandAmbassador.process_payments(params[:service_ids])
+    hash_data.each_key do |key|
+      @ba = BrandAmbassador.find(key)
+      @services = @ba.services.find(hash_data[key])
+      @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
+      @totals_rate = Service.calculate_total_rate(hash_data[key])
+      @totals_expense = Service.calculate_total_expense(hash_data[key])
+      @totals_travel_expense = Service.calculate_total_travel_expense(hash_data[key])
     end
+    respond_to do |format|
+      format.html
+    end   
+  end
+
+  def process_ba_payments
+
+    hash_data = BrandAmbassador.process_payments(params[:service_ids])
+    hash_data.each_key do |key|
+
+      @line_items = []
+      unless params["line-items"].nil?
+        params["line-items"].each do |line_item|
+          @line_items.push({desc: line_item["desc"], amount: line_item["amount"], reduction: line_item["reduction"]})
+        end      
+      end    
+
+      @ba = BrandAmbassador.find(key)
+      @services = @ba.services.find(hash_data[key])
+      @totals_ba_paid = Service.calculate_total_ba_paid(hash_data[key])
+      @totals_rate = Service.calculate_total_rate(hash_data[key])
+      @totals_expense = Service.calculate_total_expense(hash_data[key])
+      @totals_travel_expense = Service.calculate_total_travel_expense(hash_data[key])
+      @grand_total_all = params[:grand_total_all]      
+
+      Service.update_to_ba_paid(hash_data[key])
+
+      time_no = Time.now.to_i
+      file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
+
+      html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments")
+
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+      statement = @ba.statements.build(
+        file: kit.to_file("#{Rails.root}/tmp/#{file}"), 
+        services_ids: hash_data[key],
+        line_items: @line_items,
+        grand_total: params[:grand_total_all]
+      )
+      statement.save
+      # ApplicationMailer.ba_is_paid(statement).deliver
+
+    end    
+
     redirect_to ba_payments_reports_path    
   end
 
   def print_process_ba_payments
-    @ba = BrandAmbassador.find(params[:id])
-    @services = @ba.services.find(params[:service_ids].split("-"))
-    @totals_ba_paid = @ba.services.calculate_total_ba_paid(params[:service_ids].split("-"))
     render layout: "print_report"
   end
 

@@ -9,6 +9,8 @@
 #  created_at          :datetime
 #  updated_at          :datetime
 #  services_ids        :text
+#  line_items          :text
+#  grand_total         :decimal(8, 2)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

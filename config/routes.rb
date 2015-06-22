@@ -89,9 +89,10 @@ Rails.application.routes.draw do
       get :view_calendar
       get :reconcile_payments
       get :ba_payments
+      post :new_ba_payments
       get :print_process_ba_payments
       patch :update_service_paid
-      patch :process_ba_payments
+      post :process_ba_payments
       get :export_data
       get :generate_export_data
       post "/upload/:key/" => "reports#upload_image",  as: "upload_picture"

@@ -1,4 +1,4 @@
-<div class="col-sm-3 col-md-2 sidebar">
+<div id="sidebar-wrapper">
   <ul class="nav nav-sidebar">
     <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
       <li><%= link_to "Manage Clients", clients_path %></li>    

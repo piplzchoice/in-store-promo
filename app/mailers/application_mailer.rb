@@ -84,7 +84,7 @@ class ApplicationMailer < ActionMailer::Base
   def send_reminder_to_add_availablty_date(ba)
     et = EmailTemplate.find_by_name("send_reminder_to_add_availablty_date")
     @content = et.content.gsub(".ba_name", ba.name)
-    mail(to: ba.account.email, subject: et.subject)
+    mail(to: ba.account.email, cc: ["gregy@cx-iq.com"] , subject: et.subject)
   end
 
   def ba_is_paid(statement)

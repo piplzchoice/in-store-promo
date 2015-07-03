@@ -1,31 +1,50 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= content_for?(:title) ? yield(:title) : "In Store Marketing" %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "In Store Marketing" %>">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
     <%= stylesheet_link_tag 'application', media: 'all' %>    
     <%= csrf_meta_tags %>
   </head>
   <body>
     <% if user_signed_in? %>
       <%= render "layouts/navbar" %>
-      <div class="container-fluid">
-          <div class="row">                      
-            <%= render "layouts/sidebar" %>
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-              <% flash.each do |name, msg| -%>
-                <%= show_flash_message(name, msg) %>
-              <% end -%>              
-                            
-              <%= yield %>
-            </div>          
+      
+      <div id="wrapper">
+        <%= render "layouts/sidebar" %>
+
+        <div id="page-content-wrapper">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-12">
+                <% flash.each do |name, msg| -%>
+                  <%= show_flash_message(name, msg) %>
+                <% end -%>              
+                              
+
+                <button id="menu-toggle" type="button" class="btn btn-primary" data-toggle="button">
+                  <span id="main_icon" class="glyphicon glyphicon-th-list"></span>
+                </button>                
+
+                <%= yield %>                
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </div>      
     <% else %>
       <%= yield %>
     <% end %>
 
     <%= javascript_include_tag 'application' %>
+    <script>
+      $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+      });
+    </script>    
   </body>
 </html>

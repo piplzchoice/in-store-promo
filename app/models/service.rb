@@ -642,8 +642,8 @@ class Service < ActiveRecord::Base
           service_coop.update_attributes({status: Service.status_scheduled})
         end
       end
-    end        
-    
+    end            
   end
+
 
 end

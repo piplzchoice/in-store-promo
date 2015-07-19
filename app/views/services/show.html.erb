@@ -26,6 +26,14 @@
       <% end %>
     <% end %>
   <% end %>
+
+  <% if @service.status == Service.status_unrespond %>
+    <div class="link-new-btn">
+      <%= link_to("Re-Scheduled", set_reschedule_client_service_path(client_id: @client.id,
+        id: @service.id), {class: "btn btn-warning", role: "button"}) %>
+    </div>  
+  <% end %>
+
   <% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>

@@ -174,6 +174,21 @@ class ServicesController < ApplicationController
     redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
   end
 
+  def set_reschedule
+    msg = "Service reschedule failed"
+    @client = Client.find(params[:client_id])
+    unless @client.nil?
+      @service = @client.services.find(params[:id])
+      unless @service.nil?
+        @service.update_status_scheduled
+        ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+        msg = "Service reschedule completed"
+      end
+    end
+
+    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}    
+  end
+
   def service_params
     params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
   end

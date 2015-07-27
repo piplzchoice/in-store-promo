@@ -139,7 +139,7 @@ class ReportsController < ApplicationController
         grand_total: params[:grand_total_all]
       )
       statement.save
-      # ApplicationMailer.ba_is_paid(statement).deliver
+      ApplicationMailer.ba_is_paid(statement).deliver
 
     end    
 

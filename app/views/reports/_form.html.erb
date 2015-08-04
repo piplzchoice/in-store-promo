@@ -112,13 +112,22 @@
           <div id="report-client" class="report-left">
             <span class="report-title">Client </span>: 
             <span class="report-option-details"><%= @service.co_op_services.first.client.company_name %></span>
+            <span>
+              <%= link_to("(#{@report.hide_client_coop_name ? "Show" : "Hide"} Client)", "#", {id: "show-hide-client-name-coop"}) %>
+              <%= f.hidden_field(:hide_client_coop_name) %>
+            </span>            
           </div>
         </div>      
 
         <div class="link-new-btn">
           <%= link_to("Add Product", "#add-product-coop-report", {class: "btn btn-primary", role: "button", id: "add-product-coop-report"}) %>
         </div>  
+
         <div class="row report">
+          <span>        
+            <%= link_to("(#{@report.hide_client_coop_product ? "Show" : "Hide"} Product)", "#", {id: "show-hide-client-product-coop"}) %>
+            <%= f.hidden_field(:hide_client_coop_product) %>        
+          </span>          
           <div id="report-coop-product" class="table-responsive" data-new="<%= @report.new_record? %>" data-size="<%= @service.co_op_services.first.client.products.size %>">
             <table class="table table-striped">
               <thead>

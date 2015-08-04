@@ -98,35 +98,40 @@
   <% end %>
 
   <% if @service.is_co_op? %>
-    <br /><br />
-    <div class="row report">
-      <div id="report-client" class="report-left">
-        <span class="report-title">Client </span>: 
-        <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
-      </div>
-    </div>      
 
-    <br /><br />
-    <div class="row report" style="float: left; width: 100%">
-      <div id="report-product" class="table-responsive" style="float: left; width: 100%">
-        <table class="table table-striped" style="float: left; width: 100%">
-          <thead>
-            <tr>
-              <th style="text-align: left; width: 20%;">&nbsp;</th>
-              <th style="text-align: left; width: 30%;">&nbsp;</th>
-              <th style="text-align: right; width: 10%;"><span class="report-title">Price</span></th>
-              <th style="text-align: right; width: 10%;"><span class="report-title">Sample</span></th>            
-              <th style="text-align: right; width: 10%;"><span class="report-title">Beginning</span></th>
-              <th style="text-align: right; width: 10%;"><span class="report-title">End</span></th>
-              <th style="text-align: right; width: 10%;"><span class="report-title">Sold</span></th>
-            </tr>
-          </thead>
-          <tbody>  
-              <%= render "client_coop_products_pdf" %>
-          </tbody>
-        </table>
+    <% unless @report.hide_client_coop_name %>
+      <br /><br />
+      <div class="row report">
+        <div id="report-client" class="report-left">
+          <span class="report-title">Client </span>: 
+          <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
+        </div>
       </div>
-    </div>  
+    <% end %>  
+
+    <% unless @report.hide_client_coop_product %>
+      <br /><br />
+      <div class="row report" style="float: left; width: 100%">
+        <div id="report-product" class="table-responsive" style="float: left; width: 100%">
+          <table class="table table-striped" style="float: left; width: 100%">
+            <thead>
+              <tr>
+                <th style="text-align: left; width: 20%;">&nbsp;</th>
+                <th style="text-align: left; width: 30%;">&nbsp;</th>
+                <th style="text-align: right; width: 10%;"><span class="report-title">Price</span></th>
+                <th style="text-align: right; width: 10%;"><span class="report-title">Sample</span></th>            
+                <th style="text-align: right; width: 10%;"><span class="report-title">Beginning</span></th>
+                <th style="text-align: right; width: 10%;"><span class="report-title">End</span></th>
+                <th style="text-align: right; width: 10%;"><span class="report-title">Sold</span></th>
+              </tr>
+            </thead>
+            <tbody>  
+                <%= render "client_coop_products_pdf" %>
+            </tbody>
+          </table>
+        </div>
+      </div> 
+    <% end %> 
   <% end %>
 
   <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />

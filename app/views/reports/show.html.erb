@@ -107,33 +107,37 @@
 
   <% if @service.is_co_op? %>
 
-    <div class="row report">
-      <div id="report-client" class="report-left">
-        <span class="report-title">Client </span>: 
-        <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
-      </div>
-    </div>      
+    <% unless @report.hide_client_coop_name %>
+      <div class="row report">
+        <div id="report-client" class="report-left">
+          <span class="report-title">Client </span>: 
+          <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
+        </div>
+      </div>      
+    <% end %>
 
-    <div class="row report">
-      <div id="report-product" class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>&nbsp;</th>
-              <th>&nbsp;</th>
-                <th><span class="report-title">Price</span></th>
-                <th><span class="report-title">Sample</span></th>            
-              <th><span class="report-title">Beginning</span></th>
-              <th><span class="report-title">End</span></th>
-              <th><span class="report-title">Sold</span></th>
-            </tr>
-          </thead>
-          <tbody>  
-            <%= render "client_coop_products_show" %>
-          </tbody>
-        </table>
+    <% unless @report.hide_client_coop_product %>
+      <div class="row report">
+        <div id="report-product" class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                  <th><span class="report-title">Price</span></th>
+                  <th><span class="report-title">Sample</span></th>            
+                <th><span class="report-title">Beginning</span></th>
+                <th><span class="report-title">End</span></th>
+                <th><span class="report-title">Sold</span></th>
+              </tr>
+            </thead>
+            <tbody>  
+              <%= render "client_coop_products_show" %>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>  
+    <% end %>  
   <% end %>
 
   <div class="row report">

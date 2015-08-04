@@ -44,6 +44,26 @@ $(function() {
     }    
   });  
 
+  $(document).on("click", "#show-hide-client-name-coop", function(){
+    if($("#report_hide_client_coop_name").val() === "f") {
+      $("#report_hide_client_coop_name").val("t");
+      $("#show-hide-client-name-coop").html("(Show Client)");
+    } else if($("#report_hide_client_coop_name").val() === "t") {
+      $("#report_hide_client_coop_name").val("f");
+      $("#show-hide-client-name-coop").html("(Hide Client)");
+    }
+  });  
+
+  $(document).on("click", "#show-hide-client-product-coop", function(){
+    if($("#report_hide_client_coop_product").val() === "f") {
+      $("#report_hide_client_coop_product").val("t");
+      $("#show-hide-client-product-coop").html("(Show Product)");
+    } else if($("#report_hide_client_coop_product").val() === "t") {
+      $("#report_hide_client_coop_product").val("f");
+      $("#show-hide-client-product-coop").html("(Hide Product)");
+    }    
+  });    
+
   $(document).on("click", "#selecctall-location", function(){
     if(this.checked) { 
         $('.locations-checkbox').each(function() {

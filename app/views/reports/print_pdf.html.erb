@@ -197,7 +197,7 @@
       <span class="report-title">Attach Table Image</span>:      
       <% @report.report_table_images.each do |img| %>
         <br />
-        <%= image_tag img.file.url %>
+        <%= image_tag img.file.path %>
         <br />
       <% end %>             
     </div>

@@ -27,40 +27,40 @@ $(function() {
   $(document).on("click", "#show-hide-client-name", function(){
     if($("#report_hide_client_name").val() === "f") {
       $("#report_hide_client_name").val("t");
-      $("#show-hide-client-name").html("(Client is Shown)");
+      $("#show-hide-client-name").html("(Client is Hidden)");
     } else if($("#report_hide_client_name").val() === "t") {
       $("#report_hide_client_name").val("f");
-      $("#show-hide-client-name").html("(Client is Hidden)");
+      $("#show-hide-client-name").html("(Client is Shown)");
     }
   });  
 
   $(document).on("click", "#show-hide-client-product", function(){
     if($("#report_hide_client_product").val() === "f") {
       $("#report_hide_client_product").val("t");
-      $("#show-hide-client-product").html("(Product is Shown)");
+      $("#show-hide-client-product").html("(Product is Hidden)");
     } else if($("#report_hide_client_product").val() === "t") {
       $("#report_hide_client_product").val("f");
-      $("#show-hide-client-product").html("(Product is Hidden)");
+      $("#show-hide-client-product").html("(Product is Shown)");
     }    
   });  
 
   $(document).on("click", "#show-hide-client-name-coop", function(){
     if($("#report_hide_client_coop_name").val() === "f") {
       $("#report_hide_client_coop_name").val("t");
-      $("#show-hide-client-name-coop").html("(Client is Shown)");
+      $("#show-hide-client-name-coop").html("(Client is Hidden)");
     } else if($("#report_hide_client_coop_name").val() === "t") {
       $("#report_hide_client_coop_name").val("f");
-      $("#show-hide-client-name-coop").html("(Client is Hidden)");
+      $("#show-hide-client-name-coop").html("(Client is Shown)");
     }
   });  
 
   $(document).on("click", "#show-hide-client-product-coop", function(){
     if($("#report_hide_client_coop_product").val() === "f") {
       $("#report_hide_client_coop_product").val("t");
-      $("#show-hide-client-product-coop").html("(Product is Shown)");
+      $("#show-hide-client-product-coop").html("(Product is Hidden)");
     } else if($("#report_hide_client_coop_product").val() === "t") {
       $("#report_hide_client_coop_product").val("f");
-      $("#show-hide-client-product-coop").html("(Product is Hidden)");
+      $("#show-hide-client-product-coop").html("(Product is Shown)");
     }    
   });    
 

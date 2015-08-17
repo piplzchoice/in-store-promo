@@ -332,7 +332,7 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
     @service = @report.service
 
-    if @report.file_pdf.blank?
+    # if @report.file_pdf.blank?
       html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
       kit = PDFKit.new(html)
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
@@ -341,11 +341,11 @@ class ReportsController < ApplicationController
       @report.save
 
       send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')          
-    else
-      data = open(@report.file_pdf.url)
-      send_file(data, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')    
+    # else
+    #   data = open(@report.file_pdf.url)
+    #   send_file(data, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')    
       # send_file(@report.file_pdf.url, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')          
-    end
+    # end
     
   end
 

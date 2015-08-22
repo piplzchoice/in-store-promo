@@ -89,6 +89,7 @@ class Report < ActiveRecord::Base
 
   def self.new_data(report_params)
     report = self.new(report_params)
+    
     report.client_products = report.client_products.collect do |product|
       arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
       product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
@@ -97,12 +98,27 @@ class Report < ActiveRecord::Base
     report.client_products = report.client_products.compact
 
     unless report.client_coop_products.nil?
-      report.client_coop_products = report.client_coop_products.collect do |product|
-        arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
-        product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
-      end
-      report.client_coop_products = report.client_coop_products.compact    
+      report.client_coop_products = nil
     end
+
+    report.is_old_report = false
+
+    return report
+  end
+
+  def self.new_coop_data(report_params, coop_id)
+    report = self.new(report_params)  
+
+    report.client_products = report.client_coop_products.collect do |product|
+      arr_val = [product[:price], product[:sample], product[:beginning], product[:end], product[:sold]].uniq
+      product unless arr_val.size == 1 || (arr_val.size == 1 && arr_val.size  != "")
+    end
+
+    report.client_products = report.client_products.compact
+    report.client_coop_products = nil
+
+    report.is_old_report = false
+    report.service_id = coop_id
 
     return report
   end

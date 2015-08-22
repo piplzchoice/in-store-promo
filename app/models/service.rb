@@ -274,12 +274,24 @@ class Service < ActiveRecord::Base
   end
 
   def report_service
+    if report.is_old_report
+      if !parent.nil?
+        parent.report
+      else
+        report
+      end
+    else
+      report
+    end
+  end  
+
+  def coop_service_report_data
     if !parent.nil?
       parent.report
     else
       report
     end
-  end  
+  end
 
   def title_calendar
     # return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"

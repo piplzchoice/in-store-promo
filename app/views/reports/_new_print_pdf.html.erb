@@ -1,0 +1,153 @@
+<div class="row">
+  <div style="text-align: center;margin-bottom: 50px;">
+    <h4 style="color: rgb(9, 152, 197);">In Store Marketing Services Demo Report</h4>
+  </div>  
+
+  <div class="row report">
+    <div id="report-client" class="report-left">
+      <span class="report-title">Client</span>: 
+      <span><%= @service.company_name %></span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-ba" class="report-left">
+      <span class="report-title">Name of BA</span>: 
+      <span><%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %></span>
+    </div>
+
+    <div id="report-location">
+      <span class="report-title">Location</span>: 
+      <span><%= @service.location.complete_location %></span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-date">
+      <span class="report-title">Date/Time</span>: 
+      <span>
+        <%= @service.start_at.strftime('%m/%d/%Y') %>: <%= @service.time_at %>
+      </span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-demo-in-store">
+      <span class="report-title">Location of demo in store</span>: <%= @report.demo_in_store %>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-weather" class="report-left">
+      <span class="report-title">Weather</span>: 
+      <span><%= @report.weather %></span>
+    </div>
+
+    <div id="report-traffic">
+      <span class="report-title">Traffic</span>: 
+      <span><%= @report.traffic %></span>
+    </div>
+  </div>
+
+  <div class="row report">
+    <div id="report-busiest-hours" class="report-left">
+      <span class="report-title">Busiest hours of demo</span>: <%= @report.busiest_hours %>
+    </div>
+  </div>  
+
+  <br /><br />
+  <div class="row report" style="float: left; width: 100%">
+    <div id="report-product" class="table-responsive" style="float: left; width: 100%">
+      <table class="table table-striped" style="float: left; width: 100%">
+        <thead>
+          <tr>
+            <th style="text-align: left; width: 20%;">&nbsp;</th>
+            <th style="text-align: left; width: 30%;">&nbsp;</th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Price</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Sample</span></th>            
+            <th style="text-align: right; width: 10%;"><span class="report-title">Beginning</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">End</span></th>
+            <th style="text-align: right; width: 10%;"><span class="report-title">Sold</span></th>
+          </tr>
+        </thead>
+        <tbody>  
+          <% if !@report.client_products.nil? %>
+            <%= render "client_products_pdf" %>
+          <% else %>
+            <%= render "products_pdf" %>
+          <% end %>          
+        </tbody>
+      </table>
+    </div>
+  </div>  
+
+  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">Sample product</span>: <%= @report.sample_product %>
+    </div>
+  </div>    
+
+  <br />
+  <div class="row report">
+    <div id="report-est-customer-touched" class="report-left">
+      <span class="report-title">Estimated # of customers touched</span>: 
+      <%= @report.est_customer_touched %>
+    </div>
+
+    <div id="report-est-sample-given">
+      <span class="report-title">Estimated # of sample given</span>: 
+      <%= @report.est_sample_given %>
+    </div>
+  </div>
+
+  <br />
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">Expense</span>: <%= number_to_currency @report.expense_one %>
+      <% @report.report_expense_images.each do |img| %>
+        <br />
+        <%= image_tag img.file.current_path %>
+        <br />
+      <% end %>       
+    </div>
+  </div>  
+
+  <% unless @report.travel_expense.nil? %>
+    <br />
+    <div class="row report">
+      <div id="report-expense-one">
+        <span class="report-title">Travel Expense</span>: <%= number_to_currency @report.travel_expense %>
+      </div>
+    </div>      
+  <% end %>
+
+  <br />
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">Customer Comments</span>: 
+      <p><%= @report.customer_comments %></p>
+    </div>
+  </div>  
+
+  <br />
+  <div class="row report">
+    <div id="report-sample-product">
+      <span class="report-title">BA Comments</span>: 
+      <p><%= @report.ba_comments %></p>
+    </div>
+  </div>            
+
+  <br />
+  <div class="row report">
+    <div id="report-attach-table">
+      <span class="report-title">Attach Table Image</span>:      
+      <% @report.report_table_images.each do |img| %>
+        <br />
+        <%= image_tag img.file.url.gsub("https", "http"), {width: "700px"} %>
+        <br />
+      <% end %>             
+    </div>
+  </div>               
+  
+</div>

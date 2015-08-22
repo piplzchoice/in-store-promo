@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416013447) do
+ActiveRecord::Schema.define(version: 20150821230606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,35 +212,40 @@ ActiveRecord::Schema.define(version: 20150416013447) do
     t.string   "expense_two_img"
     t.text     "customer_comments"
     t.text     "ba_comments"
-    t.decimal  "product_one_price",       precision: 8, scale: 2
-    t.decimal  "product_two_price",       precision: 8, scale: 2
-    t.decimal  "product_three_price",     precision: 8, scale: 2
-    t.decimal  "product_four_price",      precision: 8, scale: 2
+    t.decimal  "product_one_price",        precision: 8, scale: 2
+    t.decimal  "product_two_price",        precision: 8, scale: 2
+    t.decimal  "product_three_price",      precision: 8, scale: 2
+    t.decimal  "product_four_price",       precision: 8, scale: 2
     t.integer  "product_one_sample"
     t.integer  "product_two_sample"
     t.integer  "product_three_sample"
     t.integer  "product_four_sample"
-    t.decimal  "expense_one",             precision: 8, scale: 2, default: 0.0
-    t.decimal  "expense_two",             precision: 8, scale: 2, default: 0.0
+    t.decimal  "expense_one",              precision: 8, scale: 2, default: 0.0
+    t.decimal  "expense_two",              precision: 8, scale: 2, default: 0.0
     t.integer  "product_five_sample"
-    t.decimal  "product_five_price",      precision: 8, scale: 2
+    t.decimal  "product_five_price",       precision: 8, scale: 2
     t.string   "product_five"
     t.integer  "product_five_beginning"
     t.integer  "product_five_end"
     t.integer  "product_five_sold"
     t.integer  "product_six_sample"
-    t.decimal  "product_six_price",       precision: 8, scale: 2
+    t.decimal  "product_six_price",        precision: 8, scale: 2
     t.string   "product_six"
     t.integer  "product_six_beginning"
     t.integer  "product_six_end"
     t.integer  "product_six_sold"
     t.string   "table_image_one_img"
     t.string   "table_image_two_img"
-    t.boolean  "is_active",                                       default: true
-    t.decimal  "travel_expense",          precision: 8, scale: 2
+    t.boolean  "is_active",                                        default: true
+    t.decimal  "travel_expense",           precision: 8, scale: 2
     t.text     "client_products"
     t.string   "file_pdf"
     t.text     "client_coop_products"
+    t.boolean  "hide_client_name",                                 default: false
+    t.boolean  "hide_client_product",                              default: false
+    t.boolean  "hide_client_coop_name",                            default: false
+    t.boolean  "hide_client_coop_product",                         default: false
+    t.boolean  "is_old_report",                                    default: true
   end
 
   create_table "roles", force: true do |t|
@@ -282,6 +287,8 @@ ActiveRecord::Schema.define(version: 20150416013447) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "services_ids"
+    t.text     "line_items"
+    t.decimal  "grand_total",         precision: 8, scale: 2
   end
 
   create_table "territories", force: true do |t|

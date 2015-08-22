@@ -542,7 +542,7 @@ class ReportsController < ApplicationController
           File.open(img.file.path){|f| image.file = f}
         else
           data = open(image.file.url)
-          image.file = data.read
+          File.open(data.path){|f| image.file = f}
         end  
 
         image.save

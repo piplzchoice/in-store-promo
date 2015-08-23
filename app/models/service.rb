@@ -273,9 +273,9 @@ class Service < ActiveRecord::Base
     }.compact.flatten
   end
 
-  def report_service
-    if report.is_old_report
-      if !parent.nil?
+  def report_service    
+    if !parent.nil?
+      if report.is_old_report
         parent.report
       else
         report

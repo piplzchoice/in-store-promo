@@ -524,8 +524,7 @@ class ReportsController < ApplicationController
         if Rails.env == "development"
           File.open(img.file.path){|f| image.file = f}
         else
-          data = open(image.file.url)
-          File.open(data.path){|f| image.file = f}
+          image.remote_file_url = img.file.url
         end  
 
         image.save
@@ -541,8 +540,7 @@ class ReportsController < ApplicationController
         if Rails.env == "development"
           File.open(img.file.path){|f| image.file = f}
         else
-          data = open(image.file.url)
-          File.open(data.path){|f| image.file = f}
+          image.remote_file_url = img.file.url
         end  
 
         image.save

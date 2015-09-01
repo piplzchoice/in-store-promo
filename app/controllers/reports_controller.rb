@@ -212,40 +212,34 @@ class ReportsController < ApplicationController
   def create
     @report = Report.new_data(report_params)
     @service = Service.find(report_params[:service_id])    
+    image_table = params["image-table"]
+    image_expense = params["image-expense"]
     respond_to do |format|
       format.html do
-        if @report.save
-          @service.update_status_to_reported          
-          
-          unless params["image-table"].nil?
-            params["image-table"].each do |id_table|
-              image = ReportTableImage.find(id_table)
-              image.report = @report
-              image.save
-            end
-          end
+        
+        if @service.is_co_op?          
+          @report_coop = Report.new_coop_data(report_params, @service.co_op_services.first.id)          
 
-          unless params["image-expense"].nil?
-            params["image-expense"].each do |id_expense|
-              image = ReportExpenseImage.find(id_expense)
-              image.report = @report
-              image.save
-            end            
-          end          
+          if @report.save && @report_coop.save
 
-          file = "report-#{Time.now.to_i}.pdf"
+            @service.update_status_to_reported
+            @service.co_op_services.first.update_status_to_reported
 
-          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-          kit = PDFKit.new(html)
-          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-
-          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-          @report.save
-
-          redirect_to report_path(@report), notice: "Report created"
+            save_report_data(@report, image_table, image_expense)
+            save_coop_report_data(@report_coop, image_table, image_expense)
+          else
+            render :new
+          end           
         else
-          render :new
+          if @report.save
+            @service.update_status_to_reported                
+            save_report_data(@report, image_table, image_expense)            
+          else
+            render :new
+          end          
         end
+
+        redirect_to report_path(@report), notice: "Report created"
       end
     end      
   end  
@@ -254,9 +248,11 @@ class ReportsController < ApplicationController
     @report = Report.find(params[:id])
     @service = @report.service
     
-    if @service.is_co_op? && !@service.parent.nil?
-      redirect_to edit_report_url(@report)
-    end            
+    if @report.is_old_report
+      if @service.is_co_op? && !@service.parent.nil?
+        redirect_to edit_report_url(@report)
+      end            
+    end
   end
 
   def update
@@ -266,48 +262,48 @@ class ReportsController < ApplicationController
       format.html do
         if @report.update_attributes(report_params)
 
-          unless params["image-table"].nil?
-            if params["image-table"].class == String
-              image = ReportTableImage.find(params["image-table"])
-              image.report = @report
-              image.save              
-            else
-              params["image-table"].each do |id_table|
-                image = ReportTableImage.find(id_table)
-                image.report = @report
-                image.save
-              end
-            end
-          end
+           unless params["image-table"].nil?
+             if params["image-table"].class == String
+               image = ReportTableImage.find(params["image-table"])
+               image.report = @report
+               image.save
+             else
+               params["image-table"].each do |id_table|
+                 image = ReportTableImage.find(id_table)
+                 image.report = @report
+                 image.save
+               end
+             end
+           end
 
-          unless params["image-expense"].nil?
-            if params["image-expense"].class == String
-              image = ReportExpenseImage.find(params["image-expense"])
-              image.report = @report
-              image.save              
-            else            
-              params["image-expense"].each do |id_expense|
-                image = ReportExpenseImage.find(id_expense)
-                image.report = @report
-                image.save
-              end      
-            end      
-          end          
+           unless params["image-expense"].nil?
+             if params["image-expense"].class == String
+               image = ReportExpenseImage.find(params["image-expense"])
+               image.report = @report
+               image.save
+             else
+               params["image-expense"].each do |id_expense|
+                 image = ReportExpenseImage.find(id_expense)
+                 image.report = @report
+                 image.save
+               end
+             end
+           end
 
-          @report.remove_file_pdf
-          @report.remove_file_pdf = true
+           @report.remove_file_pdf
+           @report.remove_file_pdf = true
 
-          @report.save
-          @report.remove_file_pdf = false
+           @report.save
+           @report.remove_file_pdf = false
 
-          file = "report-#{Time.now.to_i}.pdf"
+           file = "report-#{Time.now.to_i}.pdf"
 
-          html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-          kit = PDFKit.new(html)
-          kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+           html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+           kit = PDFKit.new(html)
+           kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
 
-          @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-          @report.save
+           @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+           @report.save
 
           redirect_to report_path(@report), notice: "Report updated"
         else
@@ -490,4 +486,74 @@ class ReportsController < ApplicationController
   def check_role
     redirect_to(reports_path) if current_user.has_role?(:client)
   end
+
+  def save_report_data(report_data, image_table, image_expense)
+    unless image_table.nil?
+      image_table.each do |id_table|
+        image = ReportTableImage.find(id_table)
+        image.report = report_data
+        image.save
+      end
+    end
+
+    unless image_expense.nil?
+      image_expense.each do |id_expense|
+        image = ReportExpenseImage.find(id_expense)
+        image.report = report_data
+        image.save
+      end            
+    end          
+
+    file = "report-#{Time.now.to_i}.pdf"
+
+    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+    report_data.save    
+  end
+
+  def save_coop_report_data(report_data, image_table, image_expense)
+    unless image_table.nil?
+      image_table.each do |id_table|
+        img = ReportTableImage.find(id_table)
+        image = img.dup
+        image.report = report_data
+
+        if Rails.env == "development"
+          File.open(img.file.path){|f| image.file = f}
+        else
+          image.remote_file_url = img.file.url
+        end  
+
+        image.save
+      end
+    end
+
+    unless image_expense.nil?
+      image_expense.each do |id_expense|
+        img = ReportExpenseImage.find(id_expense)
+        image = img.dup
+        image.report = report_data
+
+        if Rails.env == "development"
+          File.open(img.file.path){|f| image.file = f}
+        else
+          image.remote_file_url = img.file.url
+        end  
+
+        image.save
+      end            
+    end          
+
+    file = "report-#{Time.now.to_i}.pdf"
+
+    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+
+    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+    report_data.save    
+  end  
 end

@@ -95,7 +95,7 @@
     <% if @service.is_co_op? && !@service.parent.nil? %>
 
       <% if @service.parent.can_modify?  || current_user.has_role?(:admin) %>
-        <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-default", role: "button"}) %>
+        <%= link_to("Edit", edit_client_service_path(client_id: @service.parent.client.id, id: @service.parent.id), {class: "btn btn-default", role: "button"}) %>
       <% end %>
       
       <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>              

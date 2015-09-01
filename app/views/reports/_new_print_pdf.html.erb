@@ -13,7 +13,15 @@
   <div class="row report">
     <div id="report-ba" class="report-left">
       <span class="report-title">Name of BA</span>: 
-      <span><%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %></span>
+        <% if @service.is_co_op? && !@service.parent.nil? %>
+          <span>
+            <%= @service.parent.brand_ambassador.nil? ? "-" : @service.parent.brand_ambassador.name %>
+          </span>
+        <% else %>
+          <span>
+            <%= @service.brand_ambassador.nil? ? "-" : @service.brand_ambassador.name %>
+          </span>
+        <% end %>          
     </div>
 
     <div id="report-location">

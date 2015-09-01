@@ -275,11 +275,11 @@ class Service < ActiveRecord::Base
 
   def report_service    
     if !parent.nil?
-      if report.is_old_report
+      # if report.is_old_report
         parent.report
-      else
-        report
-      end
+      # else
+      #   report
+      # end
     else
       report
     end

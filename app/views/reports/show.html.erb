@@ -16,14 +16,14 @@
     <h4 style="color: rgb(9, 152, 197);">In Store Marketing Services Demo Report</h4>
   </div>
 
-  <% unless (@service.is_co_op? && !@report.is_old_report) %>
+  <%# unless (@service.is_co_op? && !@report.is_old_report) %>
     <div class="row report">
       <div id="report-client" class="report-left">
         <span class="report-title">Client</span>: 
         <span class="report-option-details"><%= @service.company_name %></span>
       </div>
     </div>
-  <% end %>
+  <%# end %>
 
   <div class="row report">
     <div id="report-ba" class="report-left">

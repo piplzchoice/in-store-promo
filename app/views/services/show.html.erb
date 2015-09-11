@@ -2,12 +2,12 @@
 
 <% unless current_user.has_role?(:client) %>
   
-  <% if @service.is_not_complete? %>
-    <div class="link-new-btn">
-      <%= link_to("Set as Conducted", mark_service_as_complete_client_service_path(client_id: @client.id,
+  <% unless @service.is_not_complete? %>
+    <!-- <div class="link-new-btn"> -->
+      <%#= link_to("Set as Conducted", mark_service_as_complete_client_service_path(client_id: @client.id,
         id: @service.id), {class: "btn btn-primary", role: "button"}) %>
-    </div>
-  <% else %>    
+    <!-- </div> -->
+  <%# else %>    
     <% unless @service.is_cancelled? %>
       <% if @service.is_reported? %>
         <div class="link-new-btn">

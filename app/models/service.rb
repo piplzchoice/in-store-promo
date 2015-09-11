@@ -274,14 +274,18 @@ class Service < ActiveRecord::Base
   end
 
   def report_service    
-    if !parent.nil?
-      # if report.is_old_report
-        parent.report
-      # else
-      #   report
-      # end
+    if !report.nil?
+      if !parent.nil?
+        if report.is_old_report
+          parent.report
+        else
+          report
+        end
+      else
+        report
+      end
     else
-      report
+      nil
     end
   end  
 

@@ -115,7 +115,7 @@ class ApplicationMailer < ActionMailer::Base
     if admin
       emails = ["gregy@cx-iq.com"]
     else
-      emails = [service.brand_ambassador.account.email] << User.all_ismp.collect{|a| a.email}
+      emails = [service.brand_ambassador.account.email] << "gregy@cx-iq.com" # << User.all_ismp.collect{|a| a.email}
     end    
     @content = et.content.gsub(".demo_date", service.complete_date_time).gsub(".service_company_name", service.client.company_name).gsub(".service_location", service.location.complete_location)
     mail(to: emails.flatten.uniq, subject: et.subject)    

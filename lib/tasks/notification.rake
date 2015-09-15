@@ -25,7 +25,9 @@ namespace :notification do
     current_time = Time.now.to_time
     if current_time.strftime("%d") == "15"
       BrandAmbassador.with_status_active.each do |ba|
-        ApplicationMailer.send_reminder_to_add_availablty_date(ba).deliver!
+        if ba.account.is_active
+          ApplicationMailer.send_reminder_to_add_availablty_date(ba).deliver!
+        end
       end
     end
   end  
@@ -36,7 +38,9 @@ namespace :notification do
     Service.where("status = ?", 4).each do |service|
       if TimeDifference.between(service.updated_at.to_time, current_time).in_hours > 36.round
         service.update_attributes({alert_sent: true, alert_sent_date: 35.hours.from_now.to_time})
-        ApplicationMailer.report_over_due_alert(service).deliver!
+        if service.brand_ambassador.account.is_active
+          ApplicationMailer.report_over_due_alert(service).deliver!
+        end
       end
     end    
   end  
@@ -47,7 +51,9 @@ namespace :notification do
     Service.where("status = ? AND alert_sent = ? AND alert_sent_admin = ?", 4, true, false).each do |service|
       if TimeDifference.between(service.alert_sent_date.to_time, current_time).in_hours > 12.round
         service.update_attributes({alert_sent_admin: true, alert_sent_admin_date: current_time})
-        ApplicationMailer.report_over_due_alert(service, true).deliver!
+        if service.brand_ambassador.account.is_active
+          ApplicationMailer.report_over_due_alert(service, true).deliver!
+        end
       end
     end    
   end  

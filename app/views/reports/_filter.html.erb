@@ -10,9 +10,13 @@
         <%= select_tag("assigned_to", options_from_collection_for_select(@brand_ambassadors, "id", "name", :selected => @assigned_to), {class: "form-control filter-params", :include_blank => true}) %>
       </div>   
       <div class="form-group">
+        <label class="control-label">Location</label>
+        <%= select_tag("location_name", options_from_collection_for_select(@locations, "id", "name", :selected => @location_name), {class: "form-control filter-params", :include_blank => true}) %>
+      </div>             
+      <div class="form-group">
         <label class="control-label">Client Name</label>
         <%= select_tag("client_name", options_from_collection_for_select(@clients, "id", "company_name", :selected => @client_name), {class: "form-control filter-params", :include_blank => true}) %>
-      </div>             
+      </div>               
       <%= hidden_field_tag(:sort, "start_at",) %>
       <%= hidden_field_tag(:direction, "desc") %>
       <%= hidden_field_tag(:page, 1) %>
@@ -22,7 +26,7 @@
   </div>
   <div class="link-new-btn" style="margin-top: 294px;">
     <%= link_to("In Store Marketing Services Calendar", "#", {id: "view-calendar-filter" ,class: "btn btn-primary", role: "button", data: {url: view_calendar_reports_path}}) %>
-    <%= link_to("Reconcile Payments", reconcile_payments_reports_path, {class: "btn btn-primary", role: "button"}) %>
+    <%#= link_to("Reconcile Payments", reconcile_payments_reports_path, {class: "btn btn-primary", role: "button"}) %>
     <%= link_to("Process BA Payments", ba_payments_reports_path, {class: "btn btn-primary", role: "button"}) %>        
   </div>     
 </div>

@@ -34,6 +34,7 @@ class ReportsController < ApplicationController
       format.js do        
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
+        location_name = ""
         client_name = ""
         is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
@@ -61,14 +62,16 @@ class ReportsController < ApplicationController
       format.csv do
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
+        location_name = ""
         client_name = ""
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
+          location_name = params[:location_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
         end
         
-        data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page]}
+        data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
         @services = Service.filter_and_order(data)
         
         headers['Content-Type'] ||= 'text/csv'

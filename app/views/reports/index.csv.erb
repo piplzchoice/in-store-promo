@@ -8,13 +8,13 @@
       service.created_at.strftime("%m/%d/%Y - %I:%M %p"),
       (service.client.nil? ? "-" : service.company_name),
       (service.location.nil? ? "" : service.location.name),
-      (service.location.nil? ? "" : service.location.new_complete_location.strip),
+      (service.location.nil? ? "" : service.location.new_complete_location.html_safe),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.address.gsub(",", ".")),
       (service.report_service.nil? ? "-" : number_to_currency(service.report_service.expense_one)),
       (service.report_service.nil? ? "-" :  (service.brand_ambassador.mileage ? number_to_currency(service.report_service.travel_expense) : "-")),
       service.current_status
-    ]) %>
+    ]).html_safe %>
   <%- end -%>
 <% elsif current_user.has_role?(:client) %>
   <%- headers = ["Date", "Time", "Date Creation", "BA", "Job Details"] -%>

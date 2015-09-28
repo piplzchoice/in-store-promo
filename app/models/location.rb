@@ -46,7 +46,7 @@ class Location < ActiveRecord::Base
   end  
 
   def new_complete_location
-    "#{name} - #{address} #{city}"
+    "#{name} - #{address}, #{city}"
   end  
 
   def set_data_true

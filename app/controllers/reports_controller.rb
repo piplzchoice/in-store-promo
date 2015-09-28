@@ -74,7 +74,7 @@ class ReportsController < ApplicationController
         data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
         @services = Service.filter_and_order(data)
         
-        headers['Content-Type'] ||= 'text/csv'
+        headers['Content-Type'] ||= 'text/csv; charset=iso-8859-1;'
         headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}.csv\""           
       end
     end

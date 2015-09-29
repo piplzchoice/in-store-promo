@@ -45,6 +45,10 @@ class Location < ActiveRecord::Base
     "#{name} - #{address}, #{city}"
   end  
 
+  def new_complete_location
+    "#{name} - #{address}, #{city}"
+  end  
+
   def set_data_true
     self.update_attribute(:is_active, true)
   end

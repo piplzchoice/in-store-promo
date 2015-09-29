@@ -1,36 +1,41 @@
 <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
-  <%- headers = ["Date", "Time", "Client Name", "Location Name", "BA", "Expenses", "Travel Expense", "Status"] -%>
+  <%- headers = ["Date", "Time", "Date Creation", "Client Name", "Location Name", "Location Address", "BA", "BA Address", "Expenses", "Travel Expense", "Status"] -%>
   <%= CSV.generate_line headers %>
   <%- @services.each do |service| -%>
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.start_at.strftime("%I:%M %p"),
+      service.created_at.strftime("%m/%d/%Y - %I:%M %p"),
       (service.client.nil? ? "-" : service.company_name),
       (service.location.nil? ? "" : service.location.name),
+      (service.location.nil? ? "" : service.location.new_complete_location.html_safe),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
+      (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.address.gsub(",", ".")),
       (service.report_service.nil? ? "-" : number_to_currency(service.report_service.expense_one)),
       (service.report_service.nil? ? "-" :  (service.brand_ambassador.mileage ? number_to_currency(service.report_service.travel_expense) : "-")),
       service.current_status
-    ]) %>
+    ]).html_safe %>
   <%- end -%>
 <% elsif current_user.has_role?(:client) %>
-  <%- headers = ["Date", "Times", "BA", "Job Details"] -%>
+  <%- headers = ["Date", "Time", "Date Creation", "BA", "Job Details"] -%>
   <%= CSV.generate_line headers %>
   <%- @services.each do |service| -%>
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.time_at,
+      service.created_at.strftime("%m/%d/%Y - %I:%M %p"),
       (service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name),
       service.details
     ]) %>
   <%- end -%>  
 <% else %>
-  <%- headers = ["Date", "Times", "Client Name", "Job Details"] -%>
+  <%- headers = ["Date", "Times", "Date Creation", "Client Name", "Job Details"] -%>
   <%= CSV.generate_line headers %>
   <%- @services.each do |service| -%>
     <%= CSV.generate_line([
       service.start_at.strftime('%m/%d/%Y'), 
       service.time_at,
+      service.created_at.strftime("%m/%d/%Y - %I:%M %p"),
       (service.client.nil? ? "-" : service.company_name),
       service.details
     ]) %>

@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>Client Name</th>
+      <th>Invoice Number</th>
       <th><%= sortable "issue_date", "Invoice Date" %></th>
       <th>Grand Total</th>
       <th><%= sortable "due_date", "Due Date" %></th>
@@ -13,6 +14,7 @@
     <% @invoices.each_with_index do |invoice, i|  %>      
       <tr>        
           <td><%= invoice.client.company_name %></td>
+          <td><%= invoice.number %></td>
           <td><%= invoice.issue_date.nil? ? invoice.created_at.strftime('%m/%d/%Y') : invoice.issue_date.strftime('%m/%d/%Y') %></td>      
           <td>
             <%= number_to_currency invoice.grand_total_all %>                    
@@ -31,5 +33,16 @@
           </td>         
       </tr>      
     <% end %>
+    <tr>
+      <td><strong>Grand Total</strong></td>
+      <td></td>
+      <td></td>
+      <td>
+        <strong><%= number_to_currency(@invoices.collect(&:grand_total).sum) %></strong>
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
   </tbody>
 </table>

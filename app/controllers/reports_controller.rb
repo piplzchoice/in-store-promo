@@ -16,11 +16,13 @@ class ReportsController < ApplicationController
             @status = session[:filter_history_reports]["status"]            
             @assigned_to = session[:filter_history_reports]["assigned_to"]
             @client_name = session[:filter_history_reports]["client_name"]
+            @location_name = session[:filter_history_reports]["location_name"]
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
           @brand_ambassadors = BrandAmbassador.with_status_active
           @clients = Client.with_status_active
           @projects = Project.all        
+          @locations = Location.all
         elsif current_user.has_role?(:client)
           @services = current_user.client.services.where(status: [2,6,7,10]).order(created_at: :desc).paginate(:page => params[:page])
           @brand_ambassadors = @services.collect{|x| x.brand_ambassador }.flatten.uniq
@@ -32,10 +34,12 @@ class ReportsController < ApplicationController
       format.js do        
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
+        location_name = ""
         client_name = ""
         is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
+          location_name = params[:location_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
           is_client = true
@@ -48,7 +52,8 @@ class ReportsController < ApplicationController
           "sort_column" => sort_column, 
           "sort_direction" => sort_direction, 
           "page" => params[:page],
-          "is_client" => is_client
+          "is_client" => is_client,
+          "location_name" => location_name
         }
 
         @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => params[:page])
@@ -57,17 +62,19 @@ class ReportsController < ApplicationController
       format.csv do
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
         
+        location_name = ""
         client_name = ""
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
+          location_name = params[:location_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
         end
         
-        data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page]}
+        data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
         @services = Service.filter_and_order(data)
         
-        headers['Content-Type'] ||= 'text/csv'
+        headers['Content-Type'] ||= 'text/csv; charset=iso-8859-1;'
         headers['Content-Disposition'] = "attachment; filename=\"report-#{Time.now.to_i}.csv\""           
       end
     end
@@ -315,8 +322,16 @@ class ReportsController < ApplicationController
 
   def destroy
     msg = nil
-    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)      
       report = Report.find(params[:id])
+      service = report.service      
+
+      if service.is_co_op? && !report.is_old_report
+        if !service.parent.nil?
+        else
+        end
+      end
+
       report.destroy
       msg = "Report deleted"
     end

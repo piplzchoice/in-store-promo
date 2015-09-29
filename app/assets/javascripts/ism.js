@@ -606,6 +606,7 @@ $(function() {
     $("#project-csv").val($("#project_name").val())
     $("#sort-csv").val($("#sort").val())
     $("#direction-csv").val($("#direction").val())
+    $("#location-csv").val($("#location_name").val())
     $("#download-csv").submit();
   })  
 

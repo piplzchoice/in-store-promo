@@ -1,4 +1,21 @@
 <h1 class="page-header">Show Assignment</h1>
+
+<% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
+
+  <% if @service.is_co_op? && !@service.parent.nil? %>
+    <div class="link-new-btn">
+        <%= link_to("Create Report", new_report_path(service_id: @service.parent.id), 
+          {class: "btn btn-success", role: "button"}) %>         
+    </div>      
+  <% else %>
+    <div class="link-new-btn">
+        <%= link_to("Create Report", new_report_path(service_id: @service.id), 
+          {class: "btn btn-success", role: "button"}) %>         
+    </div>  
+  <% end %>
+
+<% end %>
+
 <label>Status :</label>
 <p><%= @service.current_status %></p>
 

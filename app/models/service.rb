@@ -71,7 +71,10 @@ class Service < ActiveRecord::Base
     end
 
     conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
-    conditions.merge!(location_id: parameters["location_name"]) if parameters["location_name"] != ""
+
+    unless parameters["location_name"].nil?
+      conditions.merge!(location_id: parameters["location_name"]) if parameters["location_name"] != ""
+    end
 
     if parameters["client_name"] != ""
       data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       collection do
         get :autocomplete_location_name
         get :generate_select_ba
+        post :confirm_inventory
       end
 
       member do

@@ -21,6 +21,10 @@
 #  alert_sent_admin      :boolean          default(FALSE)
 #  alert_sent_admin_date :datetime
 #  parent_id             :integer
+#  is_old_service        :boolean          default(TRUE)
+#  inventory_confirm     :boolean          default(FALSE)
+#  inventory_date        :date
+#  inventory_confirmed   :string(255)
 #
 
 # note for field "status"
@@ -41,9 +45,11 @@ class Service < ActiveRecord::Base
   belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
+  
   has_one :report
-
   has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
+  has_and_belongs_to_many :products
+
   belongs_to :parent, :class_name => "Service", foreign_key: 'parent_id'
 
   belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
@@ -145,13 +151,12 @@ class Service < ActiveRecord::Base
 
   def self.build_data(service_params)
     # service_params[:co_op_client_id] = nil unless co_op_price_box
-
+    service_params[:product_ids] = JSON.parse(service_params[:product_ids])
     if service_params[:start_at].blank? || service_params[:end_at].blank?
       self.new(service_params)
     else
       service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p')
-      service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')
-
+      service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')      
       # service = Service.where({
       #   client_id: service_params[:client_id], 
       #   location_id: service_params[:location_id], 
@@ -307,6 +312,7 @@ class Service < ActiveRecord::Base
   end
 
   def update_data(service_params)
+    service_params[:product_ids] = JSON.parse(service_params[:product_ids])
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     self.update_attributes(service_params)
@@ -321,6 +327,12 @@ class Service < ActiveRecord::Base
     else
       true
     end
+  end
+
+  def update_inventory(service_params)
+    service_params[:product_ids] = JSON.parse(service_params[:product_ids])
+    service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y')
+    self.update_attributes(service_params)
   end
 
   def check_data_changes(service_params)

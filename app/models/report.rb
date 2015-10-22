@@ -67,6 +67,7 @@
 #  hide_client_product      :boolean          default(FALSE)
 #  hide_client_coop_name    :boolean          default(FALSE)
 #  hide_client_coop_product :boolean          default(FALSE)
+#  is_old_report            :boolean          default(TRUE)
 #
 
 require 'carrierwave/orm/activerecord'

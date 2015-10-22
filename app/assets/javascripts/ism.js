@@ -480,20 +480,50 @@ $(function() {
     });
   }
 
+  if($("#service_product_ids").length !== 0) {
+    data = JSON.parse($("#service_product_ids").val())
+    if(data.length !== 0) {
+      data.forEach(function(val){
+        $('#product-' + val).prop('checked', true);
+      })
+    }
+  }
+
+  $(".product_ids").click(function(){
+    data = JSON.parse($("#service_product_ids").val())
+    if($(this).is(":checked")) {
+      data.push($(this).val())
+    } else {
+      index = data.indexOf($(this).val());
+      data.splice(index, 1);
+    }
+    $("#service_product_ids").val(JSON.stringify(data))
+  })
 
   $("#new_service").submit(function(){
+    var status = true
     if($("#service_start_at").val() !== "" && $("#service_end_at").val() !== "") {
       start_at_value = moment($("#service_start_at").val());
       end_at_value = moment($("#service_end_at").val());
       if(start_at_value.isValid() && end_at_value.isValid()) {
-        return true
+        status = true;
       } else {
         alert("Date format wrong");
-        return false
+        // return false
+        status = false;
       }          
     }
 
+    if(JSON.parse($("#service_product_ids").val()).length === 0) {
+      alert("Please select product");
+      status = false;
+    }    
+
+    return status
+
   });
+
+  $('#inventory-confirmed-date').datetimepicker({pickTime: false});
 
   $("#new_project").submit(function(){
     var cond = 0;
@@ -538,6 +568,7 @@ $(function() {
               dataType: 'json',
               data: function (term, page) { return { q: term}; },
               results: function (data, page) { 
+                  $("#location-contact").hide();
                   return {results: data};
               }
           },
@@ -546,6 +577,38 @@ $(function() {
           dropdownCssClass: "bigdrop",
           escapeMarkup: function (m) { return m; }
       });
+
+      $("#service_location_id").on("select2-selecting", function(e){
+        // console.log("val=" + e.val);
+        console.log("contact=" + e.choice.contact);
+        console.log("phone=" + e.choice.phone);
+        if(e.choice.contact === null && e.choice.phone === null) {
+          html = "" +
+            "<div class=\"form-group\">" +
+              "<label>Contact: </label>" +
+              "<input type=\"text\" name=location[contact]>" +
+              "<br>" +
+              "<label>Phone: </label>" +
+              "<input type=\"text\" name=location[phone]>" +
+            "</div>";
+
+          $("#location-contact").html(html);
+          $("#location-contact").show();
+        } else {
+          html = "" +
+            "<div class=\"form-group\">" +
+              "<label>Contact: </label>" +
+              "<span id=\"location-contact-data\"> " + e.choice.contact + "</span>" +
+              "<br>" +
+              "<label>Phone: </label>" +
+              "<span id=\"location-contact-phone\"> " + e.choice.phone + "</span>" +
+            "</div>";
+
+          $("#location-contact").html(html);
+          $("#location-contact").show();
+        }
+
+      })
 
       // $("#service_location_id").select2("data", { 
       //   id: $("#service_location_id").data("location-id"), 

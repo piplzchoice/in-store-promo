@@ -586,10 +586,10 @@ $(function() {
           html = "" +
             "<div class=\"form-group\">" +
               "<label>Contact: </label>" +
-              "<input type=\"text\" name=location[contact]>" +
+              "&nbsp;&nbsp;&nbsp;<input type=\"text\" name=location[contact] required>" +
               "<br>" +
               "<label>Phone: </label>" +
-              "<input type=\"text\" name=location[phone]>" +
+              "&nbsp;&nbsp;&nbsp;<input type=\"text\" name=location[phone] required>" +
             "</div>";
 
           $("#location-contact").html(html);

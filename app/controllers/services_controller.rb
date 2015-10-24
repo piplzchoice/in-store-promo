@@ -20,11 +20,18 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.build_data(service_params)
+    # @service.product_ids = params[:product_ids]
     respond_to do |format|
       format.html do
-        if @service.save
+        if @service.save 
+          unless params["location"].nil?
+            @service.location.update_attributes({
+              phone: params[:location][:phone], 
+              contact: params[:location][:contact]
+            })
+          end
           @service.create_coops(params["co_op_client_id"]) if params["co-op-price-box"]
-          # @client.set_as_active if @client.services.size == 1
+        #   # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
         else
@@ -189,13 +196,25 @@ class ServicesController < ApplicationController
     redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}    
   end
 
-  def service_params
-    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status)
+  def confirm_inventory
+    @service = Service.find(params[:service_id])    
+    @service.update_inventory(service_inventory_params)
+    redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 
   def check_client_status
     client = Client.find(params[:client_id])
     redirect_to(clients_path, :flash => { :error => "Client is not active" }) unless client.is_active
   end
+
+  private
+
+  def service_params
+    params.require(:service).permit(:location_id, :brand_ambassador_id, :start_at, :end_at, :details, :status, :is_old_service, :product_ids)
+  end
+
+  def service_inventory_params
+    params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed)
+  end  
 
 end

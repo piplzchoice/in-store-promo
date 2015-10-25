@@ -282,6 +282,10 @@ class Service < ActiveRecord::Base
     }.compact.flatten
   end
 
+  def self.check_inventory_confirmation
+    
+  end
+
   def report_service    
     if !report.nil?
       if !parent.nil?

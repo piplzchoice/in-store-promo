@@ -220,36 +220,24 @@ if EmailTemplate.find_by_name("service_has_been_modified").nil?
   puts "created email template for service_has_been_modified"  
 end
 
-# if EmailTemplate.find_by_name("inventory_confirmed_yes").nil?
-#   inventory_confirmed_yes = {
-#     name: "inventory_confirmed_yes", 
-#     subject: "Service details has been modified",
-#     content: "
-#       <p>Hello, .ba_name</p>
-#       <br />    
-#       <p>Details of Demo .service_company_name, .service_date, .service_location was changed. </p>
-#       <p><a href=\".link_show_page\">Click here to see changes</a><p>
-#       <p>Thanks</p>
-#     "  
-#   }  
-#   EmailTemplate.create(inventory_confirmed_yes)
+if EmailTemplate.find_by_name("inventory_confirmed_no").nil?
+  inventory_confirmed_no = {
+    name: "inventory_confirmed_no", 
+    subject: "Service inventory is not confirmed yet",
+    content: "
+      <p>This service inventory is not confirmed yet</p>
+      <br />
+      <p>.service_company_name</p>
+      <p>.service_location</p>
+      <p>.service_complete_date</p>
+      <p>.service_details</p>
+      <br />
+      <p>Click <a href=\".project_link\">here</a> to view service</p>
+      <br />
+      <p>Thanks</p>
+    "
+  }  
+  EmailTemplate.create(inventory_confirmed_no)
 
-#   puts "created email template for inventory_confirmed_yes"  
-# end
-
-# if EmailTemplate.find_by_name("inventory_confirmed_no").nil?
-#   inventory_confirmed_no = {
-#     name: "inventory_confirmed_no", 
-#     subject: "Service details has been modified",
-#     content: "
-#       <p>Hello, .ba_name</p>
-#       <br />    
-#       <p>Details of Demo .service_company_name, .service_date, .service_location was changed. </p>
-#       <p><a href=\".link_show_page\">Click here to see changes</a><p>
-#       <p>Thanks</p>
-#     "  
-#   }  
-#   EmailTemplate.create(inventory_confirmed_no)
-
-#   puts "created email template for inventory_confirmed_no"  
-# end
+  puts "created email template for inventory_confirmed_no"  
+end

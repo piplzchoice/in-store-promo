@@ -38,6 +38,7 @@
 # 8. BA Paid => ---> "#E46D0A"
 # 9. Cancelled ---> "#FF0000"
 # 10. Invoiced --> "#0070C0"
+# 11. Inventory Confirmed ---> "#ccffcc" / "#b6fcc2"
 
 class Service < ActiveRecord::Base
 
@@ -144,6 +145,10 @@ class Service < ActiveRecord::Base
   def self.status_invoiced
     return 10
   end
+
+  def self.status_inventory_confirmed
+    return 11
+  end  
 
   def self.send_notif_after
     return 2.round
@@ -337,6 +342,17 @@ class Service < ActiveRecord::Base
     service_params[:product_ids] = JSON.parse(service_params[:product_ids])
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y')
     self.update_attributes(service_params)
+
+    if self.is_co_op?
+      # service_params.delete(:brand_ambassador_id)
+
+      self.co_op_services.each do |srv|
+        # service_params[:brand_ambassador_id] = srv.brand_ambassador_id
+        srv.update_attributes(service_params)
+      end
+    else
+      true
+    end    
   end
 
   def check_data_changes(service_params)
@@ -430,6 +446,8 @@ class Service < ActiveRecord::Base
       "Cancelled"
     when 10
       "Invoiced"      
+    when 11
+      "Inventory"            
     end
   end
 
@@ -603,6 +621,7 @@ class Service < ActiveRecord::Base
     coop.status = self.status
     coop.is_active = self.is_active
     coop.client_id = co_op_client_id
+    coop.product_ids = self.product_ids
 
     coop.save!
   end
@@ -681,5 +700,19 @@ class Service < ActiveRecord::Base
     end            
   end
 
+
+  def update_status_inventory_confirmed
+    self.update_attributes({status: Service.status_inventory_confirmed})
+    
+    if is_co_op?
+      if self.co_op_services.empty?
+        self.parent.update_attributes({status: Service.status_inventory_confirmed})
+      else
+        self.co_op_services.each do |service_coop|
+          service_coop.update_attributes({status: Service.status_inventory_confirmed})
+        end
+      end
+    end            
+  end
 
 end

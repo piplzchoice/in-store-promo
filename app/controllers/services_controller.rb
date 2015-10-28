@@ -199,6 +199,7 @@ class ServicesController < ApplicationController
   def confirm_inventory
     @service = Service.find(params[:service_id])    
     @service.update_inventory(service_inventory_params)
+    @service.update_status_inventory_confirmed
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 

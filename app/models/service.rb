@@ -245,6 +245,7 @@ class Service < ActiveRecord::Base
     [
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
+      ["Inventory Confirmed", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
       ["Invoiced", Service.status_invoiced],      
       ["Paid", Service.status_paid],
@@ -404,6 +405,8 @@ class Service < ActiveRecord::Base
       "#000000"
     when 10
       "#0070C0"
+    when 11
+      "#b6fcc2" #"#ccffcc" 
     end
   end
 
@@ -445,9 +448,9 @@ class Service < ActiveRecord::Base
     when 9
       "Cancelled"
     when 10
-      "Invoiced"      
+      "Invoiced"
     when 11
-      "Inventory"            
+      "Inventory Confirmed"
     end
   end
 

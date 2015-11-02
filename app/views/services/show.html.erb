@@ -35,7 +35,7 @@
     </div>  
   <% end %>
 
-  <% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
+  <% if (@service.status == Service.status_confirmed || @service.status == Service.status_inventory_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>
       <div class="link-new-btn">

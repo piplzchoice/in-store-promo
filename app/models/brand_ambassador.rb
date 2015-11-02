@@ -153,7 +153,7 @@ class BrandAmbassador < ActiveRecord::Base
 
   def get_assignments
     services.collect{|x|
-      if x.status == 2 || x.status == 4
+      if x.status == 2 || x.status == 4 || x.status == 11
         {
           title: x.title_calendar, 
           start: x.start_at.iso8601, 

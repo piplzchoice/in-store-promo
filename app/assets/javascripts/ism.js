@@ -218,7 +218,7 @@ $(function() {
   });
 
   $("#create-invoice").on("click", function(){
-
+    // $("#create-invoice").prop('disabled', true);
     if(document.getElementById('invoice_invoice_number').checkValidity() && 
       document.getElementById('invoice-date').checkValidity()) {    
       if($("#add-email").prop('checked')) {
@@ -228,6 +228,7 @@ $(function() {
         })
         
         $("#insert-add-email-modal").modal("show");  
+        // $("#create-invoice").prop('disabled', false);
         return false;        
       }
     }      

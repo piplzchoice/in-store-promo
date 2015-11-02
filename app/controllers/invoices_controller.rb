@@ -90,39 +90,51 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    line_items = []
-    unless params["line-items"].nil?
-      params["line-items"].each do |line_item|
-        line_items.push({desc: line_item["desc"], amount: line_item["amount"], reduction: line_item["reduction"]})
-      end      
-    end
+    is_exist = false
+    exist_service_ids = Invoice.all.collect(&:service_ids).join(",").split(",")
+    params[:service_ids].split(",").each do |service_id|
+      is_exist = exist_service_ids.include?(service_id)
+      break if is_exist
+    end      
 
-    @client = Client.find(params[:client_id])
-    @services = @client.services.find(params[:service_ids])
-    @invoice = Invoice.new_data(
-      params[:client_id], params[:service_ids], line_items, 
-      params[:rate_total_all], params[:expsense_total_all], 
-      params[:travel_total_all], params[:grand_total_all], 
-      params[:grand_total], params[:invoice])
+    if !is_exist
+
+      line_items = []
+      unless params["line-items"].nil?
+        params["line-items"].each do |line_item|
+          line_items.push({desc: line_item["desc"], amount: line_item["amount"], reduction: line_item["reduction"]})
+        end      
+      end
+
+      @client = Client.find(params[:client_id])
+      @services = @client.services.find(params[:service_ids])
+      @invoice = Invoice.new_data(
+        params[:client_id], params[:service_ids], line_items, 
+        params[:rate_total_all], params[:expsense_total_all], 
+        params[:travel_total_all], params[:grand_total_all], 
+        params[:grand_total], params[:invoice])
+      
+      if @invoice.save
+        params[:service_ids].split(",").each do |service_id|
+          Service.update_status_to_invoiced(service_id)
+        end      
     
-    if @invoice.save
-      params[:service_ids].split(",").each do |service_id|
-        Service.update_status_to_invoiced(service_id)
-      end      
-  
-      @client = @invoice.client
-      @services = Service.find(@invoice.service_ids.split(","))
-      file = "invoice-#{Time.now.to_i}.pdf"
-      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
-      kit = PDFKit.new(html)
-      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
-      @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-      ApplicationMailer.send_invoice(@invoice).deliver
-      redirect_to list_invoices_path
+        @client = @invoice.client
+        @services = Service.find(@invoice.service_ids.split(","))
+        file = "invoice-#{Time.now.to_i}.pdf"
+        html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
+        kit = PDFKit.new(html)
+        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+        @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+        @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
+        ApplicationMailer.send_invoice(@invoice).deliver
+        redirect_to list_invoices_path
+      else
+        render :new
+      end    
     else
-      render :new
-    end    
+      redirect_to invoices_path
+    end
   end
 
   def edit

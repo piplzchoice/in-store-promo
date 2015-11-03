@@ -253,11 +253,13 @@ body {
 .scheduled {
   background-color: #8DB4E3;
   border-color: #8DB4E3;
+  color: white;
 }
 
 .confirmed {
   background-color: #92D050;
   border-color: #92D050;
+  color: white;
 }
 
 .rejected {
@@ -268,26 +270,31 @@ body {
 .conducted {
   background-color: #0070C0;
   border-color: #0070C0;
+  color: white;
 }
 
 .unrespond {
   background-color: #A5A5A5;
   border-color: #A5A5A5;
+  color: white;
 }
 
 .reported {
   background-color: #FFC000;
   border-color: #FFC000;
+  color: white;
 }
 
 .paid {
   background-color: #00B050;
   border-color: #00B050;
+  color: white;
 }
 
 .ba-paid {
   background-color: #E46D0A;
   border-color: #E46D0A;
+  color: white;
 }
 
 .cancelled {
@@ -299,7 +306,7 @@ body {
 .inventory-confirmed {
   background-color: #b6fcc2;
   border-color: #b6fcc2;
-  color: white;
+  color: black;
 }
 
 

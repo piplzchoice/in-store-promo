@@ -245,7 +245,7 @@ class Service < ActiveRecord::Base
     [
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
-      ["Inventory Confirmed", Service.status_inventory_confirmed],
+      ["Inventory", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
       ["Invoiced", Service.status_invoiced],      
       ["Paid", Service.status_paid],
@@ -345,11 +345,12 @@ class Service < ActiveRecord::Base
     self.update_attributes(service_params)
 
     if self.is_co_op?
-      # service_params.delete(:brand_ambassador_id)
-
-      self.co_op_services.each do |srv|
-        # service_params[:brand_ambassador_id] = srv.brand_ambassador_id
-        srv.update_attributes(service_params)
+      if self.co_op_services.empty?
+        self.parent.update_attributes(service_params)
+      else
+        self.co_op_services.each do |srv|
+          srv.update_attributes(service_params)
+        end        
       end
     else
       true
@@ -450,7 +451,7 @@ class Service < ActiveRecord::Base
     when 10
       "Invoiced"
     when 11
-      "Inventory Confirmed"
+      "Inventory"
     end
   end
 
@@ -625,7 +626,7 @@ class Service < ActiveRecord::Base
     coop.is_active = self.is_active
     coop.client_id = co_op_client_id
     coop.product_ids = self.product_ids
-
+    coop.is_old_service = false
     coop.save!
   end
 

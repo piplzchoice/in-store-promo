@@ -80,6 +80,39 @@ $(function() {
     }
   });
 
+  $("#co_op_client_id").on("change", function(){    
+    
+    data_ids = JSON.parse($("#ids-coop-products").val())
+
+    if(data_ids.length !== 0) {
+      data = JSON.parse($("#service_product_ids").val())    
+      data_ids.forEach(function(ids){
+        index = data.indexOf(""+ ids + "");
+        if(index !== -1) {
+          data.splice(index, 1);      
+        }        
+      });    
+      $("#service_product_ids").val(JSON.stringify(data));
+    }
+
+    $.ajax({
+      url: "/clients/" + $(this).val() + "/products/get_product_by_client",
+    })
+    .done(function(data) {
+      elm = "";
+      data_ids = [];
+      data.forEach(function(dt){
+        elm += "<li>" +
+            "<input class=\"product_ids\" id=\"product-" + dt.id + "\" name=\"product-" + dt.id + "\" type=\"checkbox\" value=\"" + dt.id + "\">" +
+          "&nbsp;" + dt.name + "" +
+        "</li>";    
+        data_ids.push(dt.id)     
+      });
+      $("#coop-products-list").html(elm);
+      $("#ids-coop-products").val(JSON.stringify(data_ids))
+    });      
+  });
+
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
     $("#export-data-location").submit();
@@ -490,7 +523,7 @@ $(function() {
     }
   }
 
-  $(".product_ids").click(function(){
+  $(document).on("click", ".product_ids", function(){
     data = JSON.parse($("#service_product_ids").val())
     if($(this).is(":checked")) {
       data.push($(this).val())
@@ -499,7 +532,7 @@ $(function() {
       data.splice(index, 1);
     }
     $("#service_product_ids").val(JSON.stringify(data))
-  })
+  });
 
   $("#new_service").submit(function(){
     var status = true

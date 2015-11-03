@@ -36,7 +36,11 @@ Rails.application.routes.draw do
       end      
     end    
 
-    resources :products, only: [:create, :destroy, :index]
+    resources :products, only: [:create, :destroy, :index] do
+      collection do
+        get :get_product_by_client
+      end
+    end
   end
 
   resources :brand_ambassadors do

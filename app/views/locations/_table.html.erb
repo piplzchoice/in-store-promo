@@ -10,6 +10,8 @@
         <th>ID</th>
         <th>Name</th>
         <th>Zipcode</th>
+        <th>Contact</th>
+        <th>Phone</th>
         <th>Action</th>
       </tr>
     </thead>
@@ -24,6 +26,8 @@
         <td><%= location.id %></td>
         <td><%= location.name %></td>
         <td><%= location.zipcode %></td>
+        <td><%= location.contact %></td>
+        <td><%= location.phone %></td>
         <td>
           <% if location.is_active %>
             <%= link_to "Display", location_path(location) %> || 

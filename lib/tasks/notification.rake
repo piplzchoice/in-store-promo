@@ -57,5 +57,17 @@ namespace :notification do
       end
     end    
   end  
+
+  desc "check for inventory confirmed"
+  task :check_inventory_is_cofirmed => :environment do
+    current_time = Time.now.to_time
+    Service.where({status: [2, 11], is_old_service: false}).each do |service|
+      if TimeDifference.between(service.start_at.to_time, current_time).in_hours > 96.round
+        unless service.inventory_confirm
+          ApplicationMailer.inventory_confirmed_no(service).deliver!
+        end
+      end
+    end    
+  end    
   
 end

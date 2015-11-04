@@ -130,5 +130,17 @@ class ApplicationMailer < ActionMailer::Base
         
     @content = et.content.gsub(".client_first_name", invoice.client.first_name).gsub(".amount_received", number_to_currency(invoice.amount_received))
     mail(to: emails, subject: et.subject)
-  end
+  end 
+
+  def inventory_confirmed_no(service, admin = false)
+    et = EmailTemplate.find_by_name("inventory_confirmed_no")
+    emails = ["gregy@cx-iq.com", "carol.wellins@gmail.com"]
+
+    @content = et.content.gsub(".service_company_name", service.client.company_name)
+    @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
+    @content = @content.gsub(".service_details", service.details).gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))    
+    mail(to: emails.flatten.uniq, subject: et.subject)    
+  end      
 end
+
+

@@ -80,6 +80,51 @@ $(function() {
     }
   });
 
+  $("#co_op_client_id").on("change", function(){    
+    
+    // data_ids = JSON.parse($("#ids-coop-products").val())
+
+    // if(data_ids.length !== 0) {
+    //   data = JSON.parse($("#service_product_ids").val())    
+    //   data_ids.forEach(function(ids){
+    //     index = data.indexOf(""+ ids + "");
+    //     if(index !== -1) {
+    //       data.splice(index, 1);      
+    //     }        
+    //   });    
+    //   $("#service_product_ids").val(JSON.stringify(data));
+    // }
+
+    $.ajax({
+      url: "/clients/" + $(this).val() + "/products/get_product_by_client",
+    })
+    .done(function(data) {
+      elm = "";
+      // data_ids = [];
+      $("#ids-coop-products").val("[]");
+      data.forEach(function(dt){
+        elm += "<li>" +
+            "<input class=\"coop_product_ids\" id=\"product-" + dt.id + "\" name=\"product-" + dt.id + "\" type=\"checkbox\" value=\"" + dt.id + "\">" +
+          "&nbsp;" + dt.name + "" +
+        "</li>";    
+        // data_ids.push(dt.id)     
+      });
+      $("#coop-products-list").html(elm);
+      // $("#ids-coop-products").val(JSON.stringify(data_ids))
+    });      
+  });
+
+  $(document).on("click", ".coop_product_ids", function(){
+    data = JSON.parse($("#ids-coop-products").val())
+    if($(this).is(":checked")) {
+      data.push($(this).val())
+    } else {
+      index = data.indexOf($(this).val());
+      data.splice(index, 1);
+    }
+    $("#ids-coop-products").val(JSON.stringify(data))
+  });
+
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
     $("#export-data-location").submit();
@@ -218,7 +263,7 @@ $(function() {
   });
 
   $("#create-invoice").on("click", function(){
-
+    // $("#create-invoice").prop('disabled', true);
     if(document.getElementById('invoice_invoice_number').checkValidity() && 
       document.getElementById('invoice-date').checkValidity()) {    
       if($("#add-email").prop('checked')) {
@@ -228,6 +273,7 @@ $(function() {
         })
         
         $("#insert-add-email-modal").modal("show");  
+        // $("#create-invoice").prop('disabled', false);
         return false;        
       }
     }      
@@ -480,20 +526,50 @@ $(function() {
     });
   }
 
+  if($("#service_product_ids").length !== 0) {
+    data = JSON.parse($("#service_product_ids").val())
+    if(data.length !== 0) {
+      data.forEach(function(val){
+        $('#product-' + val).prop('checked', true);
+      })
+    }
+  }
+
+  $(document).on("click", ".product_ids", function(){
+    data = JSON.parse($("#service_product_ids").val())
+    if($(this).is(":checked")) {
+      data.push($(this).val())
+    } else {
+      index = data.indexOf($(this).val());
+      data.splice(index, 1);
+    }
+    $("#service_product_ids").val(JSON.stringify(data))
+  });
 
   $("#new_service").submit(function(){
+    var status = true
     if($("#service_start_at").val() !== "" && $("#service_end_at").val() !== "") {
       start_at_value = moment($("#service_start_at").val());
       end_at_value = moment($("#service_end_at").val());
       if(start_at_value.isValid() && end_at_value.isValid()) {
-        return true
+        status = true;
       } else {
         alert("Date format wrong");
-        return false
+        // return false
+        status = false;
       }          
     }
 
+    if(JSON.parse($("#service_product_ids").val()).length === 0) {
+      alert("Please select product");
+      status = false;
+    }    
+
+    return status
+
   });
+
+  $('#inventory-confirmed-date').datetimepicker({pickTime: false});
 
   $("#new_project").submit(function(){
     var cond = 0;
@@ -538,6 +614,7 @@ $(function() {
               dataType: 'json',
               data: function (term, page) { return { q: term}; },
               results: function (data, page) { 
+                  $("#location-contact").hide();
                   return {results: data};
               }
           },
@@ -546,6 +623,38 @@ $(function() {
           dropdownCssClass: "bigdrop",
           escapeMarkup: function (m) { return m; }
       });
+
+      $("#service_location_id").on("select2-selecting", function(e){
+        // console.log("val=" + e.val);
+        console.log("contact=" + e.choice.contact);
+        console.log("phone=" + e.choice.phone);
+        if(e.choice.contact === null && e.choice.phone === null) {
+          html = "" +
+            "<div class=\"form-group\">" +
+              "<label>Contact: </label>" +
+              "&nbsp;&nbsp;&nbsp;<input type=\"text\" name=location[contact] required>" +
+              "<br>" +
+              "<label>Phone: </label>" +
+              "&nbsp;&nbsp;&nbsp;<input type=\"text\" name=location[phone] required>" +
+            "</div>";
+
+          $("#location-contact").html(html);
+          $("#location-contact").show();
+        } else {
+          html = "" +
+            "<div class=\"form-group\">" +
+              "<label>Contact: </label>" +
+              "<span id=\"location-contact-data\"> " + e.choice.contact + "</span>" +
+              "<br>" +
+              "<label>Phone: </label>" +
+              "<span id=\"location-contact-phone\"> " + e.choice.phone + "</span>" +
+            "</div>";
+
+          $("#location-contact").html(html);
+          $("#location-contact").show();
+        }
+
+      })
 
       // $("#service_location_id").select2("data", { 
       //   id: $("#service_location_id").data("location-id"), 

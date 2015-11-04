@@ -219,3 +219,25 @@ if EmailTemplate.find_by_name("service_has_been_modified").nil?
 
   puts "created email template for service_has_been_modified"  
 end
+
+if EmailTemplate.find_by_name("inventory_confirmed_no").nil?
+  inventory_confirmed_no = {
+    name: "inventory_confirmed_no", 
+    subject: "Service inventory is not confirmed yet",
+    content: "
+      <p>This service inventory is not confirmed yet</p>
+      <br />
+      <p>.service_company_name</p>
+      <p>.service_location</p>
+      <p>.service_complete_date</p>
+      <p>.service_details</p>
+      <br />
+      <p>Click <a href=\".project_link\">here</a> to view service</p>
+      <br />
+      <p>Thanks</p>
+    "
+  }  
+  EmailTemplate.create(inventory_confirmed_no)
+
+  puts "created email template for inventory_confirmed_no"  
+end

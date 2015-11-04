@@ -38,7 +38,7 @@
       <td></td>
       <td></td>
       <td>
-        <strong><%= number_to_currency(@invoices.collect(&:grand_total).sum) %></strong>
+        <strong><%= number_to_currency(@invoices.collect(&:grand_total_all).sum) %></strong>
       </td>
       <td></td>
       <td></td>

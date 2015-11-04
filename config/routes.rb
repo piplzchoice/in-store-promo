@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       collection do
         get :autocomplete_location_name
         get :generate_select_ba
+        post :confirm_inventory
       end
 
       member do
@@ -35,7 +36,11 @@ Rails.application.routes.draw do
       end      
     end    
 
-    resources :products, only: [:create, :destroy, :index]
+    resources :products, only: [:create, :destroy, :index] do
+      collection do
+        get :get_product_by_client
+      end
+    end
   end
 
   resources :brand_ambassadors do

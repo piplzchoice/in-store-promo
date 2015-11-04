@@ -24,6 +24,10 @@
     <% end %>
   </div>  
 
+  <div id="location-contact" style="display: none;">
+
+  </div>
+
   <div class="form-group">
     <%= f.label :start_at, {class: "control-label"} %>
     <div class='input-group date dp-service' id='start_at_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
@@ -84,10 +88,28 @@
 
   <% end %>
 
+  <% if @service.new_record? || @service.is_old_service == false %>
+    <div class="form-group">
+      <%= f.label "Select the products to be demonstrated", {class: "control-label"} %>
+      <ul class="list-unstyled">
+        <% @client.products.each do |product| %>
+          <li>
+            <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
+            &nbsp;<%= product.name %>
+          </li>
+        <% end %>
+      </ul>
+      <ul class="list-unstyled" id="coop-products-list"></ul>
+      <input type="hidden" name="ids-coop-products" id="ids-coop-products" value="[]">
+    </div>
+  <% end %>
 
-  <div class="form-group">
+
+  <div class="form-group">    
     <%= f.label :details, {class: "control-label"} %>
     <%= f.text_area :details, {class: "form-control"} %>
+    <%= f.hidden_field :is_old_service, {value: (@service.new_record? ? false : @service.is_old_service)} %>
+    <%= f.hidden_field :product_ids %>
   </div>
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>

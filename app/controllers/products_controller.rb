@@ -23,6 +23,11 @@ class ProductsController < ApplicationController
     end        
   end
 
+  def get_product_by_client
+    client = Client.find params[:client_id]    
+    render json: client.products
+  end
+
   def destroy
     @client = Client.find params[:client_id]
     @product = @client.products.find params[:id]

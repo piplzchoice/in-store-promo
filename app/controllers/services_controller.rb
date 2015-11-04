@@ -30,7 +30,7 @@ class ServicesController < ApplicationController
               contact: params[:location][:contact]
             })
           end
-          @service.create_coops(params["co_op_client_id"]) if params["co-op-price-box"]
+          @service.create_coops(params["co_op_client_id"], params["ids-coop-products"]) if params["co-op-price-box"]
         #   # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"

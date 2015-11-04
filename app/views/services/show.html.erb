@@ -128,27 +128,7 @@
               <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
               &nbsp;<%= product.name %>
             </li>
-          <% end %>
-
-          <% if @service.is_co_op? %>
-            <% if @service.co_op_services.empty? %>              
-              <% @service.parent.client.products.each do |product| %>
-                <li>
-                  <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
-                  &nbsp;<%= product.name %>
-                </li>
-              <% end %>              
-            <% else %>
-              <% @service.co_op_services.each do |service| %>                
-                <% service.client.products.each do |product| %>
-                  <li>
-                    <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
-                    &nbsp;<%= product.name %>
-                  </li>
-                <% end %>                
-              <% end %>
-            <% end %>
-          <% end %>          
+          <% end %>        
         </ul>  
         <%= hidden_field_tag "service_id", @service.id %>
         <%= hidden_field_tag "client_id", @client.id %>

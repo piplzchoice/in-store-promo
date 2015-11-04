@@ -344,17 +344,18 @@ class Service < ActiveRecord::Base
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y')
     self.update_attributes(service_params)
 
-    if self.is_co_op?
-      if self.co_op_services.empty?
-        self.parent.update_attributes(service_params)
-      else
-        self.co_op_services.each do |srv|
-          srv.update_attributes(service_params)
-        end        
-      end
-    else
-      true
-    end    
+    # if self.is_co_op?
+    #   if self.co_op_services.empty?
+    #     self.parent.update_attributes(service_params)
+    #   else
+    #     self.co_op_services.each do |srv|
+    #       srv.update_attributes(service_params)
+    #     end        
+    #   end
+    # else
+    #   true
+    # end   
+    true 
   end
 
   def check_data_changes(service_params)
@@ -613,7 +614,8 @@ class Service < ActiveRecord::Base
     
   end
 
-  def create_coops(co_op_client_id)
+  def create_coops(co_op_client_id, ids_coop_products)
+    ids_coop_products = JSON.parse(ids_coop_products)
     coop = self.co_op_services.build
     
     coop.location = self.location
@@ -625,7 +627,7 @@ class Service < ActiveRecord::Base
     coop.status = self.status
     coop.is_active = self.is_active
     coop.client_id = co_op_client_id
-    coop.product_ids = self.product_ids
+    coop.product_ids = ids_coop_products
     coop.is_old_service = false
     coop.save!
   end
@@ -708,15 +710,15 @@ class Service < ActiveRecord::Base
   def update_status_inventory_confirmed
     self.update_attributes({status: Service.status_inventory_confirmed})
     
-    if is_co_op?
-      if self.co_op_services.empty?
-        self.parent.update_attributes({status: Service.status_inventory_confirmed})
-      else
-        self.co_op_services.each do |service_coop|
-          service_coop.update_attributes({status: Service.status_inventory_confirmed})
-        end
-      end
-    end            
+    # if is_co_op?
+    #   if self.co_op_services.empty?
+    #     self.parent.update_attributes({status: Service.status_inventory_confirmed})
+    #   else
+    #     self.co_op_services.each do |service_coop|
+    #       service_coop.update_attributes({status: Service.status_inventory_confirmed})
+    #     end
+    #   end
+    # end            
   end
 
 end

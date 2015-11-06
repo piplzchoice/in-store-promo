@@ -23,7 +23,9 @@
 <p><%= @service.client.company_name %></p>
 
 <label>Location</label>
-<p><%= @service.location.name %></p>
+<p>Name: <%= @service.location.name %></p>
+<p>Contact: <%= @service.location.contact %></p>
+<p>Phone: <%= @service.location.phone %></p>
 
 <label>Start Date</label>
 <p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
@@ -33,3 +35,36 @@
 
 <label>Details</label>
 <p><%= @service.details %></p>
+
+<% unless @service.is_old_service %>
+  <hr />
+    <div class="row">
+      <div class="col-md-6">
+        <label>Products to be demonstrated</label>
+        <ol class="list-unstyled">
+          <% @service.products.each do |product| %>
+            <li><%= product.name %></li>
+          <% end %>        
+        </ol>  
+        
+        <% if @service.is_co_op? %>
+          <% if @service.co_op_services.empty? %>
+            <ol class="list-unstyled">
+              <% @service.parent.products.each do |product| %>
+                <li><%= product.name %></li>
+              <% end %>        
+            </ol>              
+          <% else %>
+            <% @service.co_op_services.each do |service_coop| %>
+              <ol class="list-unstyled">
+                <% service_coop.products.each do |product| %>
+                  <li><%= product.name %></li>
+                <% end %>        
+              </ol>                
+            <% end %>
+          <% end %>
+        <% end %>
+
+      </div>
+    </div>  
+<% end %>

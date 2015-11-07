@@ -4,18 +4,19 @@ class BrandAmbassadorsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html {        
+      format.html {   
+        @locations = Location.with_status_active     
         if session[:filter_history_ba].nil?
           @brand_ambassadors = BrandAmbassador.with_status_active.paginate(:page => params[:page])
         else
-          @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]["is_active"]).paginate(:page => session[:filter_history_ba]["page"])
+          @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
           @is_active = session[:filter_history_ba]["is_active"]
           session[:filter_history_ba] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "brand_ambassadors"
         end        
       }
       format.js {
-        session[:filter_history_ba] = {"is_active" => params[:is_active], "page" => params[:page]}
-        @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]["is_active"]).paginate(:page => session[:filter_history_ba]["page"])
+        session[:filter_history_ba] = {"is_active" => params[:is_active], "page" => params[:page], "location_name" => params[:location_name]}
+        @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
       }      
     end    
   end
@@ -140,10 +141,12 @@ class BrandAmbassadorsController < ApplicationController
     params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, :territory_ids => [], account_attributes: [:email, :id], :location_ids => [])
   end    
 
-  def view_ba_calender
+  def view_ba_calender    
     respond_to do |format|
-      format.html
-      format.json { render json: BrandAmbassador.get_all_available_dates }
+      format.html {
+        @location_name = params[:location_name].nil? ? "0" : params[:location_name]
+      }
+      format.json { render json: BrandAmbassador.get_all_available_dates(params[:location_name]) }
     end
   end
 end

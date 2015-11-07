@@ -33,8 +33,14 @@ class BrandAmbassador < ActiveRecord::Base
   default_scope { order("created_at ASC") }
   scope :with_status_active, -> { where(is_active: true) }
 
-  def self.filter_and_order(is_active)
-    BrandAmbassador.where(is_active: is_active)
+  def self.filter_and_order(filter_options)
+    data = []
+    if filter_options["location_name"] == ""
+      data = BrandAmbassador.where(is_active: filter_options["is_active"])
+    else
+      data = Location.find(filter_options["location_name"]).brand_ambassadors.where(is_active: filter_options["is_active"])
+    end    
+    return data    
   end    
 
   def self.new_with_account(brand_ambassador_params, user_id)
@@ -165,13 +171,22 @@ class BrandAmbassador < ActiveRecord::Base
     }.compact  
   end
 
-  def self.get_all_available_dates 
+  def self.get_all_available_dates(location_name)
     # "#3c763d" green
     # "#f0ad4e" orange
     # "#428bca" blue
+    # "#92D050" confirmed
 
     dates = []
-    self.with_status_active.all.each do |ba|
+    data = nil
+    
+    if location_name == "0"
+      data = self.with_status_active
+    else
+      data = Location.find(location_name).brand_ambassadors.with_status_active
+    end
+
+    data.all.each do |ba|
       ba.available_dates.each do |available_date| 
         time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
         services = ba.services.where({start_at: time_range}).where.not({status: 9})
@@ -229,6 +244,17 @@ class BrandAmbassador < ActiveRecord::Base
           dates.push hash
         end
       end
+      
+      ba.services.where(:status => 2).each do |service|
+        hash = {
+          title: ba.name,
+          start: service.start_at.strftime("%Y-%m-%d"),
+          url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
+          color: "#92D050"
+        }   
+        dates.push hash     
+      end
+
     end
     return dates.uniq
   end

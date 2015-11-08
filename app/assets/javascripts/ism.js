@@ -24,6 +24,14 @@ $(function() {
     });    
   });
 
+  $(document).on("click", "#view-ba-calendar", function(){
+    url = $(this).data("url");
+    if($("#location_name").val() !== "") {
+      url = url + "?&location_name=" + $("#location_name").val()
+    }
+    window.location = url;
+  });  
+
   $(document).on("click", "#show-hide-client-name", function(){
     if($("#report_hide_client_name").val() === "f") {
       $("#report_hide_client_name").val("t");
@@ -688,6 +696,11 @@ $(function() {
   }
 
   if($('#calendar').length !== 0 ) {
+    url = $('#calendar').data("url")
+    if($("#calendar").data("location") !== undefined) {
+      url = url + "?location_name=" + $("#calendar").data("location");
+    }
+
     $('#calendar').fullCalendar({
       header: {
         left: 'prev,next today',
@@ -696,7 +709,7 @@ $(function() {
       },
       editable: false,
       events: {
-        url: $('#calendar').data("url"),
+        url: url,
         error: function() {
           $('#script-warning').show();
         }

@@ -189,7 +189,12 @@ class BrandAmbassador < ActiveRecord::Base
     data.all.each do |ba|
       ba.available_dates.each do |available_date| 
         time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
-        services = ba.services.where({start_at: time_range}).where.not({status: 9})
+        hash_data = {start_at: time_range}
+        
+        unless location_name == "0"
+          hash_data = hash_data.merge({location_id: location_name})
+        end        
+        services = ba.services.where(hash_data).where.not({status: 9})
 
         show = true
         if services.blank?
@@ -245,9 +250,14 @@ class BrandAmbassador < ActiveRecord::Base
         end
       end
       
-      ba.services.where(:status => 2).each do |service|
+      data_criteria = {:status => 2}
+      unless location_name == "0"
+        data_criteria = data_criteria.merge({location_id: location_name})
+      end            
+        
+      ba.services.where(data_criteria).each do |service|
         hash = {
-          title: "#{ba.name} - #{service.client.company_name} : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
+          title: "#{ba.name} - #{service.client.company_name} (#{service.location.name}) : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
           start: service.start_at.strftime("%Y-%m-%d"),
           url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
           color: "#92D050"

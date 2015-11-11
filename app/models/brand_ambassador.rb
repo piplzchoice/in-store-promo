@@ -176,6 +176,20 @@ class BrandAmbassador < ActiveRecord::Base
     # "#f0ad4e" orange
     # "#428bca" blue
     # "#92D050" confirmed
+    #
+    # new process
+    #
+    # 1. Show BA availability for am and pm (done)
+
+    # 2. Show BA booking day (done)
+
+    # 3. When BA have availability for am and pm, and  BA have booking at the pm time, availability data on am and booking data is shown
+
+    # 4. When BA have availability for am and pm, and  BA have booking at the am time, availability data on pm and booking data is shown
+
+    # 5. When ba have availability for am and pm and both of time is booked, then data service should not shown.
+
+    # 6. When ba only have availability time on pm and is booked, booking will not shown    
 
     dates = []
     data = nil
@@ -189,9 +203,15 @@ class BrandAmbassador < ActiveRecord::Base
     data.all.each do |ba|
       ba.available_dates.each do |available_date| 
         time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
-        services = ba.services.where({start_at: time_range}).where.not({status: 9})
+        hash_data = {start_at: time_range}
+        
+        unless location_name == "0"
+          hash_data = hash_data.merge({location_id: location_name})
+        end        
+        services = ba.services.where(hash_data).where.not({status: 9})
 
         show = true
+        show_service = false
         if services.blank?
           if available_date.am && available_date.pm
             color = "#3c763d" #green
@@ -209,6 +229,7 @@ class BrandAmbassador < ActiveRecord::Base
               if periods.include?("AM")
                 if available_date.am && available_date.pm
                   color = "#428bca"
+                  show_service = true
                 else
                   show = false
                 end                     
@@ -220,6 +241,7 @@ class BrandAmbassador < ActiveRecord::Base
                     show = false
                   else
                     color = "#f0ad4e" #orange
+                    show_service = true
                   end                  
                 else
                   show = false
@@ -243,17 +265,35 @@ class BrandAmbassador < ActiveRecord::Base
           }
           dates.push hash
         end
+
+        if show_service
+          services.each do |service|
+            hash = {
+              title: "#{ba.name} - #{service.client.company_name} (#{service.location.name}) : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
+              start: service.start_at.strftime("%Y-%m-%d"),
+              url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
+              color: "#92D050"
+            }   
+            dates.push hash     
+          end          
+        end
       end
       
-      ba.services.where(:status => 2).each do |service|
-        hash = {
-          title: "#{ba.name} - #{service.client.company_name} : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
-          start: service.start_at.strftime("%Y-%m-%d"),
-          url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
-          color: "#92D050"
-        }   
-        dates.push hash     
-      end
+      # data_criteria = {:status => 2}
+      # unless location_name == "0"
+      #   data_criteria = data_criteria.merge({location_id: location_name})
+      # end            
+
+      # ba.services.where(data_criteria).each do |service|
+      #   hash = {
+      #     title: "#{ba.name} - #{service.client.company_name} (#{service.location.name}) : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
+      #     start: service.start_at.strftime("%Y-%m-%d"),
+      #     url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
+      #     color: "#92D050"
+      #   }   
+      #   dates.push hash     
+      # end
+
 
     end
     return dates.uniq

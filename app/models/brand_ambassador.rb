@@ -205,13 +205,15 @@ class BrandAmbassador < ActiveRecord::Base
         time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
         hash_data = {start_at: time_range}
         
-        unless location_name == "0"
-          hash_data = hash_data.merge({location_id: location_name})
-        end        
-        services = ba.services.where(hash_data).where.not({status: 9})
+        # unless location_name == "0"
+        #   hash_data = hash_data.merge({location_id: location_name})
+        # end        
+
+        services = ba.services.select(:id, :start_at, :status, :client_id, :location_id).where(hash_data).where.not({status: 9})
 
         show = true
         show_service = false
+
         if services.blank?
           if available_date.am && available_date.pm
             color = "#3c763d" #green

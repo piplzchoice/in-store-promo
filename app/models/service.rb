@@ -162,19 +162,18 @@ class Service < ActiveRecord::Base
     else
       service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p')
       service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')      
-      # service = Service.where({
-      #   client_id: service_params[:client_id], 
-      #   location_id: service_params[:location_id], 
-      #   brand_ambassador_id: service_params[:brand_ambassador_id],
-      #   start_at: service_params[:start_at],
-      #   end_at: service_params[:end_at]
-      # })    
+      service = Service.where({
+        client_id: service_params[:client_id], 
+        brand_ambassador_id: service_params[:brand_ambassador_id],
+        start_at: service_params[:start_at],
+        end_at: service_params[:end_at]
+      })    
 
-      # if service.blank?
+      if service.blank?
         self.new(service_params)
-      # else
-      #   self.new
-      # end          
+      else
+        self.new
+      end          
     end  
   end
 

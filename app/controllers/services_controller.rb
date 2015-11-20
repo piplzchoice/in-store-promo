@@ -167,19 +167,19 @@ class ServicesController < ApplicationController
     redirect_to root_path
   end
 
-  def mark_service_as_complete
-    msg = "Service update failed"
-    @client = Client.find(params[:client_id])
-    unless @client.nil?
-      @service = @client.services.find(params[:id])
-      unless @service.nil?
-        @service.update_status_to_conducted
-        msg = "Service set at completed"
-      end
-    end
+  # def mark_service_as_complete
+  #   msg = "Service update failed"
+  #   @client = Client.find(params[:client_id])
+  #   unless @client.nil?
+  #     @service = @client.services.find(params[:id])
+  #     unless @service.nil?
+  #       @service.update_status_to_conducted
+  #       msg = "Service set at completed"
+  #     end
+  #   end
 
-    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
-  end
+  #   redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
+  # end
 
   def set_reschedule
     msg = "Service reschedule failed"

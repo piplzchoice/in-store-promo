@@ -663,19 +663,19 @@ class Service < ActiveRecord::Base
   end
 
 
-  def update_status_to_conducted
-    self.update_attributes({status: Service.status_conducted})
+  # def update_status_to_conducted
+  #   self.update_attributes({status: Service.status_conducted})
     
-    if is_co_op?
-      if self.co_op_services.empty?
-        self.parent.update_attributes({status: Service.status_conducted})
-      else
-        self.co_op_services.each do |service_coop|
-          service_coop.update_attributes({status: Service.status_conducted})
-        end
-      end
-    end    
-  end
+  #   if is_co_op?
+  #     if self.co_op_services.empty?
+  #       self.parent.update_attributes({status: Service.status_conducted})
+  #     else
+  #       self.co_op_services.each do |service_coop|
+  #         service_coop.update_attributes({status: Service.status_conducted})
+  #       end
+  #     end
+  #   end    
+  # end
 
   def update_status_after_reported(status)
     self.update_attributes({status: status})

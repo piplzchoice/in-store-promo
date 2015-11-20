@@ -25,9 +25,9 @@ every 1.day, :at => '01:00 am' do
   rake "notification:add_availblty_date"
 end
 
-every 10.minutes do
-  rake "notification:change_to_conduceted"
-end
+# every 10.minutes do
+#   rake "notification:change_to_conduceted"
+# end
 
 every :day, :at => '01:00am' do
   rake "notification:report_over_due_alert"

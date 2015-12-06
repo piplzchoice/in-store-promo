@@ -79,7 +79,7 @@ class InvoicesController < ApplicationController
   def show
     @invoice = Invoice.find(params[:id])
     @client = @invoice.client
-    @services = Service.find(@invoice.service_ids.split(","))
+    # @services = Service.find(@invoice.service_ids.split(","))
   end
 
   def new

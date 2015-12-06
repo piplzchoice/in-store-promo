@@ -54,15 +54,16 @@
       </tr>
     </thead>
     <tbody>
-      <% @services.each_with_index do |service, i|  %>
+      <% @invoice.data.each_with_index do |data, i|  %>
+        <% service = Service.find(data["service_id"]) %>
         <tr class="border-inv">
-          <td class="pad-tab border-inv"><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td class="pad-tab border-inv"><%= data["demo_date"] %></td>
           <td class="pad-tab border-inv"><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
-          <td class="pad-tab border-inv"><%= service.start_at.strftime("%I:%M %p") %></td>        
-          <td class="pad-tab border-inv right-align"><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-          <td class="pad-tab border-inv right-align"><%= number_to_currency service.report_service.expense_one %></td>
-          <td class="pad-tab border-inv right-align"><%= service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-" %></td>
-          <td class="pad-tab border-inv right-align"><%= number_to_currency(service.grand_total) %></td>
+          <td class="pad-tab border-inv"><%= data["start_time"] %></td>        
+          <td class="pad-tab border-inv right-align"><%= data["rate"] %></td> 
+          <td class="pad-tab border-inv right-align"><%= data["product_expenses"] %></td>
+          <td class="pad-tab border-inv right-align"><%= data["travel_expense"] %></td>
+          <td class="pad-tab border-inv right-align"><%= data["amount"] %></td>
         </tr>
       <% end %>
 

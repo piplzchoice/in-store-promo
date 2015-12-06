@@ -73,7 +73,7 @@ class ServicesController < ApplicationController
 
               if params["co-op-price-box"]
                 msg = "Added Coop Client to service"
-                @service.create_coops(params["co_op_client_id"])          
+                @service.create_coops(params["co_op_client_id"], params["ids-coop-products"])
               else
                 if is_ba_detail_has_changed
                   ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver

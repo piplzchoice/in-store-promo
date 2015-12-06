@@ -358,6 +358,7 @@ class Service < ActiveRecord::Base
   end
 
   def check_data_changes(service_params)
+    cond = true
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
     
@@ -369,8 +370,13 @@ class Service < ActiveRecord::Base
 
     # self.co_op_client_id = service_params[:co_op_client_id]
     self.parent = service_params[:parent]
+    # Location, Assigned BA and Start/End Dates should change the status to Scheduled
+    # self.changes.size == 1 && !self.changes["details"].nil?
+    if self.changes.size > 0 
+      cond = false if !self.changes["location_id"].nil? || !self.changes["brand_ambassador_id"].nil?  || !self.changes["start_at"].nil? || !self.changes["end_at"].nil?
+    end
 
-    self.changes.size == 1 && !self.changes["details"].nil?
+    return cond
   end
 
   def old_id

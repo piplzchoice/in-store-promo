@@ -16,6 +16,29 @@
 class Statement < ActiveRecord::Base
   serialize :services_ids  
   serialize :line_items, JSON
+  serialize :data, JSON
   belongs_to :brand_ambassador  
   mount_uploader :file, ImageUploader
+
+  def self.generate_data(service_ids)
+    data = []
+
+    service_ids.each_with_index do |service_id, i|
+      service = Service.find(service_id)
+      expenses = service.report_service.nil? ? "" : (service.report_service.expense_one.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.expense_one))
+      travel_expense = service.report_service.nil? ? "" : (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.travel_expense)) : "-")
+      item = {
+        date: service.start_at.strftime('%m/%d/%Y'),
+        client_name: service.company_name,
+        location: service.location.name,
+        rate: ActionController::Base.helpers.number_to_currency(service.ba_rate),
+        expenses: expenses,
+        travel_expense: travel_expense,
+        total: ActionController::Base.helpers.number_to_currency(service.total_ba_paid)
+      }
+      data.push(item)
+    end
+
+    return data
+  end
 end

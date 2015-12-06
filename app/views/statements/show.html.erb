@@ -24,15 +24,15 @@
       </tr>
     </thead>
     <tbody>
-      <% @services.each_with_index do |service, i|  %>
+      <% @statement.data.each_with_index do |data, i|  %>
         <tr>
-          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-          <td><%= service.company_name %></td>
-          <td><%= service.location.name %></td>         
-          <td><%= number_to_currency(service.ba_rate) %></td> 
-          <td><%= service.report_service.expense_one.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
-          <td><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
-          <td><%= number_to_currency service.total_ba_paid %></td> 
+          <td><%= data["date"] %></td>
+          <td><%= data["client_name"] %></td>
+          <td><%= data["location"] %></td>         
+          <td><%= data["rate"] %></td> 
+          <td><%= data["expenses"] %></td>
+          <td><%= data["travel_expense"] %></td>
+          <td><%= data["total"] %></td> 
         </tr>        
       <% end %>
 

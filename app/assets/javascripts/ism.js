@@ -614,9 +614,15 @@ $(function() {
 
   if($("#service_location_id").length !== 0) {
     if($("#service_location_id").data("state") === "new") {
-      $("#service_location_id").select2({
-          placeholder: "-",
-          minimumInputLength: 1,
+      
+      name = "-"
+      if($("#location_fullname").length !== 0 && $("#location_fullname").val() !== "") {
+        name = $("#location_fullname").val();
+      }
+
+      $("#service_location_id").select2({    
+          placeholder: name,
+          minimumInputLength: 4,
           ajax: {
               url: $("#service_location_id").data("url"),
               dataType: 'json',
@@ -626,16 +632,28 @@ $(function() {
                   return {results: data};
               }
           },
-          formatResult: function (location) { return location.name + " - " + location.address + ", " + location.city; },
-          formatSelection: function (location) { return location.name + " - " + location.address + ", " + location.city; },
+          formatResult: function (location) { return location.name },
+          formatSelection: function (location) { return location.name },
           dropdownCssClass: "bigdrop",
-          escapeMarkup: function (m) { return m; }
+          escapeMarkup: function (m) { return m; },
+          initSelection : function (element, callback) {
+            $.ajax($("#service_location_id").data("url"), {
+                data: {q: $("#location_fullname").val().split("-")[0].replace(/\s+$/, '')},
+                dataType: "json"
+            }).done(function(data) {
+                callback(data);
+            });
+          },          
       });
 
       $("#service_location_id").on("select2-selecting", function(e){
-        // console.log("val=" + e.val);
-        console.log("contact=" + e.choice.contact);
-        console.log("phone=" + e.choice.phone);
+        if($("#location_fullname").length !== 0) {
+          $("#location_name").val(e.choice.id);
+        }
+
+        console.log("val=" + e.choice.id);
+        // console.log("contact=" + e.choice.contact);
+        // console.log("phone=" + e.choice.phone);
         if(e.choice.contact === null && e.choice.phone === null) {
           html = "" +
             "<div class=\"form-group\">" +

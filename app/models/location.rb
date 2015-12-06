@@ -34,7 +34,7 @@ class Location < ActiveRecord::Base
   end  
 
   def self.autocomplete_search(q)
-    Location.where({is_active: true}).where("name ILIKE ?", "%#{q}%")
+    Location.with_status_active.where("name ILIKE ?", "%#{q}%")
   end  
 
   def self.complete_location

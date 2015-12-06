@@ -13,10 +13,11 @@ class ReportsController < ApplicationController
             @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
           else                                    
             @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => session[:filter_history_reports]["page"])
-            @status = session[:filter_history_reports]["status"]            
+            @status = session[:filter_history_reports]["status"]
             @assigned_to = session[:filter_history_reports]["assigned_to"]
             @client_name = session[:filter_history_reports]["client_name"]
             @location_name = session[:filter_history_reports]["location_name"]
+            @location_fullname = Location.find(@location_name).name unless @location_name == ""
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
           @brand_ambassadors = BrandAmbassador.with_status_active

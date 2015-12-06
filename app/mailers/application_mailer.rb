@@ -127,8 +127,10 @@ class ApplicationMailer < ActionMailer::Base
     emails = [invoice.client.email]
     invoice.client.additional_emails.split(";").each{|x| emails.push(x)}      
 
-        
-    @content = et.content.gsub(".client_first_name", invoice.client.first_name).gsub(".amount_received", number_to_currency(invoice.amount_received))
+    amount_received = number_to_currency(invoice.grand_total)
+    amount_received = number_to_currency(invoice.amount_received) unless invoice.amount_received.nil?
+
+    @content = et.content.gsub(".client_first_name", invoice.client.first_name).gsub(".amount_received", amount_received)
     mail(to: emails, subject: et.subject)
   end 
 

@@ -57,7 +57,17 @@ class ReportsController < ApplicationController
           "location_name" => location_name
         }
 
-        @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => params[:page])
+        services = Service.filter_and_order(session[:filter_history_reports])
+
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          session[:next_report] = services.collect do |service|
+            if service.is_reported?
+              service.report.id
+            end
+          end
+        end
+        
+        @services = services.paginate(:page => params[:page])
       end
 
       format.csv do
@@ -203,6 +213,18 @@ class ReportsController < ApplicationController
   end
 
   def show
+    @next_report = false
+
+    unless session[:next_report].nil?
+      size = session[:next_report].size
+      idx = session[:next_report].index(params[:id].to_i)
+      
+      unless size == (idx + 1)
+        @next_report = true
+        @next_data = Report.find(session[:next_report][idx.to_i + 1])
+      end
+    end
+
     @report = Report.find(params[:id])
     @service = @report.service
   end

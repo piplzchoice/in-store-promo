@@ -30,7 +30,8 @@ class Location < ActiveRecord::Base
   default_scope { order("created_at ASC") }
 
   def self.filter_and_order(is_active, name)
-    Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
+    # Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
+    Location.where(id: name, is_active: is_active)
   end  
 
   def self.autocomplete_search(q)

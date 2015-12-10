@@ -11,18 +11,34 @@ class LocationsController < ApplicationController
           @locations = Location.with_status_active.paginate(:page => params[:page])
           @loc_id = Location.with_status_active.select(:id).collect(&:id).join(",")
         else
-          @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
+          @locations = Location.filter_and_order(
+            session[:filter_history_locations]["is_active"], 
+            session[:filter_history_locations]["location_name"]).paginate(:page => session[:filter_history_locations]["page"])
           @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
           @is_active = session[:filter_history_locations]["is_active"]
-          @name = session[:filter_history_locations]["name"]
+          @location_name = session[:filter_history_locations]["location_name"]
+          @location_fullname = Location.find(@location_name).name unless @location_name == ""          
           session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
         end        
       }
-      format.js {
+      format.js {        
         @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
-        session[:filter_history_locations] = {"is_active" => params[:is_active], "name" => params[:name], "page" => params[:page]}
-        @locations = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).paginate(:page => session[:filter_history_locations]["page"])
-        @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
+        
+        session[:filter_history_locations] = {
+          "is_active" => params[:is_active], 
+          "location_name" => params[:location_name], 
+          "page" => params[:page]
+        }
+        
+        @locations = Location.filter_and_order(
+          session[:filter_history_locations]["is_active"], 
+          session[:filter_history_locations]["location_name"])
+        .paginate(:page => session[:filter_history_locations]["page"])
+
+        @loc_id = Location.filter_and_order(
+          session[:filter_history_locations]["is_active"], 
+          session[:filter_history_locations]["location_name"])
+        .select(:id).collect(&:id).join(",")
       }      
     end    
   end

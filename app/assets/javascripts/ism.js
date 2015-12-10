@@ -616,12 +616,13 @@ $(function() {
     if($("#service_location_id").data("state") === "new") {
       
       name = "-"
-      if($("#location_fullname").length !== 0 && $("#location_fullname").val() !== "") {
-        name = $("#location_fullname").val();
-      }
+      // if($("#location_fullname").length !== 0 && $("#location_fullname").val() !== "") {
+      //   name = $("#location_fullname").val();
+      // }
 
       $("#service_location_id").select2({    
-          placeholder: name,
+          allowClear: true,
+          placeholder: name,          
           minimumInputLength: 4,
           ajax: {
               url: $("#service_location_id").data("url"),
@@ -636,15 +637,17 @@ $(function() {
           formatSelection: function (location) { return location.name },
           dropdownCssClass: "bigdrop",
           escapeMarkup: function (m) { return m; },
+          data:[],
           initSelection : function (element, callback) {
             $.ajax($("#service_location_id").data("url"), {
-                data: {q: $("#location_fullname").val().split("-")[0].replace(/\s+$/, '')},
+                data: {q: $("#location_fullname").val()},
                 dataType: "json"
             }).done(function(data) {
-                callback(data);
+                console.log("done");
+                callback(data[0]);
             });
           },          
-      });
+      }).select2('val', $("#location_name").val());
 
       $("#service_location_id").on("select2-selecting", function(e){
         if($("#location_fullname").length !== 0) {

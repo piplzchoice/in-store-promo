@@ -107,13 +107,13 @@ class Client < ActiveRecord::Base
     end    
   end
 
-  def rate
-    if read_attribute(:rate).nil?
-      DefaultValue.rate_project
-    else
-      read_attribute(:rate)
-    end
-  end
+  # def rate
+  #   if read_attribute(:rate).nil?
+  #     DefaultValue.rate_project
+  #   else
+  #     read_attribute(:rate)
+  #   end
+  # end
 
   def reset_password
     password = Devise.friendly_token.first(8)

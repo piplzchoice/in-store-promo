@@ -1,11 +1,6 @@
 <h1 class="page-header">Edit Default Values</h1>
 <%= form_for @default_value, html: {role: "form"} do |f| %>
   <div class="form-group">
-    <%= f.label :rate_project, {class: "control-label"} %>
-    <%= f.number_field :rate_project, {class: "form-control"} %>
-  </div>  
-
-  <div class="form-group">
     <%= f.label :traffic, {class: "control-label"} %>
     <%= f.text_field :traffic, {class: "form-control"} %>
   </div>  
@@ -23,12 +18,7 @@
   <div class="form-group">
     <%= f.label :send_unrespond, {class: "control-label"} %>
     <%= f.number_field :send_unrespond, {class: "form-control"} %>
-  </div>      
-  
-  <div class="form-group">
-    <%= f.label :co_op_price, {class: "control-label"} %>
-    <%= f.number_field :co_op_price, {class: "form-control"} %>
-  </div>        
+  </div>          
 
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

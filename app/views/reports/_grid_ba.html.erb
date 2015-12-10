@@ -19,8 +19,7 @@
       <% if service.report_service.nil? %>
         <%= link_to("Create Report", new_report_path(service_id: service.id)) %>
       <% else %>
-        <%= link_to("Show Report", report_path(service.report_service)) %> ||    
-        <%= link_to("Edit Report", edit_report_path(service.report_service)) %>      
+        <%= link_to("Show Report", report_path(service.report_service)) %> 
       <% end %>
       </td> 
     </tr>

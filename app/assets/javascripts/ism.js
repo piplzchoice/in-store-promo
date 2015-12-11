@@ -649,6 +649,15 @@ $(function() {
           },          
       }).select2('val', $("#location_name").val());
 
+      $(document).on("click", "abbr", function(e){
+        console.log("wew");
+        $("#location_name").val("");
+      })
+      
+      $("#service_location_id").on("select2-search-choice-close", function(e){
+        console.log("crot");
+      })
+
       $("#service_location_id").on("select2-selecting", function(e){
         if($("#location_fullname").length !== 0) {
           $("#location_name").val(e.choice.id);

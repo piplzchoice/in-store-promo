@@ -26,7 +26,7 @@ class LocationsController < ApplicationController
         
         session[:filter_history_locations] = {
           "is_active" => params[:is_active], 
-          "location_name" => params[:location_name], 
+          "location_name" => (params[:location_id] == "" ? "" : params[:location_name]), 
           "page" => params[:page]
         }
         

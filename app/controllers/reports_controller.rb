@@ -40,7 +40,7 @@ class ReportsController < ApplicationController
         is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
-          location_name = params[:location_name]
+          location_name = params[:location_id]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
           is_client = true
@@ -62,9 +62,9 @@ class ReportsController < ApplicationController
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           session[:next_report] = services.collect do |service|
             if service.is_reported?
-              service.report.id
+              service.report.id unless service.report.nil?
             end
-          end
+          end.compact
         end
         
         @services = services.paginate(:page => params[:page])

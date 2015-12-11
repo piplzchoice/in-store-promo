@@ -54,3 +54,4 @@ gem 'debugger', group: [:development, :test]
 gem "rest_client", :require => "rest_client"
 gem "addressable", :require => "addressable/uri"
 gem "spreadsheet"
+gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

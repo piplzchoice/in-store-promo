@@ -76,7 +76,8 @@ class ServicesController < ApplicationController
                 @service.create_coops(params["co_op_client_id"], params["ids-coop-products"])
               else
                 if is_ba_detail_has_changed
-                  ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+                  # ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
+                  ApplicationMailer.changes_on_your_services(@service).deliver
                 else
                   ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
 
@@ -200,6 +201,7 @@ class ServicesController < ApplicationController
     @service = Service.find(params[:service_id])    
     @service.update_inventory(service_inventory_params)
     @service.update_status_inventory_confirmed
+    ApplicationMailer.changes_on_your_services(@service).deliver
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 

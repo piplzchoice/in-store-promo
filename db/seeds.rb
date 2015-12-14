@@ -241,3 +241,22 @@ if EmailTemplate.find_by_name("inventory_confirmed_no").nil?
 
   puts "created email template for inventory_confirmed_no"  
 end
+
+if EmailTemplate.find_by_name("changes_on_your_services").nil?
+  changes_on_your_services = {
+    name: "changes_on_your_services", 
+    subject: "There were changes or updates to your demo",
+    content: "
+      <p>There were changes or updates to your demo</p>
+      <br />
+      <p><a href=\".project_link\">.project_link</a></p>
+      <br />
+      <p>Please click to see them</p>
+      <br />
+      <p>Thanks</p>
+    "
+  }  
+  EmailTemplate.create(changes_on_your_services)
+
+  puts "created email template for changes_on_your_services"  
+end

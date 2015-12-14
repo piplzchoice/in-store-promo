@@ -3,9 +3,9 @@
     <tr>
       <th><%= sortable "start_at", "Date" %></th>
       <th><%= sortable "time", "Time" %></th>
-      <th><%= sortable "client", "Client Name" %></th>
+      <th><%= sortable "location_name", "Location" %></th>
       <th><%= sortable "ba", "BA" %></th>
-      <th>Demo Rate</th>
+      <th><%= sortable "created_at", "Created At" %></th>
       <th>Expense</th>
       <th>Status</th>
       <th></th>
@@ -16,9 +16,9 @@
     <tr>
       <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
       <td><%= service.start_at.strftime("%I:%M %p") %></td>
-      <td><%= service.company_name %></td> 
+      <td><%= service.location.name %></td> 
       <td><%= service.brand_ambassador.nil? ? "-" : service.brand_ambassador.name %></td> 
-      <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
+      <td><%= service.created_at.strftime('%m/%d/%Y') %></td>
       <td><%= service.report_service.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
       <td><%= service.current_status %></td>
       <td>

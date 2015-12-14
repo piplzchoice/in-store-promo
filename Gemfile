@@ -66,7 +66,5 @@ end
 gem "spreadsheet"
 
 gem 'whenever', :require => false
-
-gem "spreadsheet"
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 

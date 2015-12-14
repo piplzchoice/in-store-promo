@@ -22,7 +22,7 @@
           <td><%= invoice.due_date.nil? ? "-" : invoice.due_date.strftime('%m/%d/%Y') %></td>            
           <td>
             <%= form_tag(update_paid_invoice_path(invoice), {method: :patch, id: "form-invoice"} ) do %>
-              <%= text_field(:invoice, :amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control amount-received", id: "amount_received_#{invoice.id}", placeholder: "Amount Rec"}) if current_user.has_role?(:admin) %>
+              <%= text_field(:invoice, :amount_received, {pattern: '[-+]?[0-9]*[.,]?[0-9]+', class: "form-control amount-received", id: "amount_received_#{invoice.id}", placeholder: "Amount Rec", required: true}) if current_user.has_role?(:admin) %>
               <%= text_field(:invoice, :date_received, {class: "date-received-invoice form-control", id: "date_received_#{invoice.id}", placeholder: "Data Rec"}) if current_user.has_role?(:admin) %>
               <%= submit_tag("Update Invoice to Paid", {class: "btn btn-primary update-invoice", data: {id: invoice.id}}) %>
             <% end  %>

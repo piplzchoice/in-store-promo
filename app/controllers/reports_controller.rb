@@ -13,10 +13,11 @@ class ReportsController < ApplicationController
             @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
           else                                    
             @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => session[:filter_history_reports]["page"])
-            @status = session[:filter_history_reports]["status"]            
+            @status = session[:filter_history_reports]["status"]
             @assigned_to = session[:filter_history_reports]["assigned_to"]
             @client_name = session[:filter_history_reports]["client_name"]
             @location_name = session[:filter_history_reports]["location_name"]
+            @location_fullname = Location.find(@location_name).name unless @location_name == ""
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
           end          
           @brand_ambassadors = BrandAmbassador.with_status_active
@@ -39,7 +40,7 @@ class ReportsController < ApplicationController
         is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
-          location_name = params[:location_name]
+          location_name = params[:location_id]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
           is_client = true
@@ -56,7 +57,17 @@ class ReportsController < ApplicationController
           "location_name" => location_name
         }
 
-        @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => params[:page])
+        services = Service.filter_and_order(session[:filter_history_reports])
+
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          session[:next_report] = services.collect do |service|
+            if service.is_reported?
+              service.report.id unless service.report.nil?
+            end
+          end.compact
+        end
+        
+        @services = services.paginate(:page => params[:page])
       end
 
       format.csv do
@@ -143,7 +154,8 @@ class ReportsController < ApplicationController
         file: kit.to_file("#{Rails.root}/tmp/#{file}"), 
         services_ids: hash_data[key],
         line_items: @line_items,
-        grand_total: params[:grand_total_all]
+        grand_total: params[:grand_total_all],
+        data: Statement.generate_data(hash_data[key])
       )
       statement.save
       ApplicationMailer.ba_is_paid(statement).deliver
@@ -201,6 +213,18 @@ class ReportsController < ApplicationController
   end
 
   def show
+    @next_report = false
+
+    unless session[:next_report].nil?
+      size = session[:next_report].size
+      idx = session[:next_report].index(params[:id].to_i)
+      
+      unless size == (idx + 1)
+        @next_report = true
+        @next_data = Report.find(session[:next_report][idx.to_i + 1])
+      end
+    end
+
     @report = Report.find(params[:id])
     @service = @report.service
   end

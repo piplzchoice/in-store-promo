@@ -5,6 +5,10 @@
   <% unless current_user.has_role?(:client) %>
     <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>
   <% end %>
+  
+  <% if @next_report && (current_user.has_role?(:admin) || current_user.has_role?(:ismp)) %>
+    <%= link_to("See the next report", report_path(@next_data), {class: "btn btn-primary", role: "button"}) %>  
+  <% end %>
   <%# if !@report.is_old_report && @service.is_co_op? %>
     <%#= link_to("Show Coop Report", report_path(@service.coop_service_report_data), {class: "btn btn-primary", role: "button"}) %>    
   <%# end %>

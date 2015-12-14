@@ -25,7 +25,10 @@
 #
 
 class Invoice < ActiveRecord::Base
+  include ApplicationHelper
+
   serialize :line_items, JSON
+  serialize :data, JSON
   belongs_to :client
   mount_uploader :file, ImageUploader
 
@@ -40,20 +43,37 @@ class Invoice < ActiveRecord::Base
 
   def self.new_data(client_id, service_ids, line_items, rate_total_all, 
     expsense_total_all, travel_total_all, grand_total_all, grand_total, invoice_params)
-    data = self.new
-    data.client_id = client_id
-    data.service_ids = service_ids
-    data.line_items = line_items
-    data.rate_total_all = rate_total_all
-    data.expsense_total_all = expsense_total_all
-    data.travel_total_all = travel_total_all
-    data.grand_total_all = grand_total_all
-    data.grand_total = grand_total    
-    data.number = invoice_params[:invoice_number] 
-    data.issue_date = Date.strptime(invoice_params[:invoice_date], '%m/%d/%Y')
+    invoice = self.new
+    invoice.client_id = client_id
+    invoice.service_ids = service_ids
+    invoice.line_items = line_items
+    invoice.rate_total_all = rate_total_all
+    invoice.expsense_total_all = expsense_total_all
+    invoice.travel_total_all = travel_total_all
+    invoice.grand_total_all = grand_total_all
+    invoice.grand_total = grand_total    
+    invoice.number = invoice_params[:invoice_number] 
+    invoice.issue_date = Date.strptime(invoice_params[:invoice_date], '%m/%d/%Y')
+
+    data = []
+    service_ids.split(",").each do |service_id|
+      service = Service.find(service_id)
+      item = {
+        service_id: service_id,
+        demo_date: service.start_at.strftime('%m/%d/%Y'),
+        start_time: service.start_at.strftime("%I:%M %p"),
+        rate: ActionController::Base.helpers.number_to_currency((service.client.nil? ? "" : service.client.rate)),
+        product_expenses: ActionController::Base.helpers.number_to_currency(service.report_service.expense_one),
+        travel_expense: (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.travel_expense)) : "-"),
+        amount: ActionController::Base.helpers.number_to_currency(service.grand_total)
+      }
+
+      data.push(item)
+    end          
     
-    data.terms = invoice_params[:terms]
-    case data.terms
+    invoice.data = data
+    invoice.terms = invoice_params[:terms]
+    case invoice.terms
     when "Net 7"
       days = 7.days
     when "Net 14"
@@ -64,9 +84,9 @@ class Invoice < ActiveRecord::Base
       days = 0.days
     end
 
-    data.due_date = data.issue_date.to_time + days
-    data.po = invoice_params[:po]
-    data
+    invoice.due_date = invoice.issue_date.to_time + days
+    invoice.po = invoice_params[:po]
+    invoice
   end
 
   def self.filter_and_order(parameters)

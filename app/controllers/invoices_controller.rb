@@ -28,18 +28,26 @@ class InvoicesController < ApplicationController
   def list
     @paid = false
     respond_to do |format|
-      format.html do
-        @invoices = Invoice.all.where({status: 0}).order(issue_date: :asc)
-        @clients = @invoices.collect{|x|x.client}.uniq
+        format.html do
+          @invoices = Invoice.all.where({status: 0}).order(issue_date: :asc)
+          @clients = @invoices.collect{|x|x.client}.uniq
+          
+          unless session[:filter_history_invoice].nil?
+            @invoices = Invoice.filter_and_order(session[:filter_history_invoice])
+            @client_name = session[:filter_history_invoice]["client_name"]
+          end              
       end    
 
       format.js do
-        @invoices = Invoice.filter_and_order({
+
+        session[:filter_history_invoice] = {
           "client_name" => params[:client_name], 
           "status" => 0,
           "sort_column" => sort_column, 
-          "sort_direction" => sort_direction}
-        )
+          "sort_direction" => sort_direction
+        }
+
+        @invoices = Invoice.filter_and_order(session[:filter_history_invoice])
       end
     end
   end
@@ -79,7 +87,7 @@ class InvoicesController < ApplicationController
   def show
     @invoice = Invoice.find(params[:id])
     @client = @invoice.client
-    @services = Service.find(@invoice.service_ids.split(","))
+    # @services = Service.find(@invoice.service_ids.split(","))
   end
 
   def new

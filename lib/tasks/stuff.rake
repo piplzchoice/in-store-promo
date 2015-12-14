@@ -146,4 +146,58 @@ namespace :stuff do
     end
   end
 
+  desc "import data to new data"
+  task :import_data_invoice => :environment do
+    Invoice.where(data: nil).each do |invoice|
+      data = []
+      invoice.service_ids.split(",").each do |service_id|
+        service = Service.find(service_id)
+        product_expenses = service.report_service.nil? ? "" : ActionController::Base.helpers.number_to_currency(service.report_service.expense_one)
+        travel_expense = service.report_service.nil? ? "" : (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.travel_expense)) : "-")
+        item = {
+          service_id: service_id,
+          demo_date: service.start_at.strftime('%m/%d/%Y'),
+          start_time: service.start_at.strftime("%I:%M %p"),
+          rate: ActionController::Base.helpers.number_to_currency((service.client.nil? ? "" : service.client.rate)),
+          product_expenses: product_expenses,
+          travel_expense: travel_expense,
+          amount: ActionController::Base.helpers.number_to_currency(service.grand_total)
+        }
+
+        data.push(item)
+      end          
+      
+      invoice.data = data     
+      invoice.save 
+      puts "save invoice id: #{invoice.id}"
+    end
+  end
+
+  desc "import data to new data statement"
+  task :import_data_statement => :environment do
+    Statement.where(data: nil).each do |statement|
+      data = []
+      statement.services_ids.each do |service_id|
+        service = Service.find(service_id)
+        expenses = service.report_service.nil? ? "" : (service.report_service.expense_one.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.expense_one))
+        travel_expense = service.report_service.nil? ? "" : (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : ActionController::Base.helpers.number_to_currency(service.report_service.travel_expense)) : "-")
+        item = {
+          date: service.start_at.strftime('%m/%d/%Y'),
+          client_name: service.company_name,
+          location: service.location.name,
+          rate: ActionController::Base.helpers.number_to_currency(service.ba_rate),
+          expenses: expenses,
+          travel_expense: travel_expense,
+          total: service.report_service.nil? ? 0 : ActionController::Base.helpers.number_to_currency(service.total_ba_paid)
+        }
+
+        data.push(item)
+      end          
+      
+      statement.data = data     
+      statement.save 
+      puts "save statement id: #{statement.id}"
+    end
+  end
+
 end

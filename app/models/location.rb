@@ -30,11 +30,15 @@ class Location < ActiveRecord::Base
   default_scope { order("created_at ASC") }
 
   def self.filter_and_order(is_active, name)
-    Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
+    # Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
+    hash = {is_active: is_active}
+    hash.merge!({id: name}) unless name == ""
+    
+    Location.where(hash)
   end  
 
   def self.autocomplete_search(q)
-    Location.where({is_active: true}).where("name ILIKE ?", "%#{q}%")
+    Location.with_status_active.where("name ILIKE ?", "%#{q}%")
   end  
 
   def self.complete_location

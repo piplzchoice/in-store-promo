@@ -56,15 +56,16 @@
       </tr>
     </thead>
     <tbody>
-      <% @services.each_with_index do |service, i|  %>
+      <% @invoice.data.each_with_index do |data, i|  %>
+        <% service = Service.find(data["service_id"]) %>
         <tr>
-          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= data["demo_date"] %></td>
           <td><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
-          <td><%= service.start_at.strftime("%I:%M %p") %></td>        
-          <td><%= number_to_currency((service.client.nil? ? "" : service.client.rate)) %></td> 
-          <td><%= number_to_currency service.report_service.expense_one %></td>
-          <td><%= service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-" %></td>
-          <td><%= number_to_currency(service.grand_total) %></td>
+          <td><%= data["start_time"] %></td>        
+          <td><%= data["rate"] %></td> 
+          <td><%= data["product_expenses"] %></td>
+          <td><%= data["travel_expense"] %></td>
+          <td><%= data["amount"] %></td>
         </tr>
       <% end %>
 

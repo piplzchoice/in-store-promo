@@ -143,6 +143,13 @@ class ApplicationMailer < ActionMailer::Base
     @content = @content.gsub(".service_details", service.details).gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))    
     mail(to: emails.flatten.uniq, subject: et.subject)    
   end      
+  
+  def changes_on_your_services(service)
+    et = EmailTemplate.find_by_name("changes_on_your_services")
+    @content = et.content.gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))
+    mail(to: service.brand_ambassador.email, subject: et.subject)    
+  end     
+
 end
 
 

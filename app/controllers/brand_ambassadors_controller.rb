@@ -88,6 +88,15 @@ class BrandAmbassadorsController < ApplicationController
     redirect_to brand_ambassadors_url, {notice: msg}
   end
 
+
+  def availability
+    @brand_ambassador = BrandAmbassador.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json { render json: @brand_ambassador.available_calendar}
+    end            
+  end
+
   def logged_as
     brand_ambassador = BrandAmbassador.find(params[:id])
     session[:prev_current_user_id] = current_user.id

@@ -145,8 +145,79 @@ class BrandAmbassador < ActiveRecord::Base
   end
 
   def available_calendar
-    available_dates.collect{|x| {title: "", 
-      start: x.availablty.strftime("%Y-%m-%d") } }
+    # available_dates.collect{|x| {title: "", 
+    #   start: x.availablty.strftime("%Y-%m-%d") } }
+
+    dates = []
+    data = nil
+    ba = self
+
+    ba.available_dates.each do |available_date| 
+      time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
+      hash_data = {start_at: time_range}
+      
+      # unless location_name == "0"
+      #   hash_data = hash_data.merge({location_id: location_name})
+      # end        
+
+      services = ba.services.select(:id, :start_at, :status, :client_id, :location_id).where(hash_data).where.not({status: 9})
+
+      show = true
+      show_service = false
+
+      if services.blank?
+        if available_date.am && available_date.pm
+          color = "#3c763d" #green
+        elsif available_date.am && !available_date.pm
+          color = "#f0ad4e" #orange
+        elsif !available_date.am && available_date.pm
+          color = "#428bca" #blue
+        end                  
+      else
+        periods = services.collect{|x| x.start_at.strftime("%p") }
+        if periods.size == 2
+          show = false
+        else
+          if services.first.status != Service.status_rejected
+            if periods.include?("AM")
+              if available_date.am && available_date.pm
+                color = "#428bca"
+                show_service = true
+              else
+                show = false
+              end                     
+            elsif periods.include?("PM")
+              if available_date.am && available_date.pm
+                # color = "#f0ad4e"
+                service = services.first
+                if [12, 1].include?(service.start_at.strftime("%I").to_i)
+                  show = false
+                else
+                  color = "#f0ad4e" #orange
+                  show_service = true
+                end                  
+              else
+                show = false
+              end                      
+            end                        
+          else
+            show = false                      
+          end          
+        end          
+      end
+
+      if show
+        hash = {
+          title: ba.name,
+          start: available_date.availablty.strftime("%Y-%m-%d"),
+          url: Rails.application.routes.url_helpers.brand_ambassador_path(ba),
+          color: color
+        }
+        dates.push hash
+      end
+    end
+    
+    return dates.uniq    
   end
 
   def disable_dates

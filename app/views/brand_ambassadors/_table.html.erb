@@ -22,6 +22,8 @@
       </td>
       <td>
         <%= link_to "View Statements", brand_ambassador_statements_path(brand_ambassador_id: brand_ambassador.id) %>
+        || 
+        <%= link_to "BA Availability", availability_brand_ambassador_path(brand_ambassador) %>        
       </td>
     </tr>
     <% end %>

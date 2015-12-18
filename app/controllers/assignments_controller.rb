@@ -5,7 +5,7 @@ class AssignmentsController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: current_user.brand_ambassador.get_assignments}
+      format.json { render json: current_user.brand_ambassador.available_calendar}
     end        
   end
 

@@ -216,20 +216,33 @@ class BrandAmbassador < ActiveRecord::Base
         dates.push hash
       end
 
-      if show_service
-        services.each do |service|
-          hash = {
-            title: "#{ba.name} - #{service.client.company_name} (#{service.location.name}) : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
-            start: service.start_at.strftime("%Y-%m-%d"),
-            url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
-            color: "#92D050"
-          }   
-          dates.push hash     
-        end          
-      end      
+      # if show_service
+      #   services.each do |service|
+      #     hash = {
+      #       title: "#{ba.name} - #{service.client.company_name} (#{service.location.name}) : #{service.start_at.strftime("%m/%d/%Y %I:%M %p")}",
+      #       start: service.start_at.strftime("%Y-%m-%d"),
+      #       url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
+      #       color: "#92D050"
+      #     }   
+      #     dates.push hash
+      #   end          
+      # end      
     end
+
+    services.collect{|x|
+      if x.status == 2 || x.status == 4 || x.status == 11
+        hash = {
+          title: x.title_calendar, 
+          start: x.start_at.iso8601, 
+          end: x.end_at.iso8601,
+          color: x.get_color,
+          url: Rails.application.routes.url_helpers.assignment_path({id: x.id})
+        }
+        dates.push hash
+      end
+    }      
     
-    return dates.uniq    
+    return dates.compact.uniq    
   end
 
   def disable_dates

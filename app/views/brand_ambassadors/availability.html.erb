@@ -1,0 +1,2 @@
+<h1 class="page-header"><%= @brand_ambassador.name %> Availability</h1>
+<div id="calendar" data-url="<%= availability_brand_ambassador_path({id: @brand_ambassador.id, format: :json}) %>"></div>

@@ -25,7 +25,7 @@ class AvailableDatesController < ApplicationController
     respond_to do |format|
       format.html do
         # if @available_date.save
-          redirect_to available_dates_url
+          redirect_to assignments_url          
         # else
           # render :new
         # end

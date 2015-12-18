@@ -44,6 +44,9 @@ Rails.application.routes.draw do
   end
 
   resources :brand_ambassadors do
+    member do
+      get "availability"
+    end
     resources :statements, :only => [:index, :show] do
       collection do
         get "download"

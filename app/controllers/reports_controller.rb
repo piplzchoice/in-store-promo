@@ -60,11 +60,12 @@ class ReportsController < ApplicationController
         services = Service.filter_and_order(session[:filter_history_reports])
 
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+          set_next_report(services)
           session[:next_report] = services.collect do |service|
             if service.is_reported?
               service.report.id unless service.report.nil?
             end
-          end.compact
+          end.compact          
         end
         
         @services = services.paginate(:page => params[:page])
@@ -214,11 +215,11 @@ class ReportsController < ApplicationController
 
   def show
     @next_report = false
+    
+    idx = session[:next_report].index(params[:id].to_i)
+    size = session[:next_report].size
 
-    unless session[:next_report].nil?
-      size = session[:next_report].size
-      idx = session[:next_report].index(params[:id].to_i)
-      
+    unless session[:next_report].nil? || idx.nil?
       unless size == (idx + 1)
         @next_report = true
         @next_data = Report.find(session[:next_report][idx.to_i + 1])
@@ -595,4 +596,15 @@ class ReportsController < ApplicationController
     report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
     report_data.save    
   end  
+
+  private
+
+  def set_next_report(services)
+    session[:next_report] = services.collect do |service|
+      if service.is_reported?
+        service.report.id unless service.report.nil?
+      end
+    end.compact            
+  end
+  
 end

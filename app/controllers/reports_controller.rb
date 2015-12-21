@@ -19,7 +19,8 @@ class ReportsController < ApplicationController
             @location_name = session[:filter_history_reports]["location_name"]
             @location_fullname = Location.find(@location_name).name unless @location_name == ""
             session[:filter_history_reports] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "reports"
-          end          
+          end     
+          set_next_report(@services)     
           @brand_ambassadors = BrandAmbassador.with_status_active
           @clients = Client.with_status_active
           @projects = Project.all        
@@ -41,6 +42,7 @@ class ReportsController < ApplicationController
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
           location_name = params[:location_id]
+          set_next_report(services)
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
           is_client = true
@@ -57,17 +59,7 @@ class ReportsController < ApplicationController
           "location_name" => location_name
         }
 
-        services = Service.filter_and_order(session[:filter_history_reports])
-
-        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-          set_next_report(services)
-          session[:next_report] = services.collect do |service|
-            if service.is_reported?
-              service.report.id unless service.report.nil?
-            end
-          end.compact          
-        end
-        
+        services = Service.filter_and_order(session[:filter_history_reports])      
         @services = services.paginate(:page => params[:page])
       end
 
@@ -215,14 +207,16 @@ class ReportsController < ApplicationController
 
   def show
     @next_report = false
-    
-    idx = session[:next_report].index(params[:id].to_i)
-    size = session[:next_report].size
+  
+    unless session[:next_report].nil?  
+      idx = session[:next_report].index(params[:id].to_i)
+      size = session[:next_report].size
 
-    unless session[:next_report].nil? || idx.nil?
-      unless size == (idx + 1)
-        @next_report = true
-        @next_data = Report.find(session[:next_report][idx.to_i + 1])
+       unless idx.nil?
+        unless size == (idx + 1)
+          @next_report = true
+          @next_data = Report.find(session[:next_report][idx.to_i + 1])
+        end
       end
     end
 

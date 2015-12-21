@@ -41,8 +41,7 @@ class ReportsController < ApplicationController
         is_client = false
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           client_name = params[:client_name]
-          location_name = params[:location_id]
-          set_next_report(services)
+          location_name = params[:location_id]          
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
           is_client = true
@@ -60,7 +59,8 @@ class ReportsController < ApplicationController
         }
 
         services = Service.filter_and_order(session[:filter_history_reports])      
-        @services = services.paginate(:page => params[:page])
+        set_next_report(services) if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        @services = services.paginate(:page => params[:page])        
       end
 
       format.csv do

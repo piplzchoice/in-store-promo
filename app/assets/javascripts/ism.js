@@ -321,6 +321,15 @@ $(function() {
     $(this).parent().remove()
   });
 
+  $("#form-confirm-inventory").on("submit", function(){
+    if($("#service_inventory_confirm_false").is(':checked') === false) {
+      if($("#inventory-confirmed-date").val() === "") {
+        alert("Please add inventory confirmed date")
+        return false
+      }
+    }    
+  });
+
   $("#form-add-item").on("submit", function(){
     if(document.getElementById('insert-add-item-description').checkValidity() && 
       document.getElementById('insert-add-item-amount').checkValidity()) {

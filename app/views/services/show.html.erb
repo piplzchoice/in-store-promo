@@ -118,7 +118,7 @@
 
 <% unless @service.is_old_service %>
   <hr />
-  <%= form_tag(confirm_inventory_client_services_path, {method: :post, id: "form-invoice"} ) do %>
+  <%= form_tag(confirm_inventory_client_services_path, {method: :post, id: "form-confirm-inventory"} ) do %>
     <div class="row">
       <div class="col-md-6">
         <label>Select the products to be demonstrated</label>
@@ -154,7 +154,7 @@
 
         <div class="form-group">
           <label class="control-label">Inventory Confirmed Date</label>
-          <%= text_field_tag "service[inventory_date]", (@service.inventory_date.nil? ? nil : @service.inventory_date.strftime('%m/%d/%Y')), {class: "form-control", placeholder: "Confirmed Date", required: "true", id: "inventory-confirmed-date"} %>
+          <%= text_field_tag "service[inventory_date]", (@service.inventory_date.nil? ? nil : @service.inventory_date.strftime('%m/%d/%Y')), {class: "form-control", placeholder: "Confirmed Date", id: "inventory-confirmed-date"} %>
         </div>        
 
         <div class="form-group">

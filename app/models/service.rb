@@ -340,9 +340,9 @@ class Service < ActiveRecord::Base
 
   def update_inventory(service_params)
     service_params[:product_ids] = JSON.parse(service_params[:product_ids])
-    service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y')
+    service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y') if service_params[:inventory_date] != ""
     self.update_attributes(service_params)
-
+    self.update_status_inventory_confirmed if service_params[:inventory_confirm] == "true"
     # if self.is_co_op?
     #   if self.co_op_services.empty?
     #     self.parent.update_attributes(service_params)

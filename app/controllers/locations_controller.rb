@@ -112,8 +112,8 @@ class LocationsController < ApplicationController
 
   def export_data
     unless params[:loc_ids] == ""
-      @locations = Location.find(params[:loc_ids].split(","))
-      total_ba = Location.all.collect{|x| x.brand_ambassadors.size}.max
+      @locations = Location.where(id: params[:loc_ids].split(","), is_active: params[:loc_status])
+      total_ba = Location.all.collect{|x| x.brand_ambassadors.with_status_active.size}.max
       
       fields = [
         "Location Name",

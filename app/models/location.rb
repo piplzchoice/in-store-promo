@@ -73,7 +73,7 @@ class Location < ActiveRecord::Base
       notes
     ]    
 
-    brand_ambassadors.each do |ba|
+    brand_ambassadors.with_status_active.each do |ba|
       data_field << ba.name_split
     end
 

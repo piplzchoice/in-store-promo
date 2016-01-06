@@ -73,7 +73,7 @@ class Service < ActiveRecord::Base
       conditions.merge!(status: parameters["status"]) 
     else
       if parameters["is_client"]
-        conditions.merge!(status: [2,6,7,10]) 
+        conditions.merge!(status: Service.client_status_report) 
       end
     end
 
@@ -256,11 +256,26 @@ class Service < ActiveRecord::Base
   def self.options_select_status_client
     [
       ["All", ""],
+      ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
+      ["Inventory", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
-      ["Invoiced", Service.status_invoiced],
+      ["Invoiced", Service.status_invoiced],      
       ["Paid", Service.status_paid],
+      ["BA paid", Service.status_ba_paid],
     ]
+  end
+
+  def self.client_status_report
+      [
+        Service.status_scheduled,
+        Service.status_confirmed,
+        Service.status_inventory_confirmed,
+        Service.status_reported,
+        Service.status_invoiced,
+        Service.status_paid,
+        Service.status_ba_paid,
+      ]
   end
 
   def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction, is_client = false)

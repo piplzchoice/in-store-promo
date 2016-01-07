@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   resources :locations do 
     collection do
       post :export_data
+      delete :deactive_data
     end
   end
   resources :email_templates, only: [:index, :edit, :update]

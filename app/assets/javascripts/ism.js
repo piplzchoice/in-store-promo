@@ -135,6 +135,7 @@ $(function() {
 
   $("#export-location").on("click", function(){
     $("#loc_ids").val($("#location_ids").val());
+    $("#loc_status").val($("#is_active").val());
     $("#export-data-location").submit();
   })
 

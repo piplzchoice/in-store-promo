@@ -33,6 +33,7 @@ class AvailableDate < ActiveRecord::Base
           available_date.availablty = Date.strptime(param[:availablty], '%m/%d/%Y')
           available_date.am = param[:am]
           available_date.pm = param[:pm]
+          available_date.no_both = param[:no_both]
           available_date.save           
         end      
       end          

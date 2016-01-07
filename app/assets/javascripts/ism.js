@@ -139,6 +139,11 @@ $(function() {
     $("#export-data-location").submit();
   })
 
+  $("#deactive-location").on("click", function(){
+    $("#loc_deactive_ids").val($("#location_ids").val());
+    $("#deactive-data-location").submit();
+  })
+
   $("#save-ba-location").on("click", function(){
     $("#location_ids_save").val($("#location_ids").val());
     $("#create-ba-location").submit();

@@ -110,6 +110,20 @@ class LocationsController < ApplicationController
     redirect_to locations_url, {notice: msg}      
   end
 
+  def deactive_data
+    unless params[:loc_ids] == ""
+      @locations = Location.where(id: params[:loc_deactive_ids].split(","))
+
+      @locations.each_with_index do |location, i|
+        location.set_data_false
+      end
+
+      redirect_to locations_url, {notice: "Success Deactive Locations"}
+    else 
+      redirect_to locations_url, {notice: "Please select location to deactive"}
+    end
+  end
+
   def export_data
     unless params[:loc_ids] == ""
       @locations = Location.where(id: params[:loc_ids].split(","), is_active: params[:loc_status])

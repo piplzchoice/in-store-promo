@@ -41,5 +41,6 @@
 </div>
 
 <%= form_tag(export_data_locations_path, method: :post, id: "export-data-location") do %>
-<%= hidden_field_tag(:loc_ids) %>
+  <%= hidden_field_tag(:loc_ids) %>
+  <%= hidden_field_tag(:loc_status) %>
 <% end %>

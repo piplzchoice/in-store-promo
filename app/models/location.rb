@@ -32,9 +32,19 @@ class Location < ActiveRecord::Base
   def self.filter_and_order(is_active, name)
     # Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
     hash = {is_active: is_active}
-    hash.merge!({id: name}) unless name == ""
-    
-    Location.where(hash)
+    like = false
+
+    if name != "" && name.to_i != 0
+      hash.merge!({id: name})      
+    else
+      like = true
+    end
+
+    if like
+      Location.where(hash).where("name ILIKE ?", "%#{name}%")
+    else
+      Location.where(hash)
+    end    
   end  
 
   def self.autocomplete_search(q)

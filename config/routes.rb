@@ -70,6 +70,7 @@ Rails.application.routes.draw do
     collection do
       post :export_data
       delete :deactive_data
+      get :autocomplete_name
     end
   end
   resources :email_templates, only: [:index, :edit, :update]

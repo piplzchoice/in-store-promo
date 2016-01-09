@@ -139,6 +139,11 @@ $(function() {
     $("#export-data-location").submit();
   })
 
+  $("#deactive-location").on("click", function(){
+    $("#loc_deactive_ids").val($("#location_ids").val());
+    $("#deactive-data-location").submit();
+  })
+
   $("#save-ba-location").on("click", function(){
     $("#location_ids_save").val($("#location_ids").val());
     $("#create-ba-location").submit();
@@ -660,13 +665,8 @@ $(function() {
       }).select2('val', $("#location_name").val());
 
       $(document).on("click", "abbr", function(e){
-        console.log("wew");
         $("#location_name").val("");
-      })
-      
-      $("#service_location_id").on("select2-search-choice-close", function(e){
-        console.log("crot");
-      })
+      })    
 
       $("#service_location_id").on("select2-selecting", function(e){
         if($("#location_fullname").length !== 0) {
@@ -708,6 +708,58 @@ $(function() {
       //   id: $("#service_location_id").data("location-id"), 
       //   name: $("#service_location_id").data("name")
       // });
+    }
+  }
+
+  if($("#name_location_id").length !== 0) {
+    if($("#name_location_id").data("state") === "new") {
+      
+      name = "-"
+
+      $("#name_location_id").select2({    
+          allowClear: true,
+          placeholder: name,          
+          minimumInputLength: 4,
+          ajax: {
+              url: $("#name_location_id").data("url"),
+              dataType: 'json',
+              data: function (term, page) { return { q: term}; },
+              results: function (data, page) {
+                  return {results: data};
+              }
+          },
+          formatResult: function (location) { return location.name },
+          formatSelection: function (location) { return location.name },
+          dropdownCssClass: "bigdrop",
+          escapeMarkup: function (m) { return m; },
+          data:[],
+          initSelection : function (element, callback) {
+            $.ajax($("#name_location_id").data("url"), {
+                data: {q: $("#location_fullname").val()},
+                dataType: "json"
+            }).done(function(data) {
+                console.log("done");
+                callback(data[0]);
+            });
+          },          
+      }).select2('val', $("#location_name").val());
+
+      $(document).on("click", "abbr", function(e){
+        $("#location_name").val("");
+      })
+
+      $("#name_location_id").on("select2-selecting", function(e){
+        if($("#location_fullname").length !== 0) {
+          if(e.choice.id === 987654321) {
+            $("#location_name").val(e.choice.city);
+          } else {
+            $("#location_name").val(e.choice.id);
+          }          
+          
+        }
+
+      })
+
     }
   }
 

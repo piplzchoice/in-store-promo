@@ -45,7 +45,7 @@ class AvailableDatesController < ApplicationController
   # end
 
   def available_date_params
-    params.require(:available_date).permit(:availablty, :am, :pm)
+    params.require(:available_date).permit(:availablty, :am, :pm, :no_both)
   end    
 
   # def assign_available_date

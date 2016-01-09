@@ -91,11 +91,13 @@ class BrandAmbassador < ActiveRecord::Base
         end
 
         if !statement.include?(true)
-          if start_time.strftime("%p") == "AM" && available_date.am
-            ba
-          elsif start_time.strftime("%p") == "PM" && available_date.pm
-            ba
-          end          
+          unless available_date.no_both
+            if start_time.strftime("%p") == "AM" && available_date.am
+              ba
+            elsif start_time.strftime("%p") == "PM" && available_date.pm
+              ba
+            end
+          end
         end
       end
     end
@@ -179,29 +181,33 @@ class BrandAmbassador < ActiveRecord::Base
           show = false
         else
           if services.first.status != Service.status_rejected
-            if periods.include?("AM")
-              if available_date.am && available_date.pm
-                color = "#428bca"
-                show_service = true
-              else
-                show = false
-              end                     
-            elsif periods.include?("PM")
-              if available_date.am && available_date.pm
-                # color = "#f0ad4e"
-                service = services.first
-                if [12, 1].include?(service.start_at.strftime("%I").to_i)
-                  show = false
-                else
-                  color = "#f0ad4e" #orange
+            unless available_date.no_both
+              if periods.include?("AM")
+                if available_date.am && available_date.pm
+                  color = "#428bca"
                   show_service = true
-                end                  
-              else
-                show = false
-              end                      
+                else
+                  show = false
+                end                     
+              elsif periods.include?("PM")
+                if available_date.am && available_date.pm
+                  # color = "#f0ad4e"
+                  service = services.first
+                  if [12, 1].include?(service.start_at.strftime("%I").to_i)
+                    show = false
+                  else
+                    color = "#f0ad4e" #orange
+                    show_service = true
+                  end                  
+                else
+                  show = false
+                end                      
+              end
+            else
+              show = false
             end                        
           else
-            show = false                      
+            show = false
           end          
         end          
       end
@@ -324,27 +330,32 @@ class BrandAmbassador < ActiveRecord::Base
             show = false
           else
             if services.first.status != Service.status_rejected
-              if periods.include?("AM")
-                if available_date.am && available_date.pm
-                  color = "#428bca"
-                  show_service = true
-                else
-                  show = false
-                end                     
-              elsif periods.include?("PM")
-                if available_date.am && available_date.pm
-                  # color = "#f0ad4e"
-                  service = services.first
-                  if [12, 1].include?(service.start_at.strftime("%I").to_i)
-                    show = false
-                  else
-                    color = "#f0ad4e" #orange
+              unless available_date.no_both
+                if periods.include?("AM")
+                  if available_date.am && available_date.pm
+                    color = "#428bca"
                     show_service = true
-                  end                  
-                else
-                  show = false
-                end                      
-              end                        
+                  else
+                    show = false
+                  end                     
+                elsif periods.include?("PM")
+                  if available_date.am && available_date.pm
+                    # color = "#f0ad4e"
+                    service = services.first
+                    if [12, 1].include?(service.start_at.strftime("%I").to_i)
+                      show = false
+                    else
+                      color = "#f0ad4e" #orange
+                      show_service = true
+                    end                  
+                  else
+                    show = false
+                  end                      
+                end                        
+              else
+                show = false 
+                show_service = true                     
+              end                   
             else
               show = false                      
             end          

@@ -10,8 +10,8 @@
       </div>     -->
       <div class="form-group">
         <label class="control-label">Location</label>
-        <%= hidden_field_tag "location_id", nil, {id: "service_location_id", class: "select-2-box",data: {
-          url: autocomplete_location_name_client_services_path(client_id: 1),
+        <%= hidden_field_tag "location_id", nil, {id: "name_location_id", class: "select-2-box",data: {
+          url: autocomplete_name_locations_path,
           state: "new"
         }} %>        
       </div>        
@@ -34,6 +34,9 @@
 <div class="link-new-btn">    
   <%= link_to("Export List", "#", {id: "export-location" ,class: "btn btn-primary"}) %>
 </div>  
+<div class="link-new-btn">    
+  <%= link_to("Deactive", "#", {id: "deactive-location" ,class: "btn btn-primary"}) %>
+</div>  
 <br /><br />
 
 <div class="table-responsive">
@@ -41,5 +44,10 @@
 </div>
 
 <%= form_tag(export_data_locations_path, method: :post, id: "export-data-location") do %>
-<%= hidden_field_tag(:loc_ids) %>
+  <%= hidden_field_tag(:loc_ids) %>
+  <%= hidden_field_tag(:loc_status) %>
+<% end %>
+
+<%= form_tag(deactive_data_locations_path, method: :delete, id: "deactive-data-location") do %>
+  <%= hidden_field_tag(:loc_deactive_ids) %>
 <% end %>

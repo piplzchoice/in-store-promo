@@ -31,8 +31,7 @@
         <td>
           <% if location.is_active %>
             <%= link_to "Display", location_path(location) %> || 
-            <%= link_to "Edit", edit_location_path(location) %> || 
-            <%= link_to "Deactivate", location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+            <%= link_to "Edit", edit_location_path(location) %>            
           <% else %>
             <%= link_to (location.is_active ? "Deactivate" : "Reactivate"), location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
           <% end %>          

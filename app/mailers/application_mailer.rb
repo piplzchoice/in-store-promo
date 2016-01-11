@@ -73,7 +73,9 @@ class ApplicationMailer < ActionMailer::Base
            Location: #{service.location.complete_location}
            BA: #{ba.name}
            Details : #{service.details}
+           Link: #{assignment_url(id: service.id)}
          EOF
+         e.url = assignment_url(id: service.id)
          ical.add_event(e)
          ical.publish
         render :text => ical.to_ical, :layout => false

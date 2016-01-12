@@ -24,6 +24,13 @@ class ApplicationMailer < ActionMailer::Base
     @content = @content.gsub(".link_rejected_respond", rejected_respond_client_service_url(client_id: service.client.id, id: service.id, token: service.token))
     @content = @content.gsub(".service_details", service.details)
 
+    elm = "<strong>Products:</strong>"
+    elm += "<ul>"
+    service.products.each{|x| elm += "<li>#{x.name}</li>"}    
+    elm += "</ul>"
+
+    @content = @content.gsub(".service_products", elm)
+
     mail(to: ba.account.email, subject: et.subject)
   end
 
@@ -73,7 +80,9 @@ class ApplicationMailer < ActionMailer::Base
            Location: #{service.location.complete_location}
            BA: #{ba.name}
            Details : #{service.details}
+           Link: #{assignment_url(id: service.id)}
          EOF
+         e.url = assignment_url(id: service.id)
          ical.add_event(e)
          ical.publish
         render :text => ical.to_ical, :layout => false

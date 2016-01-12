@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150821230606) do
+ActiveRecord::Schema.define(version: 20160107150646) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20150821230606) do
     t.datetime "updated_at"
     t.boolean  "am",                  default: false
     t.boolean  "pm",                  default: false
+    t.boolean  "no_both",             default: false
   end
 
   create_table "brand_ambassadors", force: true do |t|
@@ -110,6 +111,7 @@ ActiveRecord::Schema.define(version: 20150821230606) do
     t.string   "terms"
     t.string   "po"
     t.string   "file"
+    t.text     "data"
   end
 
   create_table "locations", force: true do |t|
@@ -134,6 +136,11 @@ ActiveRecord::Schema.define(version: 20150821230606) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "products_services", force: true do |t|
+    t.integer "product_id"
+    t.integer "service_id"
   end
 
   create_table "projects", force: true do |t|
@@ -278,7 +285,21 @@ ActiveRecord::Schema.define(version: 20150821230606) do
     t.boolean  "alert_sent_admin",      default: false
     t.datetime "alert_sent_admin_date"
     t.integer  "parent_id"
+    t.boolean  "is_old_service",        default: true
+    t.boolean  "inventory_confirm",     default: false
+    t.date     "inventory_date"
+    t.string   "inventory_confirmed"
   end
+
+  create_table "sessions", force: true do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "statements", force: true do |t|
     t.integer  "brand_ambassador_id"
@@ -289,6 +310,7 @@ ActiveRecord::Schema.define(version: 20150821230606) do
     t.text     "services_ids"
     t.text     "line_items"
     t.decimal  "grand_total",         precision: 8, scale: 2
+    t.text     "data"
   end
 
   create_table "territories", force: true do |t|

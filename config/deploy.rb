@@ -3,18 +3,6 @@ lock '3.3.5'
 
 set :application, 'ism'
 set :repo_url, 'git@github.com:piplzchoice/in-store-promo.git'
-set :tmp_dir, "/home/deploy/tmp"
-set :default_env, { rvm_bin_path: '/home/deploy/.rvm/bin' }
-
-# set :rvm_type, :system
-# set :default_env, { rvm_bin_path: '/home/deploy/.rvm/bin' }
-
-# Default branch is :master
-# ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
-
-# Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/deploy/ism'
-set :rvm_ruby_version, 'ruby-2.1.1@ism'
 
 # Default value for :scm is :git
 set :scm, :git
@@ -27,9 +15,6 @@ set :scm, :git
 
 # Default value for :pty is false
 # set :pty, true
-
-# Default value for :linked_files is []
-set :linked_files, %w{config/database.yml .env config/environments/production.rb config/secrets.yml config/initializers/carrierwave.rb}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/assets public/uploads public/sitemaps}

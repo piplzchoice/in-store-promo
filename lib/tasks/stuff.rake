@@ -200,4 +200,27 @@ namespace :stuff do
     end
   end
 
+  desc "update email content assignment"
+  task :update_email_assignment_content => :environment do
+    et = EmailTemplate.find_by_name("ba_assignment_notification")
+    ba_assignment_notification = {
+      content: "
+        <p>Dear .ba_name,
+        <br />
+        <p>You have been offered the following assignment, please accept or decline as soon as you can. If you do not respond within 12 hours, this assignment will be offered to another Brand Ambassador.</p>
+        <br />
+        <p>Please click on a link below to respond</p>
+        <p><a href=\".link_confirm_respond\">Yes</a> or <a href=\".link_rejected_respond\">No</a><p>
+        <br />
+        <p>.service_company_name</p>
+        <p>.service_location</p>
+        <p>.service_complete_date</p>
+        <p>.service_details</p>
+        <p>.service_products</p>
+        <br />        
+        <p>Thanks</p>"
+    }    
+    puts "update email content" if et.update_attributes(ba_assignment_notification)    
+  end
+
 end

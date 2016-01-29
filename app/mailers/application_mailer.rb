@@ -81,6 +81,7 @@ class ApplicationMailer < ActionMailer::Base
            BA: #{ba.name}
            Details : #{service.details}
            Link: #{assignment_url(id: service.id)}
+           Products: #{service.list_of_products}
          EOF
          e.url = assignment_url(id: service.id)
          ical.add_event(e)

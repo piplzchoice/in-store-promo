@@ -741,4 +741,13 @@ class Service < ActiveRecord::Base
     # end            
   end
 
+  def list_of_products
+    list_products = ""
+    products.collect(&:name).each_with_index do |name, i|
+      list_products += "\n #{i+1}. #{name}"
+    end
+
+    return list_products
+  end
+
 end

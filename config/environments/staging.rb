@@ -82,7 +82,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
 
-  config.action_mailer.default_url_options = { :host => 'staging.in-store-promo.com' }
+  config.action_mailer.default_url_options = { :host => 'staging.flavorfanaticsism.com' }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :user_name => '2211184d188e916fa',

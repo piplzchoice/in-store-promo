@@ -103,8 +103,9 @@
 <label>Details</label>
 <p><%= @service.details %></p>
 
-<% unless current_user.has_role?(:client) %>
-  <div class="link-new-btn">
+<div class="link-new-btn">
+  <%= link_to("Show Logs", client_service_logs_path({client_id: @client.id,service_id: @service.id}), {class: "btn btn-info", role: "button"}) %>
+  <% unless current_user.has_role?(:client) %>  
     <%= link_to("Back", (params[:report].nil? ? client_path(@client) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>
@@ -121,11 +122,9 @@
       <% end %>
       
       <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
-
-    <% end %>
-
-  </div>
-<% end %>     
+    <% end %>    
+  <% end %>     
+</div>
 </div>
 
 <% unless @service.is_old_service %>

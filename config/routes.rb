@@ -33,7 +33,9 @@ Rails.application.routes.draw do
         get :mark_service_as_complete
         get :set_reschedule
         patch :update_status_after_reported
-      end      
+      end 
+
+      get "/logs/" => "services#logs"     
     end    
 
     resources :products, only: [:create, :destroy, :index] do

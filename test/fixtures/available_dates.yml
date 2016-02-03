@@ -9,6 +9,7 @@
 #  updated_at          :datetime
 #  am                  :boolean          default(FALSE)
 #  pm                  :boolean          default(FALSE)
+#  no_both             :boolean          default(FALSE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

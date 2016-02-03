@@ -223,7 +223,7 @@ class ServicesController < ApplicationController
   end
 
   def service_inventory_params
-    params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed)
+    params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed, :status_inventory)
   end  
 
 end

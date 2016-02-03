@@ -35,7 +35,7 @@
     </div>  
   <% end %>
 
-  <% if (@service.status == Service.status_confirmed || @service.status == Service.status_inventory_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
+  <% if (@service.status == Service.status_confirmed || @service.status_inventory == true || @service.status == Service.status_conducted) && @service.report.nil? %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>
       <div class="link-new-btn">
@@ -47,6 +47,18 @@
           <%= link_to("Create Report", new_report_path(service_id: @service.id), 
             {class: "btn btn-success", role: "button"}) %>         
       </div>  
+    <% end %>
+
+    <% if @service.status_inventory %>
+      <div class="link-new-btn">
+          <%= link_to("Inventory Confirmed", "#", 
+            {class: "btn btn-info", role: "button"}) %>         
+      </div>      
+    <% else %>
+      <div class="link-new-btn">
+          <%= link_to("Inventory Not Confirmed", "#", 
+            {class: "btn btn-warning", role: "button"}) %>         
+      </div>      
     <% end %>
 
   <% end %>
@@ -139,14 +151,14 @@
           <label class="control-label">Inventory Confirmed</label>
           <div class="radio">
             <label>
-              <%= radio_button_tag 'service[inventory_confirm]', true, (@service.inventory_confirm == true ? true : false) %>
+              <%= radio_button_tag 'service[status_inventory]', true, (@service.status_inventory == true ? true : false) %>
               Yes
             </label>
           </div>
           
           <div class="radio">
             <label>
-              <%= radio_button_tag 'service[inventory_confirm]', false, (@service.inventory_confirm == false ? true : false) %>
+              <%= radio_button_tag 'service[status_inventory]', false, (@service.status_inventory == false ? true : false) %>
               No
             </label>
           </div>            

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160107150646) do
+ActiveRecord::Schema.define(version: 20160201133637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -289,6 +289,7 @@ ActiveRecord::Schema.define(version: 20160107150646) do
     t.boolean  "inventory_confirm",     default: false
     t.date     "inventory_date"
     t.string   "inventory_confirmed"
+    t.boolean  "status_inventory",      default: false
   end
 
   create_table "sessions", force: true do |t|

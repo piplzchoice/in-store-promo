@@ -51,6 +51,7 @@ class Service < ActiveRecord::Base
   has_one :report
   has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
   has_and_belongs_to_many :products
+  has_many :logs
 
   belongs_to :parent, :class_name => "Service", foreign_key: 'parent_id'
 
@@ -216,18 +217,24 @@ class Service < ActiveRecord::Base
 
   def self.update_to_ba_paid(service_ids)
     Service.find(service_ids).each do |service|
+      old_status = service.status      
       service.update_attribute(:status, Service.status_ba_paid)
+      Log.create_data(service.id, old_status, service.status)      
     end    
   end
 
   def self.update_status_to_paid(service_id)
     service = Service.find(service_id)
+    old_status = service.status      
     service.update_attribute(:status, Service.status_paid)
+    Log.create_data(service.id, old_status, service.status)      
   end  
 
   def self.update_status_to_invoiced(service_id)
     service = Service.find(service_id)
+    old_status = service.status      
     service.update_attribute(:status, Service.status_invoiced)
+    Log.create_data(service.id, old_status, service.status)      
   end  
 
   def self.update_status_to_ba_paid(service_id)
@@ -309,6 +316,35 @@ class Service < ActiveRecord::Base
 
   def self.check_inventory_confirmation
     
+  end
+
+  def self.get_status(status)
+    case status
+    when 0
+      "New"
+    when 1
+      "Scheduled"
+    when 2
+      "Confirmed"
+    when 3
+      "Rejected"
+    when 4
+      "Conducted"
+    when 5
+      "Unrespond"
+    when 6
+      "Reported"
+    when 7
+      "Paid"
+    when 8
+      "BA Paid"
+    when 9
+      "Cancelled"
+    when 10
+      "Invoiced"
+    when 11
+      "Inventory"
+    end
   end
 
   def report_service    
@@ -662,6 +698,7 @@ class Service < ActiveRecord::Base
     coop.product_ids = ids_coop_products
     coop.is_old_service = false
     coop.save!
+    Log.create_data(coop.id, 0, coop.status)
   end
 
   def is_co_op?
@@ -669,28 +706,43 @@ class Service < ActiveRecord::Base
   end
 
   def update_status_to_confirmed(token)
+    old_status = self.status
     self.update_attributes({status: Service.status_confirmed, token: token})
+    Log.create_data(self.id, old_status, self.status)
+
     unless self.co_op_services.empty?
       self.co_op_services.each do |service_coop|
+        old_status = service_coop.status
         service_coop.update_attributes({status: Service.status_confirmed, token: token})
+        Log.create_data(service_coop.id, old_status, service_coop.status)
       end
     end
   end
 
   def update_status_to_rejected(token)
+    old_status = self.status
     self.update_attributes({status: Service.status_rejected, token: token})
+    Log.create_data(self.id, old_status, self.status)
+
     unless self.co_op_services.empty?
       self.co_op_services.each do |service_coop|
+        old_status = service_coop.status
         service_coop.update_attributes({status: Service.status_rejected, token: token})
+        Log.create_data(service_coop.id, old_status, service_coop.status)
       end
     end    
   end
 
   def update_status_to_reported
+    old_status = self.status
     self.update_attributes({status: Service.status_reported})
+    Log.create_data(self.id, old_status, self.status)
+
     unless self.co_op_services.empty?
       self.co_op_services.each do |service_coop|
+        old_status = service_coop.status
         service_coop.update_attributes({status: Service.status_reported})
+        Log.create_data(service_coop.id, old_status, service_coop.status)
       end
     end    
   end
@@ -711,28 +763,40 @@ class Service < ActiveRecord::Base
   # end
 
   def update_status_after_reported(status)
+    old_status = self.status
     self.update_attributes({status: status})
+    Log.create_data(self.id, old_status, self.status)
     
     if is_co_op?
       if self.co_op_services.empty?
+        old_status = self.parent.status
         self.parent.update_attributes({status: status})
+        Log.create_data(self.parent.id, old_status, self.parent.status)
       else
         self.co_op_services.each do |service_coop|
+          old_status = service_coop.status
           service_coop.update_attributes({status: status})
+          Log.create_data(service_coop.id, old_status, service_coop.status)
         end
       end
     end        
   end
 
   def update_status_scheduled    
+    old_status = self.status
     self.update_attributes({status: Service.status_scheduled})
-    
+    Log.create_data(self.id, old_status, self.status)
+
     if is_co_op?
       if self.co_op_services.empty?
+        old_status = self.parent.status
         self.parent.update_attributes({status: Service.status_scheduled})
-      else
+        Log.create_data(self.parent.id, old_status, self.parent.status)
+      else        
         self.co_op_services.each do |service_coop|
+          old_status = service_coop.status
           service_coop.update_attributes({status: Service.status_scheduled})
+          Log.create_data(service_coop.id, old_status, service_coop.status)
         end
       end
     end            
@@ -740,7 +804,9 @@ class Service < ActiveRecord::Base
 
 
   def update_status_inventory_confirmed(status)
+    old_status = self.status
     self.update_attributes({status_inventory: status})
+    Log.create_data(self.id, old_status, 11)
     
     # if is_co_op?
     #   if self.co_op_services.empty?

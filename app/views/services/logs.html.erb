@@ -1,0 +1,22 @@
+<h1 class="page-header">Show Logs</h1>
+
+<div class="row">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Origin Status</th>
+        <th>Latest Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @service.logs.each_with_index do |log, i|  %>
+      <tr>
+        <td><%= Service.get_status(log.origin) %></td>
+        <td><%= Service.get_status(log.latest) %></td>
+        <td><%= log.created_at.strftime('%m/%d/%Y') %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

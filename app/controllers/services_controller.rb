@@ -23,7 +23,8 @@ class ServicesController < ApplicationController
     # @service.product_ids = params[:product_ids]
     respond_to do |format|
       format.html do
-        if @service.save 
+        if @service.save
+          Log.create_data(@service.id, 0, @service.status)
           unless params["location"].nil?
             @service.location.update_attributes({
               phone: params[:location][:phone], 
@@ -104,6 +105,13 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @service = @client.services.where(id: params[:id]).first
     @service = @client.co_op_services.where(id: params[:id]).first if @service.nil?
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
+  end
+
+  def logs
+    @client = Client.find(params[:client_id])
+    @service = @client.services.where(id: params[:service_id]).first
+    @service = @client.co_op_services.where(id: params[:service_id]).first if @service.nil?
     redirect_to client_path(@client), notice: "Service not found" if @service.nil?
   end
 

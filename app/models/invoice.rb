@@ -22,6 +22,7 @@
 #  terms              :string(255)
 #  po                 :string(255)
 #  file               :string(255)
+#  data               :text
 #
 
 class Invoice < ActiveRecord::Base

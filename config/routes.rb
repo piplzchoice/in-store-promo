@@ -35,7 +35,8 @@ Rails.application.routes.draw do
         patch :update_status_after_reported
       end 
 
-      get "/logs/" => "services#logs"     
+      get "/logs/" => "services#logs"
+      get "/log/:log_id" => "services#log", as: "show_log"
     end    
 
     resources :products, only: [:create, :destroy, :index] do

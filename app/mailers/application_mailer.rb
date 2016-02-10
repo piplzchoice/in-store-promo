@@ -47,11 +47,13 @@ class ApplicationMailer < ActionMailer::Base
   # def reminder_to_ba(ba_email, ba_name, date)
   # end
 
-  def cancel_assignment_notification(ba, service, date)
+  def cancel_assignment_notification(data, company_name)
+    ba = BrandAmbassador.find data["brand_ambassador_id"]
+    lo = Location.find data["location_id"]
     et = EmailTemplate.find_by_name("cancel_assignment_notification")
 
-    @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", service.client.company_name)
-    @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_date", date)
+    @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", company_name)
+    @content = @content.gsub(".service_location", lo.complete_location).gsub(".service_date", data[:date])
 
     mail(to: ba.account.email, subject: et.subject)
   end

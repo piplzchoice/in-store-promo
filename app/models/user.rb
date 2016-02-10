@@ -35,11 +35,20 @@ class User < ActiveRecord::Base
   has_many :projects
   has_many :services
   has_many :locations
+  has_many :logs
 
   default_scope { order("created_at ASC") }
 
   def self.all_ismp
     with_role(:ismp)
+  end
+
+  def get_info
+    if has_role?(:ba)
+      "#{brand_ambassador.name_split} - #{roles.collect(&:name).join(", ")}"
+    else
+      "#{email} - #{roles.collect(&:name).join(", ")}"
+    end
   end
 
   def save_ismp

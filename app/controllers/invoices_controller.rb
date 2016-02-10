@@ -74,7 +74,7 @@ class InvoicesController < ApplicationController
   def update_paid
     @invoice = Invoice.find(params[:id])
     @invoice.service_ids.split(",").each do |service_id|
-      Service.update_status_to_paid(service_id)
+      Service.update_status_to_paid(service_id, current_user.id)
     end     
     @invoice.update_data(invoice_params.merge(status: 1))
     # @invoice.update_attribute(:status, 1)
@@ -124,7 +124,7 @@ class InvoicesController < ApplicationController
       
       if @invoice.save
         params[:service_ids].split(",").each do |service_id|
-          Service.update_status_to_invoiced(service_id)
+          Service.update_status_to_invoiced(service_id, current_user.id)
         end      
     
         @client = @invoice.client

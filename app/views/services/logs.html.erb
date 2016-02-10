@@ -1,20 +1,28 @@
 <h1 class="page-header">Show Logs</h1>
 
 <div class="row">
+
+  <div class="link-new-btn">
+      <%= link_to("Back to Service", client_service_path({client_id: @client.id, id: @service.id}), 
+        {class: "btn btn-success", role: "button"}) %>         
+  </div>      
+
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Origin Status</th>
-        <th>Latest Status</th>
-        <th>Date</th>
+        <th>Log Type</th>
+        <th>Changed By</th>
+        <th>Date Time</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       <% @service.logs.each_with_index do |log, i|  %>
       <tr>
-        <td><%= Service.get_status(log.origin) %></td>
-        <td><%= Service.get_status(log.latest) %></td>
-        <td><%= log.created_at.strftime('%m/%d/%Y') %></td>
+        <td><%= log.category %></td>
+        <td><%= log.user.get_info %></td>
+        <td><%= log.created_at.strftime('%m/%d/%Y - %I:%M %P') %></td>
+        <td><%= link_to("Show", client_service_show_log_path({service_id: @service.id, log_id: log.id})) %></td>
       </tr>
       <% end %>
     </tbody>

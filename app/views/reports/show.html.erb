@@ -5,25 +5,41 @@
   <% unless current_user.has_role?(:client) %>
     <%= link_to("Edit Report", edit_report_path(@service.report), {class: "btn btn-primary", role: "button"}) %>
   <% end %>
-  
+
   <% if @next_report && (current_user.has_role?(:admin) || current_user.has_role?(:ismp)) %>
-    <%= link_to("See the next report", report_path(@next_data), {class: "btn btn-primary", role: "button"}) %>  
+    <%= link_to("See the next report", report_path(@next_data), {class: "btn btn-primary", role: "button"}) %>
   <% end %>
   <%# if !@report.is_old_report && @service.is_co_op? %>
-    <%#= link_to("Show Coop Report", report_path(@service.coop_service_report_data), {class: "btn btn-primary", role: "button"}) %>    
+    <%#= link_to("Show Coop Report", report_path(@service.coop_service_report_data), {class: "btn btn-primary", role: "button"}) %>
   <%# end %>
 </div>
 <hr>
 
 <div class="row" style="margin: 15px;">
-  <div style="text-align: center;margin-bottom: 50px;">
+  <!-- <div style="text-align: center;margin-bottom: 50px;">
     <h4 style="color: rgb(9, 152, 197);">In Store Marketing Services Demo Report</h4>
+  </div> -->
+  <div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-8">
+      <%= image_tag "fflogo/ff-large-black.png", {height: "195px"} %>
+    </div>
   </div>
 
+  <div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-8">
+      <h4 style="color: rgb(9, 152, 197);">In Store Marketing Services Demo Report</h4>
+    </div>
+  </div>
+
+  <br />
   <%# unless (@service.is_co_op? && !@report.is_old_report) %>
     <div class="row report">
       <div id="report-client" class="report-left">
-        <span class="report-title">Client</span>: 
+        <span class="report-title">Client</span>:
         <span class="report-option-details"><%= @service.company_name %></span>
       </div>
     </div>
@@ -31,7 +47,7 @@
 
   <div class="row report">
     <div id="report-ba" class="report-left">
-      <span class="report-title">Name of BA</span>: 
+      <span class="report-title">Name of BA</span>:
       <span class="report-option-details">
         <% if @service.is_co_op? && !@service.parent.nil? %>
           <%= @service.parent.brand_ambassador.nil? ? "-" : @service.parent.brand_ambassador.name %>
@@ -42,14 +58,14 @@
     </div>
 
     <div id="report-location">
-      <span class="report-title">Location</span>: 
+      <span class="report-title">Location</span>:
       <span class="report-option-details"><%= @service.location.complete_location %></span>
     </div>
   </div>
 
   <div class="row report">
     <div id="report-date">
-      <span class="report-title">Date/Time</span>: 
+      <span class="report-title">Date/Time</span>:
       <span class="report-option-details">
         <%= @service.start_at.strftime('%m/%d/%Y') %>: <%= @service.time_at %>
       </span>
@@ -64,12 +80,12 @@
 
   <div class="row report">
     <div id="report-weather" class="report-left">
-      <span class="report-title">Weather</span>: 
+      <span class="report-title">Weather</span>:
       <%= @report.weather %>
     </div>
 
     <div id="report-traffic">
-      <span class="report-title">Traffic</span>: 
+      <span class="report-title">Traffic</span>:
       <%= @report.traffic %>
     </div>
   </div>
@@ -84,7 +100,7 @@
     <% unless @report.hide_client_name %>
       <div class="row report">
         <div id="report-client" class="report-left">
-          <span class="report-title">Client</span>: 
+          <span class="report-title">Client</span>:
           <span class="report-option-details"><%= @service.company_name %></span>
         </div>
       </div>
@@ -100,18 +116,18 @@
               <th>&nbsp;</th>
               <th>&nbsp;</th>
                 <th><span class="report-title">Price</span></th>
-                <th><span class="report-title">Sample</span></th>            
+                <th><span class="report-title">Sample</span></th>
               <th><span class="report-title">Beginning</span></th>
               <th><span class="report-title">End</span></th>
               <th><span class="report-title">Sold</span></th>
             </tr>
           </thead>
-          <tbody>  
+          <tbody>
             <% if !@report.client_products.nil? %>
               <%= render "client_products_show" %>
             <% else %>
               <%= render "products_show" %>
-            <% end %>          
+            <% end %>
           </tbody>
         </table>
       </div>
@@ -123,10 +139,10 @@
     <% unless @report.hide_client_coop_name %>
       <div class="row report">
         <div id="report-client" class="report-left">
-          <span class="report-title">Client </span>: 
+          <span class="report-title">Client </span>:
           <span class="report-option-details"><%= @service.co_op_services.first.company_name %></span>
         </div>
-      </div>      
+      </div>
     <% end %>
 
     <% unless @report.hide_client_coop_product %>
@@ -138,35 +154,35 @@
                 <th>&nbsp;</th>
                 <th>&nbsp;</th>
                   <th><span class="report-title">Price</span></th>
-                  <th><span class="report-title">Sample</span></th>            
+                  <th><span class="report-title">Sample</span></th>
                 <th><span class="report-title">Beginning</span></th>
                 <th><span class="report-title">End</span></th>
                 <th><span class="report-title">Sold</span></th>
               </tr>
             </thead>
-            <tbody>  
+            <tbody>
               <%= render "client_coop_products_show" %>
             </tbody>
           </table>
         </div>
       </div>
-    <% end %>  
+    <% end %>
   <% end %>
 
   <div class="row report">
     <div id="report-sample-product">
       <span class="report-title">Sample product</span>: <%= @report.sample_product %>
     </div>
-  </div>    
+  </div>
 
   <div class="row report">
     <div id="report-est-customer-touched" class="report-left">
-      <span class="report-title">Estimated # of customers touched</span>: 
+      <span class="report-title">Estimated # of customers touched</span>:
       <%= @report.est_customer_touched %>
     </div>
 
     <div id="report-est-sample-given">
-      <span class="report-title">Estimated # of sample given</span>: 
+      <span class="report-title">Estimated # of sample given</span>:
       <%= @report.est_sample_given %>
     </div>
   </div>
@@ -177,31 +193,31 @@
       <% @report.report_expense_images.each do |img| %>
         <br />
         <%= image_tag img.file.url, {width: "600px"} %>
-      <% end %> 
+      <% end %>
     </div>
-  </div>  
+  </div>
 
   <% unless @report.travel_expense.nil? %>
     <div class="row report">
       <div id="report-expense-one">
         <span class="report-title">Travel Expense</span>: <%= number_to_currency @report.travel_expense %>
       </div>
-    </div>      
+    </div>
   <% end %>
 
   <div class="row report">
     <div id="report-expense-two">
-      <span class="report-title">Customer Comments</span>: 
+      <span class="report-title">Customer Comments</span>:
       <p><%= @report.customer_comments %></p>
     </div>
-  </div>      
+  </div>
 
   <div class="row report">
     <div id="report-sample-product">
-      <span class="report-title">BA Comments</span>: 
+      <span class="report-title">BA Comments</span>:
       <p><%= @report.ba_comments %></p>
     </div>
-  </div>  
+  </div>
 
   <div class="row report">
     <div id="report-attach-table">
@@ -209,8 +225,8 @@
       <% @report.report_table_images.each do |img| %>
         <br />
         <%= image_tag img.file.url, {width: "600px"} %>
-      <% end %> 
+      <% end %>
     </div>
-  </div>             
+  </div>
 
 </div>

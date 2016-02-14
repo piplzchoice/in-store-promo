@@ -438,7 +438,8 @@ class Service < ActiveRecord::Base
 
     if coop_box
       # log data coop that added
-      self.create_coops(params["co_op_client_id"], ids_coop_products)
+      self.create_coops(co_op_client_id, ids_coop_products, current_user_id)
+      Log.record_coop_added(self.id, co_op_client_id, current_user_id)
     end
 
   end

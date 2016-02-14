@@ -26,7 +26,12 @@ class ApplicationMailer < ActionMailer::Base
 
     elm = "<strong>Products:</strong>"
     elm += "<ul>"
-    service.products.each{|x| elm += "<li>#{x.name}</li>"}    
+    service.products.each{|x| elm += "<li>#{x.name}</li>"}
+    if service.is_co_op?
+      service.co_op_services.each do |srv|
+        srv.products.each{|x| elm += "<li>#{x.name}</li>"}
+      end
+    end
     elm += "</ul>"
 
     @content = @content.gsub(".service_products", elm)
@@ -41,7 +46,7 @@ class ApplicationMailer < ActionMailer::Base
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_date", service.date)
     @content = @content.gsub(".link_show_page", client_service_url(client_id: service.client.id, id: service.id))
 
-    mail(to: ba.account.email, subject: et.subject)    
+    mail(to: ba.account.email, subject: et.subject)
   end
 
   # def reminder_to_ba(ba_email, ba_name, date)
@@ -104,7 +109,7 @@ class ApplicationMailer < ActionMailer::Base
     data = open(statement.file.url)
     attachments["#{statement.file.filename}"] = data.read
     @content = et.content.gsub(".ba_name", statement.brand_ambassador.name)
-    mail(to: statement.brand_ambassador.account.email, subject: et.subject)    
+    mail(to: statement.brand_ambassador.account.email, subject: et.subject)
   end
 
   def send_invoice(invoice)
@@ -119,7 +124,7 @@ class ApplicationMailer < ActionMailer::Base
     attachments["#{invoice.file.url.split("/").last}"] = data.read
 
     @content = et.content.gsub(".client_first_name", invoice.client.first_name)
-    mail(to: emails, subject: et.subject)        
+    mail(to: emails, subject: et.subject)
   end
 
   def report_over_due_alert(service, admin = false)
@@ -128,23 +133,23 @@ class ApplicationMailer < ActionMailer::Base
       emails = ["gregy@cx-iq.com"]
     else
       emails = [service.brand_ambassador.account.email] << "gregy@cx-iq.com" # << User.all_ismp.collect{|a| a.email}
-    end    
+    end
     @content = et.content.gsub(".demo_date", service.complete_date_time).gsub(".service_company_name", service.client.company_name).gsub(".service_location", service.location.complete_location)
-    mail(to: emails.flatten.uniq, subject: et.subject)    
-  end  
+    mail(to: emails.flatten.uniq, subject: et.subject)
+  end
 
   def thank_you_for_payment(invoice)
     et = EmailTemplate.find_by_name("thank_you_for_payment")
 
     emails = [invoice.client.email]
-    invoice.client.additional_emails.split(";").each{|x| emails.push(x)}      
+    invoice.client.additional_emails.split(";").each{|x| emails.push(x)}
 
     amount_received = number_to_currency(invoice.grand_total)
     amount_received = number_to_currency(invoice.amount_received) unless invoice.amount_received.nil?
 
     @content = et.content.gsub(".client_first_name", invoice.client.first_name).gsub(".amount_received", amount_received)
     mail(to: emails, subject: et.subject)
-  end 
+  end
 
   def inventory_confirmed_no(service, admin = false)
     et = EmailTemplate.find_by_name("inventory_confirmed_no")
@@ -152,16 +157,14 @@ class ApplicationMailer < ActionMailer::Base
 
     @content = et.content.gsub(".service_company_name", service.client.company_name)
     @content = @content.gsub(".service_location", service.location.complete_location).gsub(".service_complete_date", service.complete_date_time)
-    @content = @content.gsub(".service_details", service.details).gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))    
-    mail(to: emails.flatten.uniq, subject: et.subject)    
-  end      
-  
+    @content = @content.gsub(".service_details", service.details).gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))
+    mail(to: emails.flatten.uniq, subject: et.subject)
+  end
+
   def changes_on_your_services(service)
     et = EmailTemplate.find_by_name("changes_on_your_services")
     @content = et.content.gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))
-    mail(to: service.brand_ambassador.email, subject: et.subject)    
-  end     
+    mail(to: service.brand_ambassador.email, subject: et.subject)
+  end
 
 end
-
-

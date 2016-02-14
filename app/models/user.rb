@@ -45,9 +45,9 @@ class User < ActiveRecord::Base
 
   def get_info
     if has_role?(:ba)
-      "#{brand_ambassador.name_split} - #{roles.collect(&:name).join(", ")}"
+      "#{brand_ambassador.email}"
     else
-      "#{email} - #{roles.collect(&:name).join(", ")}"
+      "#{email}"
     end
   end
 

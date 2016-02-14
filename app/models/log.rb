@@ -17,6 +17,7 @@ class Log < ActiveRecord::Base
   # validates :origin, :latest, presence: true
   serialize :data, JSON
   enum category: [ :status_changed, :modified_details, :modified_main ]
+  default_scope { order('created_at ASC') }
 
   def self.create_data(service_id, origin, latest)
     log = self.new
@@ -32,7 +33,7 @@ class Log < ActiveRecord::Base
     log.service_id = service_id
     log.user_id = current_user_id
     log.data = {origin: origin, latest: latest}
-    log.save    
+    log.save
   end
 
   def self.record_modified_details(service_id, old_data, new_data, current_user_id)
@@ -41,7 +42,7 @@ class Log < ActiveRecord::Base
     log.service_id = service_id
     log.user_id = current_user_id
     log.data = {old: old_data, new: new_data}
-    log.save    
+    log.save
   end
 
   def self.record_modified_main(service_id, old_data, new_data, latest, current_user_id)
@@ -50,7 +51,80 @@ class Log < ActiveRecord::Base
     log.service_id = service_id
     log.user_id = current_user_id
     log.data = {old: old_data, new: new_data, origin: old_data["status"], latest: latest}
-    log.save    
-  end  
+    log.save
+  end
+
+  def what
+    case category
+    when "status_changed"
+      if data["origin"] == 0 && data["latest"] == 1
+        "record created"
+      else
+        "update"
+      end
+    when "modified_main"
+      "record updated"
+    when "modified_details"
+      "record updated"
+    else
+      "bebas dah"
+    end
+  end
+
+  def status
+    case category
+    when "status_changed"
+      Service.get_status data["latest"]
+    when "modified_main"
+      Service.get_status data["latest"]
+    when "modified_details"
+      "-"
+    else
+      "update"
+    end
+  end
+
+  def comments
+    case category
+    when "status_changed"
+      if data["latest"].to_i == 11
+        "Confirmed date: <b>#{service.inventory_date.strftime('%m/%d/%Y')}</b>; Confirmed by: <b>#{service.inventory_confirmed}</b>"
+      else
+        "-"
+      end
+    when "modified_main"
+      changes = []
+
+      unless data["old"]["location_id"].to_i == data["new"]["location_id"].to_i
+        changes <<  "Location changed to <b>#{Location.find(data["new"]["location_id"].to_i).name}</b>"
+      end
+
+      unless data["old"]["brand_ambassador_id"].to_i == data["new"]["brand_ambassador_id"].to_i
+        changes << "BA changed to <b>#{BrandAmbassador.find(data["new"]["brand_ambassador_id"].to_i).name}</b>"
+      end
+
+      unless data["old"]["start_at"] == data["new"]["start_at"]
+        start_at = DateTime.parse(data["new"]["start_at"]).strftime("%m/%d/%Y - %I:%M %p")
+        end_at = DateTime.parse(data["new"]["end_at"]).strftime("%I:%M %p")
+        changes << "Re-Scheduled to <b>#{start_at} / #{end_at}</b>"
+      end
+
+      changes.join("; ")
+    when "modified_details"
+      changes = []
+
+      unless data["old"]["details"] == data["new"]["details"]
+        changes <<  "Details changed"
+      end
+
+      unless data["old"]["product_ids"] == data["new"]["product_ids"]
+        changes <<  "Products changed"
+      end
+
+      changes.join("; ")
+    else
+      "-"
+    end
+  end
 
 end

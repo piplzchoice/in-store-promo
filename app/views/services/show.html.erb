@@ -2,13 +2,13 @@
 
 <div class="row">
 <% unless current_user.has_role?(:client) %>
-  
+
   <% unless @service.is_not_complete? %>
     <!-- <div class="link-new-btn"> -->
       <%#= link_to("Set as Conducted", mark_service_as_complete_client_service_path(client_id: @client.id,
         id: @service.id), {class: "btn btn-primary", role: "button"}) %>
     <!-- </div> -->
-  <%# else %>    
+  <%# else %>
     <% unless @service.is_cancelled? %>
       <% if @service.is_reported? %>
         <div class="link-new-btn">
@@ -21,7 +21,7 @@
             <%= form_tag(update_status_after_reported_client_service_path(client_id: @client.id, id: @service.id), method: :patch) do -%>
               <%= select_tag "service_status", options_for_select(Service.options_select_after_reported) %>&nbsp;&nbsp;
               <%= submit_tag 'Update' %>
-            <% end -%>          
+            <% end -%>
           <% end -%>
         </div>
       <% end %>
@@ -32,37 +32,37 @@
     <div class="link-new-btn">
       <%= link_to("Re-Scheduled", set_reschedule_client_service_path(client_id: @client.id,
         id: @service.id), {class: "btn btn-warning", role: "button"}) %>
-    </div>  
+    </div>
   <% end %>
 
   <% if (@service.status == Service.status_confirmed || @service.status_inventory == true || @service.status == Service.status_conducted) && @service.report.nil? %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>
       <div class="link-new-btn">
-          <%= link_to("Create Report", new_report_path(service_id: @service.parent.id), 
-            {class: "btn btn-success", role: "button"}) %>         
-      </div>      
+          <%= link_to("Create Report", new_report_path(service_id: @service.parent.id),
+            {class: "btn btn-success", role: "button"}) %>
+      </div>
     <% else %>
       <div class="link-new-btn">
-          <%= link_to("Create Report", new_report_path(service_id: @service.id), 
-            {class: "btn btn-success", role: "button"}) %>         
-      </div>  
+          <%= link_to("Create Report", new_report_path(service_id: @service.id),
+            {class: "btn btn-success", role: "button"}) %>
+      </div>
     <% end %>
 
     <% if @service.status_inventory %>
       <div class="link-new-btn">
-          <%= link_to("Inventory Confirmed", "#", 
-            {class: "btn btn-info", role: "button"}) %>         
-      </div>      
+          <%= link_to("Inventory Confirmed", "#",
+            {class: "btn btn-info", role: "button"}) %>
+      </div>
     <% else %>
       <div class="link-new-btn">
-          <%= link_to("Inventory Not Confirmed", "#", 
-            {class: "btn btn-warning", role: "button"}) %>         
-      </div>      
+          <%= link_to("Inventory Not Confirmed", "#",
+            {class: "btn btn-warning", role: "button"}) %>
+      </div>
     <% end %>
 
   <% end %>
-<% end %>     
+<% end %>
 
 <label>Status :</label>
 <p><%= @service.current_status %></p>
@@ -80,7 +80,7 @@
     <% @service.co_op_services.each do |service| %>
       <p>
         <%= link_to service.company_name, client_service_path(client_id: service.client.id, id: service.id)  %>
-      </p>    
+      </p>
     <% end %>
   <% end %>
 <% end %>
@@ -104,8 +104,8 @@
 <p><%= @service.details %></p>
 
 <div class="link-new-btn">
-  <%= link_to("Show Logs", client_service_logs_path({client_id: @client.id,service_id: @service.id}), {class: "btn btn-info", role: "button"}) %>
-  <% unless current_user.has_role?(:client) %>  
+  <%#= link_to("Show Logs", client_service_logs_path({client_id: @client.id,service_id: @service.id}), {class: "btn btn-info", role: "button"}) %>
+  <% unless current_user.has_role?(:client) %>
     <%= link_to("Back", (params[:report].nil? ? client_path(@client) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
     <% if @service.is_co_op? && !@service.parent.nil? %>
@@ -113,17 +113,17 @@
       <% if @service.parent.can_modify?  || current_user.has_role?(:admin) %>
         <%= link_to("Edit", edit_client_service_path(client_id: @service.parent.client.id, id: @service.parent.id), {class: "btn btn-default", role: "button"}) %>
       <% end %>
-      
-      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>              
+
+      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.parent.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>
     <% else %>
 
       <% if @service.can_modify?  || current_user.has_role?(:admin) %>
         <%= link_to("Edit", edit_client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-default", role: "button"}) %>
       <% end %>
-      
-      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>    
-    <% end %>    
-  <% end %>     
+
+      <%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>
+    <% end %>
+  <% end %>
 </div>
 </div>
 
@@ -140,27 +140,27 @@
                 <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
                 &nbsp;<%= product.name %>
               </li>
-            <% end %>        
-          </ul>  
+            <% end %>
+          </ul>
           <%= hidden_field_tag "service[product_ids]", @service.product_ids.to_s, {id: "service_product_ids"} %>
         </div>
         <div class="col-md-6">
           <div class="form-group">
             <label class="control-label">Inventory Confirmed</label>
-            <p><%= @service.status_inventory %></p>          
-          </div>    
+            <p><%= @service.status_inventory %></p>
+          </div>
 
           <div class="form-group">
             <label class="control-label">Inventory Confirmed Date</label>
             <p><%= @service.inventory_date.nil? ? "-" : @service.inventory_date.strftime('%m/%d/%Y') %></p>
-          </div>        
+          </div>
 
           <div class="form-group">
             <label class="control-label">Name of the Location's Contact who confirmed</label>
             <p><%= @service.inventory_confirmed %></p>
-          </div>    
+          </div>
         </div>
-      </div> 
+      </div>
   <% else %>
     <%= form_tag(confirm_inventory_client_services_path, {method: :post, id: "form-confirm-inventory"} ) do %>
       <div class="row">
@@ -172,8 +172,8 @@
                 <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
                 &nbsp;<%= product.name %>
               </li>
-            <% end %>        
-          </ul>  
+            <% end %>
+          </ul>
           <%= hidden_field_tag "service_id", @service.id %>
           <%= hidden_field_tag "client_id", @client.id %>
           <%= hidden_field_tag "service[product_ids]", @service.product_ids.to_s, {id: "service_product_ids"} %>
@@ -187,30 +187,60 @@
                 Yes
               </label>
             </div>
-            
+
             <div class="radio">
               <label>
                 <%= radio_button_tag 'service[status_inventory]', false, (@service.status_inventory == false ? true : false) %>
                 No
               </label>
-            </div>            
-          </div>    
+            </div>
+          </div>
 
           <div class="form-group">
             <label class="control-label">Inventory Confirmed Date</label>
             <%= text_field_tag "service[inventory_date]", (@service.inventory_date.nil? ? nil : @service.inventory_date.strftime('%m/%d/%Y')), {class: "form-control", placeholder: "Confirmed Date", id: "inventory-confirmed-date"} %>
-          </div>        
+          </div>
 
           <div class="form-group">
             <label class="control-label">Name of the Location's Contact who confirmed</label>
-            <%= text_field_tag "service[inventory_confirmed]", @service.inventory_confirmed, {class: "form-control", placeholder: "Who Confirmed", required: "true"} %>      
-          </div>    
+            <%= text_field_tag "service[inventory_confirmed]", @service.inventory_confirmed, {class: "form-control", placeholder: "Who Confirmed", required: "true"} %>
+          </div>
           <div class="form-group">
-            <%= submit_tag("Confirm", class: "btn btn-primary") %>    
-          </div>    
+            <%= submit_tag("Confirm", class: "btn btn-primary") %>
+          </div>
         </div>
-      </div>  
+      </div>
     <% end %>
   <% end %>
 <% end %>
 <% end %>
+
+<div class="row">
+
+  <h2 class="page-header">Logs</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Who</th>
+        <th>What</th>
+        <th>Status</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @service.logs.each_with_index do |log, i|  %>
+      <tr>
+        <td><%= log.created_at.strftime('%m/%d/%Y') %></td>
+        <td><%= log.created_at.strftime('%I:%M %P') %></td>
+        <td><%= log.user.get_info %></td>
+        <td><%= log.what %></td>
+        <td><%= log.status %></td>
+        <td><%= log.comments.html_safe %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

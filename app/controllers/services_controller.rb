@@ -27,11 +27,11 @@ class ServicesController < ApplicationController
           Log.record_status_changed(@service.id, 0, @service.status, current_user.id)
           unless params["location"].nil?
             @service.location.update_attributes({
-              phone: params[:location][:phone], 
+              phone: params[:location][:phone],
               contact: params[:location][:contact]
             })
           end
-          @service.create_coops(params["co_op_client_id"], params["ids-coop-products"]) if params["co-op-price-box"]
+          @service.create_coops(params["co_op_client_id"], params["ids-coop-products"], current_user.id) if params["co-op-price-box"]
           # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
@@ -55,7 +55,7 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
-  
+
     respond_to do |format|
       format.html do
         if @service.can_modify? || current_user.has_role?(:admin)
@@ -86,13 +86,13 @@ class ServicesController < ApplicationController
     @service = @client.services.where(id: params[:service_id]).first
     @service = @client.co_op_services.where(id: params[:service_id]).first if @service.nil?
     @log = Log.find(params[:log_id])
-    redirect_to client_path(@client), notice: "Service not found" if @service.nil?    
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
   end
 
   def update_status_after_reported
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
-    @service.update_status_both_side(params[:service_status], current_user.id)    
+    @service.update_status_both_side(params[:service_status], current_user.id)
     redirect_to client_service_path(client_id: @client.id, id: @service.id)
   end
 
@@ -135,7 +135,7 @@ class ServicesController < ApplicationController
 
     redirect_to root_path
     # path = assignment_path(id: @service.id)
-    
+
     # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
     #   path = client_service_path(client_id: @client.id, id: @service.id)
     # end
@@ -183,12 +183,12 @@ class ServicesController < ApplicationController
       end
     end
 
-    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}    
+    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
   end
 
   def confirm_inventory
-    @service = Service.find(params[:service_id])    
-    @service.update_inventory(service_inventory_params, current_user.id)    
+    @service = Service.find(params[:service_id])
+    @service.update_inventory(service_inventory_params, current_user.id)
     ApplicationMailer.changes_on_your_services(@service).deliver
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
@@ -206,6 +206,6 @@ class ServicesController < ApplicationController
 
   def service_inventory_params
     params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed, :status_inventory)
-  end  
+  end
 
 end

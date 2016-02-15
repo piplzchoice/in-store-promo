@@ -193,6 +193,12 @@ class ServicesController < ApplicationController
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 
+  def comment_inventory
+    @service = Service.find(params[:service_id])
+    Log.record_comment_of_inventory(@service.id, params[:comments], current_user.id)
+    redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
+  end
+
   def check_client_status
     client = Client.find(params[:client_id])
     redirect_to(clients_path, :flash => { :error => "Client is not active" }) unless client.is_active

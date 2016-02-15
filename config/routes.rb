@@ -14,17 +14,18 @@ Rails.application.routes.draw do
       delete "logged_as"
       get "manage_addtional_emails"
       delete "remove_addtional_emails"
-      post "update_addtional_emails"      
+      post "update_addtional_emails"
     end
 
     post :export_calendar, :on => :member
-    get :print_calendar, :on => :member    
+    get :print_calendar, :on => :member
 
     resources :services do
       collection do
         get :autocomplete_location_name
         get :generate_select_ba
         post :confirm_inventory
+        post :comment_inventory
       end
 
       member do
@@ -33,11 +34,11 @@ Rails.application.routes.draw do
         get :mark_service_as_complete
         get :set_reschedule
         patch :update_status_after_reported
-      end 
+      end
 
       get "/logs/" => "services#logs"
       get "/log/:log_id" => "services#log", as: "show_log"
-    end    
+    end
 
     resources :products, only: [:create, :destroy, :index] do
       collection do
@@ -69,7 +70,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :locations do 
+  resources :locations do
     collection do
       post :export_data
       delete :deactive_data
@@ -78,7 +79,7 @@ Rails.application.routes.draw do
   end
   resources :email_templates, only: [:index, :edit, :update]
 
-  resources :projects do  
+  resources :projects do
 
     get :autocomplete_client_name, :on => :collection
     get :set_as_complete, :on => :member

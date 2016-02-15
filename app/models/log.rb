@@ -16,7 +16,7 @@ class Log < ActiveRecord::Base
   belongs_to :user
   # validates :origin, :latest, presence: true
   serialize :data, JSON
-  enum category: [ :status_changed, :modified_details, :modified_main, :coop_added ]
+  enum category: [ :status_changed, :modified_details, :modified_main, :coop_added, :inventory_comment ]
   default_scope { order('created_at ASC') }
 
   def self.create_data(service_id, origin, latest)
@@ -63,6 +63,15 @@ class Log < ActiveRecord::Base
     log.save
   end
 
+  def self.record_comment_of_inventory(service_id, comments, current_user_id)
+    log = self.new
+    log.category = :inventory_comment
+    log.service_id = service_id
+    log.user_id = current_user_id
+    log.data = {comments: comments}
+    log.save
+  end
+
   def what
     case category
     when "status_changed"
@@ -77,6 +86,8 @@ class Log < ActiveRecord::Base
       "record updated"
     when "coop_added"
       "add coop client"
+    when "inventory_comment"
+      "comment"
     end
   end
 
@@ -89,6 +100,8 @@ class Log < ActiveRecord::Base
     when "modified_details"
       "-"
     when "coop_added"
+      "-"
+    when "inventory_comment"
       "-"
     else
       "update"
@@ -144,6 +157,8 @@ class Log < ActiveRecord::Base
 
     when "coop_added"
       changes << "Added coop client: <b>#{Client.find(data["co_op_client_id"]).name}</b>"
+    when "inventory_comment"
+      changes << "#{data["comments"]}"
     else
       "-"
     end

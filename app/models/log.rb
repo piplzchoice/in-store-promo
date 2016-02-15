@@ -16,7 +16,7 @@ class Log < ActiveRecord::Base
   belongs_to :user
   # validates :origin, :latest, presence: true
   serialize :data, JSON
-  enum category: [ :status_changed, :modified_details, :modified_main ]
+  enum category: [ :status_changed, :modified_details, :modified_main, :coop_added, :inventory_comment ]
   default_scope { order('created_at ASC') }
 
   def self.create_data(service_id, origin, latest)
@@ -54,6 +54,24 @@ class Log < ActiveRecord::Base
     log.save
   end
 
+  def self.record_coop_added(service_id, co_op_client_id, current_user_id)
+    log = self.new
+    log.category = :coop_added
+    log.service_id = service_id
+    log.user_id = current_user_id
+    log.data = {co_op_client_id: co_op_client_id}
+    log.save
+  end
+
+  def self.record_comment_of_inventory(service_id, comments, current_user_id)
+    log = self.new
+    log.category = :inventory_comment
+    log.service_id = service_id
+    log.user_id = current_user_id
+    log.data = {comments: comments}
+    log.save
+  end
+
   def what
     case category
     when "status_changed"
@@ -66,8 +84,10 @@ class Log < ActiveRecord::Base
       "record updated"
     when "modified_details"
       "record updated"
-    else
-      "bebas dah"
+    when "coop_added"
+      "add coop client"
+    when "inventory_comment"
+      "comment"
     end
   end
 
@@ -79,12 +99,18 @@ class Log < ActiveRecord::Base
       Service.get_status data["latest"]
     when "modified_details"
       "-"
+    when "coop_added"
+      "-"
+    when "inventory_comment"
+      "-"
     else
       "update"
     end
   end
 
   def comments
+    changes = []
+
     case category
     when "status_changed"
       if data["latest"].to_i == 11
@@ -93,8 +119,6 @@ class Log < ActiveRecord::Base
         "-"
       end
     when "modified_main"
-      changes = []
-
       unless data["old"]["location_id"].to_i == data["new"]["location_id"].to_i
         changes <<  "Location changed to <b>#{Location.find(data["new"]["location_id"].to_i).name}</b>"
       end
@@ -108,23 +132,38 @@ class Log < ActiveRecord::Base
         end_at = DateTime.parse(data["new"]["end_at"]).strftime("%I:%M %p")
         changes << "Re-Scheduled to <b>#{start_at} / #{end_at}</b>"
       end
-
-      changes.join("; ")
     when "modified_details"
-      changes = []
-
       unless data["old"]["details"] == data["new"]["details"]
-        changes <<  "Details changed"
+        changes <<  "Details changed: <b>#{data["new"]["details"]}</b>"
       end
 
       unless data["old"]["product_ids"] == data["new"]["product_ids"]
-        changes <<  "Products changed"
+        old_ids = data["old"]["product_ids"].map{|x| x.to_i}
+        new_ids = data["new"]["product_ids"].map{|x| x.to_i}
+
+        diff_ids = old_ids + new_ids - (old_ids & new_ids)
+
+        diff_ids.each do |id|
+          name = Product.find(id).name
+
+          if !old_ids.include?(id) && new_ids.include?(id)
+            changes <<  "Add product <b>#{name}</b>"
+          elsif old_ids.include?(id) && !new_ids.include?(id)
+            changes <<  "Remove product <b>#{name}</b>"
+          end
+        end
+
       end
 
-      changes.join("; ")
+    when "coop_added"
+      changes << "Added coop client: <b>#{Client.find(data["co_op_client_id"]).name}</b>"
+    when "inventory_comment"
+      changes << "#{data["comments"]}"
     else
       "-"
     end
+
+    changes.join("; ")
   end
 
 end

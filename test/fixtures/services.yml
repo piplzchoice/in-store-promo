@@ -21,6 +21,11 @@
 #  alert_sent_admin      :boolean          default(FALSE)
 #  alert_sent_admin_date :datetime
 #  parent_id             :integer
+#  is_old_service        :boolean          default(TRUE)
+#  inventory_confirm     :boolean          default(FALSE)
+#  inventory_date        :date
+#  inventory_confirmed   :string(255)
+#  status_inventory      :boolean          default(FALSE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

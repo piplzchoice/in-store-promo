@@ -223,4 +223,14 @@ namespace :stuff do
     puts "update email content" if et.update_attributes(ba_assignment_notification)    
   end
 
+  desc "update new inventory status"
+  task :update_inventory_status => :environment do
+    Service.where(status: 11).each do |service|
+      service.status = 2
+      service.status_inventory = true
+      puts "success update service id #{service.id}" if service.save
+    end
+    # puts "update email content" if et.update_attributes(ba_assignment_notification)    
+  end
+
 end

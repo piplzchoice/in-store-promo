@@ -138,7 +138,7 @@ class ReportsController < ApplicationController
       @totals_travel_expense = Service.calculate_total_travel_expense(hash_data[key])
       @grand_total_all = params[:grand_total_all]      
 
-      Service.update_to_ba_paid(hash_data[key])
+      Service.update_to_ba_paid(hash_data[key], current_user.id)
 
       time_no = Time.now.to_i
       file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
@@ -183,7 +183,7 @@ class ReportsController < ApplicationController
   def update_service_paid
     unless params[:service_ids].nil?
       params[:service_ids].each do |service_id|
-        Service.update_status_to_paid(service_id)
+        Service.update_status_to_paid(service_id, current_user.id)
       end
     end
     redirect_to reconcile_payments_reports_path
@@ -252,8 +252,8 @@ class ReportsController < ApplicationController
 
           if @report.save && @report_coop.save
 
-            @service.update_status_to_reported
-            @service.co_op_services.first.update_status_to_reported
+            @service.update_status(Service.status_reported, current_user.id)
+            @service.co_op_services.first.update_status(Service.status_reported, current_user.id)
 
             save_report_data(@report, image_table, image_expense)
             save_coop_report_data(@report_coop, image_table, image_expense)
@@ -262,7 +262,7 @@ class ReportsController < ApplicationController
           end           
         else
           if @report.save
-            @service.update_status_to_reported                
+            @service.update_status(Service.status_reported, current_user.id)                
             save_report_data(@report, image_table, image_expense)            
           else
             render :new

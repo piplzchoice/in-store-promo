@@ -11,6 +11,7 @@
 #  services_ids        :text
 #  line_items          :text
 #  grand_total         :decimal(8, 2)
+#  data                :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

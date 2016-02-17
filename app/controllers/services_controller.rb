@@ -23,15 +23,16 @@ class ServicesController < ApplicationController
     # @service.product_ids = params[:product_ids]
     respond_to do |format|
       format.html do
-        if @service.save 
+        if @service.save
+          Log.record_status_changed(@service.id, 0, @service.status, current_user.id)
           unless params["location"].nil?
             @service.location.update_attributes({
-              phone: params[:location][:phone], 
+              phone: params[:location][:phone],
               contact: params[:location][:contact]
             })
           end
-          @service.create_coops(params["co_op_client_id"], params["ids-coop-products"]) if params["co-op-price-box"]
-        #   # @client.set_as_active if @client.services.size == 1
+          @service.create_coops(params["co_op_client_id"], params["ids-coop-products"], current_user.id) if params["co-op-price-box"]
+          # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
           redirect_to client_path(@client), notice: "Service created"
         else
@@ -54,46 +55,12 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.find(params[:id])
-    old_ba = @service.brand_ambassador
-    old_date = @service.date
-    old_location_id = @service.location_id
 
-    is_ba_detail_has_changed = @service.check_data_changes(service_params)
-    msg = "Service Updated"
-  
     respond_to do |format|
       format.html do
         if @service.can_modify? || current_user.has_role?(:admin)
-          if @service.update_data(service_params)
-            if @service.can_reassign? || current_user.has_role?(:admin)              
-
-              if old_ba.id != @service.brand_ambassador_id || old_location_id != @service.location_id
-                ApplicationMailer.cancel_assignment_notification(old_ba, @service, old_date).deliver 
-              end
-
-              if params["co-op-price-box"]
-                msg = "Added Coop Client to service"
-                @service.create_coops(params["co_op_client_id"], params["ids-coop-products"])
-              else
-                if is_ba_detail_has_changed
-                  # ApplicationMailer.service_has_been_modified(@service.brand_ambassador, @service).deliver
-                  ApplicationMailer.changes_on_your_services(@service).deliver
-                else
-                  ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-
-                  @service.update_status_scheduled
-
-                  if @service.is_co_op?
-                    @service.co_op_services.each do |srv|
-                      srv.update_status_scheduled
-                    end
-                  end                                                                
-                end                              
-              end
-            end
-
-            redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: msg and return
-          end
+          @service.update_data(service_params, params["co-op-price-box"], params["co_op_client_id"], params["ids-coop-products"], current_user.id)
+          redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
         end
         render :edit
       end
@@ -107,10 +74,25 @@ class ServicesController < ApplicationController
     redirect_to client_path(@client), notice: "Service not found" if @service.nil?
   end
 
+  def logs
+    @client = Client.find(params[:client_id])
+    @service = @client.services.where(id: params[:service_id]).first
+    @service = @client.co_op_services.where(id: params[:service_id]).first if @service.nil?
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
+  end
+
+  def log
+    @client = Client.find(params[:client_id])
+    @service = @client.services.where(id: params[:service_id]).first
+    @service = @client.co_op_services.where(id: params[:service_id]).first if @service.nil?
+    @log = Log.find(params[:log_id])
+    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
+  end
+
   def update_status_after_reported
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
-    @service.update_status_after_reported(params[:service_status])    
+    @service.update_status_both_side(params[:service_status], current_user.id)
     redirect_to client_service_path(client_id: @client.id, id: @service.id)
   end
 
@@ -118,7 +100,7 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     # @service = @client.services.find(params[:id])
     @service = Service.find(params[:id])
-    if @service.cancelled
+    if @service.cancelled(current_user.id)
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
       redirect_to client_path(@client), {notice: "Service Cancelled"}
     else
@@ -145,7 +127,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_status_to_confirmed(Devise.friendly_token)
+          @service.update_status(Service.status_confirmed, current_user.id, Devise.friendly_token)
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
@@ -153,7 +135,7 @@ class ServicesController < ApplicationController
 
     redirect_to root_path
     # path = assignment_path(id: @service.id)
-    
+
     # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
     #   path = client_service_path(client_id: @client.id, id: @service.id)
     # end
@@ -167,7 +149,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_status_to_rejected(Devise.friendly_token)
+          @service.update_status(Service.status_rejected, current_user.id, Devise.friendly_token)
         end
       end
     end
@@ -195,19 +177,25 @@ class ServicesController < ApplicationController
     unless @client.nil?
       @service = @client.services.find(params[:id])
       unless @service.nil?
-        @service.update_status_scheduled
+        @service.update_status_both_side(Service.status_scheduled, current_user.id)
         ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
         msg = "Service reschedule completed"
       end
     end
 
-    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}    
+    redirect_to client_service_path(:client_id => params[:client_id], :id => params[:id]), {notice: msg}
   end
 
   def confirm_inventory
-    @service = Service.find(params[:service_id])    
-    @service.update_inventory(service_inventory_params)    
+    @service = Service.find(params[:service_id])
+    @service.update_inventory(service_inventory_params, current_user.id)
     ApplicationMailer.changes_on_your_services(@service).deliver
+    redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
+  end
+
+  def comment_inventory
+    @service = Service.find(params[:service_id])
+    Log.record_comment_of_inventory(@service.id, params[:comments], current_user.id)
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 
@@ -223,7 +211,7 @@ class ServicesController < ApplicationController
   end
 
   def service_inventory_params
-    params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed)
-  end  
+    params.require(:service).permit(:product_ids, :inventory_confirm, :inventory_date, :inventory_confirmed, :status_inventory)
+  end
 
 end

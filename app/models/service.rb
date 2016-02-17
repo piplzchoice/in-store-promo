@@ -25,6 +25,7 @@
 #  inventory_confirm     :boolean          default(FALSE)
 #  inventory_date        :date
 #  inventory_confirmed   :string(255)
+#  status_inventory      :boolean          default(FALSE)
 #
 
 # note for field "status"
@@ -46,10 +47,11 @@ class Service < ActiveRecord::Base
   belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
-  
+
   has_one :report
   has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
   has_and_belongs_to_many :products
+  has_many :logs
 
   belongs_to :parent, :class_name => "Service", foreign_key: 'parent_id'
 
@@ -68,12 +70,16 @@ class Service < ActiveRecord::Base
 
   def self.filter_and_order(parameters)
     data = nil
-    conditions = {}    
+    conditions = {}
     if parameters["status"] != ""
-      conditions.merge!(status: parameters["status"]) 
+      if parameters["status"] == "11"
+        conditions.merge!(status_inventory: true)
+      else
+        conditions.merge!(status: parameters["status"])
+      end
     else
       if parameters["is_client"]
-        conditions.merge!(status: Service.client_status_report) 
+        conditions.merge!(status: Service.client_status_report)
       end
     end
 
@@ -94,7 +100,7 @@ class Service < ActiveRecord::Base
     elsif parameters["sort_column"] == "client"
       data = data.joins(:client).order("clients.company_name #{parameters["sort_direction"]}")
     elsif parameters["sort_column"] == "location_name"
-      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")      
+      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")
     else
       if parameters["sort_column"] == "time"
         data = data.order("EXTRACT (HOUR from start_at) #{parameters["sort_direction"]}")
@@ -148,7 +154,7 @@ class Service < ActiveRecord::Base
 
   def self.status_inventory_confirmed
     return 11
-  end  
+  end
 
   def self.send_notif_after
     return 12.round
@@ -161,20 +167,20 @@ class Service < ActiveRecord::Base
       self.new(service_params)
     else
       service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p')
-      service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')      
+      service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')
       service = Service.where({
-        client_id: service_params[:client_id], 
+        client_id: service_params[:client_id],
         brand_ambassador_id: service_params[:brand_ambassador_id],
         start_at: service_params[:start_at],
         end_at: service_params[:end_at]
-      })    
+      })
 
       if service.blank?
         self.new(service_params)
       else
         self.new
-      end          
-    end  
+      end
+    end
   end
 
   def self.calculate_total_ba_paid(service_ids)
@@ -209,27 +215,36 @@ class Service < ActiveRecord::Base
     return total_paid
   end
 
-  def self.update_to_ba_paid(service_ids)
+  def self.update_to_ba_paid(service_ids, current_user_id)
     Service.find(service_ids).each do |service|
+      old_status = service.status
       service.update_attribute(:status, Service.status_ba_paid)
-    end    
+      # Log.create_data(service.id, old_status, service.status)
+      Log.record_status_changed(service.id, old_status, service.status, current_user_id)
+    end
   end
 
-  def self.update_status_to_paid(service_id)
+  def self.update_status_to_paid(service_id, current_user_id)
     service = Service.find(service_id)
+    old_status = service.status
     service.update_attribute(:status, Service.status_paid)
-  end  
+    # Log.create_data(service.id, old_status, service.status)
+    Log.record_status_changed(service.id, old_status, service.status, current_user_id)
+  end
 
-  def self.update_status_to_invoiced(service_id)
+  def self.update_status_to_invoiced(service_id, current_user_id)
     service = Service.find(service_id)
+    old_status = service.status
     service.update_attribute(:status, Service.status_invoiced)
-  end  
+    # Log.create_data(service.id, old_status, service.status)
+    Log.record_status_changed(service.id, old_status, service.status, current_user_id)
+  end
 
   def self.update_status_to_ba_paid(service_id)
     service = Service.find(service_id)
     # ApplicationMailer.ba_is_paid(@client.account.email, @client.name ,password).deliver
     # service.update_attribute(:status, Service.status_ba_paid)
-  end  
+  end
 
   def self.invited_and_unrespond_status
     # where status = 1 and created_at >= 12 hours
@@ -246,7 +261,7 @@ class Service < ActiveRecord::Base
       ["BA Confirmed", Service.status_confirmed],
       ["Inventory", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
-      ["Invoiced", Service.status_invoiced],      
+      ["Invoiced", Service.status_invoiced],
       ["Paid", Service.status_paid],
       ["BA paid", Service.status_ba_paid],
       ["Cancelled", Service.status_cancelled]
@@ -260,7 +275,7 @@ class Service < ActiveRecord::Base
       ["BA Confirmed", Service.status_confirmed],
       ["Inventory", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
-      ["Invoiced", Service.status_invoiced],      
+      ["Invoiced", Service.status_invoiced],
       ["Paid", Service.status_paid],
       ["BA paid", Service.status_ba_paid],
     ]
@@ -280,10 +295,10 @@ class Service < ActiveRecord::Base
 
   def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction, is_client = false)
     data = {
-      "status" => status, 
-      "assigned_to" => assigned_to, 
-      "client_name" => client_name, 
-      "sort_column" => sort_column, 
+      "status" => status,
+      "assigned_to" => assigned_to,
+      "client_name" => client_name,
+      "sort_column" => sort_column,
       "sort_direction" => sort_direction,
       "is_client" => is_client
     }
@@ -296,17 +311,46 @@ class Service < ActiveRecord::Base
             end: x.end_at.iso8601,
             color: x.get_color,
             url: Rails.application.routes.url_helpers.client_service_path({client_id: x.client_id, id: x.id})
-          } 
+          }
         # end
       end
     }.compact.flatten
   end
 
   def self.check_inventory_confirmation
-    
+
   end
 
-  def report_service    
+  def self.get_status(status)
+    case status
+    when 0
+      "New"
+    when 1
+      "Scheduled"
+    when 2
+      "Confirmed"
+    when 3
+      "Rejected"
+    when 4
+      "Conducted"
+    when 5
+      "Unrespond"
+    when 6
+      "Reported"
+    when 7
+      "Paid"
+    when 8
+      "BA Paid"
+    when 9
+      "Cancelled"
+    when 10
+      "Invoiced"
+    when 11
+      "Inventory"
+    end
+  end
+
+  def report_service
     if !report.nil?
       if !parent.nil?
         if report.is_old_report
@@ -320,7 +364,7 @@ class Service < ActiveRecord::Base
     else
       nil
     end
-  end  
+  end
 
   def coop_service_report_data
     if !parent.nil?
@@ -335,10 +379,21 @@ class Service < ActiveRecord::Base
     return "#{(self.client.nil? ? "" : self.client.company_name)}, #{(self.location.nil? ? "" : self.location.name)}, #{self.start_date_time}, #{(self.brand_ambassador.nil? ? "-" : self.brand_ambassador.name)}"
   end
 
-  def update_data(service_params)
+  def update_data(service_params, coop_box, co_op_client_id, ids_coop_products, current_user_id)
+    old_ba = self.brand_ambassador
+    old_date = self.date
+    old_location_id = self.location_id
+
+    old_data = self.serializable_hash(:only => [
+      :id, :location_id, :brand_ambassador_id, :start_at,
+      :end_at, :details, :status]).merge(date: self.date, product_ids: self.product_ids)
+
+    is_ba_detail_has_changed = self.check_data_changes(service_params)
+
     service_params[:product_ids] = JSON.parse(service_params[:product_ids])
-    service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
-    service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
+    # service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
+    # service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
+
     self.update_attributes(service_params)
 
     if self.is_co_op?
@@ -351,32 +406,73 @@ class Service < ActiveRecord::Base
     else
       true
     end
+
+    if old_data["brand_ambassador_id"] != self.brand_ambassador_id || old_data["location_id"] != self.location_id
+      # log change of canceled BA
+      ApplicationMailer.cancel_assignment_notification(old_data, self.client.company_name).deliver unless old_data["status"].to_i == 3
+    end
+
+    if is_ba_detail_has_changed
+      Log.record_modified_details(self.id, old_data, service_params, current_user_id)
+
+      if self.is_co_op?
+        self.co_op_services.each do |srv|
+          Log.record_modified_details(srv.id, old_data, service_params, current_user_id)
+        end
+      end
+
+      ApplicationMailer.changes_on_your_services(self).deliver
+    else
+      Log.record_modified_main(self.id, old_data, service_params, Service.status_scheduled, current_user_id)
+      ApplicationMailer.ba_assignment_notification(self.brand_ambassador, self).deliver
+
+      self.update_attribute(:status, Service.status_scheduled)
+
+      if self.is_co_op?
+        self.co_op_services.each do |srv|
+          srv.update_attribute(:status, Service.status_scheduled)
+          Log.record_modified_main(srv.id, old_data, service_params, Service.status_scheduled, current_user_id)
+        end
+      end
+    end
+
+    if coop_box
+      # log data coop that added
+      self.create_coops(co_op_client_id, ids_coop_products, current_user_id)
+      Log.record_coop_added(self.id, co_op_client_id, current_user_id)
+    end
+
   end
 
-  def update_inventory(service_params)
+  def update_inventory(service_params, current_user_id)
     service_params[:product_ids] = JSON.parse(service_params[:product_ids])
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y') if service_params[:inventory_date] != ""
     self.update_attributes(service_params)
-    self.update_status_inventory_confirmed if service_params[:inventory_confirm] == "true"
+
+    if service_params[:status_inventory] == "true"
+      self.update_status_inventory_confirmed(true, current_user_id)
+    else
+      self.update_status_inventory_confirmed(false, current_user_id)
+    end
     # if self.is_co_op?
     #   if self.co_op_services.empty?
     #     self.parent.update_attributes(service_params)
     #   else
     #     self.co_op_services.each do |srv|
     #       srv.update_attributes(service_params)
-    #     end        
+    #     end
     #   end
     # else
     #   true
-    # end   
-    true 
+    # end
+    true
   end
 
   def check_data_changes(service_params)
     cond = true
     service_params[:start_at] = DateTime.strptime(service_params[:start_at], '%m/%d/%Y %I:%M %p') unless service_params[:start_at].blank?
     service_params[:end_at] = DateTime.strptime(service_params[:end_at], '%m/%d/%Y %I:%M %p')  unless service_params[:end_at].blank?
-    
+
     self.location_id = service_params[:location_id]
     self.brand_ambassador_id = service_params[:brand_ambassador_id]
     self.start_at = service_params[:start_at]
@@ -387,7 +483,7 @@ class Service < ActiveRecord::Base
     self.parent = service_params[:parent]
     # Location, Assigned BA and Start/End Dates should change the status to Scheduled
     # self.changes.size == 1 && !self.changes["details"].nil?
-    if self.changes.size > 0 
+    if self.changes.size > 0
       cond = false if !self.changes["location_id"].nil? || !self.changes["brand_ambassador_id"].nil?  || !self.changes["start_at"].nil? || !self.changes["end_at"].nil?
     end
 
@@ -406,29 +502,31 @@ class Service < ActiveRecord::Base
   end
 
   def get_color
-    case status
-    when 1
-      "#8DB4E3"
-    when 2
-      "#92D050"
-    when 3
-      "#FFFF00"
-    when 4
-      "#0070C0"
-    when 5
-      "#A5A5A5"
-    when 6
-      "#FFC000"
-    when 7
-      "#00B050"
-    when 8
-      "#E46D0A"
-    when 9
-      "#000000"
-    when 10
-      "#0070C0"
-    when 11
-      "#b6fcc2" #"#ccffcc" 
+    if status_inventory == true && status == 2
+      "#b6fcc2"
+    else
+      case status
+      when 1
+        "#8DB4E3"
+      when 2
+        "#92D050"
+      when 3
+        "#FFFF00"
+      when 4
+        "#0070C0"
+      when 5
+        "#A5A5A5"
+      when 6
+        "#FFC000"
+      when 7
+        "#00B050"
+      when 8
+        "#E46D0A"
+      when 9
+        "#000000"
+      when 10
+        "#0070C0"
+      end
     end
   end
 
@@ -484,9 +582,11 @@ class Service < ActiveRecord::Base
     client.nil? ? "" : client.company_name
   end
 
-  def cancelled
+  def cancelled(current_user_id)
+    old_status = self.status
     self.update_attributes({status: Service.status_cancelled})
-    
+    Log.record_status_changed(self.id, old_status, self.status, current_user_id)
+
     if is_co_op?
       if self.co_op_services.empty?
         self.parent.update_attributes({status: Service.status_cancelled})
@@ -495,7 +595,7 @@ class Service < ActiveRecord::Base
           service_coop.update_attributes({status: Service.status_cancelled})
         end
       end
-    end    
+    end
   end
 
   def ba_rate
@@ -504,11 +604,10 @@ class Service < ActiveRecord::Base
 
   def total_ba_paid
     ba_rate + (report_service.expense_one.nil? ? 0 : report_service.expense_one) + (brand_ambassador.mileage ? (report_service.travel_expense.nil? ? 0 : report_service.travel_expense) : 0)
-  end  
+  end
 
   def can_modify?
-    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected,
-      Service.status_unrespond].include?(status)
+    [Service.status_scheduled, Service.status_confirmed, Service.status_rejected, Service.status_unrespond].include?(status)
   end
 
   def can_reassign?
@@ -526,6 +625,10 @@ class Service < ActiveRecord::Base
 
   def is_cancelled?
     Service.status_cancelled == status
+  end
+
+  def is_rejected?
+    Service.status_rejected == status
   end
 
   def is_reported?
@@ -550,7 +653,7 @@ class Service < ActiveRecord::Base
 
   # def is_co_op?
   #   !co_op_client_id.nil?
-  # end  
+  # end
 
   def set_data_true
     self.update_attribute(:is_active, true)
@@ -584,7 +687,7 @@ class Service < ActiveRecord::Base
         "-",
         "-",
         "-",
-        "-",      
+        "-",
         report_service.product_one_sold.nil? ? "-" : report_service.product_one_sold.to_f,
         report_service.product_two_sold.nil? ? "-" : report_service.product_two_sold.to_f,
         report_service.product_three_sold.nil? ? "-" : report_service.product_three_sold.to_f,
@@ -614,7 +717,7 @@ class Service < ActiveRecord::Base
         products.push(product["sold"].to_f)
       end
 
-      unfill_product.times{|x| products.push("-")} unless unfill_product == 0      
+      unfill_product.times{|x| products.push("-")} unless unfill_product == 0
       products.push(report_service.est_customer_touched.blank? ? "-" : report_service.est_customer_touched.to_f)
     end
 
@@ -627,17 +730,17 @@ class Service < ActiveRecord::Base
       report_service.ave_product_price.to_f,
       report_service.traffic,
       start_at.strftime("%A"),
-      start_at.strftime("%p"),      
+      start_at.strftime("%p"),
     ].push(products).flatten!
 
     return value_row
-    
+
   end
 
-  def create_coops(co_op_client_id, ids_coop_products)
+  def create_coops(co_op_client_id, ids_coop_products, current_user_id)
     ids_coop_products = JSON.parse(ids_coop_products)
     coop = self.co_op_services.build
-    
+
     coop.location = self.location
     # coop.brand_ambassador_id = self.brand_ambassador_id
     coop.brand_ambassador = BrandAmbassador.find_by_name("Admin")
@@ -650,43 +753,73 @@ class Service < ActiveRecord::Base
     coop.product_ids = ids_coop_products
     coop.is_old_service = false
     coop.save!
+    # Log.create_data(coop.id, 0, coop.status)
+    Log.record_status_changed(coop.id, 0, self.status, current_user_id)
   end
 
   def is_co_op?
     !parent.nil? || !co_op_services.empty?
   end
 
-  def update_status_to_confirmed(token)
-    self.update_attributes({status: Service.status_confirmed, token: token})
+  def update_status(status, current_user_id, token = nil)
+    old_status = self.status
+    self.update_attributes({status: status, token: token})
+    Log.record_status_changed(self.id, old_status, self.status, current_user_id)
+
     unless self.co_op_services.empty?
       self.co_op_services.each do |service_coop|
-        service_coop.update_attributes({status: Service.status_confirmed, token: token})
+        old_status = service_coop.status
+        # service_coop.update_attributes({status: Service.status_confirmed, token: token})
+        Log.record_status_changed(service_coop.id, old_status, service_coop.status, current_user_id)
       end
     end
   end
 
-  def update_status_to_rejected(token)
-    self.update_attributes({status: Service.status_rejected, token: token})
-    unless self.co_op_services.empty?
-      self.co_op_services.each do |service_coop|
-        service_coop.update_attributes({status: Service.status_rejected, token: token})
-      end
-    end    
-  end
+  # def update_status_to_confirmed(token)
+  #   old_status = self.status
+  #   self.update_attributes({status: Service.status_confirmed, token: token})
+  #   # Log.create_data(self.id, old_status, self.status)
 
-  def update_status_to_reported
-    self.update_attributes({status: Service.status_reported})
-    unless self.co_op_services.empty?
-      self.co_op_services.each do |service_coop|
-        service_coop.update_attributes({status: Service.status_reported})
-      end
-    end    
-  end
+  #   unless self.co_op_services.empty?
+  #     self.co_op_services.each do |service_coop|
+  #       old_status = service_coop.status
+  #       service_coop.update_attributes({status: Service.status_confirmed, token: token})
+  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
+  #     end
+  #   end
+  # end
 
+  # def update_status_to_rejected(token)
+  #   old_status = self.status
+  #   self.update_attributes({status: Service.status_rejected, token: token})
+  #   # Log.create_data(self.id, old_status, self.status)
+
+  #   unless self.co_op_services.empty?
+  #     self.co_op_services.each do |service_coop|
+  #       old_status = service_coop.status
+  #       service_coop.update_attributes({status: Service.status_rejected, token: token})
+  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
+  #     end
+  #   end
+  # end
+
+  # def update_status_to_reported
+  #   old_status = self.status
+  #   self.update_attributes({status: Service.status_reported})
+  #   # Log.create_data(self.id, old_status, self.status)
+
+  #   unless self.co_op_services.empty?
+  #     self.co_op_services.each do |service_coop|
+  #       old_status = service_coop.status
+  #       service_coop.update_attributes({status: Service.status_reported})
+  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
+  #     end
+  #   end
+  # end
 
   # def update_status_to_conducted
   #   self.update_attributes({status: Service.status_conducted})
-    
+
   #   if is_co_op?
   #     if self.co_op_services.empty?
   #       self.parent.update_attributes({status: Service.status_conducted})
@@ -695,41 +828,74 @@ class Service < ActiveRecord::Base
   #         service_coop.update_attributes({status: Service.status_conducted})
   #       end
   #     end
-  #   end    
+  #   end
   # end
 
-  def update_status_after_reported(status)
+  def update_status_both_side(status, current_user_id)
+    old_status = self.status
     self.update_attributes({status: status})
-    
+    Log.record_status_changed(self.id, old_status, self.status, current_user_id)
+
     if is_co_op?
       if self.co_op_services.empty?
+        old_status = self.parent.status
         self.parent.update_attributes({status: status})
+        Log.record_status_changed(self.parent.id, old_status, self.parent.status, current_user_id)
       else
         self.co_op_services.each do |service_coop|
+          old_status = service_coop.status
           service_coop.update_attributes({status: status})
+          Log.record_status_changed(service_coop.id, old_status, service_coop.status, current_user_id)
         end
       end
-    end        
+    end
   end
 
-  def update_status_scheduled    
-    self.update_attributes({status: Service.status_scheduled})
-    
-    if is_co_op?
-      if self.co_op_services.empty?
-        self.parent.update_attributes({status: Service.status_scheduled})
-      else
-        self.co_op_services.each do |service_coop|
-          service_coop.update_attributes({status: Service.status_scheduled})
-        end
-      end
-    end            
-  end
+  # def update_status_after_reported(status)
+  #   old_status = self.status
+  #   self.update_attributes({status: status})
+  #   # Log.create_data(self.id, old_status, self.status)
 
+  #   if is_co_op?
+  #     if self.co_op_services.empty?
+  #       old_status = self.parent.status
+  #       self.parent.update_attributes({status: status})
+  #       # Log.create_data(self.parent.id, old_status, self.parent.status)
+  #     else
+  #       self.co_op_services.each do |service_coop|
+  #         old_status = service_coop.status
+  #         service_coop.update_attributes({status: status})
+  #         # Log.create_data(service_coop.id, old_status, service_coop.status)
+  #       end
+  #     end
+  #   end
+  # end
 
-  def update_status_inventory_confirmed
-    self.update_attributes({status: Service.status_inventory_confirmed})
-    
+  # def update_status_scheduled
+  #   old_status = self.status
+  #   self.update_attributes({status: Service.status_scheduled})
+  #   # Log.create_data(self.id, old_status, self.status)
+
+  #   if is_co_op?
+  #     if self.co_op_services.empty?
+  #       old_status = self.parent.status
+  #       self.parent.update_attributes({status: Service.status_scheduled})
+  #       # Log.create_data(self.parent.id, old_status, self.parent.status)
+  #     else
+  #       self.co_op_services.each do |service_coop|
+  #         old_status = service_coop.status
+  #         service_coop.update_attributes({status: Service.status_scheduled})
+  #         # Log.create_data(service_coop.id, old_status, service_coop.status)
+  #       end
+  #     end
+  #   end
+  # end
+
+  def update_status_inventory_confirmed(status, current_user_id)
+    old_status = self.status
+    self.update_attributes({status_inventory: status})
+    Log.record_status_changed(self.id, old_status, 11, current_user_id)
+
     # if is_co_op?
     #   if self.co_op_services.empty?
     #     self.parent.update_attributes({status: Service.status_inventory_confirmed})
@@ -738,7 +904,7 @@ class Service < ActiveRecord::Base
     #       service_coop.update_attributes({status: Service.status_inventory_confirmed})
     #     end
     #   end
-    # end            
+    # end
   end
 
   def list_of_products

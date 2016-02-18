@@ -54,14 +54,14 @@
               <label class="control-label">Inventory Confirmed</label>
               <div class="radio">
                 <label>
-                  <%= radio_button_tag 'service[status_inventory]', true, (@service.status_inventory == true ? true : false) %>
+                  <%= radio_button_tag 'service[inventory_confirm]', true, (@service.inventory_confirm == true ? true : false) %>
                   Yes
                 </label>
               </div>
 
               <div class="radio">
                 <label>
-                  <%= radio_button_tag 'service[status_inventory]', false, (@service.status_inventory == false ? true : false) %>
+                  <%= radio_button_tag 'service[inventory_confirm]', false, (@service.inventory_confirm == false ? true : false) %>
                   No
                 </label>
               </div>

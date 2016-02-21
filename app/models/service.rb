@@ -72,11 +72,11 @@ class Service < ActiveRecord::Base
     data = nil
     conditions = {}
     if parameters["status"] != ""
-      if parameters["status"] == "11"
-        conditions.merge!(status_inventory: true)
-      else
+      # if parameters["status"] == "11"
+      #   conditions.merge!(status_inventory: true)
+      # else
         conditions.merge!(status: parameters["status"])
-      end
+      # end
     else
       if parameters["is_client"]
         conditions.merge!(status: Service.client_status_report)
@@ -252,7 +252,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.options_select_after_reported
-    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid]]
+    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid], ["Confirmed", Service.status_confirmed]]
   end
 
   def self.options_select_status
@@ -449,7 +449,8 @@ class Service < ActiveRecord::Base
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y') if service_params[:inventory_date] != ""
     self.update_attributes(service_params)
 
-    if service_params[:status_inventory] == "true"
+    # if service_params[:status_inventory] == "true"
+    if service_params[:inventory_confirm] == "true"
       self.update_status_inventory_confirmed(true, current_user_id)
     else
       self.update_status_inventory_confirmed(false, current_user_id)
@@ -502,31 +503,29 @@ class Service < ActiveRecord::Base
   end
 
   def get_color
-    if status_inventory == true && status == 2
-      "#b6fcc2"
-    else
-      case status
-      when 1
-        "#8DB4E3"
-      when 2
-        "#92D050"
-      when 3
-        "#FFFF00"
-      when 4
-        "#0070C0"
-      when 5
-        "#A5A5A5"
-      when 6
-        "#FFC000"
-      when 7
-        "#00B050"
-      when 8
-        "#E46D0A"
-      when 9
-        "#000000"
-      when 10
-        "#0070C0"
-      end
+    case status
+    when 1
+      "#8DB4E3"
+    when 2
+      "#92D050"
+    when 3
+      "#FFFF00"
+    when 4
+      "#0070C0"
+    when 5
+      "#A5A5A5"
+    when 6
+      "#FFC000"
+    when 7
+      "#00B050"
+    when 8
+      "#E46D0A"
+    when 9
+      "#000000"
+    when 10
+      "#0070C0"
+    when 11
+      "#b6fcc2" #"#ccffcc"
     end
   end
 
@@ -893,8 +892,9 @@ class Service < ActiveRecord::Base
 
   def update_status_inventory_confirmed(status, current_user_id)
     old_status = self.status
-    self.update_attributes({status_inventory: status})
-    Log.record_status_changed(self.id, old_status, 11, current_user_id)
+    # self.update_attributes({status_inventory: status})
+    self.update_attributes({status: Service.status_inventory_confirmed})
+    Log.record_status_changed(self.id, old_status, Service.status_inventory_confirmed, current_user_id)
 
     # if is_co_op?
     #   if self.co_op_services.empty?

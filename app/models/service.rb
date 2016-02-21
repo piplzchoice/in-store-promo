@@ -252,7 +252,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.options_select_after_reported
-    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid]]
+    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid], ["Confirmed", Service.status_confirmed]]
   end
 
   def self.options_select_status

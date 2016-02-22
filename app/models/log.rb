@@ -114,7 +114,8 @@ class Log < ActiveRecord::Base
     case category
     when "status_changed"
       if data["latest"].to_i == 11
-        "Confirmed date: <b>#{service.inventory_date.strftime('%m/%d/%Y')}</b>; Confirmed by: <b>#{service.inventory_confirmed}</b>"
+        # "Confirmed date: <b>#{service.inventory_date.strftime('%m/%d/%Y')}</b>; Confirmed by: <b>#{service.inventory_confirmed}</b>"
+        "Confirmed by: <b>#{service.inventory_confirmed}</b>"
       else
         "-"
       end

@@ -10,35 +10,39 @@
     <%= csrf_meta_tags %>
   </head>
   <body>
-    <% if user_signed_in? %>
-      <%= render "layouts/navbar" %>
-      
-      <div id="wrapper">
-        <%= render "layouts/sidebar" %>
+    <% if @respond_service.nil? %>
+      <% if user_signed_in? %>
+        <%= render "layouts/navbar" %>
+        
+        <div id="wrapper">
+          <%= render "layouts/sidebar" %>
 
-        <div id="page-content-wrapper">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-lg-12">
-                <% flash.each do |name, msg| -%>
-                  <%= show_flash_message(name, msg) %>
-                <% end -%>              
-                              
+          <div id="page-content-wrapper">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <% flash.each do |name, msg| -%>
+                    <%= show_flash_message(name, msg) %>
+                  <% end -%>              
+                                
 
-                <button id="menu-toggle" type="button" class="btn btn-primary" data-toggle="button">
-                  <span id="main_icon" class="glyphicon glyphicon-th-list"></span>
-                </button>                
+                  <button id="menu-toggle" type="button" class="btn btn-primary" data-toggle="button">
+                    <span id="main_icon" class="glyphicon glyphicon-th-list"></span>
+                  </button>                
 
-                <%= yield %>                
+                  <%= yield %>                
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>      
+        </div>      
+      <% else %>
+        <%= yield %>
+      <% end %>
     <% else %>
       <%= yield %>
     <% end %>
-
+    
     <%= javascript_include_tag 'application' %>
     <script>
       $("#menu-toggle").click(function(e) {

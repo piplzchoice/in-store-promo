@@ -131,9 +131,11 @@ class ServicesController < ApplicationController
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
-    end
+    end    
 
-    redirect_to root_path
+    @respond_service = "true"
+    render "respond_service"
+    # redirect_to root_path
     # path = assignment_path(id: @service.id)
 
     # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
@@ -154,7 +156,8 @@ class ServicesController < ApplicationController
       end
     end
 
-    redirect_to root_path
+    @respond_service = "true"
+    render "respond_service"
   end
 
   # def mark_service_as_complete

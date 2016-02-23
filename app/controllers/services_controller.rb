@@ -127,7 +127,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_status(Service.status_confirmed, current_user.id, Devise.friendly_token)
+          @service.update_status(Service.status_confirmed, @service.brand_ambassador.account.id, Devise.friendly_token)
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
@@ -151,7 +151,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
-          @service.update_status(Service.status_rejected, current_user.id, Devise.friendly_token)
+          @service.update_status(Service.status_rejected, @service.brand_ambassador.account.id, Devise.friendly_token)
         end
       end
     end

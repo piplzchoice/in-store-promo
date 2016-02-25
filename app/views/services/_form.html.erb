@@ -19,13 +19,13 @@
         location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
         state: "new"
       }} %>
+      <input id="location_fullname" type="hidden" value="<%= @service.location.name %>">
     <% else %>
       <%= @service.location.name %>
     <% end %>
-  </div>  
-
+  </div>    
+  
   <div id="location-contact" style="display: none;">
-
   </div>
 
   <div class="form-group">

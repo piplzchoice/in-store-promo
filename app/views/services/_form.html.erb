@@ -19,7 +19,6 @@
         location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
         state: "new"
       }} %>      
-
     <% else %>
       <%= @service.location.name %>
     <% end %>
@@ -27,6 +26,7 @@
     <% unless @service.new_record? %>
       <input id="location_fullname" type="hidden" value="<%= @service.location.name %>">
     <% end %>    
+
   </div>    
   
   <div id="location-contact" style="display: none;">

@@ -26,6 +26,7 @@
 #  inventory_date        :date
 #  inventory_confirmed   :string(255)
 #  status_inventory      :boolean          default(FALSE)
+#  tbs_data              :text
 #
 
 # note for field "status"
@@ -40,6 +41,7 @@
 # 9. Cancelled ---> "#FF0000"
 # 10. Invoiced --> "#0070C0"
 # 11. Inventory Confirmed ---> "#ccffcc" / "#b6fcc2"
+# 12. To be Scheduled
 
 class Service < ActiveRecord::Base
 
@@ -58,6 +60,8 @@ class Service < ActiveRecord::Base
   belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
+
+  serialize :tbs_data, JSON
 
   before_create do |service|
     service.token = Devise.friendly_token
@@ -155,6 +159,10 @@ class Service < ActiveRecord::Base
   def self.status_inventory_confirmed
     return 11
   end
+
+  def self.status_tbs
+    return 12
+  end  
 
   def self.send_notif_after
     return 12.round
@@ -347,6 +355,8 @@ class Service < ActiveRecord::Base
       "Invoiced"
     when 11
       "Inventory"
+    when 12
+      "To be Scheduled"
     end
   end
 
@@ -570,6 +580,8 @@ class Service < ActiveRecord::Base
       "Invoiced"
     when 11
       "Inventory"
+    when 12
+      "To be Scheduled"      
     end
   end
 
@@ -916,4 +928,58 @@ class Service < ActiveRecord::Base
     return list_products
   end
 
+  def self.build_data_tbs(service_params, tbs_params, client_id, product_ids)
+    # {"start_at_first"=>"03/01/2016 3:00 PM", "end_at_first"=>"03/01/2016 7:00 PM", "start_at_second"=>"03/10/2016 3:00 PM", "end_at_second"=>"03/10/2016 7:00 PM", "ba_ids"=>"[16,52]"}
+    # (rdb:1) p params[:service]
+    # {"location_id"=>"1", "details"=>"lalalalalala", "is_old_service"=>"false", "product_ids"=>"[101,102,103]"}    
+    client = Client.find(client_id)
+    service = client.services.build
+
+    service.location_id = service_params["location_id"]
+    service.details = service_params["details"]
+    service.is_old_service = service_params["is_old_service"]
+    service.product_ids = JSON.parse(service_params[:product_ids])
+    service.brand_ambassador_id = 1000
+    service.start_at = DateTime.now
+    service.end_at = DateTime.now
+
+    start_at_first = DateTime.strptime(tbs_params["start_at_first"], '%m/%d/%Y %I:%M %p')
+    end_at_first = DateTime.strptime(tbs_params["end_at_first"], '%m/%d/%Y %I:%M %p')
+
+    start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
+    end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
+
+    service.tbs_data = {
+      first_date: {start_at: start_at_first, end_at: end_at_first},
+      second_date: {start_at: start_at_second, end_at: end_at_second},
+      ba_ids: JSON.parse(tbs_params["ba_ids"])
+    }
+
+    service.status = 12
+
+    return service
+    # service = Service.where({
+    #   client_id: service_params[:client_id],
+    #   brand_ambassador_id: service_params[:brand_ambassador_id],
+    #   start_at: service_params[:start_at],
+    #   end_at: service_params[:end_at]
+    # })
+
+      # if service.blank?
+      #   self.new(service_params)
+      # else
+      #   self.new
+      # end
+
+  end
+
+  def update_to_scheduled(changed_tbs)
+    self.start_at = self.tbs_data[changed_tbs["datetime"]]["start_at"]
+    self.end_at = self.tbs_data[changed_tbs["datetime"]]["end_at"]
+    self.brand_ambassador_id = changed_tbs["ba_id"]        
+    self.status = 1
+    self.save
+  end
+
 end
+

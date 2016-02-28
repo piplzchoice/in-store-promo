@@ -1,7 +1,9 @@
 <h1 class="page-header">Show Service</h1>
 
 <div class="row">
-  <%= render "available_btn" %>
+  <% unless @service.status == 12 %>
+    <%= render "available_btn" %>
+  <% end %>    
 
   <label>Status :</label>
   <p><%= @service.current_status %></p>
@@ -30,22 +32,103 @@
   <p>Contact: <%= @service.location.contact %></p>
   <p>Phone: <%= @service.location.phone %></p>
 
-  <label>Assigned BA</label>
-  <p><%= @service.brand_ambassador.name %></p>
 
-  <label>Start Date</label>
-  <p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+  <% if @service.status == 12 %>
+    <hr>
+    <label>Selected BA</label>
+    <p>
+      <ul class="list-styled">
+        <% BrandAmbassador.find(@service.tbs_data["ba_ids"]).each do |ba| %>
+          <li>
+            <%= ba.name %>
+          </li>
+        <% end %>
+      </ul>    
+    </p>
+    <hr>
 
-  <label>End Date</label>
-  <p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+    <label>First Datetime</label>
+    <p>
+      <strong>Date: </strong>
+      <%= DateTime.parse(@service.tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y") %>
+    </p>
+    <p>
+      <strong>Start at:</strong>
+      <%= DateTime.parse(@service.tbs_data["first_date"]["start_at"]).strftime("%I:%M %p") %>
+    </p>
+    <p>
+      <strong>End at:</strong>
+      <%= DateTime.parse(@service.tbs_data["first_date"]["end_at"]).strftime("%I:%M %p") %>
+    </p>
+    
+    <hr>
+    <label>Second Datetime</label>
+    <p>
+      <strong>Date: </strong>
+      <%= DateTime.parse(@service.tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y") %>
+    </p>    
+    <p>
+      <strong>Start at:</strong>
+      <%= DateTime.parse(@service.tbs_data["second_date"]["start_at"]).strftime("%I:%M %p") %>
+    </p>
+    <p>
+      <strong>End at:</strong>
+      <%= DateTime.parse(@service.tbs_data["second_date"]["end_at"]).strftime("%I:%M %p") %>
+    </p>
+    <hr>
+
+  <% else %>
+
+    <label>Assigned BA</label>
+    <p><%= @service.brand_ambassador.name %></p>
+
+    <label>Start Date</label>
+    <p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+    <label>End Date</label>
+    <p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+  <% end %>
 
   <label>Details</label>
   <p><%= @service.details %></p>
 
-  <div class="link-new-btn">
-    <%= render "right_btn" %>
-  </div>
+  <% if @service.status == 12 %>
+    <div class="link-new-btn">
+      <%= render "scheduled_btn" %>
+    </div>    
+  <% else %>
+    <div class="link-new-btn">
+      <%= render "right_btn" %>
+    </div>
+  <% end %>
 </div>
+
+<% unless @service.tbs_data["request_by_phone"].nil? %>
+  <div class="row">
+
+    <h2 class="page-header">Request by phone log</h2>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Person talked</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @service.tbs_data["request_by_phone"].each do |data|  %>
+        <tr>
+          <td><%= DateTime.parse(data["datetime"]).strftime("%m/%d/%Y")%></td>
+          <td><%= DateTime.parse(data["datetime"]).strftime("%I:%M %p")%></td>
+          <td><%= data["name"] %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
 
 <%= render "inventory_form" %>
 

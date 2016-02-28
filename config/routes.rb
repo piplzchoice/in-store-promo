@@ -24,11 +24,16 @@ Rails.application.routes.draw do
       collection do
         get :autocomplete_location_name
         get :generate_select_ba
+        get :generate_select_ba_tbs
+        post :create_tbs
         post :confirm_inventory
         post :comment_inventory
+        get :new_tbs
       end
 
-      member do
+      member do        
+        post :request_by_phone
+        post :change_to_schedule
         get :confirm_respond
         get :rejected_respond
         get :mark_service_as_complete

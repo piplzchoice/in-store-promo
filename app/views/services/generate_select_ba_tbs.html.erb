@@ -1,0 +1,16 @@
+<br />
+<% if @brand_ambassadors.nil? %>
+  BA not available
+<% else %>
+  <ul class="list-unstyled">
+    <% @brand_ambassadors.each do |ba| %>
+      <li>
+        <%= check_box_tag("ba-#{ba.id}", ba.id, nil, {class: "ba_ids"}) %>
+        &nbsp;<%= ba.name %>
+      </li>
+    <% end %>
+  </ul>
+  <input type="hidden" name="tbs[ba_ids]" id="tbs_ba_ids" value="[]">
+<% end %>
+
+<hr>

@@ -272,6 +272,28 @@ $(function() {
     return false;
   });
 
+  $("#req-by-phone").on("click", function(){
+    $('#request-by-phone-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+
+    $("#request-by-phone-modal").modal("show");
+    return false;
+  });  
+
+  $("#change_to_scheduled").on("click", function(){
+    $('#changed-to-scheduled-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+
+    $("#changed-to-scheduled-modal").modal("show");
+    return false;
+  });    
+
+  $('#request-phone-date').datetimepicker();
+
   $("#add-product-button").on("click", function(){
     $("#add-product-modal").modal("show");
   });
@@ -474,6 +496,7 @@ $(function() {
   $(".tooltip-legend").tooltip();
   checkbox_avalaible_click();
   generate_select_ba
+  
   if($('.dp-service').length !== 0) {
 
     $("#service_start_at").val("");
@@ -528,6 +551,114 @@ $(function() {
       $('#end_at_datetimepicker').data("DateTimePicker").setDate($("#end_at_datetimepicker").data("date"))
   }
 
+  if($('.dp-service-first-tbs').length !== 0) {
+
+    $("#tbs_start_at_first").val("");
+    $("#tbs_end_at_first").val("");
+
+    $('.dp-service-first-tbs').datetimepicker();
+
+    $(".dp-service-first-tbs#start_at_first_tbs_datetimepicker").on("dp.change", function (e) {
+      if(e.date.minute() === 30) {
+        e.date.minute(30);
+      } else {
+        e.date.minute(0);
+      }
+
+      $(this).data("DateTimePicker").setDate(e.date);
+
+      if(!$("#manual-override").prop('checked')) {
+        end_at_date = moment(e.date.format());
+        end_at_date.hour(end_at_date.hour() + $("#start_at_first_tbs_datetimepicker").data("est-service"));
+        $('.dp-service-first-tbs#end_at_first_tbs_datetimepicker').data("DateTimePicker").setDate(end_at_date);
+      }
+
+      // if($('.dp-service-first-tbs#start_at_first_tbs_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service-first-tbs#end_at_first_tbs_datetimepicker').data("DateTimePicker").getDate().date()) {
+      //   generate_select_ba();
+      // } else {
+      //   $("#select-ba").html("");
+      // }
+
+    });
+
+    $(".dp-service-first-tbs#end_at_first_tbs_datetimepicker").on("dp.change", function (e) {
+      // e.date.minute(0);
+      // $(this).data("DateTimePicker").setDate(e.date);
+
+      if(!$("#manual-override").prop('checked')) {
+        start_at_date = moment(e.date.format());
+        start_at_date.hour(start_at_date.hour() - $("#start_at_first_tbs_datetimepicker").data("est-service"));
+        $('.dp-service-first-tbs#start_at_first_tbs_datetimepicker').data("DateTimePicker").setDate(start_at_date);
+      }
+
+      // if($('.dp-service-first-tbs#start_at_first_tbs_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service-first-tbs#end_at_first_tbs_datetimepicker').data("DateTimePicker").getDate().date()) {
+      //   generate_select_ba();
+      // } else {
+      //   $("#select-ba").html("");
+      // }
+    });
+
+    if($("#start_at_first_tbs_datetimepicker").data("date") !== "")
+      $('#start_at_first_tbs_datetimepicker').data("DateTimePicker").setDate($("#start_at_first_tbs_datetimepicker").data("date"))
+
+    if($("#end_at_first_tbs_datetimepicker").data("date") !== "")
+      $('#end_at_first_tbs_datetimepicker').data("DateTimePicker").setDate($("#end_at_first_tbs_datetimepicker").data("date"))
+  }
+
+  if($('.dp-service-second-tbs').length !== 0) {
+
+    $("#tbs_start_at_second").val("");
+    $("#tbs_end_at_second").val("");
+
+    $('.dp-service-second-tbs').datetimepicker();
+
+    $(".dp-service-second-tbs#start_at_second_tbs_datetimepicker").on("dp.change", function (e) {
+      if(e.date.minute() === 30) {
+        e.date.minute(30);
+      } else {
+        e.date.minute(0);
+      }
+
+      $(this).data("DateTimePicker").setDate(e.date);
+
+      if(!$("#manual-override").prop('checked')) {
+        end_at_date = moment(e.date.format());
+        end_at_date.hour(end_at_date.hour() + $("#start_at_second_tbs_datetimepicker").data("est-service"));
+        $('.dp-service-second-tbs#end_at_second_tbs_datetimepicker').data("DateTimePicker").setDate(end_at_date);
+      }
+
+      // if($('.dp-service-second-tbs#start_at_second_tbs_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service-second-tbs#end_at_second_tbs_datetimepicker').data("DateTimePicker").getDate().date()) {
+      //   generate_select_ba();
+      // } else {
+      //   $("#select-ba").html("");
+      // }
+
+    });
+
+    $(".dp-service-second-tbs#end_at_second_tbs_datetimepicker").on("dp.change", function (e) {
+      // e.date.minute(0);
+      // $(this).data("DateTimePicker").setDate(e.date);
+
+      if(!$("#manual-override").prop('checked')) {
+        start_at_date = moment(e.date.format());
+        start_at_date.hour(start_at_date.hour() - $("#start_at_second_tbs_datetimepicker").data("est-service"));
+        $('.dp-service-second-tbs#start_at_second_tbs_datetimepicker').data("DateTimePicker").setDate(start_at_date);
+      }
+
+      // if($('.dp-service-second-tbs#start_at_second_tbs_datetimepicker').data("DateTimePicker").getDate().date() == $('.dp-service-second-tbs#end_at_second_tbs_datetimepicker').data("DateTimePicker").getDate().date()) {
+      //   generate_select_ba();
+      // } else {
+      //   $("#select-ba").html("");
+      // }
+    });
+
+    if($("#start_at_second_tbs_datetimepicker").data("date") !== "")
+      $('#start_at_second_tbs_datetimepicker').data("DateTimePicker").setDate($("#start_at_second_tbs_datetimepicker").data("date"))
+
+    if($("#end_at_second_tbs_datetimepicker").data("date") !== "")
+      $('#end_at_second_tbs_datetimepicker').data("DateTimePicker").setDate($("#end_at_second_tbs_datetimepicker").data("date"))
+  }  
+
   if($(".dp-project#start_at_datetimepicker").length !== 0) {
     $('.dp-project').datetimepicker({
       pickTime: false
@@ -567,6 +698,25 @@ $(function() {
     }
     $("#service_product_ids").val(JSON.stringify(data))
   });
+
+  if($("#tbs_ba_ids").length !== 0) {
+    data = JSON.parse($("#tbs_ba_ids").val())
+    if(data.length !== 0) {
+      data.forEach(function(val){
+        $('#ba-' + val).prop('checked', true);
+      })
+    }
+  }
+
+  $(document).on("click", ".ba_ids", function(){
+    data = JSON.parse($("#tbs_ba_ids").val())
+    if($(this).is(":checked")) {
+      data.push(parseInt($(this).val()));
+    } else {
+      data = _.without(data, parseInt($(this).val()));
+    }
+    $("#tbs_ba_ids").val(JSON.stringify(data))
+  });  
 
   $("#new_service").submit(function(){
     var status = true
@@ -1063,6 +1213,11 @@ $(document).on("keyup", ".product-sample", function(){
   $("#report_product_" + $(this).data("id") +"_sold").val(calculate);
 });
 
+$(document).on("click", "#check-ba", function(){
+  generate_select_ba_tbs();
+  return false;
+})
+
 function generate_select_ba(){
   $.ajax({
     url: $("#service_start_at").data("url"),
@@ -1088,6 +1243,24 @@ function generate_select_ba(){
   });
 }
 
+function generate_select_ba_tbs(){
+  $.ajax({
+    url: $("#url_tbs_ba").data("url"),
+    data: {
+      tbs_start_at_first: $("#tbs_start_at_first").val(),
+      tbs_end_at_first: $("#tbs_end_at_first").val(),
+      tbs_start_at_second: $("#tbs_start_at_second").val(),
+      tbs_end_at_second: $("#tbs_end_at_second").val(),      
+      // action_method: $("#select-ba").data("action"),
+      service_id: $("#checkbox-service").data("service-id"),
+      location_id: $("#service_location_id").val()
+    }
+  })
+  .done(function( html ) {
+    $("#select-ba").html("");
+    $("#select-ba").append(html);
+  });
+}
 
 function checkbox_avalaible_click(){
   $("#check-all-available").on("click", function(){

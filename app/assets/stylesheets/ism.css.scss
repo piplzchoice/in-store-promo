@@ -326,6 +326,10 @@ body {
   width: 35px;
 }
 
+#ba-selection {
+  display: none; 
+}
+
 @media print
 {
   .no-print { visibility: hidden; }

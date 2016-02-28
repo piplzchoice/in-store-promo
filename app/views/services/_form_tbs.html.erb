@@ -1,0 +1,144 @@
+<%= form_tag create_tbs_client_services_path(@client), html: {role: "form"} do |f| %>
+  
+  <div class="form-group">
+    <label class="control-label">Client: <%= @client.company_name %></label>
+  </div>
+
+  <div class="checkbox" id="checkbox-service" data-service-id="<%= @service.new_record? ? "" : @service.id %>">
+    <label>
+      <input type="checkbox" id="manual-override"> Default Overwrite
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">Select Location</label>
+    <% if @service.new_record? || current_user.has_role?(:admin) %>
+      <%= hidden_field :service, :location_id, {class: "select-2-box", data: {
+        url: autocomplete_location_name_client_services_path(client_id: @client.id),
+        name: (@service.location_id.nil? ? "-" : "#{@service.location.complete_location}"),
+        location_id: (@service.location_id.nil? ? "" : "#{@service.location.id}"),
+        state: "new"
+      }} %>      
+    <% else %>
+      <%= @service.location.name %>
+    <% end %>
+
+    <% unless @service.new_record? %>
+      <input id="location_fullname" type="hidden" value="<%= @service.location.name %>">
+    <% end %>    
+  </div>    
+  
+  <div id="location-contact" style="display: none;">
+  </div>
+
+  <h4>Select desirable datetimes</h4>
+  <hr>
+
+  <h5>Select first desirable datetimes</h5>
+  <div class="form-group">
+    <label class="control-label">Start at</label>
+    <div class='input-group date dp-service-first-tbs' id='start_at_first_tbs_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
+      <%= text_field :tbs, :start_at_first, {class: "form-control", readonly: true, data: {url: generate_select_ba_client_services_path(client_id: @client.id)}} %>
+      <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">End at</label>
+      <div class='input-group date dp-service-first-tbs' id='end_at_first_tbs_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
+        <%= text_field :tbs, :end_at_first, {class: "form-control", readonly: true} %>
+        <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        <% end %>
+      </div>
+  </div>  
+
+  <hr>
+
+  <h5>Select second desirable datetimes</h5>
+  <div class="form-group">
+    <label class="control-label">Start at</label>
+    <div class='input-group date dp-service-second-tbs' id='start_at_second_tbs_datetimepicker' data-est-service="<%= DefaultValue.service_hours_est %>" data-date="<%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %>">
+      <%= text_field :tbs, :start_at_second, {class: "form-control", readonly: true, data: {url: generate_select_ba_client_services_path(client_id: @client.id)}} %>
+      <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">End at</label>
+      <div class='input-group date dp-service-second-tbs' id='end_at_second_tbs_datetimepicker' data-date="<%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %>">
+        <%= text_field :tbs, :end_at_second, {class: "form-control", readonly: true} %>
+        <% if @service.new_record? || @service.can_rescheduled? || current_user.has_role?(:admin) %>
+          <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+        <% end %>
+      </div>
+  </div>    
+
+  <hr>
+
+  <div class="form-group">
+    <h4>Select BA</h4>
+    <input type="hidden" id="url_tbs_ba" data-url="<%= generate_select_ba_tbs_client_services_path(@client) %>">
+    <button id="check-ba" class="btn btn-default">Check BA</button>
+    <div id="select-ba">
+    <hr />
+  </div>  
+
+  <% if !@service.new_record? && @service.is_co_op? %>
+    <div class="form-group">
+      <label class="control-label">Co-op Client</label>
+        <% if @service.co_op_services.empty? %>
+          <p>
+            <%= @service.parent.client.company_name %>
+          </p>
+        <% else %>
+          <% @service.co_op_services.each do |service| %>
+            <p>
+              <%= service.company_name %>
+            </p>    
+          <% end %>
+        <% end %>
+    </div>
+  <% else %>
+
+    <div class="form-group">
+      <%= check_box_tag("co-op-price-box", true, params["co-op-price-box"]) %>&nbsp;Co-op
+    </div>
+
+    <div class="form-group" id="co-op-client-name">
+      <label class="control-label">Co-op Client</label>
+      <%= select_tag(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control"}) %>    
+    </div>
+
+  <% end %>
+
+  <% if @service.new_record? || @service.is_old_service == false %>
+    <div class="form-group">
+      <label class="control-label">Select the products to be demonstrated</label>
+      <ul class="list-unstyled">
+        <% @client.products.each do |product| %>
+          <li>
+            <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
+            &nbsp;<%= product.name %>
+          </li>
+        <% end %>
+      </ul>
+      <ul class="list-unstyled" id="coop-products-list"></ul>
+      <input type="hidden" name="ids-coop-products" id="ids-coop-products" value="[]">
+    </div>
+  <% end %>
+
+
+  <div class="form-group">    
+    <label class="control-label">Details</label>
+    <%= text_area :service, :details, {class: "form-control"} %>
+    <%= hidden_field :service, :is_old_service, {value: (@service.new_record? ? false : @service.is_old_service)} %>
+    <%= hidden_field :service, :product_ids %>    
+  </div>    
+
+  <%= button_tag "Submit", {type: "submit", class: "btn btn-default"} %>
+<% end %>

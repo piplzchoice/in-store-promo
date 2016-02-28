@@ -16,6 +16,63 @@ class ServicesController < ApplicationController
     end
   end
 
+  def new_tbs
+    @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
+    @service = @client.services.build
+    respond_to do |format|
+      format.html
+    end    
+  end
+
+  def create_tbs
+    @client = Client.find(params[:client_id])
+    @service = Service.build_data_tbs(params[:service], params[:tbs], params[:client_id], params[:product_ids])
+    respond_to do |format|
+      format.html do
+        if @service.save
+          Log.record_status_changed(@service.id, 0, @service.status, current_user.id)
+          unless params["location"].nil?
+            @service.location.update_attributes({
+              phone: params[:location][:phone],
+              contact: params[:location][:contact]
+            })
+          end
+          redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service Scheduled Created"
+        end
+      end
+    end    
+  end
+
+  def request_by_phone
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])    
+
+    data = {datetime: DateTime.strptime(params[:request][:datetime], '%m/%d/%Y %I:%M %p'), name: params[:request][:name]}
+    if @service.tbs_data["request_by_phone"].nil?
+      @service.tbs_data.merge!(
+        request_by_phone: [data]
+      )
+    else
+      @service.tbs_data["request_by_phone"].push(data)
+    end
+
+    @service.save
+
+    redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
+  end
+
+  def change_to_schedule
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id]) 
+    
+    @service.update_to_scheduled(params["changed_tbs"])
+    Log.record_status_changed(@service.id, 12, @service.status, current_user.id)
+    ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+
+    redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service change to status Scheduled"
+  end
+
   def create
     @client = Client.find(params[:client_id])
     @clients = Client.with_status_active.where.not(id: params[:client_id])
@@ -118,6 +175,27 @@ class ServicesController < ApplicationController
 
   def generate_select_ba
     @brand_ambassadors = BrandAmbassador.get_available_people(params[:start_at], params[:end_at], params[:service_id], params[:location_id])
+    render layout: false
+  end
+
+  def generate_select_ba_tbs              
+    ba_first_tbs = BrandAmbassador.get_available_people(
+      params[:tbs_start_at_first], params[:tbs_end_at_first], 
+      params[:service_id], params[:location_id]
+    )
+    
+    ba_second_tbs = BrandAmbassador.get_available_people(
+      params[:tbs_start_at_second], params[:tbs_end_at_second],
+      params[:service_id], params[:location_id]
+    )
+
+    ba_ids = []
+    ba_ids.push ba_first_tbs.collect(&:id)
+    ba_ids.push ba_second_tbs.collect(&:id)
+    ba_ids = ba_ids.flatten.uniq
+
+    @brand_ambassadors = BrandAmbassador.find(ba_ids)
+
     render layout: false
   end
 

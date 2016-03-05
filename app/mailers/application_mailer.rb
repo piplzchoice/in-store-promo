@@ -171,8 +171,8 @@ class ApplicationMailer < ActionMailer::Base
     @content = service.tbs_data["request_by_email"]["content"]
     mail(
       from: 'schedule@flavorfanaticsism.com',
-      # to: service.location.email, 
-      to: "location@contact.com", 
+      to: service.location.email, 
+      # to: "location@contact.com", 
       cc: "carolw@falvorfanaticsism.com",
       subject: service.tbs_data["request_by_email"]["subject"]
     )

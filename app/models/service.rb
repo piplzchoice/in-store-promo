@@ -659,7 +659,11 @@ class Service < ActiveRecord::Base
   end
 
   def is_ba_active?
-    brand_ambassador.is_active
+    if brand_ambassador.nil?
+      true
+    else
+      brand_ambassador.is_active
+    end    
   end
 
   # def is_co_op?

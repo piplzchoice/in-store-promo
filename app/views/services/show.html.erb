@@ -104,32 +104,6 @@
   <% end %>
 </div>
 
-<% unless @service.tbs_data["request_by_phone"].nil? %>
-  <div class="row">
-
-    <h2 class="page-header">Request by phone log</h2>
-
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Person talked</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @service.tbs_data["request_by_phone"].each do |data|  %>
-        <tr>
-          <td><%= DateTime.parse(data["datetime"]).strftime("%m/%d/%Y")%></td>
-          <td><%= DateTime.parse(data["datetime"]).strftime("%I:%M %p")%></td>
-          <td><%= data["name"] %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-<% end %>
-
 <%= render "inventory_form" %>
 
 <div class="row">

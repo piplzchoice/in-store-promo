@@ -58,6 +58,7 @@ class ServicesController < ApplicationController
     end
 
     @service.save
+    Log.record_phone_request(@service.id, data, current_user.id)
 
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
   end

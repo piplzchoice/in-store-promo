@@ -6,45 +6,37 @@
 
 <%= link_to("Change to Scheduled", "#", {id: "change_to_scheduled", class: "btn btn-success", role: "button"}) %>
 
-<% if @service.tbs_data["request_by_email"].nil? %>
 
-  <div id="request-by-email-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title" id="mySmallModalLabel">
-            Request by Email
-          </h4>
-        </div>
-        <div class="modal-body">
-        <%= form_tag request_by_email_client_service_path(@client, @service), html: {role: "form"} do %>
-
-          <div class="form-group">    
-            <label class="control-label">Subject</label>
-            <%= text_field_tag "request[subject]", generate_demo_email_template(@service).subject, {class: "form-control", placeholder: "subject", required: "true", id: "request-email-subjct"} %>
-          </div>
-
-          <div class="form-group">    
-            <label class="control-label">Subject</label>
-            <%= text_area_tag "request[content]", generate_demo_email_template(@service).content.html_safe, {size: "10x20", class: "form-control", placeholder: "subject", required: "true", id: "request-email-content"} %>
-          </div>
-
-          <%= button_tag "Request by Email", {type: "submit", class: "btn btn-primary"} %>
-        <% end %>
-        </div>
+<div id="request-by-email-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="mySmallModalLabel">
+          Request by Email
+        </h4>
       </div>
-    </div>
-  </div>
-<% else %>
-  <div id="request-by-email-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title" id="mySmallModalLabel">
-              Request by Email
-            </h4>
-          </div>
-          <div class="modal-body">
+      <div class="modal-body">
+        <% if @service.location.email.blank? %>
+            <div class="form-group">    
+              <p>There is no email address currently available for this location to make a Request by Email. Please add the email address to <%= link_to "this location", edit_location_path(@service.location) %> or make the Request by Phone.</p>
+            </div>        
+        <% else %>
+          <% if @service.tbs_data["request_by_email"].nil? %>
+            <%= form_tag request_by_email_client_service_path(@client, @service), html: {role: "form"} do %>
+
+              <div class="form-group">    
+                <label class="control-label">Subject</label>
+                <%= text_field_tag "request[subject]", generate_demo_email_template(@service).subject, {class: "form-control", placeholder: "subject", required: "true", id: "request-email-subjct"} %>
+              </div>
+
+              <div class="form-group">    
+                <label class="control-label">Subject</label>
+                <%= text_area_tag "request[content]", generate_demo_email_template(@service).content.html_safe, {size: "10x20", class: "form-control", placeholder: "subject", required: "true", id: "request-email-content"} %>
+              </div>
+
+              <%= button_tag "Request by Email", {type: "submit", class: "btn btn-primary"} %>
+            <% end %>
+          <% else %>
             <div class="form-group">    
               <label class="control-label">Date Sent</label>
               <p><%= @service.tbs_data["request_by_email"]["date_sent"] %></p>
@@ -58,12 +50,15 @@
             <div class="form-group">    
               <label class="control-label">Content</label>
               <p><%= @service.tbs_data["request_by_email"]["content"].html_safe %></p>
-            </div>
-          </div>
-        </div>
+            </div>          
+          <% end %>
+        <% end %>
       </div>
     </div>
-<% end %>
+  </div>
+</div>
+
+
 
 
 <div id="request-by-phone-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">

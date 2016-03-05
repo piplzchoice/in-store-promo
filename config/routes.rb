@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
       member do        
         post :request_by_phone
+        post :request_by_email
         post :change_to_schedule
         get :confirm_respond
         get :rejected_respond

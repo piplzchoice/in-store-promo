@@ -981,5 +981,9 @@ class Service < ActiveRecord::Base
     self.save
   end
 
+  def tbs_datetime(desirable, type_data, time_stamp)
+    DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
+  end
+
 end
 

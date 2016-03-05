@@ -26,6 +26,7 @@
 #  inventory_date        :date
 #  inventory_confirmed   :string(255)
 #  status_inventory      :boolean          default(FALSE)
+#  tbs_data              :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

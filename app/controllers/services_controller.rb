@@ -62,6 +62,24 @@ class ServicesController < ApplicationController
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
   end
 
+  def request_by_email
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])    
+
+    data = {
+      date_sent: DateTime.now.strftime('%m/%d/%Y %I:%M %p'), 
+      subject: params[:request][:subject],
+      content: params[:request][:content]
+    }
+
+    @service.tbs_data["request_by_email"] = data
+    @service.save
+
+    ApplicationMailer.demo_request(@service).deliver
+    
+    redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by email sent"
+  end
+
   def change_to_schedule
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id]) 
@@ -158,7 +176,7 @@ class ServicesController < ApplicationController
     # @service = @client.services.find(params[:id])
     @service = Service.find(params[:id])
     if @service.cancelled(current_user.id)
-      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver
+      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver unless @service.status == 12
       redirect_to client_path(@client), {notice: "Service Cancelled"}
     else
       render :show

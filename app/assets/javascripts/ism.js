@@ -272,6 +272,16 @@ $(function() {
     return false;
   });
 
+  $("#req-by-email").on("click", function(){
+    $('#request-by-email-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+
+    $("#request-by-email-modal").modal("show");
+    return false;
+  });  
+
   $("#req-by-phone").on("click", function(){
     $('#request-by-phone-modal').modal({
       backdrop: 'static',
@@ -973,7 +983,7 @@ $(function() {
     $("#download-csv").submit();
   })
 
-  $("#email_template_content").redactor({
+  $("#email_template_content, #request-email-content").redactor({
     buttons: [
       'html', 'bold', 'italic', 'underline', 'deleted', 'alignleft', 'aligncenter', 'alignright', 'justify',
       'outdent', 'indent','unorderedlist', 'orderedlist','link', 'formatting'],

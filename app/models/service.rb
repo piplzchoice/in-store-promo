@@ -536,7 +536,9 @@ class Service < ActiveRecord::Base
       "#0070C0"
     when 11
       "#b6fcc2" #"#ccffcc"
-    end
+    when 12
+      "#FE0000" #"#ccffcc"
+    end    
   end
 
   def client_and_companyname

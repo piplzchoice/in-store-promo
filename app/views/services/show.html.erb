@@ -33,7 +33,7 @@
   <p>Phone: <%= @service.location.phone %></p>
 
 
-  <% if @service.status == 12 || (@service.logs.last.category == "status_changed" && @service.logs.last.data["origin"] == 12) %>
+  <% if @service.status == 12 || (@service.status == 9 && @service.logs.last.category == "status_changed" && @service.logs.last.data["origin"] == 12) %>
     <hr>
     <label>Selected BA</label>
     <p>

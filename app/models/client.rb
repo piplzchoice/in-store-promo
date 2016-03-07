@@ -63,7 +63,7 @@ class Client < ActiveRecord::Base
     client = find(client_id)
     calendars = client.services.collect{|x|       
       unless x.status == Service.status_conducted      
-        if x.is_ba_active?
+        if x.is_ba_active? && x.status != 12
           {
             title: x.title_calendar,
             start: x.start_at.iso8601,
@@ -74,6 +74,27 @@ class Client < ActiveRecord::Base
         end
       end
     }.uniq.compact
+    
+    service_tbs = client.services.where(status: 12)
+    unless service_tbs.blank?
+      service_tbs.each do |srv|
+        calendars.push({
+            title: srv.title_calendar,
+            start: DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
+            end: DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
+            color: srv.get_color,
+            url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+          })
+
+        calendars.push({
+            title: srv.title_calendar,
+            start: DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
+            end: DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
+            color: srv.get_color,
+            url: Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+          })        
+      end
+    end
 
     return calendars.uniq.compact
   end  

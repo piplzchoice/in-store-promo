@@ -48,7 +48,11 @@ class ServicesController < ApplicationController
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])    
 
-    data = {datetime: DateTime.strptime(params[:request][:datetime], '%m/%d/%Y %I:%M %p'), name: params[:request][:name]}
+    data = {
+      datetime: DateTime.strptime(params[:request][:datetime], '%m/%d/%Y %I:%M %p'), 
+      name: params[:request][:name],
+      conversation: params[:request][:conversation]
+    }
     if @service.tbs_data["request_by_phone"].nil?
       @service.tbs_data.merge!(
         request_by_phone: [data]
@@ -73,6 +77,11 @@ class ServicesController < ApplicationController
       content: params[:request][:content]
     }
 
+    unless params[:request][:email].nil?
+      loc = @service.location
+      loc.email = params[:request][:email]
+      loc.save
+    end
     @service.tbs_data["request_by_email"] = data
     @service.save
 

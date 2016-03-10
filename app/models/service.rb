@@ -265,6 +265,7 @@ class Service < ActiveRecord::Base
 
   def self.options_select_status
     [
+      ["TBS", Service.status_tbs],
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
       ["Inventory", Service.status_inventory_confirmed],

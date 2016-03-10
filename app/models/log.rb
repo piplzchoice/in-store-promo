@@ -173,7 +173,7 @@ class Log < ActiveRecord::Base
     when "inventory_comment"
       changes << "#{data["comments"]}"
     when "phone_log"
-      changes << data["phone_log"]["name"]
+      changes << data["phone_log"]["conversation"]
     else
       "-"
     end

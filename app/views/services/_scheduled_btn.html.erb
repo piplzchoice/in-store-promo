@@ -11,18 +11,27 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="mySmallModalLabel">
           Request by Email
         </h4>
       </div>
       <div class="modal-body">
-        <% if @service.location.email.blank? %>
-            <div class="form-group">    
-              <p>There is no email address currently available for this location to make a Request by Email. Please add the email address to <%= link_to "this location", edit_location_path(@service.location) %> or make the Request by Phone.</p>
-            </div>        
-        <% else %>
+        <%# if @service.location.email.blank? %>
+            <!-- <div class="form-group">    
+              <p>There is no email address currently available for this location to make a Request by Email. Please add the email address to <%#= link_to "this location", edit_location_path(@service.location) %> or make the Request by Phone.</p>
+            </div>      -->   
+        <%# else %>
           <% if @service.tbs_data["request_by_email"].nil? %>
             <%= form_tag request_by_email_client_service_path(@client, @service), html: {role: "form"} do %>
+
+              <% if @service.location.email.blank? %>
+              <div class="form-group">  
+              <label class="control-label">Email</label>
+                <%= email_field_tag "request[email]", nil, {class: "form-control", placeholder: "...", required: "true", id: "request-email-address"} %>              
+                </div>
+              <% end %>
+              
 
               <div class="form-group">    
                 <label class="control-label">Subject</label>
@@ -43,6 +52,11 @@
             </div>
 
             <div class="form-group">    
+              <label class="control-label">Email</label>
+              <p><%= @service.location.email %></p>
+            </div>
+
+            <div class="form-group">    
               <label class="control-label">Subject</label>
               <p><%= @service.tbs_data["request_by_email"]["subject"] %></p>
             </div>
@@ -52,7 +66,7 @@
               <p><%= @service.tbs_data["request_by_email"]["content"].html_safe %></p>
             </div>          
           <% end %>
-        <% end %>
+        <%# end %>
       </div>
     </div>
   </div>
@@ -61,10 +75,11 @@
 
 
 
-<div id="request-by-phone-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm">
+<div id="request-by-phone-modal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="mySmallModalLabel">
           Request by Phone
         </h4>
@@ -83,9 +98,14 @@
         </div>
 
         <div class="form-group">    
-          <label class="control-label">Person talked</label>
+          <label class="control-label">Person spoken with</label>
           <%= text_field_tag "request[name]", nil, {class: "form-control", required: "true"} %>
         </div>        
+
+        <div class="form-group">    
+          <label class="control-label">Result of Conversation</label>
+          <%= text_area_tag "request[conversation]", nil, {size: "20x10", class: "form-control", placeholder: nil, required: "true", id: ""} %>
+        </div>   
 
         <%= button_tag "Request by Phone", {type: "submit", class: "btn btn-primary"} %>
       <% end %>
@@ -99,6 +119,7 @@
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="mySmallModalLabel">
           Change to Scheduled
         </h4>

@@ -983,7 +983,7 @@ $(function() {
     $("#download-csv").submit();
   })
 
-  $("#email_template_content, #request-email-content").redactor({
+  $("#email_template_content, #request-email-content, #request-phone-conversation").redactor({
     buttons: [
       'html', 'bold', 'italic', 'underline', 'deleted', 'alignleft', 'aligncenter', 'alignright', 'justify',
       'outdent', 'indent','unorderedlist', 'orderedlist','link', 'formatting'],

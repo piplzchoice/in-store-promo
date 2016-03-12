@@ -22,7 +22,7 @@
               <p>There is no email address currently available for this location to make a Request by Email. Please add the email address to <%#= link_to "this location", edit_location_path(@service.location) %> or make the Request by Phone.</p>
             </div>      -->   
         <%# else %>
-          <% if @service.tbs_data["request_by_email"].nil? %>
+          <%# if @service.tbs_data["request_by_email"].nil? %>
             <%= form_tag request_by_email_client_service_path(@client, @service), html: {role: "form"} do %>
 
               <% if @service.location.email.blank? %>
@@ -45,27 +45,27 @@
 
               <%= button_tag "Request by Email", {type: "submit", class: "btn btn-primary"} %>
             <% end %>
-          <% else %>
-            <div class="form-group">    
+          <%# else %>
+            <!-- <div class="form-group">    
               <label class="control-label">Date Sent</label>
-              <p><%= @service.tbs_data["request_by_email"]["date_sent"] %></p>
+              <p><%#= @service.tbs_data["request_by_email"]["date_sent"] %></p>
             </div>
 
             <div class="form-group">    
               <label class="control-label">Email</label>
-              <p><%= @service.location.email %></p>
+              <p><%#= @service.location.email %></p>
             </div>
 
             <div class="form-group">    
               <label class="control-label">Subject</label>
-              <p><%= @service.tbs_data["request_by_email"]["subject"] %></p>
+              <p><%#= @service.tbs_data["request_by_email"]["subject"] %></p>
             </div>
 
             <div class="form-group">    
               <label class="control-label">Content</label>
-              <p><%= @service.tbs_data["request_by_email"]["content"].html_safe %></p>
-            </div>          
-          <% end %>
+              <p><%#= @service.tbs_data["request_by_email"]["content"].html_safe %></p>
+            </div>           -->
+          <%# end %>
         <%# end %>
       </div>
     </div>

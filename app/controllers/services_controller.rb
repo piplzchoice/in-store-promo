@@ -38,6 +38,18 @@ class ServicesController < ApplicationController
               contact: params[:location][:contact]
             })
           end
+          
+          if params["co-op-price-box"]
+            @service.create_coops_tbs(
+              params[:service], 
+              params[:tbs], 
+              params["co_op_client_id"], 
+              params["ids-coop-products"], 
+              @service.id, 
+              current_user.id
+            ) 
+          end
+
           redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service Scheduled Created"
         end
       end
@@ -53,17 +65,8 @@ class ServicesController < ApplicationController
       name: params[:request][:name],
       conversation: params[:request][:conversation]
     }
-    if @service.tbs_data["request_by_phone"].nil?
-      @service.tbs_data.merge!(
-        request_by_phone: [data]
-      )
-    else
-      @service.tbs_data["request_by_phone"].push(data)
-    end
 
-    @service.save
     Log.record_phone_request(@service.id, data, current_user.id)
-
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
   end
 
@@ -82,11 +85,9 @@ class ServicesController < ApplicationController
       loc.email = params[:request][:email]
       loc.save
     end
-    @service.tbs_data["request_by_email"] = data
-    @service.save
 
-    ApplicationMailer.demo_request(@service).deliver
-    
+    log_id = Log.record_email_request(@service.id, data, current_user.id)
+    ApplicationMailer.demo_request(@service, log_id).deliver
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by email sent"
   end
 

@@ -771,8 +771,19 @@ class Service < ActiveRecord::Base
     coop.product_ids = ids_coop_products
     coop.is_old_service = false
     coop.save!
-    # Log.create_data(coop.id, 0, coop.status)
     Log.record_status_changed(coop.id, 0, self.status, current_user_id)
+  end
+
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
+    srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
+    srv.status = 12
+    srv.parent_id = parent_id
+    srv.save!
+    Log.record_status_changed(srv.id, 0, srv.status, current_user_id)
+  end
+
+  def is_tbs_before?
+    status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
   end
 
   def is_co_op?

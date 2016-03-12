@@ -167,14 +167,15 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: service.brand_ambassador.email, subject: et.subject)
   end
 
-  def demo_request(service)
-    @content = service.tbs_data["request_by_email"]["content"]
+  def demo_request(service, log_id)
+    log = Log.find log_id
+    @content = log.data["email_log"]["content"]
     mail(
       from: 'schedule@flavorfanaticsism.com',
       to: service.location.email, 
       # to: "location@contact.com", 
       cc: "carolw@falvorfanaticsism.com",
-      subject: service.tbs_data["request_by_email"]["subject"]
+      subject: log.data["email_log"]["subject"]
     )
   end
 

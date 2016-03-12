@@ -16,7 +16,15 @@ class Log < ActiveRecord::Base
   belongs_to :user
   # validates :origin, :latest, presence: true
   serialize :data, JSON
-  enum category: [ :status_changed, :modified_details, :modified_main, :coop_added, :inventory_comment, :phone_log ]
+  enum category: [ 
+    :status_changed, 
+    :modified_details, 
+    :modified_main, 
+    :coop_added, 
+    :inventory_comment, 
+    :phone_log,
+    :email_log
+  ]
   default_scope { order('created_at ASC') }
 
   def self.create_data(service_id, origin, latest)
@@ -81,6 +89,16 @@ class Log < ActiveRecord::Base
     log.save    
   end
 
+  def self.record_email_request(service_id, data, current_user_id)
+    log = self.new
+    log.category = :email_log
+    log.service_id = service_id
+    log.user_id = current_user_id
+    log.data = {email_log: data}
+    log.save 
+    return log.id   
+  end
+
   def what
     case category
     when "status_changed"
@@ -99,6 +117,8 @@ class Log < ActiveRecord::Base
       "comment"
     when "phone_log"
       "phone log"
+    when "email_log"
+      "email log"      
     end
   end
 
@@ -108,16 +128,8 @@ class Log < ActiveRecord::Base
       Service.get_status data["latest"]
     when "modified_main"
       Service.get_status data["latest"]
-    when "modified_details"
-      "-"
-    when "coop_added"
-      "-"
-    when "inventory_comment"
-      "-"
-    when "phone_log"
-      "-"
     else
-      "update"
+      "-"
     end
   end
 
@@ -174,6 +186,8 @@ class Log < ActiveRecord::Base
       changes << "#{data["comments"]}"
     when "phone_log"
       changes << data["phone_log"]["conversation"]
+    when "email_log"
+      changes << "<a data-log-content='#{data["email_log"].to_json}' class='view-email-log-content' href=\"#\">View Email Content</a>"
     else
       "-"
     end

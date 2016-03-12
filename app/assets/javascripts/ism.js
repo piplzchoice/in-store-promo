@@ -292,6 +292,21 @@ $(function() {
     return false;
   });  
 
+  $(".view-email-log-content").on("click", function(){
+    
+    $("#view-email-log-date").html($(this).data("log-content").date_sent)
+    $("#view-email-log-subject").html($(this).data("log-content").subject)
+    $("#view-email-log-content").html($(this).data("log-content").content)
+
+    $('#view-email-log-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+
+    return false;
+  });    
+  
+
   $("#change_to_scheduled").on("click", function(){
     $('#changed-to-scheduled-modal').modal({
       backdrop: 'static',

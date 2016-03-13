@@ -460,23 +460,16 @@ class Service < ActiveRecord::Base
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y') if service_params[:inventory_date] != ""
     self.update_attributes(service_params)
 
-    # if service_params[:status_inventory] == "true"
-    if service_params[:inventory_confirm] == "true"
-      self.update_status_inventory_confirmed(true, current_user_id)
+    if self.status == 12
+      Log.record_status_changed(self.id, 12, Service.status_inventory_confirmed, current_user_id)
     else
-      self.update_status_inventory_confirmed(false, current_user_id)
+      if service_params[:inventory_confirm] == "true"
+        self.update_status_inventory_confirmed(true, current_user_id)
+      else
+        self.update_status_inventory_confirmed(false, current_user_id)
+      end
     end
-    # if self.is_co_op?
-    #   if self.co_op_services.empty?
-    #     self.parent.update_attributes(service_params)
-    #   else
-    #     self.co_op_services.each do |srv|
-    #       srv.update_attributes(service_params)
-    #     end
-    #   end
-    # else
-    #   true
-    # end
+        
     true
   end
 
@@ -500,6 +493,22 @@ class Service < ActiveRecord::Base
     end
 
     return cond
+  end
+
+  def coop_service
+    srvic = nil
+    if self.is_co_op?
+      if self.co_op_services.empty?
+        srvic = self.parent
+      else
+        self.co_op_services.each do |srv|
+          srvic = srv
+        end
+      end
+    else
+      false
+    end    
+    return srvic
   end
 
   def old_id
@@ -774,10 +783,11 @@ class Service < ActiveRecord::Base
     Log.record_status_changed(coop.id, 0, self.status, current_user_id)
   end
 
-  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)    
     srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
     srv.status = 12
     srv.parent_id = parent_id
+    srv.product_ids = JSON.parse ids_coop_products
     srv.save!
     Log.record_status_changed(srv.id, 0, srv.status, current_user_id)
   end
@@ -922,19 +932,8 @@ class Service < ActiveRecord::Base
 
   def update_status_inventory_confirmed(status, current_user_id)
     old_status = self.status
-    # self.update_attributes({status_inventory: status})
     self.update_attributes({status: Service.status_inventory_confirmed})
     Log.record_status_changed(self.id, old_status, Service.status_inventory_confirmed, current_user_id)
-
-    # if is_co_op?
-    #   if self.co_op_services.empty?
-    #     self.parent.update_attributes({status: Service.status_inventory_confirmed})
-    #   else
-    #     self.co_op_services.each do |service_coop|
-    #       service_coop.update_attributes({status: Service.status_inventory_confirmed})
-    #     end
-    #   end
-    # end
   end
 
   def list_of_products
@@ -997,6 +996,15 @@ class Service < ActiveRecord::Base
     self.brand_ambassador_id = changed_tbs["ba_id"]        
     self.status = 1
     self.save
+
+    if self.is_co_op?
+      coop_service = self.coop_service
+      coop_service.start_at = coop_service.tbs_data[changed_tbs["datetime"]]["start_at"]
+      coop_service.end_at = coop_service.tbs_data[changed_tbs["datetime"]]["end_at"]
+      coop_service.brand_ambassador_id = changed_tbs["ba_id"]        
+      coop_service.status = 1
+      coop_service.save      
+    end       
   end
 
   def tbs_datetime(desirable, type_data, time_stamp)

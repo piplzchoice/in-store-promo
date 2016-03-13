@@ -67,6 +67,12 @@ class ServicesController < ApplicationController
     }
 
     Log.record_phone_request(@service.id, data, current_user.id)
+    
+    if @service.is_co_op?
+      coop_service = @service.coop_service
+      Log.record_phone_request(coop_service.id, data, current_user.id)  
+    end
+
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
   end
 
@@ -87,6 +93,12 @@ class ServicesController < ApplicationController
     end
 
     log_id = Log.record_email_request(@service.id, data, current_user.id)
+
+    if @service.is_co_op?
+      coop_service = @service.coop_service
+      Log.record_email_request(coop_service.id, data, current_user.id)
+    end
+
     ApplicationMailer.demo_request(@service, log_id).deliver
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by email sent"
   end
@@ -96,7 +108,13 @@ class ServicesController < ApplicationController
     @service = @client.services.find(params[:id]) 
     
     @service.update_to_scheduled(params["changed_tbs"])
+    
     Log.record_status_changed(@service.id, 12, @service.status, current_user.id)
+    if @service.is_co_op?
+      coop_service = @service.coop_service
+      Log.record_status_changed(coop_service.id, 12, coop_service.status, current_user.id)
+    end    
+
     ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
 
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service change to status Scheduled"
@@ -299,7 +317,7 @@ class ServicesController < ApplicationController
   def confirm_inventory
     @service = Service.find(params[:service_id])
     @service.update_inventory(service_inventory_params, current_user.id)
-    ApplicationMailer.changes_on_your_services(@service).deliver
+    ApplicationMailer.changes_on_your_services(@service).deliver unless @service.status == 12
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 

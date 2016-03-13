@@ -56,6 +56,9 @@ module ApplicationHelper
   def generate_demo_email_template(service)
     products_string = "<ul>"
     service.products.each{|x| products_string += "<li>#{x.name}</li>"}
+    if service.is_co_op?
+      service.coop_service.products.each{|x| products_string += "<li>#{x.name}</li>"}
+    end
     products_string += "</ul>"
 
     desirable_dates = "<ul>"

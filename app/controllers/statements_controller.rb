@@ -3,7 +3,7 @@ class StatementsController < ApplicationController
   authorize_resource class: StatementsController
 
   def index
-    brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])=
+    brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
     @statements = brand_ambassador.statements.order(created_at: :desc)
   end
 

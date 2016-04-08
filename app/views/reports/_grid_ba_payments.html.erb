@@ -14,21 +14,23 @@
     </thead>
     <tbody>
       <% @services.each_with_index do |service, i|  %>
-      <tr>
-        <td>
-          <%= 
-            check_box_tag("service_ids[]", "#{service.brand_ambassador.id}-#{service.id}", false, 
-            {class: 'ba-payments-checkbox', data: {total: service.total_ba_paid}}) if @filter
-          %>
-        </td>
-        <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
-        <td><%= service.company_name %></td>
-        <td><%= service.location.name %></td>         
-        <td><%= number_to_currency(service.ba_rate) %></td> 
-        <td><%= service.report_service.expense_one.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
-        <td><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
-        <td><%= number_to_currency service.total_ba_paid %></td> 
-      </tr>
+      <% unless service.report_service.nil? %>
+        <tr>
+          <td>
+            <%= 
+              check_box_tag("service_ids[]", "#{service.brand_ambassador.id}-#{service.id}", false, 
+              {class: 'ba-payments-checkbox', data: {total: service.total_ba_paid}}) if @filter
+            %>
+          </td>
+          <td><%= service.start_at.strftime('%m/%d/%Y') %></td>
+          <td><%= service.company_name %></td>
+          <td><%= service.location.name %></td>         
+          <td><%= number_to_currency(service.ba_rate) %></td> 
+          <td><%= service.report_service.expense_one.nil? ? "-" : number_to_currency(service.report_service.expense_one) %></td>
+          <td><%= (service.brand_ambassador.mileage ? (service.report_service.travel_expense.nil? ? "-" : number_to_currency(service.report_service.travel_expense)) : "-") %></td>
+          <td><%= number_to_currency service.total_ba_paid %></td> 
+        </tr>
+        <% end %>
       <% end %>
     </tbody>
   </table>

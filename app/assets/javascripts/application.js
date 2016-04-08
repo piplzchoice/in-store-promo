@@ -19,4 +19,7 @@
 //= require select2
 //= require fullcalendar
 //= require redactor-rails
+//= require react
+//= require react_ujs
+//= require components
 //= require_tree .

@@ -29,6 +29,8 @@ Rails.application.routes.draw do
         post :confirm_inventory
         post :comment_inventory
         get :new_tbs
+        get :new_order
+        get :create_order
       end
 
       member do        

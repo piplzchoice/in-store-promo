@@ -827,15 +827,15 @@ $(function() {
           dropdownCssClass: "bigdrop",
           escapeMarkup: function (m) { return m; },
           data:[],
-          initSelection : function (element, callback) {
-            $.ajax($("#service_location_id").data("url"), {
-                data: {q: $("#location_fullname").val()},
-                dataType: "json"
-            }).done(function(data) {
-                console.log("done");
-                callback(data[0]);
-            });
-          },
+          // initSelection : function (element, callback) {
+          //   $.ajax($("#service_location_id").data("url"), {
+          //       data: {q: $("#location_fullname").val()},
+          //       dataType: "json"
+          //   }).done(function(data) {
+          //       console.log("done");
+          //       callback(data[0]);
+          //   });
+          // },
       }).select2('val', $("#location_name").val());
 
       $(document).on("click", "abbr", function(e){

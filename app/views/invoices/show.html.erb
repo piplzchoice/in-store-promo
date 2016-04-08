@@ -68,7 +68,7 @@
         <% service = Service.find(data["service_id"]) %>
         <tr>
           <td><%= data["demo_date"] %></td>
-          <td><%= link_to(service.location.name, report_url(service.report_service)) %></td>
+          <td><%= service.report_service.nil? ? service.location.name : link_to(service.location.name, report_url(service.report_service)) %></td>
           <td><%= data["start_time"] %></td>
           <td><%= data["rate"] %></td>
           <td><%= data["product_expenses"] %></td>

@@ -26,14 +26,25 @@
     <%= link_to("Export", "#", {id: "print_calendar_as_pdf",class: "btn btn-primary", role: "button"}) %>
   </div>
 
+  <div class="col-md-3">
+    <label>Action :</label><br />
+    <%= link_to("New Order", new_order_client_services_path(@client), {class: "btn btn-primary", role: "button"}) %>
+  </div>
+
+  <div class="col-md-3">
+    <label>&nbsp;</label><br />
+    <%= link_to("New Service TBS", new_tbs_client_services_path(@client), {class: "btn btn-primary", role: "button"}) %>
+  </div>
+
+  <div class="col-md-3">
+    <label>&nbsp;</label><br />
+    <%= link_to("New Service", new_client_service_path(@client), {class: "btn btn-primary", role: "button"}) %>
+  </div>      
+
 </div>
 
 
 <h2 class="sub-header no-print">Services</h2> 
-
-<div class="link-new-btn no-print"><%= link_to("New Service TBS", new_tbs_client_services_path(@client), {class: "btn btn-primary", role: "button"}) %></div>
-
-<div class="link-new-btn no-print"><%= link_to("New Service", new_client_service_path(@client), {class: "btn btn-primary", role: "button"}) %></div>
 
 <div id="calendar-and-legend">  
   <div id="colour-legend" class="no-print">

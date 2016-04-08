@@ -25,6 +25,15 @@ class ServicesController < ApplicationController
     end    
   end
 
+  def new_order
+    @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
+    @service = @client.services.build
+    respond_to do |format|
+      format.html
+    end    
+  end  
+
   def create_tbs
     @client = Client.find(params[:client_id])
     @service = Service.build_data_tbs(params[:service], params[:tbs], params[:client_id], params[:product_ids])

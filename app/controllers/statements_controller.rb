@@ -4,7 +4,7 @@ class StatementsController < ApplicationController
 
   def index
     brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
-    @statements = brand_ambassador.statements
+    @statements = brand_ambassador.statements.order(created_at: :desc)
   end
 
   def show

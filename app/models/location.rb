@@ -24,6 +24,7 @@ class Location < ActiveRecord::Base
   belongs_to :location
   belongs_to :territory
   has_and_belongs_to_many :brand_ambassadors
+  has_and_belongs_to_many :orders
 
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
@@ -35,7 +36,7 @@ class Location < ActiveRecord::Base
     like = false
 
     if name != "" && name.to_i != 0
-      hash.merge!({id: name})      
+      hash.merge!({id: name})
     else
       like = true
     end
@@ -44,12 +45,12 @@ class Location < ActiveRecord::Base
       Location.where(hash).where("name ILIKE ?", "%#{name}%")
     else
       Location.where(hash)
-    end    
-  end  
+    end
+  end
 
   def self.autocomplete_search(q)
     Location.with_status_active.where("name ILIKE ?", "%#{q}%")
-  end  
+  end
 
   def self.complete_location
     "#{name} - #{address}, #{city}"
@@ -57,11 +58,11 @@ class Location < ActiveRecord::Base
 
   def complete_location
     "#{name} - #{address}, #{city}"
-  end  
+  end
 
   def new_complete_location
     "#{name} - #{address}, #{city}"
-  end  
+  end
 
   def set_data_true
     self.update_attribute(:is_active, true)
@@ -69,7 +70,7 @@ class Location < ActiveRecord::Base
 
   def set_data_false
     self.update_attribute(:is_active, false)
-  end  
+  end
 
   def export_data
     data_field = [
@@ -81,7 +82,7 @@ class Location < ActiveRecord::Base
       phone,
       email,
       notes
-    ]    
+    ]
 
     brand_ambassadors.with_status_active.each do |ba|
       data_field << ba.name_split

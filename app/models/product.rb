@@ -12,4 +12,5 @@
 class Product < ActiveRecord::Base
   belongs_to :client
   has_and_belongs_to_many :services
+  has_and_belongs_to_many :orders
 end

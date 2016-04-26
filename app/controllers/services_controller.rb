@@ -22,13 +22,34 @@ class ServicesController < ApplicationController
     @service = @client.services.build
     respond_to do |format|
       format.html
-    end    
+    end
+  end
+
+  def new_order
+    @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
+    @service = @client.services.build
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create_tbs
     @client = Client.find(params[:client_id])
     @service = Service.build_data_tbs(params[:service], params[:tbs], params[:client_id], params[:product_ids])
     respond_to do |format|
+      format.json do
+        @service.order_id = params[:order_id]
+        @service.save
+        Log.record_status_changed(@service.id, 0, @service.status, current_user.id)
+        if params[:index] != ""
+          order = @service.order
+          order.service_copy.delete_at(params[:index].to_i)
+          order.save
+        end
+        render json: @service.format_react_component
+      end
+
       format.html do
         if @service.save
           Log.record_status_changed(@service.id, 0, @service.status, current_user.id)
@@ -38,39 +59,39 @@ class ServicesController < ApplicationController
               contact: params[:location][:contact]
             })
           end
-          
+
           if params["co-op-price-box"]
             @service.create_coops_tbs(
-              params[:service], 
-              params[:tbs], 
-              params["co_op_client_id"], 
-              params["ids-coop-products"], 
-              @service.id, 
+              params[:service],
+              params[:tbs],
+              params["co_op_client_id"],
+              params["ids-coop-products"],
+              @service.id,
               current_user.id
-            ) 
+            )
           end
 
           redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service Scheduled Created"
         end
       end
-    end    
+    end
   end
 
   def request_by_phone
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])    
+    @service = @client.services.find(params[:id])
 
     data = {
-      datetime: DateTime.strptime(params[:request][:datetime], '%m/%d/%Y %I:%M %p'), 
+      datetime: DateTime.strptime(params[:request][:datetime], '%m/%d/%Y %I:%M %p'),
       name: params[:request][:name],
       conversation: params[:request][:conversation]
     }
 
     Log.record_phone_request(@service.id, data, current_user.id)
-    
+
     if @service.is_co_op?
       coop_service = @service.coop_service
-      Log.record_phone_request(coop_service.id, data, current_user.id)  
+      Log.record_phone_request(coop_service.id, data, current_user.id)
     end
 
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by phone data saved"
@@ -78,10 +99,10 @@ class ServicesController < ApplicationController
 
   def request_by_email
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id])    
+    @service = @client.services.find(params[:id])
 
     data = {
-      date_sent: DateTime.now.strftime('%m/%d/%Y %I:%M %p'), 
+      date_sent: DateTime.now.strftime('%m/%d/%Y %I:%M %p'),
       subject: params[:request][:subject],
       content: params[:request][:content]
     }
@@ -105,15 +126,15 @@ class ServicesController < ApplicationController
 
   def change_to_schedule
     @client = Client.find(params[:client_id])
-    @service = @client.services.find(params[:id]) 
-    
+    @service = @client.services.find(params[:id])
+
     @service.update_to_scheduled(params["changed_tbs"])
-    
+
     Log.record_status_changed(@service.id, 12, @service.status, current_user.id)
     if @service.is_co_op?
       coop_service = @service.coop_service
       Log.record_status_changed(coop_service.id, 12, coop_service.status, current_user.id)
-    end    
+    end
 
     ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
 
@@ -225,14 +246,27 @@ class ServicesController < ApplicationController
     render layout: false
   end
 
-  def generate_select_ba_tbs              
+  def generate_select_ba_tbs
+
+    if params[:react] == "true"
+      start_at_first = params[:first_date][:start_at]
+      end_at_first = params[:first_date][:end_at]
+      start_at_second = params[:second_date][:start_at]
+      end_at_second = params[:second_date][:end_at]
+    else
+      start_at_first = params[:tbs_start_at_first]
+      end_at_first = params[:tbs_end_at_first]
+      start_at_second = params[:tbs_start_at_second]
+      end_at_second = params[:tbs_end_at_second]
+    end
+
     ba_first_tbs = BrandAmbassador.get_available_people(
-      params[:tbs_start_at_first], params[:tbs_end_at_first], 
+      start_at_first, end_at_first,
       params[:service_id], params[:location_id]
     )
-    
+
     ba_second_tbs = BrandAmbassador.get_available_people(
-      params[:tbs_start_at_second], params[:tbs_end_at_second],
+      start_at_second, end_at_second,
       params[:service_id], params[:location_id]
     )
 
@@ -243,7 +277,35 @@ class ServicesController < ApplicationController
 
     @brand_ambassadors = BrandAmbassador.find(ba_ids)
 
-    render layout: false
+    respond_to do |format|
+      format.html {
+        render layout: false
+      }
+
+      format.json{
+        render json: @brand_ambassadors
+      }
+    end
+
+
+  end
+
+  def get_data_ids
+    ba = {}
+    unless params[:ba_ids].nil?
+      ba = {
+        first_ba: BrandAmbassador.find(params[:ba_ids].first).name,
+        second_ba: BrandAmbassador.find(params[:ba_ids].last).name,
+      }
+    end
+
+    respond_to do |format|
+      format.json{
+        render json: {
+          location_name: Location.find(params[:location_id]).complete_location
+        }.merge(ba)
+      }
+    end
   end
 
   def confirm_respond
@@ -256,7 +318,7 @@ class ServicesController < ApplicationController
           ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
         end
       end
-    end    
+    end
 
     @respond_service = "true"
     render "respond_service"

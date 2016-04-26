@@ -27,6 +27,7 @@
 #  inventory_confirmed   :string(255)
 #  status_inventory      :boolean          default(FALSE)
 #  tbs_data              :text
+#  order_id              :integer          default(0)
 #
 
 # note for field "status"
@@ -49,6 +50,7 @@ class Service < ActiveRecord::Base
   belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
+  belongs_to :order
 
   has_one :report
   has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
@@ -162,7 +164,7 @@ class Service < ActiveRecord::Base
 
   def self.status_tbs
     return 12
-  end  
+  end
 
   def self.send_notif_after
     return 12.round
@@ -469,7 +471,7 @@ class Service < ActiveRecord::Base
         self.update_status_inventory_confirmed(false, current_user_id)
       end
     end
-        
+
     true
   end
 
@@ -507,7 +509,7 @@ class Service < ActiveRecord::Base
       end
     else
       false
-    end    
+    end
     return srvic
   end
 
@@ -548,7 +550,7 @@ class Service < ActiveRecord::Base
       "#b6fcc2" #"#ccffcc"
     when 12
       "#FE0000" #"#ccffcc"
-    end    
+    end
   end
 
   def client_and_companyname
@@ -593,7 +595,7 @@ class Service < ActiveRecord::Base
     when 11
       "Inventory"
     when 12
-      "To be Scheduled"      
+      "To be Scheduled"
     end
   end
 
@@ -675,7 +677,7 @@ class Service < ActiveRecord::Base
       true
     else
       brand_ambassador.is_active
-    end    
+    end
   end
 
   # def is_co_op?
@@ -783,7 +785,7 @@ class Service < ActiveRecord::Base
     Log.record_status_changed(coop.id, 0, self.status, current_user_id)
   end
 
-  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)    
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
     srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
     srv.status = 12
     srv.parent_id = parent_id
@@ -948,10 +950,9 @@ class Service < ActiveRecord::Base
   def self.build_data_tbs(service_params, tbs_params, client_id, product_ids)
     # {"start_at_first"=>"03/01/2016 3:00 PM", "end_at_first"=>"03/01/2016 7:00 PM", "start_at_second"=>"03/10/2016 3:00 PM", "end_at_second"=>"03/10/2016 7:00 PM", "ba_ids"=>"[16,52]"}
     # (rdb:1) p params[:service]
-    # {"location_id"=>"1", "details"=>"lalalalalala", "is_old_service"=>"false", "product_ids"=>"[101,102,103]"}    
+    # {"location_id"=>"1", "details"=>"lalalalalala", "is_old_service"=>"false", "product_ids"=>"[101,102,103]"}
     client = Client.find(client_id)
     service = client.services.build
-
     service.location_id = service_params["location_id"]
     service.details = service_params["details"]
     service.is_old_service = service_params["is_old_service"]
@@ -993,7 +994,7 @@ class Service < ActiveRecord::Base
   def update_to_scheduled(changed_tbs)
     self.start_at = self.tbs_data[changed_tbs["datetime"]]["start_at"]
     self.end_at = self.tbs_data[changed_tbs["datetime"]]["end_at"]
-    self.brand_ambassador_id = changed_tbs["ba_id"]        
+    self.brand_ambassador_id = changed_tbs["ba_id"]
     self.status = 1
     self.save
 
@@ -1001,15 +1002,31 @@ class Service < ActiveRecord::Base
       coop_service = self.coop_service
       coop_service.start_at = coop_service.tbs_data[changed_tbs["datetime"]]["start_at"]
       coop_service.end_at = coop_service.tbs_data[changed_tbs["datetime"]]["end_at"]
-      coop_service.brand_ambassador_id = changed_tbs["ba_id"]        
+      coop_service.brand_ambassador_id = changed_tbs["ba_id"]
       coop_service.status = 1
-      coop_service.save      
-    end       
+      coop_service.save
+    end
   end
 
   def tbs_datetime(desirable, type_data, time_stamp)
     DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
   end
 
-end
+  def format_react_component
+    {
+      location_id: self.location_id,
+      brand_ambassador_ids: tbs_data["ba_ids"],
+      first_date: {
+        start_at: DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p"),
+        end_at: DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p"),
+      },
+      second_date: {
+        start_at: DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p"),
+        end_at: DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p"),
+      },
+      status: self.status,
+      id: self.id
+    }
+  end
 
+end

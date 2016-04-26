@@ -280,7 +280,7 @@ $(function() {
 
     $("#request-by-email-modal").modal("show");
     return false;
-  });  
+  });
 
   $("#req-by-phone").on("click", function(){
     $('#request-by-phone-modal').modal({
@@ -290,10 +290,10 @@ $(function() {
 
     $("#request-by-phone-modal").modal("show");
     return false;
-  });  
+  });
 
   $(".view-email-log-content").on("click", function(){
-    
+
     $("#view-email-log-date").html($(this).data("log-content").date_sent)
     $("#view-email-log-subject").html($(this).data("log-content").subject)
     $("#view-email-log-content").html($(this).data("log-content").content)
@@ -304,8 +304,8 @@ $(function() {
     })
 
     return false;
-  });    
-  
+  });
+
 
   $("#change_to_scheduled").on("click", function(){
     $('#changed-to-scheduled-modal').modal({
@@ -315,7 +315,7 @@ $(function() {
 
     $("#changed-to-scheduled-modal").modal("show");
     return false;
-  });    
+  });
 
   $('#request-phone-date').datetimepicker();
 
@@ -521,7 +521,7 @@ $(function() {
   $(".tooltip-legend").tooltip();
   checkbox_avalaible_click();
   generate_select_ba
-  
+
   if($('.dp-service').length !== 0) {
 
     $("#service_start_at").val("");
@@ -682,7 +682,7 @@ $(function() {
 
     if($("#end_at_second_tbs_datetimepicker").data("date") !== "")
       $('#end_at_second_tbs_datetimepicker').data("DateTimePicker").setDate($("#end_at_second_tbs_datetimepicker").data("date"))
-  }  
+  }
 
   if($(".dp-project#start_at_datetimepicker").length !== 0) {
     $('.dp-project').datetimepicker({
@@ -741,7 +741,7 @@ $(function() {
       data = _.without(data, parseInt($(this).val()));
     }
     $("#tbs_ba_ids").val(JSON.stringify(data))
-  });  
+  });
 
   $("#new_service").submit(function(){
     var status = true
@@ -1275,7 +1275,7 @@ function generate_select_ba_tbs(){
       tbs_start_at_first: $("#tbs_start_at_first").val(),
       tbs_end_at_first: $("#tbs_end_at_first").val(),
       tbs_start_at_second: $("#tbs_start_at_second").val(),
-      tbs_end_at_second: $("#tbs_end_at_second").val(),      
+      tbs_end_at_second: $("#tbs_end_at_second").val(),
       // action_method: $("#select-ba").data("action"),
       service_id: $("#checkbox-service").data("service-id"),
       location_id: $("#service_location_id").val()
@@ -1323,6 +1323,25 @@ function checkbox_avalaible_click(){
         }
       }
     }
+  });
+
+  $("#order_locations").select2({
+      minimumInputLength: 4,
+      placeholder: name,
+      multiple:true,
+      ajax: {
+          url: $("#order_locations").data("url"),
+          dataType: 'json',
+          data: function (term, page) { return { q: term}; },
+          results: function (data, page) {
+              return {results: data};
+          }
+      },
+      formatResult: function (location) { return location.name },
+      formatSelection: function (location) { return location.name },
+      dropdownCssClass: "bigdrop",
+      escapeMarkup: function (m) { return m; },
+      data:[],
   });
 }
 

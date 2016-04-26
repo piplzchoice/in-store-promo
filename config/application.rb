@@ -22,6 +22,7 @@ module Ism
     # config.autoload_paths += %W(#{config.root}/lib)
 	# config.time_zone = 'Pacific Time (US & Canada)'
 	# config.active_record.default_timezone = 'Pacific Time (US & Canada)'
+    config.react.addons = true
   end
 end
 

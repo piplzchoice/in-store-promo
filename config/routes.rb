@@ -20,18 +20,29 @@ Rails.application.routes.draw do
     post :export_calendar, :on => :member
     get :print_calendar, :on => :member
 
+    resources :orders do
+      member do
+        put :update_status
+        post :recurring
+        delete :removecopy
+      end
+    end
+
     resources :services do
       collection do
         get :autocomplete_location_name
         get :generate_select_ba
         get :generate_select_ba_tbs
+        get :get_data_ids
         post :create_tbs
         post :confirm_inventory
         post :comment_inventory
         get :new_tbs
+        get :new_order
+        get :create_order
       end
 
-      member do        
+      member do
         post :request_by_phone
         post :request_by_email
         post :change_to_schedule

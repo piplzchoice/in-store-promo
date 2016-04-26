@@ -4,11 +4,11 @@ class OrdersController < ApplicationController
 
   def create
     client = Client.find params[:client_id]
-    order = client.order.build(order_params)
+    order = client.orders.build(order_params)
     order.location_ids = params[:order_locations].split(",").map{|x| x.to_i}
     order.product_ids = params[:order_products_ids]
     order.save
-    redirect_to edit_client_order_url({client_id: params[:client_id], id: order.id}), notice: "Order Created"
+    redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Order Created"
   end
 
   def show

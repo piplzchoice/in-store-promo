@@ -1,0 +1,59 @@
+<h1 class="page-header">Order</h1>
+
+<div class="row">
+  <div class="col-md-10">
+    <label>Status Order :</label>
+    <p><%= @order.status %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10">
+    <label>Company Name :</label>
+    <p><%= @client.company_name %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10">
+    <label>Number :</label>
+    <p><%= @order.number %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10">
+    <label>Locations :</label>
+    <ul>
+      <% @order.locations.each do |location| %>
+      <li><%= location.name %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10">
+    <label>Products :</label>
+    <ul>
+      <% @order.products.each do |product| %>
+      <li><%= product.name %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<%= react_component 'NewOrder', {
+  order_id: @order.id,
+  order_status: @order.status,
+  client_id: @client.id,
+  locations: @order.locations.collect{|x| {id: x.id, name: x.name}},
+  product_ids: @order.product_ids,
+  services: @services,
+} %>
+
+<div class="row">
+  <div class="col-md-12">
+    <br /><br /><br /><br />
+  </div>
+</div>

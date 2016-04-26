@@ -30,6 +30,7 @@ class Client < ActiveRecord::Base
   belongs_to :account, :class_name => "User", :foreign_key => :account_id
   accepts_nested_attributes_for :account, allow_destroy: true
 
+  has_many :orders
   has_many :services
   has_many :invoices
   has_many :co_op_services, foreign_key: 'co_op_client_id', class_name: 'Service'
@@ -47,60 +48,60 @@ class Client < ActiveRecord::Base
     password =  Devise.friendly_token.first(8)
     client.account.password = password
     client.account.password_confirmation = password
-    client.account.add_role :client   
+    client.account.add_role :client
     return client, password
   end
 
   def self.autocomplete_search(q)
-    Client.with_status_active.where("first_name ILIKE ? OR last_name ILIKE ? OR company_name ILIKE ?", "%#{q}%", "%#{q}%", "%#{q}%")    
+    Client.with_status_active.where("first_name ILIKE ? OR last_name ILIKE ? OR company_name ILIKE ?", "%#{q}%", "%#{q}%", "%#{q}%")
   end
 
   def self.filter_and_order(is_active)
     Client.where(is_active: is_active)
-  end  
+  end
 
   def self.calendar_services(client_id)
     client = find(client_id)
-    calendars = client.services.collect{|x|       
-      unless x.status == Service.status_conducted      
-        if x.is_ba_active? && x.status != 12 
+    calendars = client.services.collect{|x|
+      unless x.status == Service.status_conducted
+        if x.is_ba_active? && x.status != 12
           self.calendar_obj(
-            x.title_calendar, 
-            x.start_at.iso8601, 
-            x.end_at.iso8601, 
-            x.get_color, 
+            x.title_calendar,
+            x.start_at.iso8601,
+            x.end_at.iso8601,
+            x.get_color,
             Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
           )
         end
       end
     }.uniq.compact
-    
+
     service_tbs = client.services.where(status: 12)
     unless service_tbs.blank?
       service_tbs.each do |srv|
         calendars.push(
           self.calendar_obj(
-            srv.title_calendar, 
-            DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601, 
-            DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601, 
-            srv.get_color, 
+            srv.title_calendar,
+            DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
+            DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
+            srv.get_color,
             Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
-          )          
+          )
         )
         calendars.push(
           self.calendar_obj(
-            srv.title_calendar, 
-            DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601, 
-            DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601, 
-            srv.get_color, 
+            srv.title_calendar,
+            DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
+            DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
+            srv.get_color,
             Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
-          )          
-        )        
+          )
+        )
       end
     end
 
     return calendars.uniq.compact
-  end  
+  end
 
   def self.calendar_obj(title, start_date, end_date, color, url)
     {
@@ -109,7 +110,7 @@ class Client < ActiveRecord::Base
       end: end_date,
       color: color,
       url: url
-    }    
+    }
   end
 
   def email
@@ -125,7 +126,7 @@ class Client < ActiveRecord::Base
       email
     else
       "#{street_one} #{street_two} #{city} #{state} #{zipcode}"
-    end    
+    end
   end
 
   def fullprofile
@@ -138,7 +139,7 @@ class Client < ActiveRecord::Base
       "-"
     else
       read_attribute(:billing_name)
-    end    
+    end
   end
 
   # def rate
@@ -153,7 +154,7 @@ class Client < ActiveRecord::Base
     password = Devise.friendly_token.first(8)
     account.password = password
     account.password_confirmation = password
-    return password    
+    return password
   end
 
   def set_data_true
@@ -162,5 +163,5 @@ class Client < ActiveRecord::Base
 
   def set_data_false
     self.update_attribute(:is_active, false)
-  end  
+  end
 end

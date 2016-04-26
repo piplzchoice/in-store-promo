@@ -38,7 +38,7 @@ gem "will_paginate-bootstrap"
 gem 'fullcalendar-rails'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
-gem "select2-rails", '~> 4.0.0'
+gem "select2-rails", '3.5.9'
 gem "icalendar"
 gem "letter_opener", :group => :development
 gem "time_difference"
@@ -47,7 +47,8 @@ gem "wkhtmltopdf-binary"
 gem 'redactor-rails'
 gem "fog"
 
-gem 'debugger', group: [:development, :test]
+# gem 'debugger', group: [:development, :test]
+gem 'byebug', group: [:development, :test]
 
 gem "rest_client", :require => "rest_client"
 gem "addressable", :require => "addressable/uri"

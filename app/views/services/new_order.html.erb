@@ -7,9 +7,16 @@
   </div>
 </div>
 
-TODO :
-create add button to add service date dynamic
-edit feature
-delete feature
-
-<%= react_component 'NewOrder' %>
+<%= react_component 'NewOrder', 
+  {
+    client_id: @client.id, 
+    location: {
+      value: nil, 
+      name: "-"
+    }, 
+    date: {
+      start_at: "", 
+      end_at: ""
+    }
+  } 
+%>

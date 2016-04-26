@@ -4,7 +4,7 @@ class OrdersController < ApplicationController
 
   def create
     client = Client.find params[:client_id]
-    order = clients.order.build(order_params)
+    order = client.order.build(order_params)
     order.location_ids = params[:order_locations].split(",").map{|x| x.to_i}
     order.product_ids = params[:order_products_ids]
     order.save

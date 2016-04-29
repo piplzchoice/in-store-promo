@@ -2,12 +2,18 @@
 #
 # Table name: orders
 #
-#  id         :integer          not null, primary key
-#  client_id  :integer
-#  number     :string(255)
-#  status     :integer          default(0)
-#  created_at :datetime
-#  updated_at :datetime
+#  id                 :integer          not null, primary key
+#  client_id          :integer
+#  number             :string(255)
+#  status             :integer          default(0)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  service_copy       :text
+#  dot_number         :string(255)
+#  product_sample     :string(255)
+#  to_be_completed_by :string(255)
+#  distributor        :string(255)
+#  comments           :text
 #
 
 class Order < ActiveRecord::Base

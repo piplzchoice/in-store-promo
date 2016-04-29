@@ -15,10 +15,10 @@
 #
 
 class Statement < ActiveRecord::Base
-  serialize :services_ids  
+  serialize :services_ids
   serialize :line_items, JSON
   serialize :data, JSON
-  belongs_to :brand_ambassador  
+  belongs_to :brand_ambassador
   mount_uploader :file, ImageUploader
 
   def self.generate_data(service_ids)
@@ -41,5 +41,13 @@ class Statement < ActiveRecord::Base
     end
 
     return data
+  end
+
+  def totals_ba_paid
+    brand_ambassador.services.calculate_total_ba_paid(services_ids)
+  end
+
+  def totals_expenses
+    data.collect{|x| x["expenses"].split("$").last.to_f}.sum
   end
 end

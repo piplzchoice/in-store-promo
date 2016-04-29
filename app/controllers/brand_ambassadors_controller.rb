@@ -4,21 +4,21 @@ class BrandAmbassadorsController < ApplicationController
 
   def index
     respond_to do |format|
-      format.html {   
-        @locations = Location.with_status_active     
+      format.html {
+        @locations = Location.with_status_active
         if session[:filter_history_ba].nil?
           @brand_ambassadors = BrandAmbassador.with_status_active.paginate(:page => params[:page])
         else
           @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
           @is_active = session[:filter_history_ba]["is_active"]
           session[:filter_history_ba] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "brand_ambassadors"
-        end        
+        end
       }
       format.js {
         session[:filter_history_ba] = {"is_active" => params[:is_active], "page" => params[:page], "location_name" => params[:location_name]}
         @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
-      }      
-    end    
+      }
+    end
   end
 
   def new
@@ -27,7 +27,7 @@ class BrandAmbassadorsController < ApplicationController
     @brand_ambassador.build_account
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def edit
@@ -35,14 +35,15 @@ class BrandAmbassadorsController < ApplicationController
     @territories = Territory.all
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def show
     @brand_ambassador = BrandAmbassador.find(params[:id])
+    @statements = @brand_ambassador.statements.order(created_at: :desc)
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def create
@@ -57,7 +58,7 @@ class BrandAmbassadorsController < ApplicationController
           render :new
         end
       end
-    end       
+    end
   end
 
   def update
@@ -94,13 +95,13 @@ class BrandAmbassadorsController < ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: @brand_ambassador.available_calendar}
-    end            
+    end
   end
 
   def logged_as
     brand_ambassador = BrandAmbassador.find(params[:id])
     session[:prev_current_user_id] = current_user.id
-    sign_in(:user, brand_ambassador.account)    
+    sign_in(:user, brand_ambassador.account)
     redirect_to root_url, {notice: "Login as BA #{brand_ambassador.name}"}
   end
 
@@ -120,14 +121,14 @@ class BrandAmbassadorsController < ApplicationController
   def new_location
     @brand_ambassador = BrandAmbassador.find(params[:id])
     respond_to do |format|
-      format.html {        
+      format.html {
         @location_ids = @brand_ambassador.location_ids.map(&:to_s)
         @locations = Location.with_status_active.paginate(:page => params[:page])
       }
       format.js {
-        @location_ids = (params[:location_ids] == "" ? [] : params[:location_ids].split(",")) 
+        @location_ids = (params[:location_ids] == "" ? [] : params[:location_ids].split(","))
         @locations = Location.filter_and_order(true, params[:name]).paginate(:page => params[:page])
-      }      
+      }
     end
   end
 
@@ -148,9 +149,9 @@ class BrandAmbassadorsController < ApplicationController
 
   def brand_ambassador_params
     params.require(:brand_ambassador).permit(:name, :phone ,:address, :grade, :rate, :mileage, :territory_ids => [], account_attributes: [:email, :id], :location_ids => [])
-  end    
+  end
 
-  def view_ba_calender    
+  def view_ba_calender
     respond_to do |format|
       format.html {
         @location_name = params[:location_name].nil? ? "0" : params[:location_name]

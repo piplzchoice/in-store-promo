@@ -11,14 +11,15 @@ var ServiceOrderRow = React.createClass({
     var url = "/clients/" + thatProps.client_id + "/services/get_data_ids"
     var params = {
       location_id: thatProps.service.location_id,
-      ba_ids: thatProps.service.brand_ambassador_ids
+      ba_ids: thatProps.service.brand_ambassador_ids,
+      status: thatProps.service.status
     }
 
     this.serverRequest = $.get(url, params, function (data) {
       this.setState({
         location_name: data.location_name,
         first_ba: data.first_ba,
-        second_ba: data.second_ba,
+        second_ba: (data.second_ba),
       });
     }.bind(this), "json");
   },
@@ -97,23 +98,6 @@ var ServiceOrderRow = React.createClass({
     }
     return dateFormat
   },
-  getStatusService: function(){
-    var status;
-    switch (this.props.service.status) {
-      case 0:
-        status = <span className="label label-danger">Draft</span>;
-        break;
-      case 1:
-        status = <span className="label label-success">Scheduled</span>;
-        break;
-      case 12:
-        status = <span className="label label-warning">TBS</span>;
-        break;
-      default:
-        status = <span className="label label-success">On Progress</span>;
-    }
-    return status;
-  },
   getBtnAction: function(){
     var btn = "";
     switch (this.props.service.status) {
@@ -148,7 +132,7 @@ var ServiceOrderRow = React.createClass({
         <td>{this.canEditService(this.getDateService(this.props.service.second_date))}</td>
         <td>{this.canEditService(this.state.first_ba)}</td>
         <td>{this.canEditService(this.state.second_ba)}</td>
-        <td>{this.getStatusService()}</td>
+        <td><StatusService status={this.props.service.status} /></td>
         <td>{this.getBtnAction()}</td>
         {this.state.view.showModal ?
           <EditOrderModalFormService

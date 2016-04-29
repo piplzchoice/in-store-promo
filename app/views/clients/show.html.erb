@@ -35,17 +35,21 @@
           <div class="panel-body">
             <div id="xcalendar-and-legend">
               <div id="colour-legend" class="no-print">
+                <div class="confirmed" style="margin-left: 148px;margin-bottom: -20px;">Confirmed</div>
+              </div>
+              <div id="colour-legend" class="no-print">
+                <div class="tbs">TBS</div>
                 <div class="scheduled">Scheduled</div>
-                <div class="confirmed">Confirmed</div>
                 <div class="rejected">Rejected</div>
-                <div class="unrespond">Unrespond</div>
                 <div class="inventory-confirmed">Inventory</div>
                 <div class="reported">Reported</div>
                 <div class="conducted">Invoiced</div>
                 <div class="paid">Paid</div>
                 <div class="ba-paid">BA Paid</div>
                 <div class="cancelled">Cancelled</div>
-                <div class="tbs">TBS</div>
+              </div>
+              <div id="colour-legend" class="no-print" style="margin-left: 148px;margin-top: -20px;">
+                <div class="unrespond">Unrespond</div>
               </div>
               <div id="calendar" data-url="<%= client_services_path(@client) %>"></div>
             </div>

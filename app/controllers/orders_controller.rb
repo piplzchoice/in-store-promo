@@ -11,6 +11,13 @@ class OrdersController < ApplicationController
     redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Order Created"
   end
 
+  def update
+    @client = Client.find(params[:client_id])
+    @order = @client.orders.find(params[:id])
+    @order.update_attributes(order_params)
+    redirect_to client_order_url({client_id: @client.id, id: @order.id}), notice: "Order Updated"
+  end
+
   def show
     @client = Client.find(params[:client_id])
     @order = @client.orders.find(params[:id])
@@ -49,6 +56,7 @@ class OrdersController < ApplicationController
 
   private
   def order_params
-    params.require(:order).permit(:number, :client_id, :status)
+    params.require(:order).permit(:number, :client_id, :status,
+      :dot_number, :product_sample, :to_be_completed_by, :distributor, :comments)
   end
 end

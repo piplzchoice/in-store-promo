@@ -1015,14 +1015,14 @@ class Service < ActiveRecord::Base
   def format_react_component
     {
       location_id: self.location_id,
-      brand_ambassador_ids: tbs_data["ba_ids"],
+      brand_ambassador_ids: (status == 12 ? tbs_data["ba_ids"] : [brand_ambassador_id]),
       first_date: {
-        start_at: DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p"),
-        end_at: DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p"),
+        start_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : start_at.strftime("%m/%d/%Y %I:%M %p")),
+        end_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : end_at.strftime("%m/%d/%Y %I:%M %p")),
       },
       second_date: {
-        start_at: DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p"),
-        end_at: DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p"),
+        start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
+        end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
       },
       status: self.status,
       id: self.id

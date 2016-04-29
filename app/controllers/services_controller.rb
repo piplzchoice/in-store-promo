@@ -293,9 +293,15 @@ class ServicesController < ApplicationController
   def get_data_ids
     ba = {}
     unless params[:ba_ids].nil?
+      if params[:status] == "0" || params[:status] == "12"
+        second_ba = BrandAmbassador.find(params[:ba_ids].last).name
+      else
+        second_ba = "-"
+      end
+
       ba = {
         first_ba: BrandAmbassador.find(params[:ba_ids].first).name,
-        second_ba: BrandAmbassador.find(params[:ba_ids].last).name,
+        second_ba: second_ba,
       }
     end
 

@@ -28,11 +28,21 @@ var NewOrder = React.createClass({
   render: function() {
     return (
       <div>
-        <NewOrderAddService
-          locations={this.props.locations}
-          client_id={this.props.client_id}
-          handleNewService={this.addService}
-        />
+        <div className="row">
+          <NewOrderAddService
+            locations={this.props.locations}
+            client_id={this.props.client_id}
+            order_status={this.props.order_status}
+            handleNewService={this.addService}
+          />
+          <ButtonActionOrder
+              order_id={this.props.order_id}
+              order_status={this.props.order_status}
+              client_id={this.props.client_id}
+              services={this.state.services}
+            />
+        </div>
+        <hr />
         <NewOrderTableServices
           services={this.state.services}
           locations={this.props.locations}
@@ -41,12 +51,6 @@ var NewOrder = React.createClass({
           product_ids={this.props.product_ids}
           handleUpdateService={this.updateService}
           handleDeleteService={this.deleteService}
-        />
-      <ButtonActionOrder
-          order_id={this.props.order_id}
-          order_status={this.props.order_status}
-          client_id={this.props.client_id}
-          services={this.state.services}
         />
       </div>
     );

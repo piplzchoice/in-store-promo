@@ -1000,8 +1000,8 @@ class Service < ActiveRecord::Base
 
     if self.is_co_op?
       coop_service = self.coop_service
-      coop_service.start_at = coop_service.tbs_data[changed_tbs["datetime"]]["start_at"]
-      coop_service.end_at = coop_service.tbs_data[changed_tbs["datetime"]]["end_at"]
+      coop_service.start_at = self.tbs_data[changed_tbs["datetime"]]["start_at"]
+      coop_service.end_at = self.tbs_data[changed_tbs["datetime"]]["end_at"]
       coop_service.brand_ambassador_id = changed_tbs["ba_id"]
       coop_service.status = 1
       coop_service.save
@@ -1009,7 +1009,15 @@ class Service < ActiveRecord::Base
   end
 
   def tbs_datetime(desirable, type_data, time_stamp)
-    DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
+    if self.is_co_op?
+      if self.co_op_services.empty?
+        DateTime.parse(self.parent.tbs_data[desirable][type_data]).strftime(time_stamp)
+      else
+        DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
+      end
+    else
+      DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
+    end
   end
 
   def format_react_component

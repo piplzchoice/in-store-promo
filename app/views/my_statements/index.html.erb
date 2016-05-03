@@ -1,0 +1,9 @@
+<h1 class="page-header">My Statements</h1>
+<div class="table-responsive">
+  <%= render "table" %>
+</div>
+
+
+<%= form_tag(my_statements_path, method: :get, remote: true, id: "filter-data") do %>
+  <%= hidden_field_tag(:page, 1) %>
+<% end %>

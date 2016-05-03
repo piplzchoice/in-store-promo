@@ -1,0 +1,29 @@
+<div class="row">
+
+  <h2 class="page-header">Logs</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Who</th>
+        <th>What</th>
+        <th>Status</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @service.logs.each_with_index do |log, i|  %>
+      <tr>
+        <td><%= log.created_at.strftime('%m/%d/%Y') %></td>
+        <td><%= log.created_at.strftime('%I:%M %P') %></td>
+        <td><%= log.user.get_info %></td>
+        <td><%= log.what %></td>
+        <td><%= log.status %></td>
+        <td><%= log.comments.html_safe %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

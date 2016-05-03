@@ -77,6 +77,14 @@ class ServicesController < ApplicationController
     end
   end
 
+  def add_coop_demo
+    @client = Client.find(params[:client_id])
+    @service = @client.services.find(params[:id])
+    @service.create_coops(params["co_op_client_id"], params["ids-coop-products"], current_user.id)
+
+    redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Coop Update"
+  end
+
   def request_by_phone
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
@@ -127,6 +135,15 @@ class ServicesController < ApplicationController
   def change_to_schedule
     @client = Client.find(params[:client_id])
     @service = @client.services.find(params[:id])
+    if @service.is_co_op?
+      if @service.co_op_services.empty?
+        @service = @service.parent
+      else
+        @service = @service
+      end
+    else
+      @service = @service
+    end
 
     @service.update_to_scheduled(params["changed_tbs"])
 
@@ -194,6 +211,7 @@ class ServicesController < ApplicationController
 
   def show
     @client = Client.find(params[:client_id])
+    @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.where(id: params[:id]).first
     @service = @client.co_op_services.where(id: params[:id]).first if @service.nil?
     redirect_to client_path(@client), notice: "Service not found" if @service.nil?

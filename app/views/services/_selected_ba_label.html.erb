@@ -1,0 +1,28 @@
+<% if @service.is_co_op? %>
+  <label>Co-Op Client :</label>
+  <% if @service.co_op_services.empty? %>
+    <ul class="list-styled">
+      <% BrandAmbassador.find(@service.parent.tbs_data["ba_ids"]).each do |ba| %>
+        <li>
+          <%= ba.name %>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+  <ul class="list-styled">
+    <% BrandAmbassador.find(@service.tbs_data["ba_ids"]).each do |ba| %>
+      <li>
+        <%= ba.name %>
+      </li>
+    <% end %>
+  </ul>
+  <% end %>
+<% else %>
+  <ul class="list-styled">
+    <% BrandAmbassador.find(@service.tbs_data["ba_ids"]).each do |ba| %>
+      <li>
+        <%= ba.name %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

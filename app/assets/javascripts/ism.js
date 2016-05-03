@@ -286,6 +286,16 @@ $(function() {
     return false;
   });
 
+  $("#req-coop-demo").on("click", function(){
+    $('#request-coop-modal').modal({
+      backdrop: 'static',
+      keyboard: true
+    })
+
+    $("#request-coop-modal").modal("show");
+    return false;
+  });
+
   $("#req-by-phone").on("click", function(){
     $('#request-by-phone-modal').modal({
       backdrop: 'static',

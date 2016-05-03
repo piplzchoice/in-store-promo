@@ -50,7 +50,6 @@ class StatementsController < ApplicationController
     export_file_path = [Rails.root, "tmp", "export-statement-data-#{Time.now.to_i}.xls"].join("/")
     book.write export_file_path
     send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
->>>>>>> development
   end
 
 end

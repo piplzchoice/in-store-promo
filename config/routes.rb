@@ -71,6 +71,7 @@ Rails.application.routes.draw do
     resources :statements, :only => [:index, :show] do
       collection do
         get "download"
+        post "export_data"
       end
     end
 

@@ -1,38 +1,17 @@
 <h1 class="page-header">List BA Statements</h1>
-
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Total Paid</th>
-        <th>Expenses</th>
-        <th>Additonal Items</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @statements.each_with_index do |statement, i|  %>
-      <tr>
-        <td><%= statement.created_at.strftime("%m/%d/%Y") %></td>
-        <td><%= number_to_currency statement.grand_total %></td>
-        <td><%= number_to_currency statement.totals_expenses %></td>
-        <% if statement.line_items.blank? %>
-          <td>-</td>
-        <% else %>
-          <td>
-            <% statement.line_items.each do |item| %>
-              <ul>
-                <li>
-                  <%= item["desc"] %> - <%= item["reduction"] == "true" ? "(#{number_to_currency item["amount"]})" : "#{number_to_currency item["amount"]}" %>
-                </li>
-              </ul>
-            <% end %>
-          </td>
-        <% end %>
-        <td><%= link_to "Show", brand_ambassador_statement_path(brand_ambassador_id: statement.brand_ambassador.id, id: statement.id) %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+<div class="link-new-btn">
+  <%= link_to("Export Statements", "#", {id: "export-statement" ,class: "btn btn-primary"}) %>
 </div>
+<div class="table-responsive">
+  <%= render "table" %>
+</div>
+
+
+<%= form_tag(brand_ambassador_statements_path(brand_ambassador_id: @brand_ambassador.id), method: :get, remote: true, id: "filter-data") do %>
+  <%= hidden_field_tag(:page, 1) %>
+<% end %>
+
+<%= form_tag(export_data_brand_ambassador_statements_path(brand_ambassador_id: @brand_ambassador.id), method: :post, id: "export-data-statement") do %>
+  <%#= hidden_field_tag(:loc_ids) %>
+  <%#= hidden_field_tag(:loc_status) %>
+<% end %>

@@ -27,7 +27,7 @@
           <% end %>
         </td>
       <% end %>
-      <td><%= link_to "Show", brand_ambassador_statement_path(brand_ambassador_id: statement.brand_ambassador.id, id: statement.id) %></td>
+      <td><%= link_to "Show", my_statement_path(brand_ambassador_id: statement.brand_ambassador.id, id: statement.id) %></td>
     </tr>
     <% end %>
   </tbody>

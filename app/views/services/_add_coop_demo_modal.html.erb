@@ -11,7 +11,7 @@
       <%= form_tag add_coop_demo_client_service_path(@client, @service), html: {role: "form"} do %>
 
         <div class="form-group">
-          <label class="control-label">Select BA</label>
+          <label class="control-label">Select Client</label>
           <%= select_tag(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control", :prompt => "Please select"}) %>
         </div>
 

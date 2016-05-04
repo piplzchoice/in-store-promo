@@ -6,11 +6,11 @@
 <p><%= @statement.created_at.strftime("%m/%d/%Y") %></p>
 
 <label>File :</label>
-<p><%= link_to "Download PDF", download_brand_ambassador_statements_path(brand_ambassador_id: @brand_ambassador.id, id: @statement.id) %></p>
+<p><%= link_to "Download PDF", download_my_statements_path(id: @statement.id) %></p>
 
 <hr />
 
-<div class="table-responsive">  
+<div class="table-responsive">
   <table id="table-data" class="table table-striped">
     <thead>
       <tr>
@@ -28,12 +28,12 @@
         <tr>
           <td><%= data["date"] %></td>
           <td><%= data["client_name"] %></td>
-          <td><%= data["location"] %></td>         
-          <td><%= data["rate"] %></td> 
+          <td><%= data["location"] %></td>
+          <td><%= data["rate"] %></td>
           <td><%= data["expenses"] %></td>
           <td><%= data["travel_expense"] %></td>
-          <td><%= data["total"] %></td> 
-        </tr>        
+          <td><%= data["total"] %></td>
+        </tr>
       <% end %>
 
       <tr style="border-top: 2px; border-top-style: dashed; border-bottom: 2px; border-bottom-style: dashed;">
@@ -85,6 +85,5 @@
     </tbody>
   </table>
 
-  
-</div>
 
+</div>

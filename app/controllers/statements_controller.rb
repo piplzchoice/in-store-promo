@@ -24,12 +24,13 @@ class StatementsController < ApplicationController
   def download
     brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
     statement = brand_ambassador.statements.find(params[:id])
-    send_data(File.read(statement.file.path), :filename => statement.file.path.split("/").last, :type => 'application/pdf')
+    data = open(statement.file.url)
+    send_data(data.read, :filename => statement.file.path.split("/").last, :type => 'application/pdf')
   end
 
   def export_data
     @brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
-    @statements = @brand_ambassador.statements.paginate(:page => 1)
+    @statements = @brand_ambassador.statements
 
     fields = [
       "Date",

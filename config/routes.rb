@@ -152,6 +152,7 @@ Rails.application.routes.draw do
   resources :my_statements, only: [:index, :show] do
     collection do
       get "download"
+      post "export_data"
     end
   end
   resources :available_dates, only: [:index] do

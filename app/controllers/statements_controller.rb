@@ -30,7 +30,7 @@ class StatementsController < ApplicationController
 
   def export_data
     @brand_ambassador = BrandAmbassador.find(params[:brand_ambassador_id])
-    @statements = @brand_ambassador.statements.paginate(:page => 1)
+    @statements = @brand_ambassador.statements
 
     fields = [
       "Date",

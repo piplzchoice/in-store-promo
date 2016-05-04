@@ -1,4 +1,8 @@
 <h1 class="page-header">My Statements</h1>
+<div class="link-new-btn">
+  <%= link_to("Export Statements", "#", {id: "export-statement" ,class: "btn btn-primary"}) %>
+</div>
+
 <div class="table-responsive">
   <%= render "table" %>
 </div>
@@ -6,4 +10,9 @@
 
 <%= form_tag(my_statements_path, method: :get, remote: true, id: "filter-data") do %>
   <%= hidden_field_tag(:page, 1) %>
+<% end %>
+
+<%= form_tag(export_data_my_statements_path, method: :post, id: "export-data-statement") do %>
+  <%#= hidden_field_tag(:loc_ids) %>
+  <%#= hidden_field_tag(:loc_status) %>
 <% end %>

@@ -2,6 +2,12 @@
 <% unless current_user.has_role?(:client) %>
   <%= link_to("Back", (params[:report].nil? ? client_path(@client) : reports_path), {class: "btn btn-primary", role: "button"}) %>
 
+  <% unless @service.is_co_op? %>
+    <% if @service.status == 1 || @service.status == 2%>
+      <%= render "modal_coop_demo" %>
+    <% end %>
+  <% end %>
+
   <% if @service.is_co_op? && !@service.parent.nil? %>
 
     <% if @service.parent.can_modify?  || current_user.has_role?(:admin) %>

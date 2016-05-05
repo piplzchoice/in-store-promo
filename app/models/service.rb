@@ -1009,15 +1009,7 @@ class Service < ActiveRecord::Base
   end
 
   def tbs_datetime(desirable, type_data, time_stamp)
-    if self.is_co_op?
-      if self.co_op_services.empty?
-        DateTime.parse(self.parent.tbs_data[desirable][type_data]).strftime(time_stamp)
-      else
-        DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
-      end
-    else
-      DateTime.parse(tbs_data[desirable][type_data]).strftime(time_stamp)
-    end
+      DateTime.parse(tbsdata[desirable][type_data]).strftime(time_stamp)
   end
 
   def format_react_component
@@ -1036,5 +1028,23 @@ class Service < ActiveRecord::Base
       id: self.id
     }
   end
+
+  def tbsdata
+    dt = self.tbs_data
+    if self.is_co_op?
+      if self.co_op_services.empty?
+        dt = self.parent.tbs_data
+      end
+    end
+    return dt
+  end
+
+  # def rate
+  #   if read_attribute(:rate).nil?
+  #     DefaultValue.rate_project
+  #   else
+  #     read_attribute(:rate)
+  #   end
+  # end
 
 end

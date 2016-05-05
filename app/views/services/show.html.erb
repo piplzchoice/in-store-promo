@@ -1,10 +1,6 @@
 <h1 class="page-header">Show Service</h1>
 <div class="row">
   <div class="col-md-4">
-    <% unless @service.status == 12 %>
-      <%= render "available_btn" %>
-    <% end %>
-
     <label>Status :</label>
     <p><%= @service.current_status %></p>
 
@@ -26,11 +22,16 @@
       <% end %>
     <% end %>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-4">
     <label>Location</label>
     <p>Name: <%= @service.location.name %></p>
     <p>Contact: <%= @service.location.contact %></p>
     <p>Phone: <%= @service.location.phone %></p>
+  </div>
+  <div class="col-md-4">
+    <% unless @service.status == 12 %>
+      <%= render "available_btn" %>
+    <% end %>
   </div>
 </div>
 
@@ -117,11 +118,3 @@
 
 <%= render "inventory_form" %>
 <%= render "logs" %>
-
-
-<% if @service.status == 12 %>
-  <%= render "add_coop_demo_modal" %>
-  <%= render "request_email_modal" %>
-  <%= render "request_phone_modal" %>
-  <%= render "change_to_scheduled_modal" %>
-<% end %>

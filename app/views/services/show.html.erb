@@ -117,11 +117,3 @@
 
 <%= render "inventory_form" %>
 <%= render "logs" %>
-
-
-<% if @service.status == 12 %>
-  <%= render "add_coop_demo_modal" %>
-  <%= render "request_email_modal" %>
-  <%= render "request_phone_modal" %>
-  <%= render "change_to_scheduled_modal" %>
-<% end %>

@@ -1,15 +1,4 @@
-<%
-  the_service = nil
-  if @service.is_co_op?
-    if @service.co_op_services.empty?
-      the_service = @service.parent
-    else
-      the_service = @service
-    end
-  else
-    the_service = @service
-  end
-%>
+<%= link_to("Change to Scheduled", "#", {id: "change_to_scheduled", class: "btn btn-success", role: "button"}) %>
 
 <div id="changed-to-scheduled-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -26,14 +15,14 @@
         <div class="form-group">
           <label class="control-label">Select Date Time</label>
           <%= select_tag "changed_tbs[datetime]",
-          "<option value='first_date'>#{DateTime.parse(the_service.tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(the_service.tbs_data["first_date"]["end_at"]).strftime(" - %I:%M %p")}</option>" +
-          "<option value='second_date'>#{DateTime.parse(the_service.tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(the_service.tbs_data["second_date"]["end_at"]).strftime(" - %I:%M %p")}</option>".html_safe,
+          "<option value='first_date'>#{DateTime.parse(@service.tbsdata["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["first_date"]["end_at"]).strftime(" - %I:%M %p")}</option>" +
+          "<option value='second_date'>#{DateTime.parse(@service.tbsdata["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["second_date"]["end_at"]).strftime(" - %I:%M %p")}</option>".html_safe,
           class: "form-control", include_blank: true, require: true %>
         </div>
 
         <div class="form-group">
           <label class="control-label">Select BA</label>
-          <%= select_tag "changed_tbs[ba_id]", options_from_collection_for_select(BrandAmbassador.find(the_service.tbs_data["ba_ids"]), "id", "name"), class: "form-control", include_blank: true, require: true %>
+          <%= select_tag "changed_tbs[ba_id]", options_from_collection_for_select(BrandAmbassador.find(@service.tbsdata["ba_ids"]), "id", "name"), class: "form-control", include_blank: true, require: true %>
         </div>
 
         <%= button_tag "Change to Scheduled", {type: "submit", class: "btn btn-primary"} %>

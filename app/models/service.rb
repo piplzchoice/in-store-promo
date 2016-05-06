@@ -452,7 +452,6 @@ class Service < ActiveRecord::Base
     if coop_box
       # log data coop that added
       self.create_coops(co_op_client_id, ids_coop_products, current_user_id)
-      Log.record_coop_added(self.id, co_op_client_id, current_user_id)
     end
 
   end
@@ -783,6 +782,7 @@ class Service < ActiveRecord::Base
     coop.is_old_service = false
     coop.save!
     Log.record_status_changed(coop.id, 0, self.status, current_user_id)
+    Log.record_coop_added(self.id, co_op_client_id, current_user_id)
   end
 
   def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)

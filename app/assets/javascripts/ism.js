@@ -728,6 +728,15 @@ $(function() {
     }
   }
 
+  if($("#service_product_coop_ids").length !== 0) {
+    data = JSON.parse($("#service_product_coop_ids").val())
+    if(data.length !== 0) {
+      data.forEach(function(val){
+        $('#product-coop-' + val).prop('checked', true);
+      })
+    }
+  }
+
   $(document).on("click", ".product_ids", function(){
     data = JSON.parse($("#service_product_ids").val())
     if($(this).is(":checked")) {

@@ -1,5 +1,5 @@
 <% if @report.new_record? %>
-  <% client.products[0..5].each_with_index do |product, i| %>
+  <% @service.products.each_with_index do |product, i| %>
     <tr class="row-products" id="row-product-<%= product.id %>" data-id="<%= product.id %>">
       <td>Product <span class="counter-product"><%= i + 1 %></span></td>
       <td class="product-info-id" class="product-counter" data-id="<%= product.id %>">
@@ -13,14 +13,14 @@
           </ul>
           <%= hidden_field_tag 'report[client_products][]id', product.id %>
           <%= hidden_field_tag 'report[client_products][]name', product.name %>
-        </div>      
+        </div>
       </td>
       <td id="product-<%= product.id %>-price" data-id="<%= product.id %>">
         <%= text_field_tag("report[client_products][]price", nil, {class: "width_35px", id: "report_product_#{product.id}_price"}) %>
-      </td>              
+      </td>
       <td id="product-<%= product.id %>-sample" data-id="<%= product.id %>" class="product-sample">
         <%= text_field_tag("report[client_products][]sample", nil, {class: "width_35px", id: "report_product_#{product.id}_sample"}) %>
-      </td>                            
+      </td>
       <td id="product-<%= product.id %>-beginning" data-id="<%= product.id %>" class="product-beginning">
         <%= text_field_tag("report[client_products][]beginning", nil, {class: "width_35px", id: "report_product_#{product.id}_beginning"}) %>
       </td>
@@ -47,14 +47,14 @@
           </ul>
           <%= hidden_field_tag 'report[client_products][]id', product["id"] %>
           <%= hidden_field_tag 'report[client_products][]name', product["name"] %>
-        </div>      
-      </td>      
+        </div>
+      </td>
       <td id="product-<%= product["id"] %>-price" data-id="<%= product["id"] %>">
         <%= text_field_tag("report[client_products][]price", product["price"], {class: "width_35px", id: "report_product_#{product["id"]}_price"}) %>
-      </td>              
+      </td>
       <td id="product-<%= product["id"] %>-sample" data-id="<%= product["id"] %>" class="product-sample">
         <%= text_field_tag("report[client_products][]sample", product["sample"], {class: "width_35px", id: "report_product_#{product["id"]}_sample"}) %>
-      </td>                            
+      </td>
       <td id="product-<%= product["id"] %>-beginning" data-id="<%= product["id"] %>" class="product-beginning">
         <%= text_field_tag("report[client_products][]beginning", product["beginning"], {class: "width_35px", id: "report_product_#{product["id"]}_beginning"}) %>
       </td>

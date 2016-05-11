@@ -15,11 +15,13 @@
 #
 
 class Statement < ActiveRecord::Base
-  serialize :services_ids  
+  include ApplicationHelper
+  serialize :services_ids
   serialize :line_items, JSON
   serialize :data, JSON
-  belongs_to :brand_ambassador  
+  belongs_to :brand_ambassador
   mount_uploader :file, ImageUploader
+  default_scope { order("created_at DESC") }
 
   def self.generate_data(service_ids)
     data = []
@@ -41,5 +43,35 @@ class Statement < ActiveRecord::Base
     end
 
     return data
+  end
+
+  def totals_ba_paid
+    brand_ambassador.services.calculate_total_ba_paid(services_ids)
+  end
+
+  def totals_expenses
+    data.collect{|x| x["expenses"].split("$").last.to_f}.sum
+  end
+
+  def export_data
+    data_field = [
+      created_at.strftime("%m/%d/%Y"),
+      ActionController::Base.helpers.number_to_currency(grand_total),
+      ActionController::Base.helpers.number_to_currency(totals_expenses)
+    ]
+
+
+    if line_items.blank?
+      data_field << "-"
+    else
+      items = ""
+      line_items.each do |item|
+        amount = item["reduction"] == "true" ? "(#{ActionController::Base.helpers.number_to_currency(item["amount"])})" : "#{ActionController::Base.helpers.number_to_currency(item["amount"])}"
+        items += "#{item["desc"]} - #{amount}; "
+      end
+      data_field << items
+    end
+
+    return data_field
   end
 end

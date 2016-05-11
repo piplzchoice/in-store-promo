@@ -26,6 +26,8 @@
 #  inventory_date        :date
 #  inventory_confirmed   :string(255)
 #  status_inventory      :boolean          default(FALSE)
+#  tbs_data              :text
+#  order_id              :integer          default(0)
 #
 
 # note for field "status"
@@ -40,6 +42,7 @@
 # 9. Cancelled ---> "#FF0000"
 # 10. Invoiced --> "#0070C0"
 # 11. Inventory Confirmed ---> "#ccffcc" / "#b6fcc2"
+# 12. To be Scheduled
 
 class Service < ActiveRecord::Base
 
@@ -47,6 +50,7 @@ class Service < ActiveRecord::Base
   belongs_to :project
   belongs_to :brand_ambassador
   belongs_to :location
+  belongs_to :order
 
   has_one :report
   has_many :co_op_services, foreign_key: 'parent_id', class_name: 'Service'
@@ -58,6 +62,8 @@ class Service < ActiveRecord::Base
   belongs_to :co_op_client, :class_name => "Client", foreign_key: 'co_op_client_id'
 
   validates :location_id, :brand_ambassador_id, :start_at, :end_at, presence: true
+
+  serialize :tbs_data, JSON
 
   before_create do |service|
     service.token = Devise.friendly_token
@@ -156,6 +162,10 @@ class Service < ActiveRecord::Base
     return 11
   end
 
+  def self.status_tbs
+    return 12
+  end
+
   def self.send_notif_after
     return 12.round
   end
@@ -252,11 +262,12 @@ class Service < ActiveRecord::Base
   end
 
   def self.options_select_after_reported
-    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid]]
+    [["Paid", Service.status_paid], ["BA Paid", Service.status_ba_paid], ["Confirmed", Service.status_confirmed]]
   end
 
   def self.options_select_status
     [
+      ["TBS", Service.status_tbs],
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
       ["Inventory", Service.status_inventory_confirmed],
@@ -347,6 +358,8 @@ class Service < ActiveRecord::Base
       "Invoiced"
     when 11
       "Inventory"
+    when 12
+      "To be Scheduled"
     end
   end
 
@@ -439,7 +452,6 @@ class Service < ActiveRecord::Base
     if coop_box
       # log data coop that added
       self.create_coops(co_op_client_id, ids_coop_products, current_user_id)
-      Log.record_coop_added(self.id, co_op_client_id, current_user_id)
     end
 
   end
@@ -449,23 +461,16 @@ class Service < ActiveRecord::Base
     service_params[:inventory_date] = DateTime.strptime(service_params[:inventory_date], '%m/%d/%Y') if service_params[:inventory_date] != ""
     self.update_attributes(service_params)
 
-    # if service_params[:status_inventory] == "true"
-    if service_params[:inventory_confirm] == "true"
-      self.update_status_inventory_confirmed(true, current_user_id)
+    if self.status == 12
+      Log.record_status_changed(self.id, 12, Service.status_inventory_confirmed, current_user_id)
     else
-      self.update_status_inventory_confirmed(false, current_user_id)
+      if service_params[:inventory_confirm] == "true"
+        self.update_status_inventory_confirmed(true, current_user_id)
+      else
+        self.update_status_inventory_confirmed(false, current_user_id)
+      end
     end
-    # if self.is_co_op?
-    #   if self.co_op_services.empty?
-    #     self.parent.update_attributes(service_params)
-    #   else
-    #     self.co_op_services.each do |srv|
-    #       srv.update_attributes(service_params)
-    #     end
-    #   end
-    # else
-    #   true
-    # end
+
     true
   end
 
@@ -489,6 +494,22 @@ class Service < ActiveRecord::Base
     end
 
     return cond
+  end
+
+  def coop_service
+    srvic = nil
+    if self.is_co_op?
+      if self.co_op_services.empty?
+        srvic = self.parent
+      else
+        self.co_op_services.each do |srv|
+          srvic = srv
+        end
+      end
+    else
+      false
+    end
+    return srvic
   end
 
   def old_id
@@ -526,6 +547,8 @@ class Service < ActiveRecord::Base
       "#0070C0"
     when 11
       "#b6fcc2" #"#ccffcc"
+    when 12
+      "#FE0000" #"#ccffcc"
     end
   end
 
@@ -570,6 +593,8 @@ class Service < ActiveRecord::Base
       "Invoiced"
     when 11
       "Inventory"
+    when 12
+      "To be Scheduled"
     end
   end
 
@@ -647,7 +672,11 @@ class Service < ActiveRecord::Base
   end
 
   def is_ba_active?
-    brand_ambassador.is_active
+    if brand_ambassador.nil?
+      true
+    else
+      brand_ambassador.is_active
+    end
   end
 
   # def is_co_op?
@@ -752,8 +781,21 @@ class Service < ActiveRecord::Base
     coop.product_ids = ids_coop_products
     coop.is_old_service = false
     coop.save!
-    # Log.create_data(coop.id, 0, coop.status)
     Log.record_status_changed(coop.id, 0, self.status, current_user_id)
+    Log.record_coop_added(self.id, co_op_client_id, current_user_id)
+  end
+
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
+    srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
+    srv.status = 12
+    srv.parent_id = parent_id
+    srv.product_ids = JSON.parse ids_coop_products
+    srv.save!
+    Log.record_status_changed(srv.id, 0, srv.status, current_user_id)
+  end
+
+  def is_tbs_before?
+    status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
   end
 
   def is_co_op?
@@ -892,19 +934,8 @@ class Service < ActiveRecord::Base
 
   def update_status_inventory_confirmed(status, current_user_id)
     old_status = self.status
-    # self.update_attributes({status_inventory: status})
     self.update_attributes({status: Service.status_inventory_confirmed})
     Log.record_status_changed(self.id, old_status, Service.status_inventory_confirmed, current_user_id)
-
-    # if is_co_op?
-    #   if self.co_op_services.empty?
-    #     self.parent.update_attributes({status: Service.status_inventory_confirmed})
-    #   else
-    #     self.co_op_services.each do |service_coop|
-    #       service_coop.update_attributes({status: Service.status_inventory_confirmed})
-    #     end
-    #   end
-    # end
   end
 
   def list_of_products
@@ -915,5 +946,105 @@ class Service < ActiveRecord::Base
 
     return list_products
   end
+
+  def self.build_data_tbs(service_params, tbs_params, client_id, product_ids)
+    # {"start_at_first"=>"03/01/2016 3:00 PM", "end_at_first"=>"03/01/2016 7:00 PM", "start_at_second"=>"03/10/2016 3:00 PM", "end_at_second"=>"03/10/2016 7:00 PM", "ba_ids"=>"[16,52]"}
+    # (rdb:1) p params[:service]
+    # {"location_id"=>"1", "details"=>"lalalalalala", "is_old_service"=>"false", "product_ids"=>"[101,102,103]"}
+    client = Client.find(client_id)
+    service = client.services.build
+    service.location_id = service_params["location_id"]
+    service.details = service_params["details"]
+    service.is_old_service = service_params["is_old_service"]
+    service.product_ids = JSON.parse(service_params[:product_ids])
+    service.brand_ambassador_id = 1000
+    service.start_at = DateTime.now
+    service.end_at = DateTime.now
+
+    start_at_first = DateTime.strptime(tbs_params["start_at_first"], '%m/%d/%Y %I:%M %p')
+    end_at_first = DateTime.strptime(tbs_params["end_at_first"], '%m/%d/%Y %I:%M %p')
+
+    start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
+    end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
+
+    service.tbs_data = {
+      first_date: {start_at: start_at_first, end_at: end_at_first},
+      second_date: {start_at: start_at_second, end_at: end_at_second},
+      ba_ids: JSON.parse(tbs_params["ba_ids"])
+    }
+
+    service.status = 12
+
+    return service
+    # service = Service.where({
+    #   client_id: service_params[:client_id],
+    #   brand_ambassador_id: service_params[:brand_ambassador_id],
+    #   start_at: service_params[:start_at],
+    #   end_at: service_params[:end_at]
+    # })
+
+      # if service.blank?
+      #   self.new(service_params)
+      # else
+      #   self.new
+      # end
+
+  end
+
+  def update_to_scheduled(changed_tbs)
+    self.start_at = self.tbs_data[changed_tbs["datetime"]]["start_at"]
+    self.end_at = self.tbs_data[changed_tbs["datetime"]]["end_at"]
+    self.brand_ambassador_id = changed_tbs["ba_id"]
+    self.status = 1
+    self.save
+
+    if self.is_co_op?
+      coop_service = self.coop_service
+      coop_service.start_at = self.tbs_data[changed_tbs["datetime"]]["start_at"]
+      coop_service.end_at = self.tbs_data[changed_tbs["datetime"]]["end_at"]
+      coop_service.brand_ambassador_id = changed_tbs["ba_id"]
+      coop_service.status = 1
+      coop_service.save
+    end
+  end
+
+  def tbs_datetime(desirable, type_data, time_stamp)
+      DateTime.parse(tbsdata[desirable][type_data]).strftime(time_stamp)
+  end
+
+  def format_react_component
+    {
+      location_id: self.location_id,
+      brand_ambassador_ids: (status == 12 ? tbs_data["ba_ids"] : [brand_ambassador_id]),
+      first_date: {
+        start_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : start_at.strftime("%m/%d/%Y %I:%M %p")),
+        end_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : end_at.strftime("%m/%d/%Y %I:%M %p")),
+      },
+      second_date: {
+        start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
+        end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
+      },
+      status: self.status,
+      id: self.id
+    }
+  end
+
+  def tbsdata
+    dt = self.tbs_data
+    if self.is_co_op?
+      if self.co_op_services.empty?
+        dt = self.parent.tbs_data
+      end
+    end
+    return dt
+  end
+
+  # def rate
+  #   if read_attribute(:rate).nil?
+  #     DefaultValue.rate_project
+  #   else
+  #     read_attribute(:rate)
+  #   end
+  # end
 
 end

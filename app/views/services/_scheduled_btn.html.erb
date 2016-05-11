@@ -1,0 +1,11 @@
+<% unless @service.is_co_op? %>
+  <%= render "modal_coop_demo" %>
+<% end %>
+
+<%= render "modal_request_email" %>
+
+<%= render "modal_request_phone" %>
+
+<%= link_to("Cancel", client_service_path(client_id: @client.id, id: @service.id), {class: "btn btn-danger", role: "button", data: { confirm: "Are you sure want to cancel this service?" }, :method => :delete}) %>
+
+<%= render "modal_change_to_scheduled" %>

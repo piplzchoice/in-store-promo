@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210035610) do
+ActiveRecord::Schema.define(version: 20160429040744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,11 @@ ActiveRecord::Schema.define(version: 20160210035610) do
     t.integer  "territory_id"
   end
 
+  create_table "locations_orders", force: true do |t|
+    t.integer "location_id"
+    t.integer "order_id"
+  end
+
   create_table "logs", force: true do |t|
     t.integer  "service_id"
     t.datetime "created_at"
@@ -138,6 +143,25 @@ ActiveRecord::Schema.define(version: 20160210035610) do
     t.integer  "user_id"
     t.integer  "category"
     t.text     "data"
+  end
+
+  create_table "orders", force: true do |t|
+    t.integer  "client_id"
+    t.string   "number"
+    t.integer  "status",             default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "service_copy"
+    t.string   "dot_number"
+    t.string   "product_sample"
+    t.string   "to_be_completed_by"
+    t.string   "distributor"
+    t.text     "comments"
+  end
+
+  create_table "orders_products", force: true do |t|
+    t.integer "order_id"
+    t.integer "product_id"
   end
 
   create_table "products", force: true do |t|
@@ -299,6 +323,8 @@ ActiveRecord::Schema.define(version: 20160210035610) do
     t.date     "inventory_date"
     t.string   "inventory_confirmed"
     t.boolean  "status_inventory",      default: false
+    t.text     "tbs_data"
+    t.integer  "order_id",              default: 0
   end
 
   create_table "sessions", force: true do |t|

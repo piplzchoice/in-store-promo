@@ -1,80 +1,120 @@
 <h1 class="page-header">Show Service</h1>
-
 <div class="row">
-  <%= render "available_btn" %>
+  <div class="col-md-4">
+    <label>Status :</label>
+    <p><%= @service.current_status %></p>
 
-  <label>Status :</label>
-  <p><%= @service.current_status %></p>
+    <label>Client :</label>
+    <p><%= @client.company_name %></p>
 
-  <label>Client :</label>
-  <p><%= @client.company_name %></p>
-
-  <% if @service.is_co_op? %>
-    <label>Co-Op Client :</label>
-    <% if @service.co_op_services.empty? %>
-      <p>
-        <%= link_to @service.parent.client.company_name, client_service_path(client_id: @service.parent.client.id, id: @service.parent.id)  %>
-      </p>
-    <% else %>
-      <% @service.co_op_services.each do |service| %>
+    <% if @service.is_co_op? %>
+      <label>Co-Op Client :</label>
+      <% if @service.co_op_services.empty? %>
         <p>
-          <%= link_to service.company_name, client_service_path(client_id: service.client.id, id: service.id)  %>
+          <%= link_to @service.parent.client.company_name, client_service_path(client_id: @service.parent.client.id, id: @service.parent.id)  %>
         </p>
+      <% else %>
+        <% @service.co_op_services.each do |service| %>
+          <p>
+            <%= link_to service.company_name, client_service_path(client_id: service.client.id, id: service.id)  %>
+          </p>
+        <% end %>
       <% end %>
     <% end %>
-  <% end %>
+  </div>
+  <div class="col-md-4">
+    <label>Location</label>
+    <p>Name: <%= @service.location.name %></p>
+    <p>Contact: <%= @service.location.contact %></p>
+    <p>Phone: <%= @service.location.phone %></p>
+  </div>
+  <div class="col-md-4">
+    <% unless @service.status == 12 %>
+      <%= render "available_btn" %>
+    <% end %>
+  </div>
+</div>
+
+<hr />
+<% if @service.status == 12 || @service.is_tbs_before? %>
+
+  <div class="row">
+    <div class="col-md-4">
+      <label>Selected BA</label>
+      <p><%= render "selected_ba_label" %></p>
+    </div>
+    <div class="col-md-4">
+      <label>First Datetime</label>
+      <p>
+        <strong>Date: </strong>
+        <%= @service.tbs_datetime("first_date", "start_at", "%m/%d/%Y") %>
+      </p>
+      <p>
+        <strong>Start at:</strong>
+        <%= @service.tbs_datetime("first_date", "start_at", "%I:%M %p") %>
+      </p>
+      <p>
+        <strong>End at:</strong>
+        <%= @service.tbs_datetime("first_date", "end_at", "%I:%M %p") %>
+      </p>
+    </div>
+
+    <div class="col-md-4">
+      <label>Second Datetime</label>
+      <p>
+        <strong>Date: </strong>
+        <%= @service.tbs_datetime("second_date", "start_at", "%m/%d/%Y") %>
+      </p>
+      <p>
+        <strong>Start at:</strong>
+        <%= @service.tbs_datetime("second_date", "start_at", "%I:%M %p") %>
+      </p>
+      <p>
+        <strong>End at:</strong>
+        <%= @service.tbs_datetime("second_date", "end_at", "%I:%M %p") %>
+      </p>
+    </div>
+  </div>
+
+<% else %>
+
+  <div class="row">
+    <div class="col-md-12">
+      <label>Assigned BA</label>
+      <p><%= @service.brand_ambassador.name %></p>
+
+      <label>Start Date</label>
+      <p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+
+      <label>End Date</label>
+      <p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
+    </div>
+  </div>
+
+<% end %>
 
 
-  <label>Location</label>
-  <p>Name: <%= @service.location.name %></p>
-  <p>Contact: <%= @service.location.contact %></p>
-  <p>Phone: <%= @service.location.phone %></p>
+<div class="row">
+  <div class="col-md-12">
+    <label>Details</label>
+    <p><%= @service.details || "-" %></p>
+  </div>
+</div>
 
-  <label>Assigned BA</label>
-  <p><%= @service.brand_ambassador.name %></p>
-
-  <label>Start Date</label>
-  <p><%= @service.start_at.nil? ? "" : @service.start_at.strftime("%m/%d/%Y %I:%M %p") %></p>
-
-  <label>End Date</label>
-  <p><%= @service.end_at.nil? ? "" : @service.end_at.strftime("%m/%d/%Y %I:%M %p") %></p>
-
-  <label>Details</label>
-  <p><%= @service.details %></p>
-
-  <div class="link-new-btn">
-    <%= render "right_btn" %>
+<hr />
+<div class="row">
+  <div class="col-md-12">
+    <% if @service.status == 12 %>
+      <div class="link-new-btn">
+        <%= render "scheduled_btn" %>
+      </div>
+    <% else %>
+      <div class="link-new-btn">
+        <%= render "right_btn" %>
+      </div>
+    <% end %>
   </div>
 </div>
 
 <%= render "inventory_form" %>
-
-<div class="row">
-
-  <h2 class="page-header">Logs</h2>
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Who</th>
-        <th>What</th>
-        <th>Status</th>
-        <th>Comments</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @service.logs.each_with_index do |log, i|  %>
-      <tr>
-        <td><%= log.created_at.strftime('%m/%d/%Y') %></td>
-        <td><%= log.created_at.strftime('%I:%M %P') %></td>
-        <td><%= log.user.get_info %></td>
-        <td><%= log.what %></td>
-        <td><%= log.status %></td>
-        <td><%= log.comments.html_safe %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+<%= render "logs" %>

@@ -1,53 +1,67 @@
 <h1 class="page-header">Show Client</h1>
 
 <div class="row no-print">
-  <div class="col-md-3">
-    <label>Company Name :</label>
-    <p><%= @client.company_name %></p>
-  </div>
+  <%= render "show_header" %>
+</div>
 
-  <div class="col-md-3">
-    <label>Name :</label>
-    <p><%= @client.name %></p>
-  </div>
+<hr  />
 
-  <div class="col-md-3">
-    <label>Status :</label><br />
-    <%= link_to (@client.is_active ? "Deactivate" : "Reactivate"), client_path(@client), {class: "btn btn-primary", role: "button", data: { confirm: "Are you sure?" }, :method => :delete} %>
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingOne">
+          <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Orders
+            </a>
+          </h4>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            <%= render "show_order" %>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTwo">
+          <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              Services
+            </a>
+          </h4>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            <div id="xcalendar-and-legend">
+              <div id="colour-legend" class="no-print">
+                <div class="confirmed" style="margin-left: 148px;margin-bottom: -20px;">Confirmed</div>
+              </div>
+              <div id="colour-legend" class="no-print">
+                <div class="tbs">TBS</div>
+                <div class="scheduled">Scheduled</div>
+                <div class="rejected">Rejected</div>
+                <div class="inventory-confirmed">Inventory</div>
+                <div class="reported">Reported</div>
+                <div class="conducted">Invoiced</div>
+                <div class="paid">Paid</div>
+                <div class="ba-paid">BA Paid</div>
+                <div class="cancelled">Cancelled</div>
+              </div>
+              <div id="colour-legend" class="no-print" style="margin-left: 148px;margin-top: -20px;">
+                <div class="unrespond">Unrespond</div>
+              </div>
+              <div id="calendar" data-url="<%= client_services_path(@client) %>"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
   </div>
-
-  <div class="col-md-3">
-    <label>Login :</label><br />
-    <%= link_to("Login as Client", logged_as_client_path(@client), {class: "btn btn-primary", role: "button", :method => :delete}) %>
-  </div>
-
-  <div class="col-md-3">
-    <label>Export :</label><br />
-    <%= link_to("Export", "#", {id: "print_calendar_as_pdf",class: "btn btn-primary", role: "button"}) %>
-  </div>
-
 </div>
 
 
-<h2 class="sub-header no-print">Services</h2> 
-
-<div class="link-new-btn no-print"><%= link_to("New Service", new_client_service_path(@client), {class: "btn btn-primary", role: "button"}) %></div>
-
-<div id="calendar-and-legend">  
-  <div id="colour-legend" class="no-print">
-    <div class="scheduled">Scheduled</div>
-    <div class="confirmed">Confirmed</div>
-    <div class="rejected">Rejected</div>
-    <div class="unrespond">Unrespond</div>
-    <div class="inventory-confirmed">Inventory</div>
-    <div class="reported">Reported</div>
-    <div class="conducted">Invoiced</div>
-    <div class="paid">Paid</div>
-    <div class="ba-paid">BA Paid</div>    
-    <div class="cancelled">Cancelled</div>
-  </div>
-  <div id="calendar" data-url="<%= client_services_path(@client) %>"></div>
-</div>
 <%= form_tag(export_calendar_client_path(@client), method: :post, remote: false, id: "export-calendar") do %>
 <%= hidden_field_tag(:dataurl) %>
 <% end %>

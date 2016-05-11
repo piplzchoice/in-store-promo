@@ -1,0 +1,30 @@
+<%= link_to("Coop Demo", "#", {id: "req-coop-demo", class: "btn btn-info", role: "button"}) %>
+
+<div id="request-coop-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="mySmallModalLabel">
+          Coop
+        </h4>
+      </div>
+      <div class="modal-body">
+      <%= form_tag add_coop_demo_client_service_path(@client, @service), html: {role: "form"} do %>
+
+        <div class="form-group">
+          <label class="control-label">Select Client</label>
+          <%= select_tag(:co_op_client_id, options_from_collection_for_select(@clients, "id", "company_name"), {class: "form-control", :prompt => "Please select"}) %>
+        </div>
+
+        <div class="form-group">
+          <ul class="list-unstyled" id="coop-products-list"></ul>
+          <input type="hidden" name="ids-coop-products" id="ids-coop-products" value="[]">
+        </div>
+
+        <%= button_tag "Update Coop", {type: "submit", class: "btn btn-primary"} %>
+      <% end %>
+      </div>
+    </div>
+  </div>
+</div>

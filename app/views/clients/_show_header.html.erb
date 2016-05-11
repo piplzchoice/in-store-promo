@@ -1,0 +1,80 @@
+<div class="col-md-3">
+  <label>Company Name :</label>
+  <p><%= @client.company_name %></p>
+</div>
+
+<div class="col-md-3">
+  <label>Name :</label>
+  <p><%= @client.name %></p>
+</div>
+
+<div class="col-md-3">
+  <label>Status :</label><br />
+  <%= link_to (@client.is_active ? "Deactivate" : "Reactivate"), client_path(@client), {class: "btn btn-primary", role: "button", data: { confirm: "Are you sure?" }, :method => :delete} %>
+</div>
+
+<div class="col-md-3">
+  <label>Login :</label><br />
+  <%= link_to("Login as Client", logged_as_client_path(@client), {class: "btn btn-primary", role: "button", :method => :delete}) %>
+</div>
+
+<div class="col-md-3">
+  <label>Export :</label><br />
+  <%= link_to("Export", "#", {id: "print_calendar_as_pdf",class: "btn btn-primary", role: "button"}) %>
+</div>
+
+<div class="col-md-3">
+  <label>Action :</label><br />
+  <%#= link_to("New Order", new_order_client_services_path(@client), {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("New Order", "#", {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: "#modalNewOrder"}}) %>
+</div>
+
+<div class="col-md-3">
+  <label>&nbsp;</label><br />
+  <%= link_to("New Service", new_client_service_path(@client), {class: "btn btn-primary", role: "button"}) %>
+</div>
+
+
+<div class="modal fade" id="modalNewOrder" tabindex="-1" role="dialog" aria-labelledby="modalNewOrderLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Order</h4>
+      </div>
+      <%= form_tag(client_orders_path(client_id: @client.id), method: :post, role: "form") do %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label">Order Number</label>
+            <%= text_field_tag "order[number]", @order.generate_number(@client.id), {class: "form-control", required: "true"} %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Location</label>
+            <%= text_field_tag "order_locations", nil, {
+              required: true,
+              class: "select-2-box form-control",
+              data: {
+                url: autocomplete_location_name_client_services_path(client_id: @client.id),
+              }
+            } %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Products</label>
+              <% @client.products.each do |product| %>
+                <div className="checkbox">
+                  <label>
+                    <%= check_box_tag("order_products_ids[]", product.id, nil) %>
+                    <%= product.name %>
+                  </label>
+                </div>
+              <% end %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

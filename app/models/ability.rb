@@ -3,7 +3,7 @@ class Ability
 
   def initialize(user)
 
-    user ||= User.new # guest user (not logged in)    
+    user ||= User.new # guest user (not logged in)
     if user.has_role? :admin # admin user
       can :manage, ServicesController
       can :manage, ProjectsController
@@ -18,6 +18,7 @@ class Ability
       can :manage, EmailTemplatesController
       can :manage, InvoicesController
       can :manage, TerritoriesController
+      can :manage, OrdersController
     elsif user.has_role? :ismp
       can :manage, ServicesController
       can :manage, ProjectsController
@@ -28,9 +29,11 @@ class Ability
       can :manage, ReportsController
       can :manage, UsersController
       can :manage, InvoicesController
+      can :manage, OrdersController
     elsif user.has_role? :ba
       can :manage, UsersController
       can :manage, ReportsController
+      can :manage, MyStatementsController
     elsif user.has_role? :client
       can :manage, ReportsController
       can :manage, ClientsController

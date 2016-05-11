@@ -23,7 +23,7 @@ class BrandAmbassador < ActiveRecord::Base
 
   validates :name, :phone, :address, :grade, :rate, presence: true
   validates :grade, :rate, numericality: true
-  
+
   has_many :services
   has_many :available_dates
   has_many :statements
@@ -39,9 +39,9 @@ class BrandAmbassador < ActiveRecord::Base
       data = BrandAmbassador.where(is_active: filter_options["is_active"])
     else
       data = Location.find(filter_options["location_name"]).brand_ambassadors.where(is_active: filter_options["is_active"])
-    end    
-    return data    
-  end    
+    end
+    return data
+  end
 
   def self.new_with_account(brand_ambassador_params, user_id)
     brand_ambassador = self.new(brand_ambassador_params)
@@ -50,14 +50,14 @@ class BrandAmbassador < ActiveRecord::Base
     password = Devise.friendly_token.first(8)
     brand_ambassador.account.password = password
     brand_ambassador.account.password_confirmation = password
-    brand_ambassador.account.add_role :ba   
+    brand_ambassador.account.add_role :ba
     return brand_ambassador, password
   end
 
   def self.get_available_people(start_at, end_at, service_id, location_id)
 
     start_time = DateTime.strptime(start_at, '%m/%d/%Y %I:%M %p')
-    end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')    
+    end_time = DateTime.strptime(end_at, '%m/%d/%Y %I:%M %p')
     time_range = start_time.midnight..(start_time.midnight + 1.day - 1.minutes)
 
     ba_data = nil
@@ -67,14 +67,14 @@ class BrandAmbassador < ActiveRecord::Base
       ba_data = BrandAmbassador.joins(:available_dates).where(is_active: true, available_dates: {availablty: time_range})
     else
       ba_data = BrandAmbassador.joins(:available_dates).where(
-        is_active: true, 
-        id: location.brand_ambassadors.collect(&:id), 
+        is_active: true,
+        id: location.brand_ambassadors.collect(&:id),
         available_dates: {availablty: time_range}
       )
     end
-    
-    
-    
+
+
+
     filtered_ba_data = ba_data.collect do |ba|
       services = ba.services.where({start_at: time_range}).where.not({status: [Service.status_cancelled, Service.status_rejected]})
       available_date = ba.available_dates.where({availablty: time_range}).first
@@ -121,7 +121,7 @@ class BrandAmbassador < ActiveRecord::Base
       else
         hash_data[x.first] = [x.last]
       end
-    end    
+    end
 
     return hash_data
   end
@@ -133,7 +133,7 @@ class BrandAmbassador < ActiveRecord::Base
 
   def email
     account.email
-  end  
+  end
 
   def mileage_choice
     (mileage ? "Yes" : "No")
@@ -143,24 +143,24 @@ class BrandAmbassador < ActiveRecord::Base
     password = Devise.friendly_token.first(8)
     account.password = password
     account.password_confirmation = password
-    return password    
+    return password
   end
 
   def available_calendar
-    # available_dates.collect{|x| {title: "", 
+    # available_dates.collect{|x| {title: "",
     #   start: x.availablty.strftime("%Y-%m-%d") } }
 
     dates = []
     data = nil
     ba = self
 
-    ba.available_dates.each do |available_date| 
+    ba.available_dates.each do |available_date|
       time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
       hash_data = {start_at: time_range}
-      
+
       # unless location_name == "0"
       #   hash_data = hash_data.merge({location_id: location_name})
-      # end        
+      # end
 
       services = ba.services.select(:id, :start_at, :status, :client_id, :location_id).where(hash_data).where.not({status: 9})
 
@@ -174,7 +174,7 @@ class BrandAmbassador < ActiveRecord::Base
           color = "#f0ad4e" #orange
         elsif !available_date.am && available_date.pm
           color = "#428bca" #blue
-        end                  
+        end
       else
         periods = services.collect{|x| x.start_at.strftime("%p") }
         if periods.size == 2
@@ -188,7 +188,7 @@ class BrandAmbassador < ActiveRecord::Base
                   show_service = true
                 else
                   show = false
-                end                     
+                end
               elsif periods.include?("PM")
                 if available_date.am && available_date.pm
                   # color = "#f0ad4e"
@@ -198,18 +198,18 @@ class BrandAmbassador < ActiveRecord::Base
                   else
                     color = "#f0ad4e" #orange
                     show_service = true
-                  end                  
+                  end
                 else
                   show = false
-                end                      
+                end
               end
             else
               show = false
-            end                        
+            end
           else
             show = false
-          end          
-        end          
+          end
+        end
       end
 
       if show
@@ -229,26 +229,26 @@ class BrandAmbassador < ActiveRecord::Base
       #       start: service.start_at.strftime("%Y-%m-%d"),
       #       url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
       #       color: "#92D050"
-      #     }   
+      #     }
       #     dates.push hash
-      #   end          
-      # end      
+      #   end
+      # end
     end
 
     services.collect{|x|
       if x.status == 2 || x.status == 4 || x.status == 11
         hash = {
-          title: x.title_calendar, 
-          start: x.start_at.iso8601, 
+          title: x.title_calendar,
+          start: x.start_at.iso8601,
           end: x.end_at.iso8601,
           color: x.get_color,
           url: Rails.application.routes.url_helpers.assignment_path({id: x.id})
         }
         dates.push hash
       end
-    }      
-    
-    return dates.compact.uniq    
+    }
+
+    return dates.compact.uniq
   end
 
   def disable_dates
@@ -263,14 +263,14 @@ class BrandAmbassador < ActiveRecord::Base
     services.collect{|x|
       if x.status == 2 || x.status == 4 || x.status == 11
         {
-          title: x.title_calendar, 
-          start: x.start_at.iso8601, 
+          title: x.title_calendar,
+          start: x.start_at.iso8601,
           end: x.end_at.iso8601,
           color: x.get_color,
           url: Rails.application.routes.url_helpers.assignment_path({id: x.id})
         }
       end
-    }.compact  
+    }.compact
   end
 
   def self.get_all_available_dates(location_name)
@@ -291,11 +291,11 @@ class BrandAmbassador < ActiveRecord::Base
 
     # 5. When ba have availability for am and pm and both of time is booked, then data service should not shown.
 
-    # 6. When ba only have availability time on pm and is booked, booking will not shown    
+    # 6. When ba only have availability time on pm and is booked, booking will not shown
 
     dates = []
     data = nil
-    
+
     if location_name == "0"
       data = self.with_status_active
     else
@@ -303,13 +303,13 @@ class BrandAmbassador < ActiveRecord::Base
     end
 
     data.all.each do |ba|
-      ba.available_dates.each do |available_date| 
+      ba.available_dates.each do |available_date|
         time_range = available_date.availablty.midnight..(available_date.availablty.midnight + 1.day - 1.minutes)
         hash_data = {start_at: time_range}
-        
+
         # unless location_name == "0"
         #   hash_data = hash_data.merge({location_id: location_name})
-        # end        
+        # end
 
         services = ba.services.select(:id, :start_at, :status, :client_id, :location_id).where(hash_data).where.not({status: 9})
 
@@ -323,7 +323,7 @@ class BrandAmbassador < ActiveRecord::Base
             color = "#f0ad4e" #orange
           elsif !available_date.am && available_date.pm
             color = "#428bca" #blue
-          end                  
+          end
         else
           periods = services.collect{|x| x.start_at.strftime("%p") }
           if periods.size == 2
@@ -337,7 +337,7 @@ class BrandAmbassador < ActiveRecord::Base
                     show_service = true
                   else
                     show = false
-                  end                     
+                  end
                 elsif periods.include?("PM")
                   if available_date.am && available_date.pm
                     # color = "#f0ad4e"
@@ -347,19 +347,19 @@ class BrandAmbassador < ActiveRecord::Base
                     else
                       color = "#f0ad4e" #orange
                       show_service = true
-                    end                  
+                    end
                   else
                     show = false
-                  end                      
-                end                        
+                  end
+                end
               else
-                show = false 
-                show_service = true                     
-              end                   
+                show = false
+                show_service = true
+              end
             else
-              show = false                      
-            end          
-          end          
+              show = false
+            end
+          end
         end
 
         # show = true
@@ -382,16 +382,16 @@ class BrandAmbassador < ActiveRecord::Base
               start: service.start_at.strftime("%Y-%m-%d"),
               url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
               color: "#92D050"
-            }   
-            dates.push hash     
-          end          
+            }
+            dates.push hash
+          end
         end
       end
-      
+
       # data_criteria = {:status => 2}
       # unless location_name == "0"
       #   data_criteria = data_criteria.merge({location_id: location_name})
-      # end            
+      # end
 
       # ba.services.where(data_criteria).each do |service|
       #   hash = {
@@ -399,8 +399,8 @@ class BrandAmbassador < ActiveRecord::Base
       #     start: service.start_at.strftime("%Y-%m-%d"),
       #     url: Rails.application.routes.url_helpers.client_service_path({client_id: service.client_id, id: service.id}),
       #     color: "#92D050"
-      #   }   
-      #   dates.push hash     
+      #   }
+      #   dates.push hash
       # end
 
 

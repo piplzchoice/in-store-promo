@@ -52,5 +52,29 @@ module ApplicationHelper
     words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "tweleve", "thirteen", "fourteen", "fifteen"]
     words[number]
   end
+
+  def generate_demo_email_template(service)
+    products_string = "<ul>"
+    service.products.each{|x| products_string += "<li>#{x.name}</li>"}
+    if service.is_co_op?
+      service.coop_service.products.each{|x| products_string += "<li>#{x.name}</li>"}
+    end
+    products_string += "</ul>"
+
+    desirable_dates = "<ul>"
+    desirable_dates += "<li>#{service.tbs_datetime("first_date", "start_at", "%m/%d/%I:%M %p")}</li>"
+    desirable_dates += "<li>#{service.tbs_datetime("second_date", "start_at", "%m/%d/%I:%M %p")}</li>"
+    desirable_dates += "</ul>"
+
+
+    et = EmailTemplate.find_by_name("demo_request_template")
+    et.subject.gsub!(".client_first_name", service.client.company_name)
+    et.content.gsub!(".client_first_name", service.client.company_name)
+    et.content.gsub!(".location_contact_name", service.location.contact)
+    et.content.gsub!(".desirable_dates", desirable_dates)
+    et.content.gsub!(".products_name", products_string)
+    et.content.gsub!(".ismp_name", "Carol Wellins")
+    return et
+  end
   
 end

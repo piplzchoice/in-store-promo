@@ -9,9 +9,6 @@ gem 'pg'
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
 # gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
@@ -22,6 +19,7 @@ gem 'jquery-rails'
 gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
+gem 'react-rails', '~> 1.6.0'
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
@@ -40,7 +38,7 @@ gem "will_paginate-bootstrap"
 gem 'fullcalendar-rails'
 gem 'momentjs-rails', '~> 2.5.0'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
-gem "select2-rails"
+gem "select2-rails", '3.5.9'
 gem "icalendar"
 gem "letter_opener", :group => :development
 gem "time_difference"
@@ -49,7 +47,8 @@ gem "wkhtmltopdf-binary"
 gem 'redactor-rails'
 gem "fog"
 
-gem 'debugger', group: [:development, :test]
+# gem 'debugger', group: [:development, :test]
+gem 'byebug', group: [:development, :test]
 
 gem 'exception_notification'
 gem "rest_client", :require => "rest_client"
@@ -67,4 +66,3 @@ gem "spreadsheet"
 
 gem 'whenever', :require => false
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
-

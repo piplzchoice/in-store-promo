@@ -303,6 +303,12 @@ body {
   color: white;
 }
 
+.tbs {
+  background-color: #FE0000;
+  border-color: #FE0000;
+  color: white;
+}
+
 .inventory-confirmed {
   background-color: #b6fcc2;
   border-color: #b6fcc2;
@@ -324,6 +330,10 @@ body {
 
 .width_35px {
   width: 35px;
+}
+
+#ba-selection {
+  display: none; 
 }
 
 @media print

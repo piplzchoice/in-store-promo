@@ -1,0 +1,122 @@
+<h3 class="page-header">
+  Order
+  <label>
+    <%= link_to("(Edit)", "#", {data: {toggle: "modal", target: "#modalEditOrder"}}) if @order.status == "open"%>
+  </label>
+</h3>
+<div class="row">
+  <div class="col-md-4">
+    <label>Order Number :</label>
+    <p><%= @order.number %></p>
+  </div>
+  <div class="col-md-4">
+    <label>Company Name :</label>
+    <p><%= @client.company_name %></p>
+  </div>
+  <div class="col-md-4">
+    <label>Status Order :</label>
+    <p><%= @order.status.capitalize %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label>DOT Number</label>
+    <p><%= @order.dot_number || "-" %></p>
+  </div>
+  <div class="col-md-4">
+    <label>Distributor</label>
+    <p><%= @order.distributor || "-" %></p>
+  </div>
+  <div class="col-md-4">
+    <label>To be completed by</label>
+    <p><%= @order.to_be_completed_by || "-" %></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <label>Product Sample</label>
+    <p><%= @order.product_sample || "-" %></p>
+  </div>
+  <div class="col-md-4">
+    <label>Products :</label>
+    <ul>
+      <% @order.products.each do |product| %>
+      <li><%= product.name %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <label>Locations :</label>
+    <ul>
+      <% @order.locations.each do |location| %>
+      <li><%= location.name %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <label>Comments:</label>
+    <p><%= @order.comments || "-" %></p>
+  </div>
+</div>
+
+<hr />
+
+<%= react_component 'NewOrder', {
+  order_id: @order.id,
+  order_status: @order.status,
+  client_id: @client.id,
+  locations: @order.locations.collect{|x| {id: x.id, name: x.name}},
+  product_ids: @order.product_ids,
+  services: @services,
+} %>
+
+<div class="row">
+  <div class="col-md-12">
+    <br /><br /><br /><br />
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalEditOrder" tabindex="-1" role="dialog" aria-labelledby="modalEditOrderLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Edit Order</h4>
+      </div>
+      <%= form_for [@client, @order], html: {role: "form"} do |f| %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label">DOT Number:</label>
+            <%= f.text_field :dot_number, {class: "form-control"} %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Product Sample:</label>
+            <%= f.select(:product_sample, DefaultValue.sample_product,
+              {include_blank: true}, {class: "form-control"}) %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">To be completed by:</label>
+            <%= f.text_field :to_be_completed_by, {class: "form-control"} %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Distributor:</label>
+            <%= f.text_field :distributor, {class: "form-control"} %>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Comments</label>
+            <%= f.text_area :comments, {class: "form-control"} %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

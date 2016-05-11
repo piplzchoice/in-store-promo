@@ -1,0 +1,29 @@
+<% if @orders.empty? || (@orders.size == 1 && @orders.first.id.nil?) %>
+  No Available Orders
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Status</th>
+        <th>Created</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @orders.each do |order| %>
+        <% unless order.id.nil? %>
+          <tr>
+            <th scope="row"><%= order.number %></th>
+            <td><%= order.status %></td>
+            <td><%= order.created_at.strftime('%m/%d/%Y - %I:%M %P') %></td>
+            <td>
+              <%= link_to("Show", client_order_path({client_id: @client.id, id: order.id}),
+                {class: "btn btn-primary", role: "button"}) %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

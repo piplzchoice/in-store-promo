@@ -260,3 +260,31 @@ if EmailTemplate.find_by_name("changes_on_your_services").nil?
 
   puts "created email template for changes_on_your_services"  
 end
+
+if EmailTemplate.find_by_name("demo_request_template").nil?
+  demo_request_template = {
+    name: "demo_request_template", 
+    subject: "Request for .client_first_name demo at your store",
+    content: "
+      <p>Hello .location_contact_name,</p>
+      <br />
+      <p>We would like to set up a demo at your store for .client_first_name line of products.</p>
+      <br />
+      <p>Please let me know which one of the following dates is more convenient for you as soon as possible as Brand Ambassadors availability changes quickly:</p>
+      <p>.desirable_dates</p>
+      <br />
+      <p>Below is the list of products .client_first_name wants us to demo</p>
+      <p>.products_name</p>
+      <br />
+      <p>Please connect us via email with the buyer so we can check on the inventory before the demo to ensure its success.</p>
+      <br />
+      <p>Thank you,</p>
+      <br />
+      <p>Best regards</p>
+      <p>.ismp_name</p>
+    "
+  }  
+  EmailTemplate.create(demo_request_template)
+
+  puts "created email template for demo_request_template"  
+end

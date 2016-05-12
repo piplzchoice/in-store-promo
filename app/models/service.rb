@@ -798,6 +798,19 @@ class Service < ActiveRecord::Base
     status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
   end
 
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
+    srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
+    srv.status = 12
+    srv.parent_id = parent_id
+    srv.product_ids = JSON.parse ids_coop_products
+    srv.save!
+    Log.record_status_changed(srv.id, 0, srv.status, current_user_id)
+  end
+
+  def is_tbs_before?
+    status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
+  end
+
   def is_co_op?
     !parent.nil? || !co_op_services.empty?
   end

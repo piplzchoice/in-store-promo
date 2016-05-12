@@ -1,6 +1,6 @@
 class ApplicationMailer < ActionMailer::Base
   include ActionView::Helpers::NumberHelper
-  default :from => "info@in-store-marketing.com"
+  default :from => "info@flavorfanaticsism.com"
 
   def welcome_email(email, fullname, password)
     et = EmailTemplate.find_by_name("welcome_email")
@@ -172,8 +172,8 @@ class ApplicationMailer < ActionMailer::Base
     @content = log.data["email_log"]["content"]
     mail(
       from: 'schedule@flavorfanaticsism.com',
-      to: service.location.email, 
-      # to: "location@contact.com", 
+      to: service.location.email,
+      # to: "location@contact.com",
       cc: "carolw@falvorfanaticsism.com",
       subject: log.data["email_log"]["subject"]
     )

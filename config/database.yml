@@ -18,7 +18,7 @@ default: &default
   adapter: postgresql
   encoding: utf8
   # For details on connection pooling, see rails configuration guide
-  # http://guides.rubyonrails.org/configuring.html#database-pooling
+  # http://guides.rubyonrails.org/configuring.html#database-poolingp
   pool: 5
 
 development:
@@ -37,6 +37,12 @@ production:
   password:
   host: localhost
 
-# heroku pgbackups:capture --app in-store-marketing && curl -o latest.dump `heroku pgbackups:url --app in-store-marketing` && rake db:drop db:create && pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgresql -d instorem_server latest.dump && rake stuff:update_users_password
+# heroku pgbackups:capture --app in-store-marketing && curl -o latest.dump `heroku pgbackups:url --app in-store-marketing` && rake db:drop db:create && pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgresql -d instorem_server instorem_server.dump && rake stuff:update_users_password
+# heroku pgbackups:capture --app instorem && curl -o latest.dump `heroku pgbackups:url --app instorem` && rake db:drop db:create && pg_restore --verbose --clean --no-acl --no-owner -h localhost -U postgresql -d instorem_server latest.dump && rake stuff:update_users_password
 
-# heroku pgbackups:restore DATABASE 'https://dl.dropboxusercontent.com/u/34533306/latest.dump' --app instorem && heroku run rake stuff:update_users_password --app instorem
+# heroku pg:backups restore 'https://dl.dropboxusercontent.com/u/34533306/instorem_server.dump' DATABASE -a instorem && heroku run rake stuff:update_users_password db:migrate db:seed --app instorem
+
+
+# psql -U postgresql -d instorem_server < PostgreSQL.sql
+# psql -U postgresql -d ism_staging < PostgreSQL.sql
+# heroku pg:backups restore 'https://dl.dropboxusercontent.com/u/34533306/instorem_server.dump' DATABASE -a instorem

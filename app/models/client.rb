@@ -100,7 +100,41 @@ class Client < ActiveRecord::Base
       end
     end
 
+    service_tbs = client.services.where(status: 12)
+    unless service_tbs.blank?
+      service_tbs.each do |srv|
+        calendars.push(
+          self.calendar_obj(
+            srv.title_calendar,
+            DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
+            DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
+            srv.get_color,
+            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+          )
+        )
+        calendars.push(
+          self.calendar_obj(
+            srv.title_calendar,
+            DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
+            DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
+            srv.get_color,
+            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+          )
+        )
+      end
+    end
+
     return calendars.uniq.compact
+  end
+
+  def self.calendar_obj(title, start_date, end_date, color, url)
+    {
+      title: title,
+      start: start_date,
+      end: end_date,
+      color: color,
+      url: url
+    }
   end
 
   def self.calendar_obj(title, start_date, end_date, color, url)

@@ -12,9 +12,14 @@ var SelectBrandAmbassadors = React.createClass({
     };
   },
   checkValidate: function(){
-    return this.props.location_id != 0 &&
-    this.props.first_date.start_at !== null &&
-    this.props.second_date.start_at !== null
+    var validate;
+    if(this.props.noNeedSecondDate === false) {
+      validate = this.props.location_id != 0 && this.props.first_date.start_at !== null && this.props.second_date.start_at !== null
+    } else {
+      validate = this.props.location_id != 0 && this.props.first_date.start_at !== null
+    }
+    
+    return validate;
   },
   getBrandAmbassadors: function(thatProps){
     if(this.checkValidate()) {
@@ -22,7 +27,7 @@ var SelectBrandAmbassadors = React.createClass({
         var params = {
           service_id: this.state.service_id,location_id: thatProps.location_id,
           first_date: thatProps.first_date, second_date: thatProps.second_date,
-          react: true,
+          no_need_second_date: thatProps.noNeedSecondDate, react: true,
         }
 
         this.serverRequest = $.get(url, params, function (data) {

@@ -269,8 +269,12 @@ class ServicesController < ApplicationController
     if params[:react] == "true"
       start_at_first = params[:first_date][:start_at]
       end_at_first = params[:first_date][:end_at]
-      start_at_second = params[:second_date][:start_at]
-      end_at_second = params[:second_date][:end_at]
+
+      unless params[:no_need_second_date] == "true"
+        start_at_second = params[:second_date][:start_at]
+        end_at_second = params[:second_date][:end_at]
+      end
+
     else
       start_at_first = params[:tbs_start_at_first]
       end_at_first = params[:tbs_end_at_first]
@@ -283,14 +287,17 @@ class ServicesController < ApplicationController
       params[:service_id], params[:location_id]
     )
 
-    ba_second_tbs = BrandAmbassador.get_available_people(
-      start_at_second, end_at_second,
-      params[:service_id], params[:location_id]
-    )
-
     ba_ids = []
     ba_ids.push ba_first_tbs.collect(&:id)
-    ba_ids.push ba_second_tbs.collect(&:id)
+
+    unless params[:no_need_second_date] == "true"
+      ba_second_tbs = BrandAmbassador.get_available_people(
+        start_at_second, end_at_second,
+        params[:service_id], params[:location_id]
+      )
+      ba_ids.push ba_second_tbs.collect(&:id)
+    end
+    
     ba_ids = ba_ids.flatten.uniq
 
     @brand_ambassadors = BrandAmbassador.find(ba_ids)
@@ -310,7 +317,7 @@ class ServicesController < ApplicationController
 
   def get_data_ids
     ba = {}
-    unless params[:ba_ids].nil?
+    unless params[:ba_ids].nil? && params[:location_id].nil?
       if params[:status] == "0" || params[:status] == "12"
         second_ba = BrandAmbassador.find(params[:ba_ids].last).name
       else

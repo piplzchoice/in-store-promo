@@ -4,9 +4,20 @@ var EditOrderModalFormService = React.createClass({
       location_id: this.props.service.location_id,
       brand_ambassador_ids: this.props.service.brand_ambassador_ids,
       first_date: this.props.service.first_date,
-      second_date: this.props.service.second_date
+      second_date: this.props.service.second_date,
+      no_need_second_date: false
     };
   },
+  componentWillMount: function(){
+    noneedSecondDate = false
+    if(this.props.service.no_need_second_date !== undefined) {
+      noneedSecondDate = this.props.service.no_need_second_date
+    }    
+
+    this.setState({
+      no_need_second_date: noneedSecondDate
+    });
+  },  
   componentDidMount: function(){
     $(ReactDOM.findDOMNode(this)).modal('show');
     $(ReactDOM.findDOMNode(this)).on('hidden.bs.modal', this.props.handleHideModal);
@@ -14,6 +25,9 @@ var EditOrderModalFormService = React.createClass({
   handleLocationChange: function(event){
     this.setState({location_id: event.target.value});
   },
+  noNeedSecondDate: function(event) {
+    this.setState({no_need_second_date: event.target.checked});
+  },  
   addBrandAmbassadorIds: function(event){
     var ids = this.state.brand_ambassador_ids
 
@@ -47,6 +61,16 @@ var EditOrderModalFormService = React.createClass({
       locationOptions.push(<option key={location.id}
         value={location.id}>{location.name}</option>)
     });
+
+    var selectDateTimeSecond = null;
+    if(this.state.no_need_second_date == false) {
+      selectDateTimeSecond = 
+        <SelectDateTime handleDateTime={this.addDatetime}
+            dateOrder="second_date"
+            serviceDate={this.props.service.second_date}
+          />
+    }
+
     return (
       <div className="modal fade">
         <div className="modal-dialog">
@@ -73,10 +97,17 @@ var EditOrderModalFormService = React.createClass({
                   dateOrder="first_date"
                   serviceDate={this.props.service.first_date}
                 />
-              <SelectDateTime handleDateTime={this.addDatetime}
-                  dateOrder="second_date"
-                  serviceDate={this.props.service.second_date}
-                />
+
+              <div className="form-group">
+                <label>
+                  <input type="checkbox"
+                    onClick={this.noNeedSecondDate}
+                    defaultChecked={this.state.no_need_second_date}
+                  /> No need for 2nd date
+                </label>
+              </div>
+
+              {selectDateTimeSecond}
 
               <div className="form-group">
                 <label className="control-label">Select BA</label>
@@ -87,6 +118,7 @@ var EditOrderModalFormService = React.createClass({
                   second_date={this.state.second_date}
                   brand_ambassador_ids={this.state.brand_ambassador_ids}
                   handleSelectBA={this.addBrandAmbassadorIds}
+                  noNeedSecondDate={this.state.no_need_second_date}
                 />
               </div>
 

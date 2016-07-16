@@ -63,7 +63,7 @@ module ApplicationHelper
 
     desirable_dates = "<ul>"
     desirable_dates += "<li>#{service.tbs_datetime("first_date", "start_at", "%m/%d/%I:%M %p")}</li>"
-    desirable_dates += "<li>#{service.tbs_datetime("second_date", "start_at", "%m/%d/%I:%M %p")}</li>"
+    desirable_dates += "<li>#{service.tbs_datetime("second_date", "start_at", "%m/%d/%I:%M %p")}</li>" unless service.no_need_second_date    
     desirable_dates += "</ul>"
 
 

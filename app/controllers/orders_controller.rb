@@ -11,6 +11,16 @@ class OrdersController < ApplicationController
     redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Order Created"
   end
 
+  def add_location
+    client = Client.find params[:client_id]
+    order = client.orders.find params[:id]
+    loc_ids = order.location_ids
+    params[:order_locations].split(",").each{|x| loc_ids.push x.to_i}
+    order.location_ids = loc_ids.uniq
+    order.save
+    redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Location Added"  
+  end
+
   def update
     @client = Client.find(params[:client_id])
     @order = @client.orders.find(params[:id])

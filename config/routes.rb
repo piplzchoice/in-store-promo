@@ -25,6 +25,7 @@ Rails.application.routes.draw do
         put :update_status
         post :recurring
         post :archive
+        post :add_location
         delete :removecopy
       end
     end

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       member do
         put :update_status
         post :recurring
+        post :archive
         delete :removecopy
       end
     end

@@ -36,6 +36,14 @@ class OrdersController < ApplicationController
     redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: msg  
   end
 
+  def add_product
+    client = Client.find params[:client_id]
+    order = client.orders.find params[:id]    
+    order.product_ids = params[:order_products_ids]
+    order.save
+    redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Product Added"  
+  end
+
   def update
     @client = Client.find(params[:client_id])
     @order = @client.orders.find(params[:id])

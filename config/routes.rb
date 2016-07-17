@@ -27,6 +27,7 @@ Rails.application.routes.draw do
         post :archive
         post :add_location
         delete :remove_location
+        post :add_product        
         delete :removecopy
       end
     end

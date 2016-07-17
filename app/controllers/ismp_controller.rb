@@ -57,10 +57,15 @@ class IsmpController < ApplicationController
   end
 
   def destroy
-    assign_user
-    if @user.set_data_false
-      redirect_to ismp_index_url, {notice: "ISMP de-activated"}
+    assign_user    
+    if @user.is_active
+      @user.set_data_false
+      msg = "ISMP de-activated"
+    else      
+      @user.set_data_true
+      msg = "ISMP re-activated"
     end
+    redirect_to ismp_index_url, {notice: msg}
   end
 
   def set_as_ba

@@ -51,7 +51,13 @@
     <label>Locations :</label>
     <ul>
       <% @order.locations.each do |location| %>
-      <li><%= location.name %></li>
+        <li>
+          <%= location.name %>
+          &nbsp
+          <%= link_to remove_location_client_order_path(client_id: @client.id, id: @order.id, location_id: location.id), {data: { confirm: "Are you sure?" }, :method => :delete} do %>
+            <span class="label label-danger">remove</span>
+          <% end %>
+        </li>
       <% end %>
     </ul>
     <%= link_to("Add Location", "#", {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: "#modalAddLocation"}}) %>

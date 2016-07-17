@@ -13,12 +13,35 @@ class OrdersController < ApplicationController
 
   def add_location
     client = Client.find params[:client_id]
-    order = client.orders.find params[:id]
+    order = client.orders.find params[:id]    
     loc_ids = order.location_ids
     params[:order_locations].split(",").each{|x| loc_ids.push x.to_i}
     order.location_ids = loc_ids.uniq
     order.save
     redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Location Added"  
+  end
+
+  def remove_location
+    client = Client.find params[:client_id]
+    order = client.orders.find params[:id]
+    msg = "Location Removed"
+    if order.services.where(location_id: params[:location_id].to_i).size == 0
+      loc_ids = order.location_ids
+      loc_ids.delete(params[:location_id].to_i)
+      order.location_ids = loc_ids 
+      order.save
+    else
+      msg = "can't remove location, is been used by demo"
+    end
+    redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: msg  
+  end
+
+  def add_product
+    client = Client.find params[:client_id]
+    order = client.orders.find params[:id]    
+    order.product_ids = params[:order_products_ids]
+    order.save
+    redirect_to client_order_url({client_id: params[:client_id], id: order.id}), notice: "Product Added"  
   end
 
   def update

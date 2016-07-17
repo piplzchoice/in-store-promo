@@ -11,6 +11,7 @@ class ReportsController < ApplicationController
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
           if session[:filter_history_reports].nil?
             @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
+            @status = []
           else
             @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => session[:filter_history_reports]["page"])
             @status = session[:filter_history_reports]["status"]
@@ -52,7 +53,7 @@ class ReportsController < ApplicationController
         end
 
         session[:filter_history_reports] = {
-          "status" => params[:status],
+          "status" => params[:statuses],
           "assigned_to" => ba_id,
           "client_name" => client_name,
           "sort_column" => sort_column,
@@ -79,7 +80,7 @@ class ReportsController < ApplicationController
           client_name = current_user.client.id
         end
 
-        data = {"status" => params[:status], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
+        data = {"status" => params[:statuses], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
         @services = Service.filter_and_order(data)
 
         headers['Content-Type'] ||= 'text/csv; charset=iso-8859-1;'

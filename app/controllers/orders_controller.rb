@@ -44,6 +44,15 @@ class OrdersController < ApplicationController
     end
   end
 
+  def archive
+    client = Client.find(params[:client_id])
+    order = client.orders.find(params[:id])
+    order.update_attribute(:archived, true)
+    respond_to do |format|
+      format.json { render json: {success: true} }
+    end  
+  end
+
   def removecopy
     client = Client.find(params[:client_id])
     order = client.orders.find(params[:id])

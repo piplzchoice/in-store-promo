@@ -31,6 +31,8 @@ class Order < ActiveRecord::Base
 
   serialize :service_copy, JSON
 
+  default_scope { where(archived: false) }
+
   def generate_number(client_id)
     client = Client.find client_id
     order_size = client.orders.size

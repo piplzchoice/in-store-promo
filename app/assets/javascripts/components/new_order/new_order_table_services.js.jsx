@@ -13,6 +13,7 @@ var NewOrderTableServices = React.createClass({
             order_id={this.props.order_id}
             client_id={this.props.client_id}
             product_ids={this.props.product_ids}
+            no_need_second_date={this.props.no_need_second_date}
             handleUpdateService={this.props.handleUpdateService}
             handleDeleteService={this.props.handleDeleteService}
           />

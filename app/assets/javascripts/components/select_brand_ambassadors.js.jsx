@@ -11,18 +11,19 @@ var SelectBrandAmbassadors = React.createClass({
       brand_ambassador_ids: []
     };
   },
-  checkValidate: function(){
+  checkValidate: function(thatProps){
     var validate;
-    if(this.props.noNeedSecondDate === false) {
-      validate = this.props.location_id != 0 && this.props.first_date.start_at !== null && this.props.second_date.start_at !== null
+    this.setState({brand_ambassadors: []});
+    if(thatProps.noNeedSecondDate === false) {
+      validate = thatProps.location_id != 0 && thatProps.first_date.start_at !== null && thatProps.second_date.start_at !== null
     } else {
-      validate = this.props.location_id != 0 && this.props.first_date.start_at !== null
+      validate = thatProps.location_id != 0 && thatProps.first_date.start_at !== null
     }
     
     return validate;
   },
   getBrandAmbassadors: function(thatProps){
-    if(this.checkValidate()) {
+    if(this.checkValidate(thatProps)) {
         var url = "/clients/" + thatProps.client_id + "/services/generate_select_ba_tbs"
         var params = {
           service_id: this.state.service_id,location_id: thatProps.location_id,
@@ -42,7 +43,7 @@ var SelectBrandAmbassadors = React.createClass({
     this.getBrandAmbassadors(nextProps)
   },
   componentWillUnmount: function() {
-    if(this.checkValidate()) {
+    if(this.checkValidate(this.props)) {
       this.serverRequest.abort();
     }
   },

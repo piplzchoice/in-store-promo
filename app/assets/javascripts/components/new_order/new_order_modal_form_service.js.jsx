@@ -24,6 +24,9 @@ var NewOrderModalFormService = React.createClass({
   },
   noNeedSecondDate: function(event) {
     this.setState({no_need_second_date: event.target.checked});
+    if(event.target.checked === true) {
+      this.setState({second_date: {start_at: null, end_at: null}});
+    }
   },
   addBrandAmbassadorIds: function(event){
     var ids = this.state.brand_ambassador_ids

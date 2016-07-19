@@ -13,6 +13,9 @@ class ReportsController < ApplicationController
             @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
             @status = []
           else
+            unless session[:filter_history_reports]["status"].class == Array
+              session[:filter_history_reports]["status"] = []
+            end
             @services = Service.filter_and_order(session[:filter_history_reports]).paginate(:page => session[:filter_history_reports]["page"])
             @status = session[:filter_history_reports]["status"]
             @assigned_to = session[:filter_history_reports]["assigned_to"]

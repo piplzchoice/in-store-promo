@@ -13,7 +13,6 @@ var SelectBrandAmbassadors = React.createClass({
   },
   checkValidate: function(thatProps){
     var validate;
-    this.setState({brand_ambassadors: []});
     if(thatProps.noNeedSecondDate === false) {
       validate = thatProps.location_id != 0 && thatProps.first_date.start_at !== null && thatProps.second_date.start_at !== null
     } else {
@@ -24,6 +23,7 @@ var SelectBrandAmbassadors = React.createClass({
   },
   getBrandAmbassadors: function(thatProps){
     if(this.checkValidate(thatProps)) {
+        // this.setState({brand_ambassadors: []});
         var url = "/clients/" + thatProps.client_id + "/services/generate_select_ba_tbs"
         var params = {
           service_id: this.state.service_id,location_id: thatProps.location_id,

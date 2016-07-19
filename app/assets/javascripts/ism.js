@@ -188,7 +188,12 @@ $(function() {
   });
 
   $("#view-calendar-filter").on("click", function(){
-    url = $(this).data("url") + "?&status=" + $("#status").val() + "&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val();
+    var paramsCheckbox = "";
+    $(".statuses:checked").map(function() {
+      paramsCheckbox += "&status%5B%5D=" + $(this).val();
+    });    
+    // url = $(this).data("url") + "?&status=" + $("#status").val() + "&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val();
+    url = $(this).data("url") + "?&assigned_to=" + $("#assigned_to").val() + "&project_name=" + $("#project_name").val() + "&client_name=" + $("#client_name").val() + paramsCheckbox;    
     // var win = window.open(url, '_blank');
     // win.focus();
     window.location = url;
@@ -307,7 +312,6 @@ $(function() {
   });
 
   $(".view-email-log-content").on("click", function(){
-
     $("#view-email-log-date").html($(this).data("log-content").date_sent)
     $("#view-email-log-subject").html($(this).data("log-content").subject)
     $("#view-email-log-content").html($(this).data("log-content").content)

@@ -11,7 +11,8 @@ var NewOrderModalFormService = React.createClass({
         start_at: null,
         end_at: null,
       },
-      status: 0
+      status: 0,
+      no_need_second_date: false
     };
   },
   componentDidMount: function(){
@@ -20,6 +21,12 @@ var NewOrderModalFormService = React.createClass({
   },
   handleLocationChange: function(event){
     this.setState({location_id: event.target.value});
+  },
+  noNeedSecondDate: function(event) {
+    this.setState({no_need_second_date: event.target.checked});
+    if(event.target.checked === true) {
+      this.setState({second_date: {start_at: null, end_at: null}});
+    }
   },
   addBrandAmbassadorIds: function(event){
     var ids = this.state.brand_ambassador_ids
@@ -39,8 +46,17 @@ var NewOrderModalFormService = React.createClass({
     this.setState(selectedDt)
   },
   addService: function(){
-    this.props.handleNewService(this.state);
-    $(ReactDOM.findDOMNode(this)).modal('hide');
+    var validate;
+    if(this.state.noNeedSecondDate === false) {
+      validate = this.state.location_id != 0 && this.state.first_date.start_at !== null && this.state.second_date.start_at !== null && this.state.brand_ambassador_ids.length != 0
+    } else {
+      validate = this.state.location_id != 0 && this.state.first_date.start_at !== null && this.state.brand_ambassador_ids.length != 0
+    }
+
+    if(validate) {
+      this.props.handleNewService(this.state);
+      $(ReactDOM.findDOMNode(this)).modal('hide');
+    }    
   },
   render: function(){
     locationOptions = [];
@@ -50,6 +66,16 @@ var NewOrderModalFormService = React.createClass({
       locationOptions.push(<option key={location.id}
         value={location.id}>{location.name}</option>)
     });
+    var defaultChecked = false;
+
+    var selectDateTimeSecond = null;
+    if(this.state.no_need_second_date == false) {
+      selectDateTimeSecond = 
+        <SelectDateTime handleDateTime={this.addDatetime}
+          dateOrder="second_date"
+          serviceDate="0"
+        />;
+    }
     return (
       <div className="modal fade">
         <div className="modal-dialog">
@@ -75,10 +101,17 @@ var NewOrderModalFormService = React.createClass({
                   dateOrder="first_date"
                   serviceDate="0"
                    />
-              <SelectDateTime handleDateTime={this.addDatetime}
-                  dateOrder="second_date"
-                  serviceDate="0"
-                  />
+
+              <div className="form-group">
+                <label>
+                  <input type="checkbox"
+                    onClick={this.noNeedSecondDate}
+                    defaultChecked={defaultChecked}
+                  /> No need for 2nd date
+                </label>
+              </div>
+
+              {selectDateTimeSecond}              
 
               <div className="form-group">
                 <label className="control-label">Select BA</label>
@@ -88,6 +121,7 @@ var NewOrderModalFormService = React.createClass({
                   first_date={this.state.first_date}
                   second_date={this.state.second_date}
                   handleSelectBA={this.addBrandAmbassadorIds}
+                  noNeedSecondDate={this.state.no_need_second_date}
                 />
               </div>
 

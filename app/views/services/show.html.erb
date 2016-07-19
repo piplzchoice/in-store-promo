@@ -59,22 +59,24 @@
       </p>
     </div>
 
-    <div class="col-md-4">
-      <label>Second Datetime</label>
-      <p>
-        <strong>Date: </strong>
-        <%= @service.tbs_datetime("second_date", "start_at", "%m/%d/%Y") %>
-      </p>
-      <p>
-        <strong>Start at:</strong>
-        <%= @service.tbs_datetime("second_date", "start_at", "%I:%M %p") %>
-      </p>
-      <p>
-        <strong>End at:</strong>
-        <%= @service.tbs_datetime("second_date", "end_at", "%I:%M %p") %>
-      </p>
+    <% unless @service.no_need_second_date %>
+      <div class="col-md-4">
+        <label>Second Datetime</label>
+        <p>
+          <strong>Date: </strong>
+          <%= @service.tbs_datetime("second_date", "start_at", "%m/%d/%Y") %>
+        </p>
+        <p>
+          <strong>Start at:</strong>
+          <%= @service.tbs_datetime("second_date", "start_at", "%I:%M %p") %>
+        </p>
+        <p>
+          <strong>End at:</strong>
+          <%= @service.tbs_datetime("second_date", "end_at", "%I:%M %p") %>
+        </p>
+      </div>
     </div>
-  </div>
+  <% end %>
 
 <% else %>
 

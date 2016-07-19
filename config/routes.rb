@@ -24,6 +24,10 @@ Rails.application.routes.draw do
       member do
         put :update_status
         post :recurring
+        post :archive
+        post :add_location
+        delete :remove_location
+        post :add_product        
         delete :removecopy
       end
     end

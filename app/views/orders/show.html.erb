@@ -43,17 +43,27 @@
     <label>Products :</label>
     <ul>
       <% @order.products.each do |product| %>
-      <li><%= product.name %></li>
-      <% end %>
+      <li>
+        <%= product.name %>
+      </li>
+      <% end %>      
     </ul>
+    <%= link_to("Add Product", "#", {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: "#modalAddProduct"}}) %>
   </div>
   <div class="col-md-4">
     <label>Locations :</label>
     <ul>
       <% @order.locations.each do |location| %>
-      <li><%= location.name %></li>
+        <li>
+          <%= location.name %>
+          &nbsp
+          <%= link_to remove_location_client_order_path(client_id: @client.id, id: @order.id, location_id: location.id), {data: { confirm: "Are you sure?" }, :method => :delete} do %>
+            <span class="label label-danger">remove</span>
+          <% end %>
+        </li>
       <% end %>
     </ul>
+    <%= link_to("Add Location", "#", {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: "#modalAddLocation"}}) %>
   </div>
 </div>
 <div class="row">
@@ -115,6 +125,67 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+// modal for add more locations
+<div class="modal fade" id="modalAddLocation" tabindex="-1" role="dialog" aria-labelledby="modalAddLocationLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Location</h4>
+      </div>
+      <%= form_tag(add_location_client_order_path(client_id: @client.id, id: @order.id), method: :post, role: "form") do %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label">Location</label>
+            <%= text_field_tag "order_locations", nil, {
+              required: true,
+              class: "select-2-box form-control",
+              data: {
+                url: autocomplete_location_name_client_services_path(client_id: @client.id),
+              }
+            } %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Add</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="modalAddProduct" tabindex="-1" role="dialog" aria-labelledby="modalAddProductLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add Product</h4>
+      </div>
+      <%= form_tag(add_product_client_order_path(client_id: @client.id, id: @order.id), method: :post, role: "form") do %>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="control-label">Products</label>
+              <% @client.products.each do |product| %>
+                <div className="checkbox">
+                  <label>
+                    <%= check_box_tag("order_products_ids[]", product.id, @order.product_ids.include?(product.id)) %>
+                    <%= product.name %>                    
+                  </label>
+                </div>
+              <% end %>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
       <% end %>
     </div>

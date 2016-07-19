@@ -28,6 +28,7 @@
 #  status_inventory      :boolean          default(FALSE)
 #  tbs_data              :text
 #  order_id              :integer          default(0)
+#  no_need_second_date   :boolean          default(FALSE)
 #
 
 # note for field "status"
@@ -798,6 +799,19 @@ class Service < ActiveRecord::Base
     status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
   end
 
+  def create_coops_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products, parent_id, current_user_id)
+    srv = Service.build_data_tbs(service_params, tbs_params, co_op_client_id, ids_coop_products)
+    srv.status = 12
+    srv.parent_id = parent_id
+    srv.product_ids = JSON.parse ids_coop_products
+    srv.save!
+    Log.record_status_changed(srv.id, 0, srv.status, current_user_id)
+  end
+
+  def is_tbs_before?
+    status == 9 && logs.last.category == "status_changed" && logs.last.data["origin"] == 12
+  end
+
   def is_co_op?
     !parent.nil? || !co_op_services.empty?
   end
@@ -960,20 +974,22 @@ class Service < ActiveRecord::Base
     service.brand_ambassador_id = 1000
     service.start_at = DateTime.now
     service.end_at = DateTime.now
+    service.status = 12
+    service.no_need_second_date = service_params["no_need_second_date"]
 
     start_at_first = DateTime.strptime(tbs_params["start_at_first"], '%m/%d/%Y %I:%M %p')
     end_at_first = DateTime.strptime(tbs_params["end_at_first"], '%m/%d/%Y %I:%M %p')
 
-    start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
-    end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
-
     service.tbs_data = {
-      first_date: {start_at: start_at_first, end_at: end_at_first},
-      second_date: {start_at: start_at_second, end_at: end_at_second},
+      first_date: {start_at: start_at_first, end_at: end_at_first},      
       ba_ids: JSON.parse(tbs_params["ba_ids"])
     }
 
-    service.status = 12
+    unless service_params["no_need_second_date"] == "true"
+      start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
+      end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
+      service.tbs_data["second_date"] = {start_at: start_at_second, end_at: end_at_second}
+    end        
 
     return service
     # service = Service.where({
@@ -1013,20 +1029,27 @@ class Service < ActiveRecord::Base
   end
 
   def format_react_component
-    {
+    react_data = {
       location_id: self.location_id,
       brand_ambassador_ids: (status == 12 ? tbs_data["ba_ids"] : [brand_ambassador_id]),
       first_date: {
         start_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : start_at.strftime("%m/%d/%Y %I:%M %p")),
         end_at: (status == 12 ? DateTime.parse(tbs_data["first_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : end_at.strftime("%m/%d/%Y %I:%M %p")),
       },
-      second_date: {
-        start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
-        end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
-      },
       status: self.status,
-      id: self.id
+      id: self.id,
+      no_need_second_date: self.no_need_second_date
     }
+
+    unless no_need_second_date
+      react_data["second_date"] = 
+        {
+          start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
+          end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
+        }
+    end   
+
+    return react_data
   end
 
   def tbsdata

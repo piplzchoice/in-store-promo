@@ -12,13 +12,22 @@
       <div class="modal-body">
       <%= form_tag change_to_schedule_client_service_path(@client, @service), html: {role: "form"} do %>
 
-        <div class="form-group">
-          <label class="control-label">Select Date Time</label>
-          <%= select_tag "changed_tbs[datetime]",
-          "<option value='first_date'>#{DateTime.parse(@service.tbsdata["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["first_date"]["end_at"]).strftime(" - %I:%M %p")}</option>" +
-          "<option value='second_date'>#{DateTime.parse(@service.tbsdata["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["second_date"]["end_at"]).strftime(" - %I:%M %p")}</option>".html_safe,
-          class: "form-control", include_blank: true, require: true %>
-        </div>
+        <% if @service.no_need_second_date %>
+          <div class="form-group">
+            <label class="control-label">Select Date Time</label>
+            <%= select_tag "changed_tbs[datetime]",
+            "<option value='first_date'>#{DateTime.parse(@service.tbsdata["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["first_date"]["end_at"]).strftime(" - %I:%M %p")}</option>".html_safe,
+            class: "form-control", include_blank: true, require: true %>
+          </div>        
+        <% else %>
+          <div class="form-group">
+            <label class="control-label">Select Date Time</label>
+            <%= select_tag "changed_tbs[datetime]",
+            "<option value='first_date'>#{DateTime.parse(@service.tbsdata["first_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["first_date"]["end_at"]).strftime(" - %I:%M %p")}</option>" +
+            "<option value='second_date'>#{DateTime.parse(@service.tbsdata["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") + DateTime.parse(@service.tbsdata["second_date"]["end_at"]).strftime(" - %I:%M %p")}</option>".html_safe,
+            class: "form-control", include_blank: true, require: true %>
+          </div>        
+        <% end %>
 
         <div class="form-group">
           <label class="control-label">Select BA</label>

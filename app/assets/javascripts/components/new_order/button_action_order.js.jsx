@@ -22,6 +22,15 @@ var ButtonActionOrder = React.createClass({
       });
     }
   },
+  archiveOrder: function() {
+    that = this;
+    $.ajax({
+      url: "/clients/" + that.props.client_id + "/orders/" + that.props.order_id+ "/archive",
+      method: "POST",
+    }).success(function(data) {
+      window.location.href= "/clients/" + that.props.client_id;
+    });
+  },
   recurringOrder: function(){
     that = this;
     $.ajax({
@@ -33,10 +42,13 @@ var ButtonActionOrder = React.createClass({
   },
   render: function() {
     var btnAction;
+    var btnArchive;
     if(this.props.order_status === "open") {
         btnAction = <button className="btn btn-primary" onClick={this.closeOrder}>Close Order</button>;
+        btnArchive = null;
     } else {
         btnAction = <button className="btn btn-primary" onClick={this.recurringOrder}>Recurring Order</button>;
+        btnArchive = <button className="btn btn-info" onClick={this.archiveOrder}>Archive Order</button>;
     }
 
     // kalo di copy sukses, redirect ke new order page nya
@@ -47,8 +59,8 @@ var ButtonActionOrder = React.createClass({
     // services={this.props.services}
 
     return (
-      <div className="col-md-offset-8 col-md-2">
-        {btnAction}
+      <div className="col-md-offset-8 col-md-4">
+        {btnAction}&nbsp;{btnArchive}
       </div>
     );
   }

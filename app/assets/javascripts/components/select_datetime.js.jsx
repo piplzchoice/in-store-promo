@@ -15,8 +15,6 @@ var SelectDateTime = React.createClass({
     var startInput = $(ReactDOM.findDOMNode(this.refs.start_input));
     var endInput = $(ReactDOM.findDOMNode(this.refs.end_input));
 
-    // $('#start_at_first_tbs_datetimepicker').data("DateTimePicker").setDate($("#start_at_first_tbs_datetimepicker").data("date"))
-    // $('#end_at_first_tbs_datetimepicker').data("DateTimePicker").setDate($("#end_at_first_tbs_datetimepicker").data("date"))
     startDp.datetimepicker();
     endDp.datetimepicker();
 

@@ -28,6 +28,7 @@
 #  status_inventory      :boolean          default(FALSE)
 #  tbs_data              :text
 #  order_id              :integer          default(0)
+#  no_need_second_date   :boolean          default(FALSE)
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

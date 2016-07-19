@@ -9,7 +9,7 @@
       <li><%= link_to("Manage Email Template", email_templates_path) if current_user.has_role? :admin %></li>
     <% end %>
       <li><%= link_to "My Assignments", assignments_path if current_user.has_role?(:ba) %></li>
-      <li><%= link_to "My Statements", my_statements_path if current_user.has_role?(:ba) %></li>    
+      <li><%= link_to "My Statements", my_statements_path if current_user.has_role?(:ba) %></li>
       <li><%= link_to "Set Availability Date", manage_available_dates_path if current_user.has_role?(:ba) %></li>
       <li><%= link_to "Reporting", reports_path %></li>
       <li><%= link_to "Invoicing", invoices_path  if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %></li>

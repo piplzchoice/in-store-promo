@@ -11,18 +11,24 @@ var SelectBrandAmbassadors = React.createClass({
       brand_ambassador_ids: []
     };
   },
-  checkValidate: function(){
-    return this.props.location_id != 0 &&
-    this.props.first_date.start_at !== null &&
-    this.props.second_date.start_at !== null
+  checkValidate: function(thatProps){
+    var validate;
+    if(thatProps.noNeedSecondDate === false) {
+      validate = thatProps.location_id != 0 && thatProps.first_date.start_at !== null && thatProps.second_date.start_at !== null
+    } else {
+      validate = thatProps.location_id != 0 && thatProps.first_date.start_at !== null
+    }
+    
+    return validate;
   },
   getBrandAmbassadors: function(thatProps){
-    if(this.checkValidate()) {
+    if(this.checkValidate(thatProps)) {
+        // this.setState({brand_ambassadors: []});
         var url = "/clients/" + thatProps.client_id + "/services/generate_select_ba_tbs"
         var params = {
           service_id: this.state.service_id,location_id: thatProps.location_id,
           first_date: thatProps.first_date, second_date: thatProps.second_date,
-          react: true,
+          no_need_second_date: thatProps.noNeedSecondDate, react: true,
         }
 
         this.serverRequest = $.get(url, params, function (data) {
@@ -37,7 +43,7 @@ var SelectBrandAmbassadors = React.createClass({
     this.getBrandAmbassadors(nextProps)
   },
   componentWillUnmount: function() {
-    if(this.checkValidate()) {
+    if(this.checkValidate(this.props)) {
       this.serverRequest.abort();
     }
   },

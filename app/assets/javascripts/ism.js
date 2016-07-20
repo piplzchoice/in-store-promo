@@ -1015,7 +1015,11 @@ $(function() {
 
 
   $("#export-csv").click(function(){
-    $("#status-csv").val($("#status").val())
+    var statusesValue = [];    
+    $(".statuses:checked").map(function() {
+      statusesValue.push($(this).val());
+    });        
+    $("#status-csv").val(statusesValue.join(","))
     $("#assigned-csv").val($("#assigned_to").val())
     $("#client-csv").val($("#client_name").val())
     $("#project-csv").val($("#project_name").val())

@@ -7,7 +7,7 @@
         <% Service.options_select_status.each do |status| %>
           <div className="checkbox">
             <label>
-              <%= check_box_tag("statuses[]", status[1], @status.include?(status[1].to_s), {class: "statuses"}) %>
+              <%= check_box_tag("statuses[]", status[1], nil, {class: "statuses"}) %>
               <%= status[0] %>
             </label>
           </div>

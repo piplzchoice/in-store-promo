@@ -72,8 +72,8 @@ class ReportsController < ApplicationController
       end
 
       format.csv do
+        statuses = params[:status].split(",")
         ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
-
         location_name = ""
         client_name = ""
         if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
@@ -83,7 +83,7 @@ class ReportsController < ApplicationController
           client_name = current_user.client.id
         end
 
-        data = {"status" => params[:statuses], "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
+        data = {"status" => statuses, "assigned_to" => ba_id, "client_name" => client_name, "sort_column" => sort_column, "sort_direction" => sort_direction, "page" => params[:page], "location_name" => location_name}
         @services = Service.filter_and_order(data)
 
         headers['Content-Type'] ||= 'text/csv; charset=iso-8859-1;'

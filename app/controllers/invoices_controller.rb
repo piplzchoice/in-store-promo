@@ -204,6 +204,17 @@ class InvoicesController < ApplicationController
 
   def resend
     @invoice = Invoice.find(params[:id])
+
+    if @invoice.file.url.nil?
+      @client = @invoice.client
+      @services = Service.find(@invoice.service_ids.split(","))
+      file = "invoice-#{Time.now.to_i}.pdf"
+      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
+      kit = PDFKit.new(html)
+      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
+    end
+
     ApplicationMailer.send_invoice(@invoice).deliver
     redirect_to invoice_path(@invoice), notice: "Invoice sent"
   end

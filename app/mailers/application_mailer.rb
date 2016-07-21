@@ -124,7 +124,7 @@ class ApplicationMailer < ActionMailer::Base
     attachments["#{invoice.file.url.split("/").last}"] = data.read
 
     @content = et.content.gsub(".client_first_name", invoice.client.first_name)
-    mail(to: "behtea@gmail.com", subject: et.subject)
+    mail(to: emails, subject: et.subject)
   end
 
   def report_over_due_alert(service, admin = false)

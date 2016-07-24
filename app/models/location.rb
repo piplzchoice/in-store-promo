@@ -28,24 +28,32 @@ class Location < ActiveRecord::Base
 
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
-  default_scope { order("created_at ASC") }
+  # default_scope { order("created_at ASC") }
 
-  def self.filter_and_order(is_active, name)
-    # Location.where(is_active: is_active).where("name ILIKE ?", "%#{name}%")
-    hash = {is_active: is_active}
-    like = false
+  def self.filter_and_order(params)
+    hash = {is_active: params["is_active"]}
+    location_name = params["location_name"]
+    is_location_name_string = false
+    locations = nil
 
-    if name != "" && name.to_i != 0
-      hash.merge!({id: name})
+    if location_name != "" && location_name.to_i != 0
+      hash.merge!({id: location_name})
     else
-      like = true
+      is_location_name_string = true
     end
 
-    if like
-      Location.where(hash).where("name ILIKE ?", "%#{name}%")
+    if is_location_name_string
+      locations = Location.where(hash).where("name ILIKE ?", "%#{location_name}%")
     else
-      Location.where(hash)
+      locations = Location.where(hash)
     end
+
+    if params["city"] != ""
+      locations = locations.where("city ILIKE ?", "%#{params["city"]}%")
+    end
+
+    return locations.order("#{params["sort_column"]} #{params["sort_direction"]}")
+
   end
 
   def self.autocomplete_search(q)

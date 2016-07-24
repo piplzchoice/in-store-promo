@@ -1,7 +1,7 @@
 class LocationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_location_status, :only => [:show, :edit, :update]
-  
+  helper_method :sort_column, :sort_direction
   authorize_resource class: LocationsController
 
   def index
@@ -11,20 +11,19 @@ class LocationsController < ApplicationController
           @locations = Location.with_status_active.paginate(:page => params[:page])
           @loc_id = Location.with_status_active.select(:id).collect(&:id).join(",")
         else
-          @locations = Location.filter_and_order(
-            session[:filter_history_locations]["is_active"], 
-            session[:filter_history_locations]["location_name"]).paginate(:page => session[:filter_history_locations]["page"])
-          @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
+          locations = Location.filter_and_order(session[:filter_history_locations])
+          @locations = locations.paginate(:page => session[:filter_history_locations]["page"])        
+          @loc_id = locations.collect(&:id).join(",")
           @is_active = session[:filter_history_locations]["is_active"]
           @location_name = session[:filter_history_locations]["location_name"]
+          @city = session[:filter_history_locations]["city"]
           
           unless @location_name == ""
             if @location_name.to_i != 0
               @location_fullname = Location.find(@location_name).name
             else
               @location_fullname = @location_name
-            end            
-            
+            end                        
           end
 
           session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
@@ -36,18 +35,15 @@ class LocationsController < ApplicationController
         session[:filter_history_locations] = {
           "is_active" => params[:is_active], 
           "location_name" => (params[:location_id] == "" ? "" : params[:location_name]), 
-          "page" => params[:page]
+          "city" => params[:city],          
+          "sort_column" => sort_column,
+          "sort_direction" => sort_direction,
+          "page" => params[:page],                    
         }
         
-        @locations = Location.filter_and_order(
-          session[:filter_history_locations]["is_active"], 
-          session[:filter_history_locations]["location_name"])
-        .paginate(:page => session[:filter_history_locations]["page"])
-
-        @loc_id = Location.filter_and_order(
-          session[:filter_history_locations]["is_active"], 
-          session[:filter_history_locations]["location_name"])
-        .select(:id).collect(&:id).join(",")
+        locations = Location.filter_and_order(session[:filter_history_locations])
+        @locations = locations.paginate(:page => session[:filter_history_locations]["page"])        
+        @loc_id = locations.collect(&:id).join(",")
       }      
     end    
   end
@@ -191,5 +187,13 @@ class LocationsController < ApplicationController
   def check_location_status
     location = Location.find(params[:id])
     redirect_to(locations_path, :flash => { :error => "Location is not active" }) unless location.is_active
-  end  
+  end
+
+  def sort_column
+    params[:sort].nil? ? "name" : params[:sort]
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
+  end    
 end

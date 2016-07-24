@@ -8,11 +8,11 @@
           %>          
         </th>
         <th>ID</th>
-        <th>Name</th>
-        <th>Zipcode</th>
-        <th>Contact</th>
-        <th>Phone</th>
-        <th>Action</th>
+        <th><%= sortable "name", "Name" %></th>
+        <th><%= sortable "created_at", "Added at" %></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -25,16 +25,51 @@
         </td>      
         <td><%= location.id %></td>
         <td><%= location.name %></td>
-        <td><%= location.zipcode %></td>
-        <td><%= location.contact %></td>
-        <td><%= location.phone %></td>
+        <td><%= location.created_at.strftime("%m/%d/%Y") %></td>
+        <td><%= link_to "Show Contact", "#", {data: {toggle: "modal", target: "#modalContact#{location.id}"}} %></td>
+        <td><%= link_to "List BA", "#", {data: {toggle: "modal", target: "#modalListBA#{location.id}"}} %></td>
         <td>
           <% if location.is_active %>
-            <%= link_to "Display", location_path(location) %> || 
+            <%= link_to "More", location_path(location) %> - 
             <%= link_to "Edit", edit_location_path(location) %>            
           <% else %>
             <%= link_to (location.is_active ? "Deactivate" : "Reactivate"), location_path(location), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-          <% end %>          
+          <% end %>
+                
+          <div class="modal fade" id="modalListBA<%=location.id%>" tabindex="-1" role="dialog" aria-labelledby="modalListBA<%=location.id%>Label">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">List BA in <%= location.name %></h4>
+                </div>
+                <div class="modal-body">
+                  <ul>
+                    <% location.brand_ambassadors.each do |ba| %>
+                      <li><%= link_to ba.name, brand_ambassador_path(ba) %></li>
+                    <% end %>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="modalContact<%=location.id%>" tabindex="-1" role="dialog" aria-labelledby="modalContact<%=location.id%>Label">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Contact for <%= location.name %></h4>
+                </div>
+                <div class="modal-body">
+                  <p><strong>Contact:</strong> <%= location.contact %></p>
+                  <p><strong>Email:</strong> <%= location.email %></p>
+                  <p><strong>Phone:</strong> <%= location.phone %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </td>
       </tr>
       <% end %>

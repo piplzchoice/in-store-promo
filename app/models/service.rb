@@ -271,6 +271,7 @@ class Service < ActiveRecord::Base
       ["TBS", Service.status_tbs],
       ["Scheduled", Service.status_scheduled],
       ["BA Confirmed", Service.status_confirmed],
+      ["BA Rejected", Service.status_rejected],
       ["Inventory", Service.status_inventory_confirmed],
       ["Reported", Service.status_reported],
       ["Invoiced", Service.status_invoiced],

@@ -4,7 +4,7 @@ class ServicesController < ApplicationController
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show]
 
   def index
-    render json: Client.calendar_services(params[:client_id])
+    render json: Client.calendar_services(params)
   end
 
   def new
@@ -297,7 +297,7 @@ class ServicesController < ApplicationController
       )
       ba_ids.push ba_second_tbs.collect(&:id)
     end
-    
+
     ba_ids = ba_ids.flatten.uniq
 
     @brand_ambassadors = BrandAmbassador.find(ba_ids)

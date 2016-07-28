@@ -208,7 +208,7 @@ class ReportsController < ApplicationController
           is_client = true
         end
 
-        render json: Service.calendar_services(params[:status], ba_id, client_name, sort_column, sort_direction, is_client)
+        render json: Service.calendar_services(params, ba_id, client_name, sort_column, sort_direction, is_client)
       }
     end
   end

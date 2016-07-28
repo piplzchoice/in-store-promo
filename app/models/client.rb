@@ -60,9 +60,9 @@ class Client < ActiveRecord::Base
     Client.where(is_active: is_active)
   end
 
-  def self.calendar_services(client_id)
-    client = find(client_id)
-    calendars = client.services.collect{|x|
+  def self.calendar_services(params)
+    client = find(params["client_id"])
+    calendars = client.services.where(["start_at >= ? and start_at <= ?", params["start"], params["end"]]).collect{|x|
       unless x.status == Service.status_conducted
         if x.is_ba_active? && x.status != 12
           self.calendar_obj(
@@ -70,7 +70,7 @@ class Client < ActiveRecord::Base
             x.start_at.iso8601,
             x.end_at.iso8601,
             x.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: x.id})
+            Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: x.id})
           )
         end
       end
@@ -85,7 +85,7 @@ class Client < ActiveRecord::Base
             DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
             DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
             srv.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+            Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
           )
         )
         calendars.push(
@@ -94,35 +94,35 @@ class Client < ActiveRecord::Base
             DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
             DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
             srv.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
+            Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
           )
         )
       end
     end
 
-    service_tbs = client.services.where(status: 12)
-    unless service_tbs.blank?
-      service_tbs.each do |srv|
-        calendars.push(
-          self.calendar_obj(
-            srv.title_calendar,
-            DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
-            DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
-            srv.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
-          )
-        )
-        calendars.push(
-          self.calendar_obj(
-            srv.title_calendar,
-            DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
-            DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
-            srv.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: client_id, id: srv.id})
-          )
-        )
-      end
-    end
+    # service_tbs = client.services.where(status: 12)
+    # unless service_tbs.blank?
+    #   service_tbs.each do |srv|
+    #     calendars.push(
+    #       self.calendar_obj(
+    #         srv.title_calendar,
+    #         DateTime.parse(srv.tbs_data["first_date"]["start_at"]).iso8601,
+    #         DateTime.parse(srv.tbs_data["first_date"]["end_at"]).iso8601,
+    #         srv.get_color,
+    #         Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
+    #       )
+    #     )
+    #     calendars.push(
+    #       self.calendar_obj(
+    #         srv.title_calendar,
+    #         DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
+    #         DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
+    #         srv.get_color,
+    #         Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
+    #       )
+    #     )
+    #   end
+    # end
 
     return calendars.uniq.compact
   end

@@ -149,7 +149,9 @@ class Log < ActiveRecord::Base
       end
 
       unless data["old"]["brand_ambassador_id"].to_i == data["new"]["brand_ambassador_id"].to_i
-        changes << "BA changed to <b>#{BrandAmbassador.find(data["new"]["brand_ambassador_id"].to_i).name}</b>"
+        unless data["new"]["brand_ambassador_id"].to_i == 0
+          changes << "BA changed to <b>#{BrandAmbassador.find(data["new"]["brand_ambassador_id"].to_i).name}</b>"
+        end
       end
 
       unless data["old"]["start_at"] == data["new"]["start_at"]

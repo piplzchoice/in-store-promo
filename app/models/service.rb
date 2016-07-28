@@ -98,9 +98,9 @@ class Service < ActiveRecord::Base
     end
 
     if parameters["client_name"] != ""
-      data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
+      data = Service.includes(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
-      data = Service.joins(:client).where(clients: {is_active: true}).where(conditions)
+      data = Service.includes(:client).where(clients: {is_active: true}).where(conditions)
     end
 
     unless parameters["start"].nil? && parameters["end"].nil?
@@ -108,11 +108,11 @@ class Service < ActiveRecord::Base
     end
 
     if parameters["sort_column"] == "ba"
-      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
+      data = data.includes(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
     elsif parameters["sort_column"] == "client"
-      data = data.joins(:client).order("clients.company_name #{parameters["sort_direction"]}")
+      data = data.includes(:client).order("clients.company_name #{parameters["sort_direction"]}")
     elsif parameters["sort_column"] == "location_name"
-      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")
+      data = data.includes(:location).order("locations.name #{parameters["sort_direction"]}")
     else
       if parameters["sort_column"] == "time"
         data = data.order("EXTRACT (HOUR from start_at) #{parameters["sort_direction"]}")

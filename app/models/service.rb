@@ -78,6 +78,7 @@ class Service < ActiveRecord::Base
   def self.filter_and_order(parameters)
     data = nil
     conditions = {}
+
     if parameters["status"] != ""
       # if parameters["status"] == "11"
       #   conditions.merge!(status_inventory: true)
@@ -100,6 +101,10 @@ class Service < ActiveRecord::Base
       data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
       data = Service.joins(:client).where(clients: {is_active: true}).where(conditions)
+    end
+
+    unless parameters["start"].nil? && parameters["end"].nil?
+      data = data.where(["start_at >= ? and start_at <= ?", parameters["start"], parameters["end"]])
     end
 
     if parameters["sort_column"] == "ba"
@@ -307,9 +312,11 @@ class Service < ActiveRecord::Base
       ]
   end
 
-  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction, is_client = false)
+  def self.calendar_services(params, assigned_to, client_name, sort_column, sort_direction, is_client = false)
     data = {
-      "status" => status,
+      "status" => params["status"],
+      "start" => params["start"],
+      "end" => params["end"],
       "assigned_to" => assigned_to,
       "client_name" => client_name,
       "sort_column" => sort_column,
@@ -983,7 +990,7 @@ class Service < ActiveRecord::Base
     end_at_first = DateTime.strptime(tbs_params["end_at_first"], '%m/%d/%Y %I:%M %p')
 
     service.tbs_data = {
-      first_date: {start_at: start_at_first, end_at: end_at_first},      
+      first_date: {start_at: start_at_first, end_at: end_at_first},
       ba_ids: JSON.parse(tbs_params["ba_ids"])
     }
 
@@ -991,7 +998,7 @@ class Service < ActiveRecord::Base
       start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
       end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
       service.tbs_data["second_date"] = {start_at: start_at_second, end_at: end_at_second}
-    end        
+    end
 
     return service
     # service = Service.where({
@@ -1044,12 +1051,12 @@ class Service < ActiveRecord::Base
     }
 
     unless no_need_second_date
-      react_data["second_date"] = 
+      react_data["second_date"] =
         {
           start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
           end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
         }
-    end   
+    end
 
     return react_data
   end

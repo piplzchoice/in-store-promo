@@ -63,6 +63,6 @@ group :development do
 end
 
 gem "spreadsheet"
-
 gem 'whenever', :require => false
+gem 'roo'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

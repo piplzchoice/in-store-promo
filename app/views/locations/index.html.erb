@@ -1,5 +1,9 @@
 <h1 class="page-header">List Locations</h1>
-<div class="link-new-btn"><%= link_to("New Location", new_location_path, {class: "btn btn-primary", role: "button"}) %></div>
+
+<div class="link-new-btn">
+  <%= link_to("New Location", new_location_path, {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("Import Location", "#", {class: "btn btn-primary", role: "button", data: {toggle: "modal", target: "#modalImportLocation"}}) %>
+</div>
 
 <div class="row" style="margin-bottom: 30px;">
   <div class="col-md-3">
@@ -9,36 +13,36 @@
         <%= hidden_field_tag "location_id", nil, {id: "name_location_id", class: "select-2-box",data: {
           url: autocomplete_name_locations_path,
           state: "new"
-        }} %>        
+        }} %>
       </div>
       <div class="form-group">
         <label class="control-label">City</label>
         <%= text_field_tag("city", (@city.nil? ? "" : @city), {class: "form-control filter-params"}) %>
-      </div>              
+      </div>
       <div class="form-group">
         <label class="control-label">Status</label>
         <%= select_tag("is_active", options_for_select([["Active", true], ["Inactive", false]], selected: @is_active), {class: "form-control filter-params"}) %>
       </div>
       <%= hidden_field_tag(:location_fullname, @location_fullname) %>
-      <%= hidden_field_tag(:location_name, @location_name) %>      
+      <%= hidden_field_tag(:location_name, @location_name) %>
       <%= hidden_field_tag(:page, 1) %>
       <%= hidden_field_tag(:checked_all_location) %>
-      <%= hidden_field_tag(:location_ids) %>   
+      <%= hidden_field_tag(:location_ids) %>
       <%= hidden_field_tag(:sort, "name",) %>
-      <%= hidden_field_tag(:direction, "desc") %>         
+      <%= hidden_field_tag(:direction, "desc") %>
       <%= submit_tag("Filter", class: "btn btn-default filter-location", id: "filter-submit") %>
     <% end %>
   </div>
 </div>
-  <%= hidden_field_tag(:all_loc_ids, @loc_id) %> 
+  <%= hidden_field_tag(:all_loc_ids, @loc_id) %>
 <hr>
 
-<div class="link-new-btn">    
+<div class="link-new-btn">
   <%= link_to("Export List", "#", {id: "export-location" ,class: "btn btn-primary"}) %>
-</div>  
-<div class="link-new-btn">    
+</div>
+<div class="link-new-btn">
   <%= link_to("Deactive", "#", {id: "deactive-location" ,class: "btn btn-primary"}) %>
-</div>  
+</div>
 <br /><br />
 
 <div class="table-responsive">
@@ -53,3 +57,24 @@
 <%= form_tag(deactive_data_locations_path, method: :delete, id: "deactive-data-location") do %>
   <%= hidden_field_tag(:loc_deactive_ids) %>
 <% end %>
+
+
+<div class="modal fade" id="modalImportLocation" tabindex="-1" role="dialog" aria-labelledby="modalImportLocation>Label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Import Locations</h4>
+      </div>
+      <div class="modal-body">
+        <%= form_tag(import_data_locations_path, method: :post, multipart: true, html: {role: "form"}) do %>
+          <div class="form-group">
+            <label class="control-label">Upload a file to import location data</label>
+            <%= file_field_tag(:file, {class: "form-control"} ) %>
+          </div>
+            <%= submit_tag("Import", {class: "btn btn-primary form-control", required: "required"} ) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

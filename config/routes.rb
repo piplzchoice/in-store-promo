@@ -27,7 +27,7 @@ Rails.application.routes.draw do
         post :archive
         post :add_location
         delete :remove_location
-        post :add_product        
+        post :add_product
         delete :removecopy
       end
     end
@@ -96,6 +96,7 @@ Rails.application.routes.draw do
   resources :locations do
     collection do
       post :export_data
+      post :import_data
       delete :deactive_data
       get :autocomplete_name
     end

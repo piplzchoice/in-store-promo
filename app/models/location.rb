@@ -2,21 +2,22 @@
 #
 # Table name: locations
 #
-#  id           :integer          not null, primary key
-#  name         :string(255)
-#  address      :string(255)
-#  city         :string(255)
-#  state        :string(255)
-#  zipcode      :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  user_id      :integer
-#  is_active    :boolean          default(TRUE)
-#  contact      :string(255)
-#  phone        :string(255)
-#  email        :string(255)
-#  notes        :text
-#  territory_id :integer
+#  id            :integer          not null, primary key
+#  name          :string(255)
+#  address       :string(255)
+#  city          :string(255)
+#  state         :string(255)
+#  zipcode       :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
+#  user_id       :integer
+#  is_active     :boolean          default(TRUE)
+#  contact       :string(255)
+#  phone         :string(255)
+#  email         :string(255)
+#  notes         :text
+#  territory_id  :integer
+#  more_contacts :text
 #
 
 class Location < ActiveRecord::Base
@@ -25,6 +26,8 @@ class Location < ActiveRecord::Base
   belongs_to :territory
   has_and_belongs_to_many :brand_ambassadors
   has_and_belongs_to_many :orders
+
+  serialize :more_contacts, JSON
 
   validates :name, :address, :city, :state, :zipcode, presence: true
   scope :with_status_active, -> { where(is_active: true) }
@@ -64,6 +67,50 @@ class Location < ActiveRecord::Base
     "#{name} - #{address}, #{city}"
   end
 
+  def self.import_location_excel(file)
+    count_success = 0
+    count_duplicate = 0
+    spreadsheet = open_spreadsheet(file)
+    spreadsheet.count.times do |row|
+      line = row + 1
+      unless line == 1
+        location = Location.new
+        location.name = spreadsheet.cell(line, 1)
+        location.address = spreadsheet.cell(line, 2)
+        location.city = spreadsheet.cell(line, 3)
+        location.state = spreadsheet.cell(line, 4)
+        location.zipcode = spreadsheet.cell(line, 5)
+        location.more_contacts = {
+          contact_1_name: spreadsheet.cell(line, 6),
+          contact_1_departement: spreadsheet.cell(line, 7),
+          contact_1_phone: spreadsheet.cell(line, 8),
+          contact_1_email: spreadsheet.cell(line, 9),
+          contact_2_name: spreadsheet.cell(line, 10),
+          contact_2_departement: spreadsheet.cell(line, 11),
+          contact_2_phone: spreadsheet.cell(line, 12),
+          contact_2_email: spreadsheet.cell(line, 13)
+        }
+
+        if Location.where(name: location.name, address: location.address, city: location.city, state: location.state, zipcode: location.zipcode).empty?
+          count_success = count_success + 1
+          location.save
+        else
+          count_duplicate = count_duplicate + 1
+        end
+      end
+    end
+
+    return "Successfully import #{count_success} new locations and not import #{count_duplicate}, duplicate data"
+  end
+
+  def self.open_spreadsheet(file)
+    case File.extname(file.original_filename)
+    when ".xls" then Roo::Spreadsheet.open(file.path, extension: :xls)
+    when ".xlsx" then Roo::Spreadsheet.open(file.path, extension: :xlsx)
+    else raise "Please upload only file with ext .xls or .xlsx"
+    end
+  end
+
   def complete_location
     "#{name} - #{address}, #{city}"
   end
@@ -99,4 +146,5 @@ class Location < ActiveRecord::Base
     return data_field
 
   end
+
 end

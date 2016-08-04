@@ -53,4 +53,5 @@ gem 'byebug', group: [:development, :test]
 gem "rest_client", :require => "rest_client"
 gem "addressable", :require => "addressable/uri"
 gem "spreadsheet"
+gem 'roo'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

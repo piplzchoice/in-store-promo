@@ -17,11 +17,11 @@
       </div>
       <div class="form-group">
         <label class="control-label">City</label>
-        <%= text_field_tag("city", (@city.nil? ? "" : @city), {class: "form-control filter-params"}) %>
+        <%= text_field_tag("city", (@city.nil? ? "" : @city), {class: "form-control"}) %>
       </div>
       <div class="form-group">
         <label class="control-label">Status</label>
-        <%= select_tag("is_active", options_for_select([["Active", true], ["Inactive", false]], selected: @is_active), {class: "form-control filter-params"}) %>
+        <%= select_tag("is_active", options_for_select([["Active", true], ["Inactive", false]], selected: @is_active), {class: "form-control"}) %>
       </div>
       <%= hidden_field_tag(:location_fullname, @location_fullname) %>
       <%= hidden_field_tag(:location_name, @location_name) %>

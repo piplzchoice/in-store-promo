@@ -373,6 +373,17 @@ class Service < ActiveRecord::Base
     end
   end
 
+  def self.can_be_disable?
+    # ba can be disable when ba services only have status 3, 8, 9
+    disable = true
+    ba_statuses = select(:status).collect(&:status).uniq
+    statuses = [1, 2, 4, 5, 6, 7, 10, 11, 12]
+    statuses.each do |status|
+      disable = false if ba_statuses.include?(status)
+    end
+    return disable
+  end
+
   def report_service
     if !report.nil?
       if !parent.nil?

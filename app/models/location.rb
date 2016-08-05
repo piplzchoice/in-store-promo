@@ -22,7 +22,7 @@
 
 class Location < ActiveRecord::Base
   belongs_to :user
-  belongs_to :location
+  has_many :services
   belongs_to :territory
   has_and_belongs_to_many :brand_ambassadors
   has_and_belongs_to_many :orders
@@ -75,20 +75,20 @@ class Location < ActiveRecord::Base
       line = row + 1
       unless line == 1
         location = Location.new
-        location.name = spreadsheet.cell(line, 1)
-        location.address = spreadsheet.cell(line, 2)
-        location.city = spreadsheet.cell(line, 3)
-        location.state = spreadsheet.cell(line, 4)
-        location.zipcode = spreadsheet.cell(line, 5)
+        location.name = spreadsheet.cell(line, 1).to_s
+        location.address = spreadsheet.cell(line, 2).to_s
+        location.city = spreadsheet.cell(line, 3).to_s
+        location.state = spreadsheet.cell(line, 4).to_s
+        location.zipcode = spreadsheet.cell(line, 5).to_s
         location.more_contacts = {
-          contact_1_name: spreadsheet.cell(line, 6),
-          contact_1_departement: spreadsheet.cell(line, 7),
-          contact_1_phone: spreadsheet.cell(line, 8),
-          contact_1_email: spreadsheet.cell(line, 9),
-          contact_2_name: spreadsheet.cell(line, 10),
-          contact_2_departement: spreadsheet.cell(line, 11),
-          contact_2_phone: spreadsheet.cell(line, 12),
-          contact_2_email: spreadsheet.cell(line, 13)
+          contact_1_name: spreadsheet.cell(line, 6).to_s,
+          contact_1_departement: spreadsheet.cell(line, 7).to_s,
+          contact_1_phone: spreadsheet.cell(line, 8).to_s,
+          contact_1_email: spreadsheet.cell(line, 9).to_s,
+          contact_2_name: spreadsheet.cell(line, 10).to_s,
+          contact_2_departement: spreadsheet.cell(line, 11).to_s,
+          contact_2_phone: spreadsheet.cell(line, 12).to_s,
+          contact_2_email: spreadsheet.cell(line, 13).to_s
         }
 
         if Location.where(name: location.name, address: location.address, city: location.city, state: location.state, zipcode: location.zipcode).empty?

@@ -80,8 +80,12 @@ class BrandAmbassadorsController < ApplicationController
     @brand_ambassador = BrandAmbassador.find(params[:id])
     msg = nil
     if @brand_ambassador.is_active
-      @brand_ambassador.update_attribute(:is_active, false)
-      msg = "BA is deactivated"
+      if @brand_ambassador.services.can_be_disable?
+        @brand_ambassador.update_attribute(:is_active, false)
+        msg = "BA is deactivated"
+      else
+        msg = "This BA has outstanding demo/payment and cannot be deactivated before it is finalized"
+      end
     else
       @brand_ambassador.update_attribute(:is_active, true)
       msg = "BA is reactivated"

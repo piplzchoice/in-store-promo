@@ -105,8 +105,12 @@ class LocationsController < ApplicationController
     @location = Location.find(params[:id])
     msg = ""
     if @location.is_active
-      @location.set_data_false
-      msg = "Location de-activated"
+      if @location.services.can_be_disable?
+        @location.set_data_false
+        msg = "Location de-activated"
+      else
+        msg = "This Location has outstanding demo/payment and cannot be deactivated before it is finalized"
+      end
     else
       @location.set_data_true
       msg = "Location re-activated"
@@ -117,13 +121,17 @@ class LocationsController < ApplicationController
 
   def deactive_data
     unless params[:loc_ids] == ""
+      msg = "Success Deactive Locations"
       @locations = Location.where(id: params[:loc_deactive_ids].split(","))
-
       @locations.each_with_index do |location, i|
-        location.set_data_false
+        if location.services.can_be_disable?
+          location.set_data_false
+        else
+          msg = "some location has outstanding demo/payment and cannot be deactivated before it is finalized"
+        end
       end
 
-      redirect_to locations_url, {notice: "Success Deactive Locations"}
+      redirect_to locations_url, {notice: msg}
     else
       redirect_to locations_url, {notice: "Please select location to deactive"}
     end

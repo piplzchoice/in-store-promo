@@ -22,7 +22,7 @@
 
 class Location < ActiveRecord::Base
   belongs_to :user
-  belongs_to :location
+  has_many :services
   belongs_to :territory
   has_and_belongs_to_many :brand_ambassadors
   has_and_belongs_to_many :orders

@@ -78,8 +78,12 @@ class ClientsController < ApplicationController
     @account = @client.account
     msg = ""
     if @client.is_active
-      @client.set_data_false
-      msg = "Client de-activated"
+      if @client.services.can_be_disable?
+        @client.set_data_false
+        msg = "Client de-activated"
+      else
+        msg = "This Client has outstanding demo/payment and cannot be deactivated before it is finalized"
+      end
     else
       @client.set_data_true
       msg = "Client re-activated"

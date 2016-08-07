@@ -1,6 +1,6 @@
 <h1 class="page-header">List BA</h1>
 <div class="link-new-btn">
-  <%= link_to("New BA", new_brand_ambassador_path, {class: "btn btn-primary", role: "button"}) %>
+  <%= link_to("New BA", new_brand_ambassador_path, {class: "btn btn-primary", role: "button"}) unless current_user.has_role?(:coordinator) %>
   <%= link_to("View BA Availability Calendar", "#", {class: "btn btn-primary", role: "button", id: "view-ba-calendar", data: {url: view_ba_calender_brand_ambassadors_path}}) %>
 </div>
 

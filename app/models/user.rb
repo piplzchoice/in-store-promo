@@ -43,6 +43,10 @@ class User < ActiveRecord::Base
     with_role(:ismp)
   end
 
+  def self.all_coordinator
+    with_role(:coordinator)
+  end  
+
   def get_info
     if has_role?(:ba)
       "#{brand_ambassador.email}"
@@ -53,6 +57,11 @@ class User < ActiveRecord::Base
 
   def save_ismp
     self.add_role :ismp
+    self.save
+  end
+
+  def save_coordinator
+    self.add_role :coordinator
     self.save
   end
 

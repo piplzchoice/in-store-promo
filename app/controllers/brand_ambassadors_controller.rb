@@ -1,5 +1,6 @@
 class BrandAmbassadorsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :check_user_role, only: [:show, :new, :create, :edit, :update]
   authorize_resource class: BrandAmbassadorsController
 
   def index
@@ -163,4 +164,9 @@ class BrandAmbassadorsController < ApplicationController
       format.json { render json: BrandAmbassador.get_all_available_dates(params[:location_name]) }
     end
   end
+
+  private
+  def check_user_role
+    redirect_to(brand_ambassadors_url, :flash => { :error => "Not allowed" }) if current_user.has_role?(:coordinator)
+  end  
 end

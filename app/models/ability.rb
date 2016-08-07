@@ -19,6 +19,7 @@ class Ability
       can :manage, InvoicesController
       can :manage, TerritoriesController
       can :manage, OrdersController
+      can :manage, CoordinatorController
     elsif user.has_role? :ismp
       can :manage, ServicesController
       can :manage, ProjectsController
@@ -37,6 +38,12 @@ class Ability
     elsif user.has_role? :client
       can :manage, ReportsController
       can :manage, ClientsController
+    elsif user.has_role? :coordinator
+      can :manage, ServicesController
+      can :manage, LocationsController
+      can :manage, ClientsController
+      can :manage, BrandAmbassadorsController
+      can :manage, ReportsController      
     end
     can :manage, AvailableDatesController if user.has_role? :ba
     can :manage, AssignmentsController if user.has_role? :ba

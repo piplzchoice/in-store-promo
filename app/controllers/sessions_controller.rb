@@ -7,7 +7,7 @@ class SessionsController < Devise::SessionsController
     self.resource = warden.authenticate!(auth_options)
     set_flash_message(:notice, :signed_in) if is_flashing_format?
     
-    if resource.is_not_active?
+    unless resource.is_active
       flash.delete(:notice)
       sign_out(resource_name)
       redirect_to root_path and return

@@ -118,6 +118,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :coordinator
+
   resources :reports do
     member do
       get :download_pdf

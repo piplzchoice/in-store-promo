@@ -8,7 +8,7 @@ class ReportsController < ApplicationController
   def index
     respond_to do |format|
       format.html do
-        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
           if session[:filter_history_reports].nil?
             @services = Service.all.order(start_at: :desc).paginate(:page => params[:page])
             @status = []
@@ -42,12 +42,12 @@ class ReportsController < ApplicationController
       end
 
       format.js do
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) || current_user.has_role?(:coordinator) ? params[:assigned_to] : current_user.brand_ambassador.id)
 
         location_name = ""
         client_name = ""
         is_client = false
-        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
           client_name = params[:client_name]
           location_name = params[:location_id]
         elsif current_user.has_role?(:client)
@@ -67,16 +67,16 @@ class ReportsController < ApplicationController
         }
 
         services = Service.filter_and_order(session[:filter_history_reports])
-        set_next_report(services) if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        set_next_report(services) if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
         @services = services.paginate(:page => params[:page])
       end
 
       format.csv do
         statuses = params[:status].split(",")
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) || current_user.has_role?(:coordinator) ? params[:assigned_to] : current_user.brand_ambassador.id)
         location_name = ""
         client_name = ""
-        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
           client_name = params[:client_name]
           location_name = params[:location_name]
         elsif current_user.has_role?(:client)
@@ -197,11 +197,11 @@ class ReportsController < ApplicationController
     respond_to do |format|
       format.html {}
       format.json {
-        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) ? params[:assigned_to] : current_user.brand_ambassador.id)
+        ba_id = (current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:client) || current_user.has_role?(:coordinator) ? params[:assigned_to] : current_user.brand_ambassador.id)
 
         client_name = ""
         is_client = false
-        if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+        if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
           client_name = params[:client_name]
         elsif current_user.has_role?(:client)
           client_name = current_user.client.id
@@ -349,7 +349,7 @@ class ReportsController < ApplicationController
 
   def destroy
     msg = nil
-    if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
+    if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator)
       report = Report.find(params[:id])
       service = report.service
 

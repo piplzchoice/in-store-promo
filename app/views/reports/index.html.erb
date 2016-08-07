@@ -1,6 +1,6 @@
 <h1 class="page-header">Reports</h1>
 
-<% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+<% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator) %>
   <%= render "filter" %>
 <% elsif current_user.has_role?(:ba) %>
   <%= render "filter_ba" %>
@@ -9,7 +9,7 @@
 <% end %>
 
 <div class="table-responsive">
-  <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) %>
+  <% if current_user.has_role?(:admin) || current_user.has_role?(:ismp) || current_user.has_role?(:coordinator) %>
     <%= render "grid" %>
   <% elsif current_user.has_role?(:ba) %>
     <%= render "grid_ba" %>

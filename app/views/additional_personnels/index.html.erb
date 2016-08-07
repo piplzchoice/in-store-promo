@@ -1,0 +1,27 @@
+<h1 class="page-header">Additional Personnels</h1>
+<div class="link-new-btn"><%= link_to("Add Personnel", new_client_additional_personnel_path(@client), {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @additional_personnels.each_with_index do |personnel, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= personnel.name %></td>
+        <td><%= personnel.account.email %></td>
+        <td>
+          <%= link_to "Edit", edit_client_additional_personnel_path(@client, personnel) %> || 
+          <%= link_to "Remove", client_additional_personnel_path(@client, personnel), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

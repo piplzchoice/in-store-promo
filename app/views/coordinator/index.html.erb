@@ -1,0 +1,30 @@
+<h1 class="page-header">List Coodinator</h1>
+<div class="link-new-btn"><%= link_to("New Coordinator", new_coordinator_path, {class: "btn btn-primary", role: "button"}) %></div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each_with_index do |user, i|  %>
+      <tr>
+        <td><%= i + 1 %></td>
+        <td><%= user.email %></td>
+        <td>
+          <% if user.is_active %>
+            <%= link_to "Display", coordinator_path(user) %> || 
+            <%= link_to "Edit", edit_coordinator_path(user) %> || 
+            <%= link_to "Deactivate", coordinator_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <% else %>
+            <%= link_to (user.is_active ? "Deactivate" : "Reactivate"), coordinator_path(user), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <% end %>          
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

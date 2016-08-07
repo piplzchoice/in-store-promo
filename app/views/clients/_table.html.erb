@@ -13,13 +13,14 @@
       <td><%= client.id %></td>
       <td><%= client.company_name %></td>
       <td><%= client.name %></td>
-      <td>
+      <td>        
         <% if client.is_active %>
-          <%= link_to "Display", client_path(client) %> ||           
-          <%= link_to "Products", client_products_path(client) %> ||        
-          <%= link_to "Edit", edit_client_path(client) %> || 
-          <%= link_to "Manage Emails", manage_addtional_emails_client_path(client) %> ||           
-          <%= link_to "Deactivate", client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+          <%= link_to "Display ||", client_path(client) %>   
+          <%= link_to "Products ||", client_products_path(client) %>
+          <%= link_to("Edit ||", edit_client_path(client)) unless current_user.has_role?(:coordinator) %>
+          <%= link_to("Manage Emails ||", manage_addtional_emails_client_path(client)) unless current_user.has_role?(:coordinator) %>
+          <%= link_to("Personnel ||", client_additional_personnels_path(client)) unless current_user.has_role?(:coordinator) %>          
+          <%= link_to("Deactivate", client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete}) unless current_user.has_role?(:coordinator) %>
         <% else %>
           <%= link_to (client.is_active ? "Deactivate" : "Reactivate"), client_path(client), {data: { confirm: "Are you sure?" }, :method => :delete} %>
         <% end %>          

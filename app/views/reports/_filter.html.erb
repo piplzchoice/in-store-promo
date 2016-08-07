@@ -41,7 +41,7 @@
   <div class="link-new-btn" style="margin-top: 294px;">
     <%= link_to("In Store Marketing Demo Calendar", "#", {id: "view-calendar-filter" ,class: "btn btn-primary", role: "button", data: {url: view_calendar_reports_path}}) %>
     <%#= link_to("Reconcile Payments", reconcile_payments_reports_path, {class: "btn btn-primary", role: "button"}) %>
-    <%= link_to("Process BA Payments", ba_payments_reports_path, {class: "btn btn-primary", role: "button"}) %>        
+    <%= link_to("Process BA Payments", ba_payments_reports_path, {class: "btn btn-primary", role: "button"}) unless current_user.has_role?(:coordinator) %>        
   </div>     
 </div>
 <hr>

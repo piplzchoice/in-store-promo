@@ -32,6 +32,9 @@ class User < ActiveRecord::Base
   has_many :brand_ambassadors
   has_one :brand_ambassador, foreign_key: 'account_id', class_name: 'BrandAmbassador'
 
+  has_many :additional_personnels
+  has_one :additional_personnel, foreign_key: 'account_id', class_name: 'AdditionalPersonnel'
+
   has_many :projects
   has_many :services
   has_many :locations

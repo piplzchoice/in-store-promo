@@ -1,0 +1,14 @@
+<h1 class="page-header">Show ISMP</h1>
+<label>Email :</label>
+<p><%= @user.email %></p>
+
+<label>Roles :</label>
+<ul>
+<% @user.roles.each do |role| %>
+  <li><%= role.name %></li>
+<% end %>
+</ul>
+
+<% unless @user.has_role?(:ba) %>
+  <%= link_to("Set ISMP as BA", set_as_ba_ismp_path(@user), {class: "btn btn-primary", role: "button"}) %>
+<% end %>

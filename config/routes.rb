@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   root 'home#index'
   resources :clients do
+    resources :additional_personnels
+    
     get :autocomplete_client_name, :on => :collection
     member do
       patch "reset_password"

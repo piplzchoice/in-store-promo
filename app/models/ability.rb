@@ -20,6 +20,7 @@ class Ability
       can :manage, TerritoriesController
       can :manage, OrdersController
       can :manage, CoordinatorController
+      can :manage, AdditionalPersonnelsController
     elsif user.has_role? :ismp
       can :manage, ServicesController
       can :manage, ProjectsController

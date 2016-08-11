@@ -2,13 +2,15 @@
 #
 # Table name: additional_personnels
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  client_id  :integer
-#  account_id :integer
-#  name       :string(255)
-#  created_at :datetime
-#  updated_at :datetime
+#  id            :integer          not null, primary key
+#  user_id       :integer
+#  client_id     :integer
+#  account_id    :integer
+#  name          :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
+#  company       :text
+#  function_text :text
 #
 
 class AdditionalPersonnel < ActiveRecord::Base

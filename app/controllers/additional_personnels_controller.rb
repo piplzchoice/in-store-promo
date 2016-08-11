@@ -73,6 +73,6 @@ class AdditionalPersonnelsController < ApplicationController
   end
 
   def additional_personnel_params
-    params.require(:additional_personnel).permit(:name, account_attributes: [:email, :id, :password, :password_confirmation])
+    params.require(:additional_personnel).permit(:name, :company, :function_text, account_attributes: [:email, :id, :password, :password_confirmation])
   end
 end

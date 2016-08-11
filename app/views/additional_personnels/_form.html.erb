@@ -25,5 +25,15 @@
     <% end %>    
   </div>      
 
+  <div class="form-group">
+    <%= f.label :company, {class: "control-label"} %>
+    <%= f.text_area :company, {class: "form-control", :rows => 10, :cols => 20} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "function", {class: "control-label"} %>
+    <%= f.text_area :function_text, {class: "form-control", :rows => 10, :cols => 20} %>
+  </div>    
+
   <%= f.button "Submit", {type: "submit", class: "btn btn-default"} %>
 <% end %>

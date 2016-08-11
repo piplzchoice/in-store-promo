@@ -370,6 +370,7 @@ class ServicesController < ApplicationController
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_status(Service.status_rejected, @service.brand_ambassador.account.id, Devise.friendly_token)
+          ApplicationMailer.rejected_service(@service).deliver
         end
       end
     end

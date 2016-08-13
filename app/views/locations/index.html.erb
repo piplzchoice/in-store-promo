@@ -43,6 +43,9 @@
 <div class="link-new-btn">
   <%= link_to("Deactive", "#", {id: "deactive-location" ,class: "btn btn-primary"}) %>
 </div>
+<div class="link-new-btn">
+  <%= link_to("Add BA", "#", {id: "add-ba-to-location" ,class: "btn btn-primary", data: {url: get_all_name_locations_path}}) %>
+</div>
 <br /><br />
 
 <div class="table-responsive">
@@ -57,7 +60,6 @@
 <%= form_tag(deactive_data_locations_path, method: :delete, id: "deactive-data-location") do %>
   <%= hidden_field_tag(:loc_deactive_ids) %>
 <% end %>
-
 
 <div class="modal fade" id="modalImportLocation" tabindex="-1" role="dialog" aria-labelledby="modalImportLocation>Label">
   <div class="modal-dialog" role="document">
@@ -78,3 +80,19 @@
     </div>
   </div>
 </div>
+
+  <div id="addLocationToBAModal" class="modal fade bs-example-modal-md" tabindex="-1" role="dialog" aria-labelledby="mmdmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="mySmallModalLabel">
+            Add Location to BA
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="row" id="locations-name"></div>
+          <div class="row" id="select-ba-name"></div>
+        </div>
+      </div>
+    </div>
+  </div>

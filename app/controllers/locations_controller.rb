@@ -191,6 +191,30 @@ class LocationsController < ApplicationController
     redirect_to locations_url, notice: status
   end
 
+  def get_all_name
+    @locations = Location.where(id: params[:location_ids].split(",")).select(:name, :id)
+    @brand_ambassadors = BrandAmbassador.with_status_active.select(:id, :name)
+    respond_to do |format|
+      format.js 
+    end    
+  end
+  
+  def add_ba
+    loc_ids = params[:location_ba_ids].split(",")
+    params[:brand_ambassador_id].each do |ba_id|
+      ba = BrandAmbassador.find(ba_id)
+      ba_ids = ba.location_ids
+
+      loc_ids.each do |lo_id|
+        ba_ids << lo_id
+      end
+
+      ba.location_ids = ba_ids.uniq
+      ba.save      
+    end
+    redirect_to locations_url, notice: "Added locations to BA"
+  end
+
 
   private
 

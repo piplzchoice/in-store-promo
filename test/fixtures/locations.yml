@@ -2,21 +2,22 @@
 #
 # Table name: locations
 #
-#  id           :integer          not null, primary key
-#  name         :string(255)
-#  address      :string(255)
-#  city         :string(255)
-#  state        :string(255)
-#  zipcode      :string(255)
-#  created_at   :datetime
-#  updated_at   :datetime
-#  user_id      :integer
-#  is_active    :boolean          default(TRUE)
-#  contact      :string(255)
-#  phone        :string(255)
-#  email        :string(255)
-#  notes        :text
-#  territory_id :integer
+#  id            :integer          not null, primary key
+#  name          :string(255)
+#  address       :string(255)
+#  city          :string(255)
+#  state         :string(255)
+#  zipcode       :string(255)
+#  created_at    :datetime
+#  updated_at    :datetime
+#  user_id       :integer
+#  is_active     :boolean          default(TRUE)
+#  contact       :string(255)
+#  phone         :string(255)
+#  email         :string(255)
+#  notes         :text
+#  territory_id  :integer
+#  more_contacts :text
 #
 
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html

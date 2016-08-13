@@ -32,6 +32,9 @@ class User < ActiveRecord::Base
   has_many :brand_ambassadors
   has_one :brand_ambassador, foreign_key: 'account_id', class_name: 'BrandAmbassador'
 
+  has_many :additional_personnels
+  has_one :additional_personnel, foreign_key: 'account_id', class_name: 'AdditionalPersonnel'
+
   has_many :projects
   has_many :services
   has_many :locations
@@ -43,6 +46,10 @@ class User < ActiveRecord::Base
     with_role(:ismp)
   end
 
+  def self.all_coordinator
+    with_role(:coordinator)
+  end  
+
   def get_info
     if has_role?(:ba)
       "#{brand_ambassador.email}"
@@ -53,6 +60,11 @@ class User < ActiveRecord::Base
 
   def save_ismp
     self.add_role :ismp
+    self.save
+  end
+
+  def save_coordinator
+    self.add_role :coordinator
     self.save
   end
 

@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p><%= @service.brand_ambassador.name %> is rejected <a href="<%= client_service_url(client_id: @service.client.id, id: @service.id) %>">service <%= @service.date %></a></p>
+  </body>
+</html>

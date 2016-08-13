@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   root 'home#index'
   resources :clients do
+    resources :additional_personnels
+    
     get :autocomplete_client_name, :on => :collection
     member do
       patch "reset_password"
@@ -27,7 +29,7 @@ Rails.application.routes.draw do
         post :archive
         post :add_location
         delete :remove_location
-        post :add_product        
+        post :add_product
         delete :removecopy
       end
     end
@@ -96,8 +98,11 @@ Rails.application.routes.draw do
   resources :locations do
     collection do
       post :export_data
+      post :import_data
       delete :deactive_data
       get :autocomplete_name
+      get :get_all_name
+      post :add_ba
     end
   end
   resources :email_templates, only: [:index, :edit, :update]
@@ -116,6 +121,8 @@ Rails.application.routes.draw do
       post :update_as_ba
     end
   end
+
+  resources :coordinator
 
   resources :reports do
     member do

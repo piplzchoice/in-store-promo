@@ -407,4 +407,5 @@ class BrandAmbassador < ActiveRecord::Base
     end
     return dates.uniq
   end
+
 end

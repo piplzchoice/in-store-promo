@@ -36,7 +36,7 @@ gem 'nokogiri'
 gem 'will_paginate', '~> 3.0'
 gem "will_paginate-bootstrap"
 gem 'fullcalendar-rails'
-gem 'momentjs-rails', '~> 2.5.0'
+gem 'momentjs-rails'
 gem 'bootstrap3-datetimepicker-rails', '~> 3.0.0'
 gem "select2-rails", '3.5.9'
 gem "icalendar"
@@ -65,4 +65,5 @@ end
 gem "spreadsheet"
 
 gem 'whenever', :require => false
+gem 'roo'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'

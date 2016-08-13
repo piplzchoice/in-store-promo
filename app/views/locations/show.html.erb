@@ -17,8 +17,40 @@
 
 <h2>Contact</h2>
 
-<label>Name :</label>
-<p><%= @location.contact %></p>
+<% if @location.more_contacts.nil? %>
+  <label>Contact:</label>
+  <p><%= @location.contact %></p>
+  
+  <label>Email:</label>
+  <p><%= @location.email %></p>
 
-<label>Phone :</label>
-<p><%= @location.phone %></p>
+  <label>Phone:</label>
+  <p><%= @location.phone %></p>
+
+<% else %>
+  <label>Contact 1 Name :</label>
+  <p><%= @location.more_contacts["contact_1_name"] %></p>
+
+  <label>Contact 1 Departement:</label>
+  <p><%= @location.more_contacts["contact_1_departement"] %></p>
+
+  <label>Contact 1 Phone:</label>
+  <p><%= @location.more_contacts["contact_1_phone"] %></p>
+
+  <label>Contact 1 Email:</label>
+  <p><%= @location.more_contacts["contact_1_email"] %></p>
+
+  <hr />
+  <label>Contact 2 Name :</label>
+  <p><%= @location.more_contacts["contact_2_name"] %></p>
+
+  <label>Contact 2 Departement:</label>
+  <p><%= @location.more_contacts["contact_2_departement"] %></p>
+
+  <label>Contact 2 Phone:</label>
+  <p><%= @location.more_contacts["contact_2_phone"] %></p>
+
+  <label>Contact 2 Email:</label>
+  <p><%= @location.more_contacts["contact_2_email"] %></p>
+
+<% end %>

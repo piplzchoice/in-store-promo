@@ -1,0 +1,5 @@
+$("#addLocationToBAModal").modal("show");
+$("#locations-name").html("<%= escape_javascript render('list_locations_name') %>");
+$("#select-ba-name").html("<%= escape_javascript render('select_ba_name') %>");
+$("#brand_ambassador_id").select2();
+$("#location_ba_ids").val($("#location_ids").val());

@@ -78,6 +78,7 @@ class Service < ActiveRecord::Base
   def self.filter_and_order(parameters)
     data = nil
     conditions = {}
+
     if parameters["status"] != ""
       # if parameters["status"] == "11"
       #   conditions.merge!(status_inventory: true)
@@ -97,17 +98,21 @@ class Service < ActiveRecord::Base
     end
 
     if parameters["client_name"] != ""
-      data = Service.joins(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
+      data = Service.includes(:client).where(clients: {id: parameters["client_name"]}).where(conditions)
     else
-      data = Service.joins(:client).where(clients: {is_active: true}).where(conditions)
+      data = Service.includes(:client).where(clients: {is_active: true}).where(conditions)
+    end
+
+    unless parameters["start"].nil? && parameters["end"].nil?
+      data = data.where(["start_at >= ? and start_at <= ?", parameters["start"], parameters["end"]])
     end
 
     if parameters["sort_column"] == "ba"
-      data = data.joins(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
+      data = data.includes(:brand_ambassador).order("brand_ambassadors.name #{parameters["sort_direction"]}")
     elsif parameters["sort_column"] == "client"
-      data = data.joins(:client).order("clients.company_name #{parameters["sort_direction"]}")
+      data = data.includes(:client).order("clients.company_name #{parameters["sort_direction"]}")
     elsif parameters["sort_column"] == "location_name"
-      data = data.joins(:location).order("locations.name #{parameters["sort_direction"]}")
+      data = data.includes(:location).order("locations.name #{parameters["sort_direction"]}")
     else
       if parameters["sort_column"] == "time"
         data = data.order("EXTRACT (HOUR from start_at) #{parameters["sort_direction"]}")
@@ -307,9 +312,11 @@ class Service < ActiveRecord::Base
       ]
   end
 
-  def self.calendar_services(status, assigned_to, client_name, sort_column, sort_direction, is_client = false)
+  def self.calendar_services(params, assigned_to, client_name, sort_column, sort_direction, is_client = false)
     data = {
-      "status" => status,
+      "status" => params["status"],
+      "start" => params["start"],
+      "end" => params["end"],
       "assigned_to" => assigned_to,
       "client_name" => client_name,
       "sort_column" => sort_column,
@@ -364,6 +371,17 @@ class Service < ActiveRecord::Base
     when 12
       "To be Scheduled"
     end
+  end
+
+  def self.can_be_disable?
+    # ba can be disable when ba services only have status 3, 8, 9
+    disable = true
+    ba_statuses = select(:status).collect(&:status).uniq
+    statuses = [1, 2, 4, 5, 6, 7, 10, 11, 12]
+    statuses.each do |status|
+      disable = false if ba_statuses.include?(status)
+    end
+    return disable
   end
 
   def report_service
@@ -983,7 +1001,7 @@ class Service < ActiveRecord::Base
     end_at_first = DateTime.strptime(tbs_params["end_at_first"], '%m/%d/%Y %I:%M %p')
 
     service.tbs_data = {
-      first_date: {start_at: start_at_first, end_at: end_at_first},      
+      first_date: {start_at: start_at_first, end_at: end_at_first},
       ba_ids: JSON.parse(tbs_params["ba_ids"])
     }
 
@@ -991,7 +1009,7 @@ class Service < ActiveRecord::Base
       start_at_second = DateTime.strptime(tbs_params["start_at_second"], '%m/%d/%Y %I:%M %p')
       end_at_second = DateTime.strptime(tbs_params["end_at_second"], '%m/%d/%Y %I:%M %p')
       service.tbs_data["second_date"] = {start_at: start_at_second, end_at: end_at_second}
-    end        
+    end
 
     return service
     # service = Service.where({
@@ -1044,12 +1062,12 @@ class Service < ActiveRecord::Base
     }
 
     unless no_need_second_date
-      react_data["second_date"] = 
+      react_data["second_date"] =
         {
           start_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["start_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
           end_at: (status == 12 ? DateTime.parse(tbs_data["second_date"]["end_at"]).strftime("%m/%d/%Y %I:%M %p") : nil),
         }
-    end   
+    end
 
     return react_data
   end

@@ -179,4 +179,12 @@ class ApplicationMailer < ActionMailer::Base
     )
   end
 
+  def rejected_service(service)
+    @service = service
+    mail(
+      to: "carolw@falvorfanaticsism.com",
+      subject: "#{service.brand_ambassador.name} is rejected service"
+    )    
+  end
+
 end

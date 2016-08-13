@@ -1,5 +1,6 @@
 class BrandAmbassadorsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :check_user_role, only: [:show, :new, :create, :edit, :update]
   authorize_resource class: BrandAmbassadorsController
 
   def index
@@ -80,8 +81,12 @@ class BrandAmbassadorsController < ApplicationController
     @brand_ambassador = BrandAmbassador.find(params[:id])
     msg = nil
     if @brand_ambassador.is_active
-      @brand_ambassador.update_attribute(:is_active, false)
-      msg = "BA is deactivated"
+      if @brand_ambassador.services.can_be_disable?
+        @brand_ambassador.update_attribute(:is_active, false)
+        msg = "BA is deactivated"
+      else
+        msg = "This BA has outstanding demo/payment and cannot be deactivated before it is finalized"
+      end
     else
       @brand_ambassador.update_attribute(:is_active, true)
       msg = "BA is reactivated"
@@ -159,4 +164,9 @@ class BrandAmbassadorsController < ApplicationController
       format.json { render json: BrandAmbassador.get_all_available_dates(params[:location_name]) }
     end
   end
+
+  private
+  def check_user_role
+    redirect_to(brand_ambassadors_url, :flash => { :error => "Not allowed" }) if current_user.has_role?(:coordinator)
+  end  
 end

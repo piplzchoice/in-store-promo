@@ -4,7 +4,7 @@ class ServicesController < ApplicationController
   authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show]
 
   def index
-    render json: Client.calendar_services(params[:client_id])
+    render json: Client.calendar_services(params)
   end
 
   def new
@@ -71,7 +71,7 @@ class ServicesController < ApplicationController
             )
           end
 
-          redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service Scheduled Created"
+          redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Demo Scheduled Created"
         end
       end
     end
@@ -176,7 +176,7 @@ class ServicesController < ApplicationController
           @service.create_coops(params["co_op_client_id"], params["ids-coop-products"], current_user.id) if params["co-op-price-box"]
           # @client.set_as_active if @client.services.size == 1
           ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-          redirect_to client_path(@client), notice: "Service created"
+          redirect_to client_path(@client), notice: "Demo created"
         else
           render :new
         end
@@ -202,7 +202,7 @@ class ServicesController < ApplicationController
       format.html do
         if @service.can_modify? || current_user.has_role?(:admin)
           @service.update_data(service_params, params["co-op-price-box"], params["co_op_client_id"], params["ids-coop-products"], current_user.id)
-          redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Service Updated" and return
+          redirect_to client_service_path({client_id: params[:client_id], id: params[:id]}), notice: "Demo Updated" and return
         end
         render :edit
       end
@@ -214,14 +214,14 @@ class ServicesController < ApplicationController
     @clients = Client.with_status_active.where.not(id: params[:client_id])
     @service = @client.services.where(id: params[:id]).first
     @service = @client.co_op_services.where(id: params[:id]).first if @service.nil?
-    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
+    redirect_to client_path(@client), notice: "Demo not found" if @service.nil?
   end
 
   def logs
     @client = Client.find(params[:client_id])
     @service = @client.services.where(id: params[:service_id]).first
     @service = @client.co_op_services.where(id: params[:service_id]).first if @service.nil?
-    redirect_to client_path(@client), notice: "Service not found" if @service.nil?
+    redirect_to client_path(@client), notice: "Demo not found" if @service.nil?
   end
 
   def log
@@ -245,7 +245,7 @@ class ServicesController < ApplicationController
     @service = Service.find(params[:id])
     if @service.cancelled(current_user.id)
       ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver unless @service.status == 12
-      redirect_to client_path(@client), {notice: "Service Cancelled"}
+      redirect_to client_path(@client), {notice: "Demo Cancelled"}
     else
       render :show
     end
@@ -297,7 +297,7 @@ class ServicesController < ApplicationController
       )
       ba_ids.push ba_second_tbs.collect(&:id)
     end
-    
+
     ba_ids = ba_ids.flatten.uniq
 
     @brand_ambassadors = BrandAmbassador.find(ba_ids)
@@ -370,6 +370,7 @@ class ServicesController < ApplicationController
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_status(Service.status_rejected, @service.brand_ambassador.account.id, Devise.friendly_token)
+          ApplicationMailer.rejected_service(@service).deliver
         end
       end
     end
@@ -393,14 +394,14 @@ class ServicesController < ApplicationController
   # end
 
   def set_reschedule
-    msg = "Service reschedule failed"
+    msg = "Demo reschedule failed"
     @client = Client.find(params[:client_id])
     unless @client.nil?
       @service = @client.services.find(params[:id])
       unless @service.nil?
         @service.update_status_both_side(Service.status_scheduled, current_user.id)
         ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
-        msg = "Service reschedule completed"
+        msg = "Demo reschedule completed"
       end
     end
 

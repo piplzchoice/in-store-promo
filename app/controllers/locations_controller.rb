@@ -1,55 +1,51 @@
 class LocationsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :check_location_status, :only => [:show, :edit, :update]
-  
+  helper_method :sort_column, :sort_direction
   authorize_resource class: LocationsController
 
   def index
     respond_to do |format|
-      format.html {        
+      format.html {
         if session[:filter_history_locations].nil?
           @locations = Location.with_status_active.paginate(:page => params[:page])
           @loc_id = Location.with_status_active.select(:id).collect(&:id).join(",")
         else
-          @locations = Location.filter_and_order(
-            session[:filter_history_locations]["is_active"], 
-            session[:filter_history_locations]["location_name"]).paginate(:page => session[:filter_history_locations]["page"])
-          @loc_id = Location.filter_and_order(session[:filter_history_locations]["is_active"], session[:filter_history_locations]["name"]).select(:id).collect(&:id).join(",")
+          locations = Location.filter_and_order(session[:filter_history_locations])
+          @locations = locations.paginate(:page => session[:filter_history_locations]["page"])
+          @loc_id = locations.collect(&:id).join(",")
           @is_active = session[:filter_history_locations]["is_active"]
           @location_name = session[:filter_history_locations]["location_name"]
-          
+          @city = session[:filter_history_locations]["city"]
+
           unless @location_name == ""
             if @location_name.to_i != 0
               @location_fullname = Location.find(@location_name).name
             else
               @location_fullname = @location_name
-            end            
-            
+            end
           end
 
           session[:filter_history_locations] = nil  if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "locations"
-        end        
+        end
       }
-      format.js {        
-        @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(",")) 
-        
-        session[:filter_history_locations] = {
-          "is_active" => params[:is_active], 
-          "location_name" => (params[:location_id] == "" ? "" : params[:location_name]), 
-          "page" => params[:page]
-        }
-        
-        @locations = Location.filter_and_order(
-          session[:filter_history_locations]["is_active"], 
-          session[:filter_history_locations]["location_name"])
-        .paginate(:page => session[:filter_history_locations]["page"])
+      format.js {
+        @location_ids = (params[:location_ids] == "" ? nil : params[:location_ids].split(","))
 
-        @loc_id = Location.filter_and_order(
-          session[:filter_history_locations]["is_active"], 
-          session[:filter_history_locations]["location_name"])
-        .select(:id).collect(&:id).join(",")
-      }      
-    end    
+        session[:filter_history_locations] = {
+          "is_active" => params[:is_active],
+          "location_name" => (params[:location_id] == "" ? "" : params[:location_name]),
+          "city" => params[:city],
+          "sort_column" => sort_column,
+          "sort_direction" => sort_direction,
+          "page" => params[:page],
+        }
+
+        locations = Location.filter_and_order(session[:filter_history_locations])
+        @locations = locations.paginate(:page => session[:filter_history_locations]["page"])
+        @loc_id = locations.collect(&:id).join(",")
+      }
+    end
   end
 
   def new
@@ -57,7 +53,7 @@ class LocationsController < ApplicationController
     @territories = Territory.all
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def edit
@@ -65,14 +61,14 @@ class LocationsController < ApplicationController
     @territories = Territory.all
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def show
     @location = Location.find(params[:id])
     respond_to do |format|
       format.html
-    end    
+    end
   end
 
   def create
@@ -87,7 +83,7 @@ class LocationsController < ApplicationController
           render :new
         end
       end
-    end       
+    end
   end
 
   def update
@@ -109,26 +105,34 @@ class LocationsController < ApplicationController
     @location = Location.find(params[:id])
     msg = ""
     if @location.is_active
-      @location.set_data_false
-      msg = "Location de-activated"      
+      if @location.services.can_be_disable?
+        @location.set_data_false
+        msg = "Location de-activated"
+      else
+        msg = "This Location has outstanding demo/payment and cannot be deactivated before it is finalized"
+      end
     else
       @location.set_data_true
-      msg = "Location re-activated"      
-    end  
+      msg = "Location re-activated"
+    end
 
-    redirect_to locations_url, {notice: msg}      
+    redirect_to locations_url, {notice: msg}
   end
 
   def deactive_data
     unless params[:loc_ids] == ""
+      msg = "Success Deactive Locations"
       @locations = Location.where(id: params[:loc_deactive_ids].split(","))
-
       @locations.each_with_index do |location, i|
-        location.set_data_false
+        if location.services.can_be_disable?
+          location.set_data_false
+        else
+          msg = "some location has outstanding demo/payment and cannot be deactivated before it is finalized"
+        end
       end
 
-      redirect_to locations_url, {notice: "Success Deactive Locations"}
-    else 
+      redirect_to locations_url, {notice: msg}
+    else
       redirect_to locations_url, {notice: "Please select location to deactive"}
     end
   end
@@ -137,7 +141,7 @@ class LocationsController < ApplicationController
     unless params[:loc_ids] == ""
       @locations = Location.where(id: params[:loc_ids].split(","), is_active: params[:loc_status])
       total_ba = Location.all.collect{|x| x.brand_ambassadors.with_status_active.size}.max
-      
+
       fields = [
         "Location Name",
         "Address",
@@ -166,13 +170,13 @@ class LocationsController < ApplicationController
       export_file_path = [Rails.root, "tmp", "export-location-data-#{Time.now.to_i}.xls"].join("/")
       book.write export_file_path
       send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
-    else 
+    else
       redirect_to locations_url, {notice: "Please select location to export"}
     end
   end
 
   def autocomplete_name
-    locations = Location.autocomplete_search(params[:q]).to_a    
+    locations = Location.autocomplete_search(params[:q]).to_a
     o = Location.new({id: "987654321", name: "Keywords '#{params[:q]}'", city: params[:q]})
     locations.insert(0, o)
     respond_to do |format|
@@ -182,14 +186,52 @@ class LocationsController < ApplicationController
     end
   end
 
-  def location_params
-    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes, :territory_id)
-  end    
+  def import_data
+    status = Location.import_location_excel(params[:file])
+    redirect_to locations_url, notice: status
+  end
+
+  def get_all_name
+    @locations = Location.where(id: params[:location_ids].split(",")).select(:name, :id)
+    @brand_ambassadors = BrandAmbassador.with_status_active.select(:id, :name)
+    respond_to do |format|
+      format.js 
+    end    
+  end
+  
+  def add_ba
+    loc_ids = params[:location_ba_ids].split(",")
+    params[:brand_ambassador_id].each do |ba_id|
+      ba = BrandAmbassador.find(ba_id)
+      ba_ids = ba.location_ids
+
+      loc_ids.each do |lo_id|
+        ba_ids << lo_id
+      end
+
+      ba.location_ids = ba_ids.uniq
+      ba.save      
+    end
+    redirect_to locations_url, notice: "Added locations to BA"
+  end
+
 
   private
+
+  def location_params
+    params.require(:location).permit(:name, :address, :city, :state, :zipcode, :contact, :phone, :email ,:notes, :territory_id)
+  end
 
   def check_location_status
     location = Location.find(params[:id])
     redirect_to(locations_path, :flash => { :error => "Location is not active" }) unless location.is_active
-  end  
+  end
+
+  def sort_column
+    params[:sort].nil? ? "name" : params[:sort]
+  end
+
+  def sort_direction
+    %w[asc desc].include?(params[:direction]) ? params[:direction] : "desc"
+  end
 end

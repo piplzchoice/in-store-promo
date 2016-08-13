@@ -4,7 +4,9 @@
       <th>ID</th>
       <th>Name</th>
       <th>Territories</th>
-      <th>Action</th>
+      <% unless current_user.has_role?(:coordinator) %>
+        <th>Action</th>
+      <% end %>
       <th></th>
     </tr>
   </thead>
@@ -15,13 +17,15 @@
       <!-- <td><%#= brand_ambassador.email %></td> -->
       <td><%= brand_ambassador.name %></td>
       <td><%= brand_ambassador.territories.blank? ? "-" : brand_ambassador.territories.collect{|x| x.name }.join(", ") %></td>
+      <% unless current_user.has_role?(:coordinator) %>
+        <td>
+          <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
+          <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> ||         
+          <%= link_to (brand_ambassador.is_active ? "Deactivate" : "Reactivate"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
+        </td>
+      <% end %>
       <td>
-        <%= link_to "Show", brand_ambassador_path(brand_ambassador) %> || 
-        <%= link_to "Edit", edit_brand_ambassador_path(brand_ambassador) %> ||         
-        <%= link_to (brand_ambassador.is_active ? "Deactivate" : "Reactivate"), brand_ambassador_path(brand_ambassador), {data: { confirm: "Are you sure?" }, :method => :delete} %>
-      </td>
-      <td>
-        <%= link_to "View Statements", brand_ambassador_statements_path(brand_ambassador_id: brand_ambassador.id) %>
+        <%= link_to("View Statements", brand_ambassador_statements_path(brand_ambassador_id: brand_ambassador.id)) unless current_user.has_role?(:coordinator) %>
         || 
         <%= link_to "BA Availability", availability_brand_ambassador_path(brand_ambassador) %>        
       </td>

@@ -1,4 +1,4 @@
-<h1 class="page-header">Show Service</h1>
+<h1 class="page-header">Show Demo</h1>
 <div class="row">
   <div class="col-md-4">
     <label>Status :</label>
@@ -24,9 +24,21 @@
   </div>
   <div class="col-md-4">
     <label>Location</label>
-    <p>Name: <%= @service.location.name %></p>
-    <p>Contact: <%= @service.location.contact %></p>
-    <p>Phone: <%= @service.location.phone %></p>
+    <% if @service.location.more_contacts.nil? %>
+      <p>Name: <%= @service.location.name %></p>
+      <p>Contact: <%= @service.location.contact %></p>
+      <p>Phone: <%= @service.location.phone %></p>
+    <% else %>
+      <p><strong>Contact 1 Name :</strong> <%= @service.location.more_contacts["contact_1_name"] %></p>
+      <p><strong>Contact 1 Departement:</strong> <%= @service.location.more_contacts["contact_1_departement"] %></p>
+      <p><strong>Contact 1 Phone:</strong> <%= @service.location.more_contacts["contact_1_phone"] %></p>
+      <p><strong>Contact 1 Email:</strong> <%= @service.location.more_contacts["contact_1_email"] %></p>
+      <hr />
+      <p><strong>Contact 2 Name :</strong> <%= @service.location.more_contacts["contact_2_name"] %></p>
+      <p><strong>Contact 2 Departement:</strong> <%= @service.location.more_contacts["contact_2_departement"] %></p>
+      <p><strong>Contact 2 Phone:</strong> <%= @service.location.more_contacts["contact_2_phone"] %></p>
+      <p><strong>Contact 2 Email:</strong> <%= @service.location.more_contacts["contact_2_email"] %></p>
+    <% end %>
   </div>
   <div class="col-md-4">
     <% unless @service.status == 12 %>

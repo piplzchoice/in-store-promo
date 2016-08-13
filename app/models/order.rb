@@ -14,6 +14,7 @@
 #  to_be_completed_by :string(255)
 #  distributor        :string(255)
 #  comments           :text
+#  archived           :boolean          default(FALSE)
 #
 
 class Order < ActiveRecord::Base

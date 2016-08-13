@@ -101,6 +101,8 @@ Rails.application.routes.draw do
       post :import_data
       delete :deactive_data
       get :autocomplete_name
+      get :get_all_name
+      post :add_ba
     end
   end
   resources :email_templates, only: [:index, :edit, :update]

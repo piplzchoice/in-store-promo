@@ -1,5 +1,5 @@
 # config valid only for current version of Capistrano
-lock '3.5.0'
+# lock '3.5.0'
 
 set :application, 'ism'
 set :repo_url, 'git@github.com:piplzchoice/in-store-promo.git'

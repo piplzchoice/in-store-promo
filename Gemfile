@@ -68,3 +68,5 @@ gem 'roo'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
 gem 'sidekiq'
 gem "foreman"
+
+gem 'capistrano-sidekiq', group: :development

@@ -173,6 +173,8 @@ GEM
       mime-types
       orm_adapter
     redis (3.3.1)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     rest_client (1.8.2)
       netrc (~> 0.7.7)
     rolify (3.4.0)
@@ -263,6 +265,7 @@ DEPENDENCIES
   rails (= 4.1.2)
   react-rails (~> 1.6.0)
   redactor-rails
+  redis-namespace
   rest_client
   rolify
   roo

@@ -149,3 +149,12 @@ $RECYCLE.BIN/
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+
+.byebug_history
+db_backup.tar
+db_backup/
+deploy
+deploy-live
+push-code
+server_aai
+set_deploy

@@ -131,8 +131,8 @@ class BrandAmbassadorsController < ApplicationController
         @locations = Location.with_status_active.paginate(:page => params[:page])
       }
       format.js {
-        @location_ids = (params[:location_ids] == "" ? [] : params[:location_ids].split(","))
-        @locations = Location.filter_and_order(true, params[:name]).paginate(:page => params[:page])
+        @location_ids = (params[:location_ids] == "" ? [] : params[:location_ids].split(","))        
+        @locations = Location.filter_and_order(params.merge({is_active: true})).paginate(:page => params[:page])
       }
     end
   end

@@ -87,9 +87,9 @@
         </thead>
         <tbody>
           <% if !@report.client_products.nil? %>
-            <%= render "client_products_pdf" %>
+            <%= render "/reports/client_products_pdf" %>
           <% else %>
-            <%= render "products_pdf" %>
+            <%= render "/reports/products_pdf" %>
           <% end %>
         </tbody>
       </table>

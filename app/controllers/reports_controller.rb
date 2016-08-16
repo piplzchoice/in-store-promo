@@ -324,20 +324,20 @@ class ReportsController < ApplicationController
              end
            end
 
-          #  @report.remove_file_pdf
-          #  @report.remove_file_pdf = true
+           @report.remove_file_pdf
+           @report.remove_file_pdf = true
 
-          #  @report.save
-          #  @report.remove_file_pdf = false
+           @report.save
+           @report.remove_file_pdf = false
 
-          #  file = "report-#{Time.now.to_i}.pdf"
+           file = "report-#{Time.now.to_i}.pdf"
 
-          #  html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-          #  kit = PDFKit.new(html)
-          #  kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+           html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
+           kit = PDFKit.new(html)
+           kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
 
-          #  @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-          #  @report.save
+           @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+           @report.save
 
           redirect_to report_path(@report), notice: "Report updated"
         else
@@ -548,12 +548,12 @@ class ReportsController < ApplicationController
 
     file = "report-#{Time.now.to_i}.pdf"
 
-    # html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
-    # kit = PDFKit.new(html)
-    # kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
 
-    # report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-    # report_data.save
+    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+    report_data.save
   end
 
   def save_coop_report_data(report_data, image_table, image_expense)
@@ -591,12 +591,12 @@ class ReportsController < ApplicationController
 
     file = "report-#{Time.now.to_i}.pdf"
 
-    # html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
-    # kit = PDFKit.new(html)
-    # kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
+    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
+    kit = PDFKit.new(html)
+    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
 
-    # report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-    # report_data.save
+    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
+    report_data.save
   end
 
   private

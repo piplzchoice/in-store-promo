@@ -1,0 +1,5 @@
+<% if @report.is_old_report %>
+  <%= render '/reports/old_print_pdf' %>
+<% else %>
+  <%= render '/reports/new_print_pdf' %>
+<% end %>

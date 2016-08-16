@@ -324,20 +324,7 @@ class ReportsController < ApplicationController
              end
            end
 
-           @report.remove_file_pdf
-           @report.remove_file_pdf = true
-
-           @report.save
-           @report.remove_file_pdf = false
-
-           file = "report-#{Time.now.to_i}.pdf"
-
-           html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-           kit = PDFKit.new(html)
-           kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-
-           @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-           @report.save
+          ReportPdfGeneratorWorker.perform_async('report', @report.id, true)
 
           redirect_to report_path(@report), notice: "Report updated"
         else
@@ -366,24 +353,19 @@ class ReportsController < ApplicationController
   end
 
   def download_pdf
-    file = "report-#{Time.now.to_i}.pdf"
-    @report = Report.find(params[:id])
-    @service = @report.service
+    report = Report.find(params[:id])
 
-    # if @report.file_pdf.blank?
-      html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => params[:id])
-      kit = PDFKit.new(html)
-      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-
-      @report.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
-      @report.save
-
-      send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')
-    # else
-    #   data = open(@report.file_pdf.url)
-    #   send_file(data, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')
-      # send_file(@report.file_pdf.url, :filename => @report.file_pdf.url.split("/").last, :type => 'application/pdf')
-    # end
+    if report.file_pdf.blank?
+      redirect_to report_path(report), {notice: "System still generate pdf for this report, please try again in a few minutes"}
+    else
+      if Rails.env.eql?("development")
+        send_file(Rails.root.to_s + "/public" + report.file_pdf.url, 
+          {:filename => report.file_pdf.url.split("/").last, :type => 'application/pdf'})
+      else
+        data = open(report.file_pdf.url)
+        send_file(data, :filename => report.file_pdf.url.split("/").last, :type => 'application/pdf')
+      end
+    end
 
   end
 
@@ -402,48 +384,7 @@ class ReportsController < ApplicationController
 
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet :name => 'Data'
-    sheet1.row(0).replace [
-      "Location Name",
-      "Client name",
-      "BA name",
-      "Date",
-      "Total Units Sold",
-      "Ave Price",
-      "Traffic",
-      "Day",
-      "AM/PM",
-      "Product 1",
-      "Product 2",
-      "Product 3",
-      "Product 4",
-      "Product 5",
-      "Product 6",
-      "Product 7",
-      "Product 8",
-      "Product 9",
-      "Product 10",
-      "Product 11",
-      "Product 12",
-      "Product 13",
-      "Product 14",
-      "Product 15",
-      "Sold Product 1",
-      "Sold Product 2",
-      "Sold Product 3",
-      "Sold Product 4",
-      "Sold Product 5",
-      "Sold Product 6",
-      "Sold Product 7",
-      "Sold Product 8",
-      "Sold Product 9",
-      "Sold Product 10",
-      "Sold Product 11",
-      "Sold Product 12",
-      "Sold Product 13",
-      "Sold Product 14",
-      "Sold Product 15",
-      "Estimated 3 of customers touched"
-    ]
+    sheet1.row(0).replace(export_data_array)
 
     @services.each_with_index do |service, i|
       sheet1.row(i + 1).replace service.export_data
@@ -546,14 +487,8 @@ class ReportsController < ApplicationController
       end
     end
 
-    file = "report-#{Time.now.to_i}.pdf"
-
-    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
-    kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-
-    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
     report_data.save
+    ReportPdfGeneratorWorker.perform_async('report', report_data.id)
   end
 
   def save_coop_report_data(report_data, image_table, image_expense)
@@ -589,14 +524,8 @@ class ReportsController < ApplicationController
       end
     end
 
-    file = "report-#{Time.now.to_i}.pdf"
-
-    html = render_to_string(:layout => "print_report", :action => "print_pdf", :id => report_data.id)
-    kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-
-    report_data.file_pdf = kit.to_file("#{Rails.root}/tmp/#{file}")
     report_data.save
+    ReportPdfGeneratorWorker.perform_async('report', report_data.id)
   end
 
   private
@@ -607,6 +536,18 @@ class ReportsController < ApplicationController
         service.report.id unless service.report.nil?
       end
     end.compact
+  end
+
+  def export_data_array
+    [
+      "Location Name", "Client name", "BA name", "Date", "Total Units Sold", "Ave Price",
+      "Traffic", "Day", "AM/PM", "Product 1", "Product 2", "Product 3", "Product 4",
+      "Product 5", "Product 6", "Product 7", "Product 8", "Product 9", "Product 10",
+      "Product 11", "Product 12", "Product 13", "Product 14", "Product 15", "Sold Product 1",
+      "Sold Product 2", "Sold Product 3", "Sold Product 4", "Sold Product 5", "Sold Product 6",
+      "Sold Product 7", "Sold Product 8", "Sold Product 9", "Sold Product 10", "Sold Product 11",
+      "Sold Product 12", "Sold Product 13", "Sold Product 14", "Sold Product 15", "Estimated 3 of customers touched"
+    ]    
   end
 
 end

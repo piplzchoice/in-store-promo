@@ -174,4 +174,6 @@ Rails.application.routes.draw do
 
   resources :territories
 
+  get "/print/report/:id" => "print#report", as: "print_report_pdf"
+
 end

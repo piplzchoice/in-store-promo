@@ -55,3 +55,5 @@ gem "addressable", :require => "addressable/uri"
 gem "spreadsheet"
 gem 'roo'
 gem 'activerecord-session_store', github: 'rails/activerecord-session_store'
+gem 'sidekiq'
+gem "foreman"

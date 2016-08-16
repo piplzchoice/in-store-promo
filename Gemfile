@@ -70,3 +70,4 @@ gem 'sidekiq'
 gem "foreman"
 
 gem 'capistrano-sidekiq', group: :development
+gem "redis-namespace"

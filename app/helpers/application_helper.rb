@@ -69,6 +69,7 @@ module ApplicationHelper
 
     et = EmailTemplate.find_by_name("demo_request_template")
     et.subject.gsub!(".client_first_name", service.client.company_name)
+    et.content.gsub!(".service_location", service.location.complete_location)
     et.content.gsub!(".client_first_name", service.client.company_name)
     et.content.gsub!(".location_contact_name", service.location.contact)
     et.content.gsub!(".desirable_dates", desirable_dates)

@@ -21,7 +21,43 @@
           <td><%= log.user.get_info %></td>
           <td><%= log.what %></td>
           <td><%= log.status %></td>
-          <td><%= log.comments.html_safe %></td>
+          <% if log.category == "email_log" %>
+            <td>
+              <%= link_to("View Email Content", "#", {
+                class: "btn btn-primary", 
+                role: "button", 
+                data: {toggle: "modal", target: "#modalViewEmailContent#{log.id}"}
+              }) %>
+              <div id="modalViewEmailContent<%=log.id%>" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                      <h4 class="modal-title" id="mySmallModalLabel">
+                        View Email Content
+                      </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+
+                        <div class="form-group">
+                          <label class="control-label">Subject</label>
+                          <p><%= log.data["email_log"]["subject"] %></p>
+                        </div>
+
+                        <div class="form-group">
+                          <label class="control-label">Content</label>
+                          <p><%= log.data["email_log"]["content"].html_safe %></p>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          <% else %>
+            <td><%= log.comments.html_safe %></td>          
+          <% end %>                  
         </tr>
         <% end %>
       </tbody>
@@ -29,3 +65,4 @@
     
   </div>
 </div>
+

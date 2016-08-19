@@ -78,6 +78,7 @@ class Client < ActiveRecord::Base
     }.uniq.compact
 
     service_tbs = client.services.where(status: 12)
+    
     unless service_tbs.blank?
       service_tbs.each do |srv|
         calendars.push(
@@ -89,15 +90,18 @@ class Client < ActiveRecord::Base
             Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
           )
         )
-        calendars.push(
-          self.calendar_obj(
-            srv.title_calendar,
-            DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
-            DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
-            srv.get_color,
-            Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
-          )
-        )
+
+        unless srv.no_need_second_date
+          calendars.push(
+            self.calendar_obj(
+              srv.title_calendar,
+              DateTime.parse(srv.tbs_data["second_date"]["start_at"]).iso8601,
+              DateTime.parse(srv.tbs_data["second_date"]["end_at"]).iso8601,
+              srv.get_color,
+              Rails.application.routes.url_helpers.client_service_path({client_id: params["client_id"], id: srv.id})
+            )
+          )          
+        end
       end
     end
 

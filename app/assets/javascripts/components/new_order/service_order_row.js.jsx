@@ -118,7 +118,7 @@ var ServiceOrderRow = React.createClass({
     if(date.start_at !== null) {
       start_at = moment(new Date(date.start_at))
       end_at = moment(new Date(date.end_at))
-      dateFormat = start_at.format("MM/D/YYYY H:mm A") + end_at.format(" - H:mm A");
+      dateFormat = start_at.format("MM/D/YYYY h:mm A") + end_at.format(" - h:mm A");
     }
     return dateFormat
   },

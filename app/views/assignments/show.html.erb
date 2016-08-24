@@ -1,19 +1,7 @@
 <h1 class="page-header">Show Assignment</h1>
 
-<% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>
-
-  <% if @service.is_co_op? && !@service.parent.nil? %>
-    <div class="link-new-btn">
-        <%= link_to("Create Report", new_report_path(service_id: @service.parent.id), 
-          {class: "btn btn-success", role: "button"}) %>         
-    </div>      
-  <% else %>
-    <div class="link-new-btn">
-        <%= link_to("Create Report", new_report_path(service_id: @service.id), 
-          {class: "btn btn-success", role: "button"}) %>         
-    </div>  
-  <% end %>
-
+<% if @service.can_ba_create_report? %>
+  <%= create_report_demo(@service) %>
 <% end %>
 
 <label>Status :</label>
@@ -64,7 +52,27 @@
             <% end %>
           <% end %>
         <% end %>
-
       </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label class="control-label">Inventory Confirmed</label>
+          <p><%= @service.status_inventory %></p>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Inventory Confirmed Date</label>
+          <p><%= @service.inventory_date.nil? ? "-" : @service.inventory_date.strftime('%m/%d/%Y') %></p>
+        </div>
+
+        <div class="form-group">
+          <label class="control-label">Name of the Location's Contact who confirmed</label>
+          <p><%= @service.inventory_confirmed %></p>
+        </div>
+      </div>
+    </div>      
     </div>  
+
+    <%= render "services/comment_box" %>
+    <%= render "services/logs" %>
+
 <% end %>

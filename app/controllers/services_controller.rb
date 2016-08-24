@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
 
-  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show]
+  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show, :comment_inventory]
 
   def index
     render json: Client.calendar_services(params)
@@ -417,8 +417,10 @@ class ServicesController < ApplicationController
 
   def comment_inventory
     @service = Service.find(params[:service_id])
-    Log.record_comment_of_inventory(@service.id, params[:comments], current_user.id)
-    redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
+    cur_user_id = current_user.id
+    cur_user_id = session[:additional_personnel].id unless session[:additional_personnel].nil?
+    Log.record_comment_of_inventory(@service.id, params[:comments], cur_user_id)
+    redirect_to client_service_path({client_id: @service.client_id, id: params[:service_id]}) and return
   end
 
   def check_client_status

@@ -16,7 +16,8 @@ class SessionsController < Devise::SessionsController
     end
     
 
-    if resource.has_role?(:additional_personnel)      
+    if resource.has_role?(:additional_personnel)
+      session[:additional_personnel] = resource       
       sign_in(resource_name, resource.additional_personnel.client.account)   
     else
       sign_in(resource_name, resource)   
@@ -35,6 +36,7 @@ class SessionsController < Devise::SessionsController
       sign_in(:user, User.find(session[:prev_current_user_id]))
       session[:prev_current_user_id] = nil
     end
+    session[:additional_personnel] = nil
     redirect_path = root_path
 
     # yield resource if block_given?

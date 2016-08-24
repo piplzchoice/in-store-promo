@@ -1,134 +1,17 @@
 <% unless @service.is_cancelled? || @service.is_rejected? %>
   <% unless @service.is_old_service %>
     <hr />
-    <% if @service.is_reported? %>
-        <div class="row">
-          <div class="col-md-6">
-            <label>Select the products to be demonstrated</label>
-            <ul class="list-unstyled">
-              <% @client.products.each do |product| %>
-                <li>
-                  <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
-                  &nbsp;<%= product.name %>
-                </li>
-              <% end %>
-            </ul>
-              <%= hidden_field_tag "service[product_ids]", @service.product_ids.to_s, {id: "service_product_ids"} %>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label">Inventory Confirmed</label>
-              <p><%= @service.status_inventory %></p>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label">Inventory Confirmed Date</label>
-              <p><%= @service.inventory_date.nil? ? "-" : @service.inventory_date.strftime('%m/%d/%Y') %></p>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label">Name of the Location's Contact who confirmed</label>
-              <p><%= @service.inventory_confirmed %></p>
-            </div>
-          </div>
-        </div>
+    <% if current_user.has_role?(:client) || current_user.has_role?(:customer) %>
+      <%= render "show_list_products" %>
     <% else %>
-      <%= form_tag(confirm_inventory_client_services_path, {method: :post, id: "form-confirm-inventory"} ) do %>
-        <div class="row">
-          <div class="col-md-6">
-            <label>Select the products to be demonstrated</label>
-            <ul class="list-unstyled">
-              <% @client.products.each do |product| %>
-                <li>
-                  <%= check_box_tag("product-coop-#{product.id}", product.id, nil, {class: "product_coop_ids"}) %>
-                  &nbsp;<%= product.name %>
-                </li>
-              <% end %>
-            </ul>
-            <%= hidden_field_tag "service_id", @service.id %>
-            <%= hidden_field_tag "client_id", @client.id %>
-            <%= hidden_field_tag "service[product_ids]", @service.product_ids.to_s, {id: "service_product_coop_ids"} %>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label class="control-label">Inventory Confirmed</label>
-              <div class="radio">
-                <label>
-                  <%= radio_button_tag 'service[inventory_confirm]', true, (@service.inventory_confirm == true ? true : false) %>
-                  Yes
-                </label>
-              </div>
+      <% if @service.is_reported? %>
+        <%= render "show_list_products" %>
+      <% else %>
+        <%= render "select_and_confirm_products" %>  
+      <% end %>  
+    <% end %>    
 
-              <div class="radio">
-                <label>
-                  <%= radio_button_tag 'service[inventory_confirm]', false, (@service.inventory_confirm == false ? true : false) %>
-                  No
-                </label>
-              </div>
-            </div>
+    <%= render "comment_box" %>
 
-            <div class="form-group">
-              <label class="control-label">Inventory Confirmed Date</label>
-              <%= text_field_tag "service[inventory_date]", (@service.inventory_date.nil? ? nil : @service.inventory_date.strftime('%m/%d/%Y')), {class: "form-control", placeholder: "Confirmed Date", id: "inventory-confirmed-date"} %>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label">Name of the Location's Contact who confirmed</label>
-              <%= text_field_tag "service[inventory_confirmed]", @service.inventory_confirmed, {class: "form-control", placeholder: "Who Confirmed", required: "true"} %>
-            </div>
-            <div class="form-group">
-              <%= submit_tag("Confirm", class: "btn btn-primary") %>
-            </div>
-          </div>
-        </div>
-      <% end %>
-
-    <%
-
-    if @service.is_co_op?
-      if @service.co_op_services.empty?
-        the_service = @service.parent
-      else
-        @service.co_op_services.each do |srv|
-          the_service = srv
-        end
-      end
-    end
-
-    %>
-    <% if @service.is_co_op? %>
-      <div class="row">
-        <div class="col-md-6">
-          <label>Co-Op demo products to be demonstrated</label>
-          <ul class="list-unstyled">
-            <% the_service.client.products.each do |product| %>
-              <li>
-                <%= check_box_tag("product-#{product.id}", product.id, nil, {class: "product_ids"}) %>
-                &nbsp;<%= product.name %>
-              </li>
-            <% end %>
-          </ul>
-          <%= hidden_field_tag "service[product_ids]", the_service.product_ids.to_s, {class: "service_product_ids"} %>
-        </div>
-      </div
-
-    <% end %>
-
-      <div class="row">
-        <h2 class="page-header">Comments</h2>
-        <%= form_tag(comment_inventory_client_services_path, {method: :post, id: "form-comment-inventory"} ) do %>
-          <div class="col-md-12">
-            <div class="form-group">
-              <%= text_area_tag 'comments', nil, rows: 3, cols: 10, class: "form-control" %>
-            </div>
-            <div class="form-group">
-              <%= hidden_field_tag "service_id", @service.id %>
-              <%= hidden_field_tag "client_id", @client.id %>
-              <%= submit_tag("Comment", class: "btn btn-primary") %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    <% end %>
   <% end %>
 <% end %>

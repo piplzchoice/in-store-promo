@@ -77,5 +77,29 @@ module ApplicationHelper
     et.content.gsub!(".ismp_name", "Carol Wellins")
     return et
   end
+
+  def create_report_demo(service)
+    service_id = nil
+    if service.is_demo_coop_and_not_coop_parent?
+      service_id = service.parent.id      
+    else
+      service_id = service.id
+    end
+
+    content_tag(:div, {class: "link-new-btn"}) do
+      link_to("Create Report", new_report_path(service_id: service_id), 
+        {class: "btn btn-success", role: "button"})
+    end
+  end
+
+  def comment_path_action(current_user, service)
+    if current_user.has_role?(:ba)
+      comment_assignment_path({id: service.id})       
+    else
+      comment_inventory_client_services_path({client_id: service.client_id})
+    end    
+  end
   
+
+
 end

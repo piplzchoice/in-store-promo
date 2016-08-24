@@ -1090,4 +1090,14 @@ class Service < ActiveRecord::Base
   #   end
   # end
 
+  # method for replace `<% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>`
+  def can_ba_create_report?
+    (status == Service.status_confirmed || status == Service.status_conducted) && report.nil?    
+  end
+
+  # method for replace `@service.is_co_op? && !@service.parent.nil?` syntax
+  def is_demo_coop_and_not_coop_parent?
+    is_co_op? && !parent.nil?
+  end
+
 end

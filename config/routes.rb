@@ -179,5 +179,6 @@ Rails.application.routes.draw do
   resources :territories
 
   get "/print/report/:id" => "print#report", as: "print_report_pdf"
+  post "/forgot_password" => "home#forgot_password", as: "forgot_password"
 
 end

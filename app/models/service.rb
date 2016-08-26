@@ -79,11 +79,11 @@ class Service < ActiveRecord::Base
     data = nil
     conditions = {}
 
-    if parameters["status"] != ""
+    if parameters["status"] != "" 
       # if parameters["status"] == "11"
       #   conditions.merge!(status_inventory: true)
       # else
-        conditions.merge!(status: parameters["status"])
+        conditions.merge!(status: parameters["status"]) unless parameters["status"].nil?
       # end
     else
       if parameters["is_client"]
@@ -92,7 +92,7 @@ class Service < ActiveRecord::Base
     end
 
     conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
-
+    
     unless parameters["location_name"].nil?
       conditions.merge!(location_id: parameters["location_name"]) if parameters["location_name"] != ""
     end

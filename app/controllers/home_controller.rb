@@ -5,10 +5,10 @@ class HomeController < ApplicationController
   end
 
   def forgot_password
-    @user = User.find_by_email(params[:email_address])
+    @user = User.where({email: params[:email_address]})
 
-    unless @user.nil?
-      User.send_reset_password_instructions(@user) 
+    unless @user.blank?
+      User.send_reset_password_instructions(@user.first) 
     end
   end
 

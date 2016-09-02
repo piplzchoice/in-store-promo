@@ -79,11 +79,11 @@ class Service < ActiveRecord::Base
     data = nil
     conditions = {}
 
-    if parameters["status"] != ""
+    if parameters["status"] != "" 
       # if parameters["status"] == "11"
       #   conditions.merge!(status_inventory: true)
       # else
-        conditions.merge!(status: parameters["status"])
+        conditions.merge!(status: parameters["status"]) unless parameters["status"].nil?
       # end
     else
       if parameters["is_client"]
@@ -92,7 +92,7 @@ class Service < ActiveRecord::Base
     end
 
     conditions.merge!(brand_ambassador_id: parameters["assigned_to"]) if parameters["assigned_to"] != ""
-
+    
     unless parameters["location_name"].nil?
       conditions.merge!(location_id: parameters["location_name"]) if parameters["location_name"] != ""
     end
@@ -1089,5 +1089,15 @@ class Service < ActiveRecord::Base
   #     read_attribute(:rate)
   #   end
   # end
+
+  # method for replace `<% if (@service.status == Service.status_confirmed || @service.status == Service.status_conducted) && @service.report.nil? %>`
+  def can_ba_create_report?
+    (status == Service.status_confirmed || status == Service.status_conducted) && report.nil?    
+  end
+
+  # method for replace `@service.is_co_op? && !@service.parent.nil?` syntax
+  def is_demo_coop_and_not_coop_parent?
+    is_co_op? && !parent.nil?
+  end
 
 end

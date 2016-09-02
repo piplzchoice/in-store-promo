@@ -36,6 +36,12 @@ class AdditionalPersonnelsController < ApplicationController
     respond_to do |format|
       format.html do
         if @additional_personnel.save
+          ApplicationMailer.welcome_email(
+            @additional_personnel.account.email, 
+            @additional_personnel.name , 
+            additional_personnel_params["account_attributes"]["password"]
+          ).deliver
+          
           redirect_to client_additional_personnels_url(@client), notice: "Additional Personnel created"
         else
           @additional_personnel.build_account

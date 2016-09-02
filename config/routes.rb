@@ -159,7 +159,11 @@ Rails.application.routes.draw do
 
   resources :users, only: [:edit, :update]
   resources :default_values, only: [:edit, :update]
-  resources :assignments, only: [:index, :show]
+  resources :assignments, only: [:index, :show] do
+    member do
+      post "comment"
+    end
+  end
   resources :my_statements, only: [:index, :show] do
     collection do
       get "download"
@@ -175,5 +179,6 @@ Rails.application.routes.draw do
   resources :territories
 
   get "/print/report/:id" => "print#report", as: "print_report_pdf"
+  post "/forgot_password" => "home#forgot_password", as: "forgot_password"
 
 end

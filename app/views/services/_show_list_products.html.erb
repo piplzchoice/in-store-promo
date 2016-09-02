@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-md-6">
+    <label>The products to be demonstrated</label>
+    <ul class="list-unstyled">
+        <% @client.products.each do |product| %>
+        <li><%= product.name %></li>
+        <% end %>
+    </ul>
+        <%= hidden_field_tag "service[product_ids]", @service.product_ids.to_s, {id: "service_product_ids"} %>
+    </div>
+    <div class="col-md-6">
+    <div class="form-group">
+        <label class="control-label">Inventory Confirmed</label>
+        <p><%= @service.status_inventory %></p>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Inventory Confirmed Date</label>
+        <p><%= @service.inventory_date.nil? ? "-" : @service.inventory_date.strftime('%m/%d/%Y') %></p>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label">Name of the Location's Contact who confirmed</label>
+        <p><%= @service.inventory_confirmed %></p>
+    </div>
+    </div>
+</div>

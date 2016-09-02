@@ -8,7 +8,7 @@ class HomeController < ApplicationController
     @user = User.where({email: params[:email_address]})
 
     unless @user.blank?
-      User.send_reset_password_instructions(@user.first) 
+      @user.first.send_reset_password_instructions 
     end
   end
 

@@ -12,12 +12,22 @@ class BrandAmbassadorsController < ApplicationController
         else
           @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
           @is_active = session[:filter_history_ba]["is_active"]
+          @location_name = session[:filter_history_ba]["location_name"]
           session[:filter_history_ba] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "brand_ambassadors"
         end
       }
       format.js {
-        session[:filter_history_ba] = {"is_active" => params[:is_active], "page" => params[:page], "location_name" => params[:location_name]}
-        @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
+        session[:filter_history_ba] = {
+          "is_active" => params[:is_active], 
+          "page" => params[:page], 
+          "location_name" => (params[:location_id] == "987654321" ? params[:location_name] : params[:location_id]),
+        }
+
+        @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba])
+
+        unless @brand_ambassadors.blank?
+          @brand_ambassadors = @brand_ambassadors.paginate(:page => session[:filter_history_ba]["page"])
+        end
       }
     end
   end

@@ -35,10 +35,28 @@ class BrandAmbassador < ActiveRecord::Base
 
   def self.filter_and_order(filter_options)
     data = []
-    if filter_options["location_name"] == ""
+    locations = []
+    location_name = filter_options["location_name"]
+    is_location_name_string = false
+
+    if location_name == ""
       data = BrandAmbassador.where(is_active: filter_options["is_active"])
     else
-      data = Location.find(filter_options["location_name"]).brand_ambassadors.where(is_active: filter_options["is_active"])
+      is_location_name_string = true unless location_name.to_i != 0      
+
+      if is_location_name_string
+        locations = Location.where("name ILIKE ?", "%#{location_name}%")
+      else
+        locations = Location.where({id: location_name})  
+      end      
+
+      unless locations.blank?
+        ba_ids = locations.collect{|location|
+          location.brand_ambassadors.select(:id).where(is_active: filter_options["is_active"]).collect{|x| x.id}
+        }.flatten
+        data = BrandAmbassador.where(id: ba_ids)
+      end    
+
     end
     return data
   end

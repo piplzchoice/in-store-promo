@@ -455,10 +455,10 @@ class Service < ActiveRecord::Base
         end
       end
 
-      ApplicationMailer.changes_on_your_services(self).deliver
+      ApplicationMailer.changes_on_your_services(self.id).deliver
     else
       Log.record_modified_main(self.id, old_data, service_params, Service.status_scheduled, current_user_id)
-      ApplicationMailer.ba_assignment_notification(self.brand_ambassador, self).deliver
+      ApplicationMailer.ba_assignment_notification(self.brand_ambassador.id, self.id).deliver
 
       self.update_attribute(:status, Service.status_scheduled)
 

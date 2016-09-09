@@ -8,7 +8,7 @@ role :app, %w{staging@104.236.182.64}
 role :web, %w{staging@104.236.182.64}
 role :db,  %w{staging@104.236.182.64}
 
-set :branch, 'staging'
+set :branch, 'development'
 set :tmp_dir, "/home/staging/tmp"
 set :default_env, { rvm_bin_path: '/home/staging/.rvm/bin' }
 

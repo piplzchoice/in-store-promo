@@ -159,7 +159,7 @@ class ReportsController < ApplicationController
         data: Statement.generate_data(hash_data[key])
       )
       statement.save
-      ApplicationMailer.ba_is_paid(statement).deliver
+      ApplicationMailer.ba_is_paid(statement.id).deliver
 
     end
 

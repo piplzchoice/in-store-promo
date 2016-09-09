@@ -135,7 +135,7 @@ class InvoicesController < ApplicationController
         kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
         @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
         @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-        ApplicationMailer.send_invoice(@invoice).deliver if Rails.env == "production"
+        ApplicationMailer.send_invoice(@invoice.id).deliver if Rails.env == "production"
         redirect_to list_invoices_path
       else
         render :new
@@ -170,7 +170,7 @@ class InvoicesController < ApplicationController
       kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
       @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-      ApplicationMailer.send_invoice(@invoice).deliver
+      ApplicationMailer.send_invoice(@invoice.id).deliver
       redirect_to list_invoices_path
     else
       render :edit
@@ -215,7 +215,7 @@ class InvoicesController < ApplicationController
       @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
     end
 
-    ApplicationMailer.send_invoice(@invoice).deliver
+    ApplicationMailer.send_invoice(@invoice.id).deliver
     redirect_to invoice_path(@invoice), notice: "Invoice sent"
   end
 

@@ -1,2 +1,2 @@
 web: bundle exec rails s -p 3000
-sidekiq: bundle exec sidekiq -q default
+sidekiq: bundle exec sidekiq -q mailer -q default

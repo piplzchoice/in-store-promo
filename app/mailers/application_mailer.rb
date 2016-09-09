@@ -1,4 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
+  include Sidekiq::Mailer
   include ActionView::Helpers::NumberHelper
   default :from => "info@flavorfanaticsism.com"
 
@@ -15,7 +16,10 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: email, subject: et.subject)
   end
 
-  def ba_assignment_notification(ba, service)
+  def ba_assignment_notification(ba_id, service_id)
+    ba = BrandAmbassador.find(ba_id)
+    service = Service.find(service_id)
+
     et = EmailTemplate.find_by_name("ba_assignment_notification")
 
     @content = et.content.gsub(".ba_name", ba.name).gsub(".service_company_name", service.client.company_name)
@@ -63,7 +67,8 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: ba.account.email, subject: et.subject)
   end
 
-  def ba_unrespond_assignment(service)
+  def ba_unrespond_assignment(service_id)
+    service = Service.find(service_id)
     et = EmailTemplate.find_by_name("ba_unrespond_assignment")
 
     @content = et.content.gsub(".ba_name", service.brand_ambassador.name).gsub(".service_company_name", service.client.company_name)
@@ -73,7 +78,9 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: "carol.wellins@gmail.com", subject: et.subject)
   end
 
-  def send_ics(ba, service)
+  def send_ics(ba_id, service_id)
+    ba = BrandAmbassador.find(ba_id)
+    service = Service.find(service_id)
     mail(to: ba.account.email, subject: "Demo at #{service.client.company_name}, #{service.location.complete_location}") do |format|
        format.ics {
          ical = Icalendar::Calendar.new
@@ -98,21 +105,31 @@ class ApplicationMailer < ActionMailer::Base
     end
   end
 
-  def send_reminder_to_add_availablty_date(ba)
+  def send_reminder_to_add_availablty_date(ba_id)
+    ba = BrandAmbassador.find(ba_id)
     et = EmailTemplate.find_by_name("send_reminder_to_add_availablty_date")
     @content = et.content.gsub(".ba_name", ba.name)
     mail(to: ba.account.email, cc: ["gregy@cx-iq.com"] , subject: et.subject)
   end
 
-  def ba_is_paid(statement)
+  def ba_is_paid(statement_id)
+    statement = Statement.find(statement_id)
     et = EmailTemplate.find_by_name("ba_is_paid")
-    data = open(statement.file.url)
-    attachments["#{statement.file.filename}"] = data.read
+    data = nil
+    
+    if Rails.env.eql?("development")
+      data = open(Rails.root.to_s + "/public" + statement.file.url).read
+    else
+      data = open(statement.file.url).read
+    end      
+
+    attachments["statement"] = data
     @content = et.content.gsub(".ba_name", statement.brand_ambassador.name)
     mail(to: statement.brand_ambassador.account.email, subject: et.subject)
   end
 
-  def send_invoice(invoice)
+  def send_invoice(invoice_id)
+    invoice = Invoice.find(invoice_id)
     client = invoice.client
     emails = [client.email]
     unless client.additional_emails.nil?
@@ -120,14 +137,22 @@ class ApplicationMailer < ActionMailer::Base
     end
     et = EmailTemplate.find_by_name("send_invoice")
 
-    data = open(invoice.file.url)
-    attachments["#{invoice.file.url.split("/").last}"] = data.read
+    data = nil
+    
+    if Rails.env.eql?("development")
+      data = open(Rails.root.to_s + "/public" + invoice.file.url).read
+    else
+      data = open(invoice.file.url).read
+    end      
+
+    attachments["#{invoice.file.url.split("/").last}"] = data
 
     @content = et.content.gsub(".client_first_name", invoice.client.first_name)
     mail(to: emails, subject: et.subject)
   end
 
-  def report_over_due_alert(service, admin = false)
+  def report_over_due_alert(service_id, admin = false)
+    service = Service.find(service_id)
     et = EmailTemplate.find_by_name("report_over_due_alert")
     if admin
       emails = ["gregy@cx-iq.com"]
@@ -151,7 +176,8 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: emails, subject: et.subject)
   end
 
-  def inventory_confirmed_no(service, admin = false)
+  def inventory_confirmed_no(service_id, admin = false)
+    service = Service.find(service_id)
     et = EmailTemplate.find_by_name("inventory_confirmed_no")
     emails = ["gregy@cx-iq.com", "carol.wellins@gmail.com"]
 
@@ -161,13 +187,15 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: emails.flatten.uniq, subject: et.subject)
   end
 
-  def changes_on_your_services(service)
+  def changes_on_your_services(service_id)
+    service = Service.find(service_id)
     et = EmailTemplate.find_by_name("changes_on_your_services")
     @content = et.content.gsub(".project_link", client_service_url(client_id: service.client.id, id: service.id ))
     mail(to: service.brand_ambassador.email, subject: et.subject)
   end
 
-  def demo_request(service, log_id)
+  def demo_request(service_id, log_id)
+    service = Service.find(service_id)
     log = Log.find log_id
     @content = log.data["email_log"]["content"]
     mail(
@@ -179,7 +207,8 @@ class ApplicationMailer < ActionMailer::Base
     )
   end
 
-  def rejected_service(service)
+  def rejected_service(service_id)
+    service = Service.find(service_id)
     @service = service
     mail(
       to: "carolw@falvorfanaticsism.com",

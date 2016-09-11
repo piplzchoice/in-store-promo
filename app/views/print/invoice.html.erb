@@ -58,7 +58,7 @@
         <% service = Service.find(data["service_id"]) %>
         <tr class="border-inv">
           <td class="pad-tab border-inv"><%= data["demo_date"] %></td>
-          <td class="pad-tab border-inv"><%= link_to(service.location.name, report_url(service.report_service)) %></td> 
+          <td class="pad-tab border-inv"><%= link_to(service.location.name, Rails.application.routes.url_helpers.report_url(service.report_service)) %></td> 
           <td class="pad-tab border-inv"><%= data["start_time"] %></td>        
           <td class="pad-tab border-inv right-align"><%= data["rate"] %></td> 
           <td class="pad-tab border-inv right-align"><%= data["product_expenses"] %></td>

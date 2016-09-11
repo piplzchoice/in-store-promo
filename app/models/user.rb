@@ -101,4 +101,9 @@ class User < ActiveRecord::Base
   def set_data_false
     self.update_attribute(:is_active, false)
   end
+
+  def admin?
+    self.has_role?(:admin)
+  end
+    
 end

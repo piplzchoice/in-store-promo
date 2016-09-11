@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/rails/activerecord-session_store.git
-  revision: 7eebb4463a7495bd7f277f4a53482510aaf811fa
+  revision: 01440b769db1d867109dff357a5d07ef6d4e2874
   specs:
     activerecord-session_store (1.0.0)
       actionpack (>= 4.0, < 5.1)
@@ -12,28 +12,28 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.2)
-    actionmailer (4.1.2)
-      actionpack (= 4.1.2)
-      actionview (= 4.1.2)
-      mail (~> 2.5.4)
-    actionpack (4.1.2)
-      actionview (= 4.1.2)
-      activesupport (= 4.1.2)
+    CFPropertyList (2.3.3)
+    actionmailer (4.1.16)
+      actionpack (= 4.1.16)
+      actionview (= 4.1.16)
+      mail (~> 2.5, >= 2.5.4)
+    actionpack (4.1.16)
+      actionview (= 4.1.16)
+      activesupport (= 4.1.16)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    actionview (4.1.2)
-      activesupport (= 4.1.2)
+    actionview (4.1.16)
+      activesupport (= 4.1.16)
       builder (~> 3.1)
       erubis (~> 2.7.0)
-    activemodel (4.1.2)
-      activesupport (= 4.1.2)
+    activemodel (4.1.16)
+      activesupport (= 4.1.16)
       builder (~> 3.1)
-    activerecord (4.1.2)
-      activemodel (= 4.1.2)
-      activesupport (= 4.1.2)
+    activerecord (4.1.16)
+      activemodel (= 4.1.16)
+      activesupport (= 4.1.16)
       arel (~> 5.0.0)
-    activesupport (4.1.2)
+    activesupport (4.1.16)
       i18n (~> 0.6, >= 0.6.9)
       json (~> 1.7, >= 1.7.7)
       minitest (~> 5.1)
@@ -45,7 +45,7 @@ GEM
     annotate (2.5.0)
       rake
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (6.4.0.1)
+    autoprefixer-rails (6.4.1)
       execjs
     babel-source (5.8.35)
     babel-transpiler (0.7.0)
@@ -59,7 +59,7 @@ GEM
     builder (3.2.2)
     byebug (9.0.5)
     cancan (1.6.10)
-    capistrano (3.6.0)
+    capistrano (3.6.1)
       airbrussh (>= 1.0.0)
       capistrano-harrow
       i18n
@@ -75,6 +75,9 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano-sidekiq (0.5.4)
+      capistrano
+      sidekiq (>= 3.4)
     carmen (1.0.2)
       activesupport (>= 3.0.0)
     carmen-rails (1.0.1)
@@ -88,6 +91,7 @@ GEM
       mimemagic (>= 0.3.0)
     chronic (0.10.2)
     coffee-script-source (1.10.0)
+    concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
     devise (4.2.0)
       bcrypt (~> 3.0)
@@ -99,7 +103,7 @@ GEM
     exception_notification (4.2.1)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
-    excon (0.51.0)
+    excon (0.52.0)
     execjs (2.7.0)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
@@ -174,7 +178,7 @@ GEM
       multi_json (~> 1.10)
     fog-local (0.3.0)
       fog-core (~> 1.27)
-    fog-openstack (0.1.11)
+    fog-openstack (0.1.12)
       fog-core (>= 1.40)
       fog-json (>= 1.0)
       ipaddress (>= 0.8)
@@ -205,7 +209,7 @@ GEM
     fog-serverlove (0.1.2)
       fog-core
       fog-json
-    fog-softlayer (1.1.3)
+    fog-softlayer (1.1.4)
       fog-core
       fog-json
     fog-storm_on_demand (0.1.1)
@@ -220,22 +224,24 @@ GEM
     fog-voxel (0.1.0)
       fog-core
       fog-xml
-    fog-vsphere (1.0.0)
+    fog-vsphere (1.0.1)
       fog-core
-      rbvmomi (~> 1.8)
+      rbvmomi (~> 1.8.0)
     fog-xenserver (0.2.3)
       fog-core
       fog-xml
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
+    foreman (0.82.0)
+      thor (~> 0.19.1)
     formatador (0.2.5)
     fullcalendar-rails (2.4.0.0)
       jquery-rails (>= 3.1.1, < 5.0.0)
       momentjs-rails (>= 2.9.0)
     hike (1.2.3)
     i18n (0.7.0)
-    icalendar (2.4.0)
+    icalendar (2.4.1)
     inflecto (0.0.2)
     ipaddress (0.8.3)
     jbuilder (2.6.0)
@@ -249,10 +255,11 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.4.1)
       launchy (~> 2.2)
-    mail (2.5.4)
-      mime-types (~> 1.16)
-      treetop (~> 1.4.8)
-    mime-types (1.25.1)
+    mail (2.6.4)
+      mime-types (>= 1.16, < 4)
+    mime-types (3.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0521)
     mimemagic (0.3.2)
     mini_portile2 (2.1.0)
     minitest (5.9.0)
@@ -272,21 +279,23 @@ GEM
     pkg-config (1.1.7)
     polyglot (0.3.5)
     rack (1.5.5)
+    rack-protection (1.5.3)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rails (4.1.2)
-      actionmailer (= 4.1.2)
-      actionpack (= 4.1.2)
-      actionview (= 4.1.2)
-      activemodel (= 4.1.2)
-      activerecord (= 4.1.2)
-      activesupport (= 4.1.2)
+    rails (4.1.16)
+      actionmailer (= 4.1.16)
+      actionpack (= 4.1.16)
+      actionview (= 4.1.16)
+      activemodel (= 4.1.16)
+      activerecord (= 4.1.16)
+      activesupport (= 4.1.16)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 4.1.2)
+      railties (= 4.1.16)
       sprockets-rails (~> 2.0)
-    railties (4.1.2)
-      actionpack (= 4.1.2)
-      activesupport (= 4.1.2)
+    railties (4.1.16)
+      actionpack (= 4.1.16)
+      activesupport (= 4.1.16)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (11.2.2)
@@ -307,12 +316,15 @@ GEM
       devise
       mime-types
       orm_adapter
+    redis (3.3.1)
+    redis-namespace (1.5.2)
+      redis (~> 3.0, >= 3.0.4)
     responders (1.1.2)
       railties (>= 3.2, < 4.2)
     rest_client (1.8.3)
       netrc (~> 0.7.7)
     rolify (5.1.0)
-    roo (2.4.0)
+    roo (2.5.1)
       nokogiri (~> 1)
       rubyzip (~> 1.1, < 2.0.0)
     ruby-ole (1.2.12)
@@ -328,6 +340,19 @@ GEM
       rdoc (~> 4.0)
     select2-rails (3.5.9)
       thor (~> 0.14)
+    sidekiq (4.1.4)
+      concurrent-ruby (~> 1.0)
+      connection_pool (~> 2.2, >= 2.2.0)
+      redis (~> 3.2, >= 3.2.1)
+      sinatra (>= 1.4.7)
+    sidekiq_mailer (0.0.8)
+      actionmailer (>= 3.0)
+      activesupport (>= 3.0)
+      sidekiq (>= 2.3)
+    sinatra (1.4.7)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
     spreadsheet (1.1.3)
       ruby-ole (>= 1.0)
     spring (1.7.2)
@@ -354,7 +379,10 @@ GEM
     trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uglifier (3.0.1)
+    trollop (2.1.2)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    uglifier (3.0.2)
       execjs (>= 0.3.0, < 3)
     warden (1.2.6)
       rack (>= 1.0)
@@ -382,11 +410,13 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
+  capistrano-sidekiq
   carmen-rails
   carrierwave
   devise
   exception_notification
   fog
+  foreman
   fullcalendar-rails
   icalendar
   jbuilder (~> 2.0)
@@ -396,15 +426,19 @@ DEPENDENCIES
   nokogiri
   pdfkit
   pg
-  rails (= 4.1.2)
+  rails (= 4.1.16)
   react-rails (~> 1.6.0)
   redactor-rails
+  redis-namespace
   rest_client
   rolify
   roo
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   select2-rails (= 3.5.9)
+  sidekiq
+  sidekiq_mailer
+  sinatra
   spreadsheet
   spring
   time_difference

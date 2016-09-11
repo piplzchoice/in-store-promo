@@ -5,7 +5,7 @@ namespace :notification do
     Service.where("status = ?", 1).each do |service|
       if TimeDifference.between(service.updated_at.to_time, current_time).in_hours > DefaultValue.send_unrespond.round
         service.update_attributes({status: Service.status_unrespond, token: Devise.friendly_token})
-        ApplicationMailer.ba_unrespond_assignment(service).deliver!
+        ApplicationMailer.ba_unrespond_assignment(service.id).deliver
       end
     end    
   end  
@@ -26,7 +26,7 @@ namespace :notification do
     if current_time.strftime("%d") == "15"
       BrandAmbassador.with_status_active.each do |ba|
         if ba.account.is_active
-          ApplicationMailer.send_reminder_to_add_availablty_date(ba).deliver!
+          ApplicationMailer.send_reminder_to_add_availablty_date(ba.id).deliver
         end
       end
     end
@@ -39,7 +39,7 @@ namespace :notification do
       if TimeDifference.between(service.updated_at.to_time, current_time).in_hours > 36.round
         service.update_attributes({alert_sent: true, alert_sent_date: 35.hours.from_now.to_time})
         if service.brand_ambassador.account.is_active
-          ApplicationMailer.report_over_due_alert(service).deliver!
+          ApplicationMailer.report_over_due_alert(service.id).deliver
         end
       end
     end    
@@ -52,7 +52,7 @@ namespace :notification do
       if TimeDifference.between(service.alert_sent_date.to_time, current_time).in_hours > 12.round
         service.update_attributes({alert_sent_admin: true, alert_sent_admin_date: current_time})
         if service.brand_ambassador.account.is_active
-          ApplicationMailer.report_over_due_alert(service, true).deliver!
+          ApplicationMailer.report_over_due_alert(service.id, true).deliver
         end
       end
     end    
@@ -64,7 +64,7 @@ namespace :notification do
     Service.where({status: [2, 11], is_old_service: false}).each do |service|
       if TimeDifference.between(service.start_at.to_time, current_time).in_hours > 96.round
         unless service.inventory_confirm
-          ApplicationMailer.inventory_confirmed_no(service).deliver!
+          ApplicationMailer.inventory_confirmed_no(service.id).deliver
         end
       end
     end    

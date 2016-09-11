@@ -1,0 +1,127 @@
+<div class="row">
+  <div class="" style="float: left">
+    <table class="table-bordered" style="width: 250px;font-size: 13px;text-align: left;">
+      <tr class="highlight" style="text-align: left;"><th class="pad-tab">Bill To :</th></tr>
+      <tr>
+        <td class="pad-tab">
+          <span style="display: block; margin-top: 10px; font-size: 15px;">
+            <strong><%= @client.company_name %></strong>
+          </span>
+          <span style="display: block;"><%= @client.billing_name %></span>
+          <span style="display: block;"><%= @client.billing_address %></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div style="float: right">
+    <table class="table-bordered" style="width: 300px;font-size: 13px;text-align: left;">
+      <tr>
+        <td class="highlight pad-tab">Invoice#</td>
+        <td class="pad-tab"><%= @invoice.number %></td>
+      </tr>
+      <tr>
+        <td class="highlight pad-tab">Invoice Date</td>
+        <td class="pad-tab"><%= @invoice.issue_date.nil? ? @invoice.created_at.strftime('%m/%d/%Y') : @invoice.issue_date.strftime('%m/%d/%Y') %></td>
+      </tr>
+      <tr>
+        <td class="highlight pad-tab">Terms</td>
+        <td class="pad-tab"><%= @invoice.terms %></td>
+      </tr>
+      <tr>
+        <td class="highlight pad-tab">Due Date</td>
+        <td class="pad-tab"><%= @invoice.due_date.strftime('%m/%d/%Y') %></td>
+      </tr>
+      <tr>
+        <td class="highlight pad-tab">P.O.#</td>
+        <td class="pad-tab"><%= @invoice.po %></td>
+      </tr>                
+    </table>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 50px; margin-bottom: 10px;">
+  <table class="" style="width: 100%;font-size: 12px;text-align: left;">
+    <thead>
+      <tr class="border-inv">
+        <th class="pad-tab highlight title-color border-inv">Demo Date</th>
+        <th class="pad-tab highlight title-color border-inv">Location</th>
+        <th class="pad-tab highlight title-color border-inv">Start Time</th>        
+        <th class="pad-tab highlight title-color border-inv right-align">Rate</th>
+        <th class="pad-tab highlight title-color border-inv right-align">Product Expenses</th>
+        <th class="pad-tab highlight title-color border-inv right-align">Travel Expense</th>
+        <th class="pad-tab highlight title-color border-inv right-align">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @invoice.data.each_with_index do |data, i|  %>
+        <% service = Service.find(data["service_id"]) %>
+        <tr class="border-inv">
+          <td class="pad-tab border-inv"><%= data["demo_date"] %></td>
+          <td class="pad-tab border-inv"><%= link_to(service.location.name, Rails.application.routes.url_helpers.report_url(service.report_service)) %></td> 
+          <td class="pad-tab border-inv"><%= data["start_time"] %></td>        
+          <td class="pad-tab border-inv right-align"><%= data["rate"] %></td> 
+          <td class="pad-tab border-inv right-align"><%= data["product_expenses"] %></td>
+          <td class="pad-tab border-inv right-align"><%= data["travel_expense"] %></td>
+          <td class="pad-tab border-inv right-align"><%= data["amount"] %></td>
+        </tr>
+      <% end %>
+
+        <tr>
+          <td class="pad-tab"></td>
+          <td class="pad-tab"></td> 
+          <td class="pad-tab border-bott"><strong>Sub Total</strong></td>        
+          <td class="pad-tab border-bott right-align"><%= number_to_currency @invoice.rate_total_all %></td> 
+          <td class="pad-tab border-bott right-align"><%= number_to_currency @invoice.expsense_total_all %></td>
+          <td class="pad-tab border-bott right-align"><%= number_to_currency @invoice.travel_total_all %></td>
+          <td class="pad-tab border-bott right-align"></td>
+        </tr>      
+
+        <tr id="add-item-result" style="">
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="border-bott-strong"><strong>Total</strong></td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="right-align border-bott-strong">
+            <%= number_to_currency @invoice.grand_total %>
+          </td>
+        </tr>
+
+        <% unless @invoice.line_items.blank? %>
+          <% @invoice.line_items.each do |item| %>
+            <tr>
+              <td>&nbsp;</td>
+              <td><%= item["desc"] %></td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td class="right-align"><%= item["reduction"] == "true" ? "(#{number_to_currency item["amount"]})" : "#{number_to_currency item["amount"]}" %></td>
+            </tr>
+          <% end %>
+        <% end %>
+
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>                
+          <td>&nbsp;</td>
+        </tr>        
+
+        <tr style="">
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td class="border-bott-strong"><strong>Balance Due</strong></td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td class="border-bott-strong">&nbsp;</td>
+          <td id="due-total-all" class="right-align border-bott-strong"><%= number_to_currency @invoice.grand_total_all %></td>
+        </tr>        
+    </tbody>
+  </table>  
+</div>

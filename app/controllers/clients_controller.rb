@@ -3,7 +3,7 @@ class ClientsController < ApplicationController
   authorize_resource class: ClientsController
   before_filter :check_client_status, only: [:show, :edit, :update]
 
-  def index
+  def index    
     respond_to do |format|
       format.html {
         if session[:filter_history_clients].nil?

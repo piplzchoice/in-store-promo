@@ -87,9 +87,9 @@
         </thead>
         <tbody>
           <% if !@report.client_products.nil? %>
-            <%= render "client_products_pdf" %>
+            <%= render "/reports/client_products_pdf" %>
           <% else %>
-            <%= render "products_pdf" %>
+            <%= render "/reports/products_pdf" %>
           <% end %>
         </tbody>
       </table>
@@ -122,7 +122,7 @@
       <span class="report-title">Expense</span>: <%= number_to_currency @report.expense_one %>
       <% @report.report_expense_images.each do |img| %>
         <br />
-        <%= image_tag img.file.current_path %>
+        <%= image_tag img.file.url.gsub("https", "http"), {class: "img-responsive img-thumbnail", width: "400px"} %>
         <br />
       <% end %>
     </div>
@@ -159,7 +159,7 @@
       <span class="report-title">Attach Table Image</span>:
       <% @report.report_table_images.each do |img| %>
         <br />
-        <%= image_tag img.file.url.gsub("https", "http"), {width: "700px"} %>
+        <%= image_tag img.file.url.gsub("https", "http"), {width: "400px"} %>
         <br />
       <% end %>
     </div>

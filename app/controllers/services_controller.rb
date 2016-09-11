@@ -1,7 +1,7 @@
 class ServicesController < ApplicationController
   before_filter :authenticate_user!, except: [:confirm_respond, :rejected_respond]
 
-  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show]
+  authorize_resource class: ServicesController, except: [:confirm_respond, :rejected_respond, :show, :comment_inventory]
 
   def index
     render json: Client.calendar_services(params)
@@ -128,7 +128,7 @@ class ServicesController < ApplicationController
       Log.record_email_request(coop_service.id, data, current_user.id)
     end
 
-    ApplicationMailer.demo_request(@service, log_id).deliver
+    ApplicationMailer.demo_request(@service.id, log_id).deliver
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Request by email sent"
   end
 
@@ -153,7 +153,7 @@ class ServicesController < ApplicationController
       Log.record_status_changed(coop_service.id, 12, coop_service.status, current_user.id)
     end
 
-    ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+    ApplicationMailer.ba_assignment_notification(@service.brand_ambassador.id, @service.id).deliver
 
     redirect_to client_service_path(client_id: @client.id, id: @service.id), notice: "Service change to status Scheduled"
   end
@@ -175,7 +175,7 @@ class ServicesController < ApplicationController
           end
           @service.create_coops(params["co_op_client_id"], params["ids-coop-products"], current_user.id) if params["co-op-price-box"]
           # @client.set_as_active if @client.services.size == 1
-          ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+          ApplicationMailer.ba_assignment_notification(@service.brand_ambassador.id, @service.id).deliver
           redirect_to client_path(@client), notice: "Demo created"
         else
           render :new
@@ -244,7 +244,13 @@ class ServicesController < ApplicationController
     # @service = @client.services.find(params[:id])
     @service = Service.find(params[:id])
     if @service.cancelled(current_user.id)
-      ApplicationMailer.cancel_assignment_notification(@service.brand_ambassador, @service, @service.date).deliver unless @service.status == 12
+
+      # ApplicationMailer.cancel_assignment_notification(
+      #   @service.brand_ambassador, 
+      #   @service, 
+      #   @service.date
+      # ).deliver unless @service.status == 12
+
       redirect_to client_path(@client), {notice: "Demo Cancelled"}
     else
       render :show
@@ -346,7 +352,7 @@ class ServicesController < ApplicationController
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_status(Service.status_confirmed, @service.brand_ambassador.account.id, Devise.friendly_token)
-          ApplicationMailer.send_ics(@service.brand_ambassador, @service).deliver
+          ApplicationMailer.send_ics(@service.brand_ambassador.id, @service.id).deliver
         end
       end
     end    
@@ -370,7 +376,7 @@ class ServicesController < ApplicationController
       unless @service.nil?
         if Devise.secure_compare(@service.token, params[:token])
           @service.update_status(Service.status_rejected, @service.brand_ambassador.account.id, Devise.friendly_token)
-          ApplicationMailer.rejected_service(@service).deliver
+          ApplicationMailer.rejected_service(@service.id).deliver
         end
       end
     end
@@ -400,7 +406,7 @@ class ServicesController < ApplicationController
       @service = @client.services.find(params[:id])
       unless @service.nil?
         @service.update_status_both_side(Service.status_scheduled, current_user.id)
-        ApplicationMailer.ba_assignment_notification(@service.brand_ambassador, @service).deliver
+        ApplicationMailer.ba_assignment_notification(@service.brand_ambassador.id, @service.id).deliver
         msg = "Demo reschedule completed"
       end
     end
@@ -411,14 +417,16 @@ class ServicesController < ApplicationController
   def confirm_inventory
     @service = Service.find(params[:service_id])
     @service.update_inventory(service_inventory_params, current_user.id)
-    ApplicationMailer.changes_on_your_services(@service).deliver unless @service.status == 12
+    ApplicationMailer.changes_on_your_services(@service.id).deliver unless @service.status == 12
     redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
   end
 
   def comment_inventory
     @service = Service.find(params[:service_id])
-    Log.record_comment_of_inventory(@service.id, params[:comments], current_user.id)
-    redirect_to client_service_path({client_id: params[:client_id], id: params[:service_id]}) and return
+    cur_user_id = current_user.id
+    cur_user_id = session[:additional_personnel].id unless session[:additional_personnel].nil?
+    Log.record_comment_of_inventory(@service.id, params[:comments], cur_user_id)
+    redirect_to client_service_path({client_id: @service.client_id, id: params[:service_id]}) and return
   end
 
   def check_client_status

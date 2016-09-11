@@ -17,4 +17,10 @@ class AssignmentsController < ApplicationController
     @service = current_user.brand_ambassador.services.find(params[:id])
   end
 
+  def comment
+    service = Service.find(params[:id])
+    Log.record_comment_of_inventory(service.id, params[:comments], current_user.id)
+    redirect_to assignment_path({id: params[:id]}) and return    
+  end
+
 end

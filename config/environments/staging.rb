@@ -8,7 +8,7 @@ Rails.application.configure do
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
-  config.eager_load = true
+  config.eager_load = false
   config.logger = Logger.new(STDOUT)
 
   # Full error reports are disabled and caching is turned on.
@@ -85,6 +85,8 @@ Rails.application.configure do
 
 
   config.action_mailer.default_url_options = { :host => 'staging.flavorfanaticsism.com' }
+  routes.default_url_options = { :host => 'staging.flavorfanaticsism.com' }
+
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     :user_name => '2211184d188e916fa',

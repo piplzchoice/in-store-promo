@@ -15,7 +15,7 @@ set :default_env, { rvm_bin_path: '/home/staging/.rvm/bin' }
 set :deploy_to, '/home/staging/ism'
 set :rvm_ruby_version, 'ruby-2.1.1@ism'
 
-set :linked_files, %w{config/database.yml config/secrets.yml}
+set :linked_files, %w{config/database.yml config/secrets.yml config/initializers/carrierwave.rb}
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the

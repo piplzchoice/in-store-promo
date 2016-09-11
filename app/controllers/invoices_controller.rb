@@ -128,14 +128,8 @@ class InvoicesController < ApplicationController
         end      
     
         @client = @invoice.client
-        @services = Service.find(@invoice.service_ids.split(","))
-        file = "invoice-#{Time.now.to_i}.pdf"
-        html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
-        kit = PDFKit.new(html)
-        kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-        @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
         @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-        ApplicationMailer.send_invoice(@invoice.id).deliver if Rails.env == "production"
+        PdfGeneratorWorker.perform_async('invoice', @invoice.id)
         redirect_to list_invoices_path
       else
         render :new
@@ -164,13 +158,8 @@ class InvoicesController < ApplicationController
     @services = Service.find(@invoice.service_ids.split(","))
 
     if @invoice.update_invoice(line_items, params[:rate_total_all], params[:expsense_total_all], params[:travel_total_all], params[:grand_total_all], params[:grand_total])
-      file = "invoice-#{Time.now.to_i}.pdf"
-      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
-      kit = PDFKit.new(html)
-      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
       @client.update_attribute(:additional_emails, params[:list_emails].split(";"))
-      ApplicationMailer.send_invoice(@invoice.id).deliver
+      PdfGeneratorWorker.perform_async('invoice', @invoice.id)
       redirect_to list_invoices_path
     else
       render :edit
@@ -178,42 +167,22 @@ class InvoicesController < ApplicationController
   end
 
   def download
-    @invoice = Invoice.find(params[:id])
+    invoice = Invoice.find(params[:id])
 
-    file = "invoice-#{Time.now.to_i}.pdf"    
-    @client = @invoice.client
-    @services = Service.find(@invoice.service_ids.split(","))
-
-    html = render_to_string(:layout => "print_invoice", :action => "print", :id => params[:id])
-    kit = PDFKit.new(html)
-    kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-        
-    if @invoice.file.nil?
-      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
-    end
-    
-    send_data(kit.to_pdf, :filename => file, :type => 'application/pdf')    
-  end
-
-  def print
-    @invoice = Invoice.find(params[:id])
-    @client = @invoice.client
-    @services = Service.find(@invoice.service_ids.split(","))
-    render layout: "print_invoice"
+    if invoice.file.blank?
+      redirect_to customer_report_path({id: invoice.uuid}), notice: "PDF is still generating, please try again in few minutes"
+    else
+      if Rails.env.eql?("development")
+        send_file(Rails.root.to_s + "/public" + invoice.file.url, :filename => invoice.file.url.split("/").last, :type => 'application/pdf')
+      else
+        data = open(invoice.file.url)
+        send_file(data, :filename => invoice.file.url.split("/").last, :type => 'application/pdf')
+      end      
+    end    
   end 
 
   def resend
     @invoice = Invoice.find(params[:id])
-
-    if @invoice.file.url.nil?
-      @client = @invoice.client
-      @services = Service.find(@invoice.service_ids.split(","))
-      file = "invoice-#{Time.now.to_i}.pdf"
-      html = render_to_string(:layout => "print_invoice", :action => "print", :id => @invoice.id)
-      kit = PDFKit.new(html)
-      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
-      @invoice.update_attribute(:file, kit.to_file("#{Rails.root}/tmp/#{file}"))
-    end
 
     ApplicationMailer.send_invoice(@invoice.id).deliver
     redirect_to invoice_path(@invoice), notice: "Invoice sent"

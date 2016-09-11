@@ -144,23 +144,15 @@ class ReportsController < ApplicationController
 
       Service.update_to_ba_paid(hash_data[key], current_user.id)
 
-      time_no = Time.now.to_i
-      file = "ba-#{@ba.id}-paid-#{time_no}.pdf"
-
-      html = render_to_string(:layout => "print_report", :action => "print_process_ba_payments")
-
-      kit = PDFKit.new(html)
-      kit.stylesheets << "#{Rails.root}/app/assets/stylesheets/application.css.scss"
       statement = @ba.statements.build(
-        file: kit.to_file("#{Rails.root}/tmp/#{file}"),
         services_ids: hash_data[key],
         line_items: @line_items,
         grand_total: params[:grand_total_all],
         data: Statement.generate_data(hash_data[key])
       )
-      statement.save
-      ApplicationMailer.ba_is_paid(statement.id).deliver
-
+      statement.save      
+      
+      PdfGeneratorWorker.perform_async('ba_payment', statement.id)
     end
 
     redirect_to ba_payments_reports_path
@@ -324,7 +316,7 @@ class ReportsController < ApplicationController
              end
            end
 
-          ReportPdfGeneratorWorker.perform_async('report', @report.id, true)
+          PdfGeneratorWorker.perform_async('report', @report.id, true)
 
           redirect_to report_path(@report), notice: "Report updated"
         else
@@ -380,19 +372,7 @@ class ReportsController < ApplicationController
   end
 
   def generate_export_data
-    @services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
-
-    book = Spreadsheet::Workbook.new
-    sheet1 = book.create_worksheet :name => 'Data'
-    sheet1.row(0).replace(export_data_array)
-
-    @services.each_with_index do |service, i|
-      sheet1.row(i + 1).replace service.export_data
-    end
-
-    export_file_path = [Rails.root, "tmp", "export-data-#{Time.now.to_i}.xls"].join("/")
-    book.write export_file_path
-    send_file export_file_path, :content_type => "application/vnd.ms-excel", :disposition => 'inline'
+    send_file(Report.generate_export_data, {:content_type => "application/vnd.ms-excel", :disposition => 'inline'})
   end
 
   def upload_image
@@ -488,7 +468,7 @@ class ReportsController < ApplicationController
     end
 
     report_data.save
-    ReportPdfGeneratorWorker.perform_async('report', report_data.id)
+    generate_pdf_report(report_data.id)
   end
 
   def save_coop_report_data(report_data, image_table, image_expense)
@@ -525,7 +505,8 @@ class ReportsController < ApplicationController
     end
 
     report_data.save
-    ReportPdfGeneratorWorker.perform_async('report', report_data.id)
+    
+    generate_pdf_report(report_data.id)
   end
 
   private
@@ -538,16 +519,8 @@ class ReportsController < ApplicationController
     end.compact
   end
 
-  def export_data_array
-    [
-      "Location Name", "Client name", "BA name", "Date", "Total Units Sold", "Ave Price",
-      "Traffic", "Day", "AM/PM", "Product 1", "Product 2", "Product 3", "Product 4",
-      "Product 5", "Product 6", "Product 7", "Product 8", "Product 9", "Product 10",
-      "Product 11", "Product 12", "Product 13", "Product 14", "Product 15", "Sold Product 1",
-      "Sold Product 2", "Sold Product 3", "Sold Product 4", "Sold Product 5", "Sold Product 6",
-      "Sold Product 7", "Sold Product 8", "Sold Product 9", "Sold Product 10", "Sold Product 11",
-      "Sold Product 12", "Sold Product 13", "Sold Product 14", "Sold Product 15", "Estimated 3 of customers touched"
-    ]    
+  def generate_pdf_report(report_id)
+    PdfGeneratorWorker.perform_async('report', report_id)
   end
 
 end

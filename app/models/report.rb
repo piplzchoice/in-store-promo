@@ -169,4 +169,32 @@ class Report < ActiveRecord::Base
     end
     return (total_price / available_product).round(2) rescue "-"
   end
+
+  def self.generate_export_data
+    services = Report.all.collect{|x| x.service}.compact.sort{|x, y| y.report.id <=> x.report.id}
+
+    export_data_array = [
+      "Location Name", "Client name", "BA name", "Date", "Total Units Sold", "Ave Price",
+      "Traffic", "Day", "AM/PM", "Product 1", "Product 2", "Product 3", "Product 4",
+      "Product 5", "Product 6", "Product 7", "Product 8", "Product 9", "Product 10",
+      "Product 11", "Product 12", "Product 13", "Product 14", "Product 15", "Sold Product 1",
+      "Sold Product 2", "Sold Product 3", "Sold Product 4", "Sold Product 5", "Sold Product 6",
+      "Sold Product 7", "Sold Product 8", "Sold Product 9", "Sold Product 10", "Sold Product 11",
+      "Sold Product 12", "Sold Product 13", "Sold Product 14", "Sold Product 15", "Estimated 3 of customers touched"
+    ]
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet :name => 'Data'
+    sheet1.row(0).replace(export_data_array)
+
+    services.each_with_index do |service, i|
+      sheet1.row(i + 1).replace service.export_data
+    end
+
+    export_file_path = [Rails.root, "tmp", "export-data-#{Time.now.to_i}.xls"].join("/")
+    book.write(export_file_path)
+
+    return export_file_path
+
+  end
 end

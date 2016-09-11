@@ -1,5 +1,11 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   mount RedactorRails::Engine => '/redactor_rails'
+
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end  
 
   devise_for :users,
     :controllers => {
@@ -179,6 +185,8 @@ Rails.application.routes.draw do
   resources :territories
 
   get "/print/report/:id" => "print#report", as: "print_report_pdf"
+  get "/print/invoice/:id" => "print#invoice", as: "print_invoice_pdf"
+  get "/print/ba_payment/:id" => "print#ba_payment", as: "print_ba_payment_pdf"
   post "/forgot_password" => "home#forgot_password", as: "forgot_password"
 
 end

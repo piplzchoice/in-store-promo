@@ -13,6 +13,15 @@ class BrandAmbassadorsController < ApplicationController
           @brand_ambassadors = BrandAmbassador.filter_and_order(session[:filter_history_ba]).paginate(:page => session[:filter_history_ba]["page"])
           @is_active = session[:filter_history_ba]["is_active"]
           @location_name = session[:filter_history_ba]["location_name"]
+
+          unless @location_name == ""
+            if @location_name.to_i != 0
+              @location_fullname = Location.find(@location_name).name
+            else
+              @location_fullname = @location_name
+            end
+          end
+                    
           session[:filter_history_ba] = nil if request.env["HTTP_REFERER"].nil? || request.env["HTTP_REFERER"].split("/").last == "brand_ambassadors"
         end
       }

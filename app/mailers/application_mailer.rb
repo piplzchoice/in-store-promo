@@ -123,7 +123,7 @@ class ApplicationMailer < ActionMailer::Base
       data = open(statement.file.url).read
     end      
 
-    attachments["statement"] = data
+    attachments["statement.pdf"] = data
     @content = et.content.gsub(".ba_name", statement.brand_ambassador.name)
     mail(to: statement.brand_ambassador.account.email, subject: et.subject)
   end

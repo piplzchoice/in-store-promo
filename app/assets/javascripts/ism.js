@@ -1075,6 +1075,14 @@ $(function() {
         // plugins: ['undo', 'redo']
     });
 
+    $("#select-all-filter-report").on("click", function() {
+        $(".statuses").prop("checked", true)
+    });
+
+    $("#unselect-all-filter-report").on("click", function() {
+        $(".statuses").prop("checked", false)
+    });
+
 });
 
 

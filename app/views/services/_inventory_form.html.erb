@@ -11,7 +11,9 @@
       <% end %>  
     <% end %>    
 
-    <%= render "comment_box" %>
+    <% unless current_user.has_role?(:client) || current_user.has_role?(:customer) %>
+      <%= render "comment_box" %>
+    <% end %>
 
   <% end %>
 <% end %>

@@ -5,7 +5,7 @@ class AvailableDatesController < ApplicationController
   def index
     respond_to do |format|
       format.html
-      format.json { render json: current_user.brand_ambassador.available_calendar }
+      format.json { render json: current_user.brand_ambassador.available_calendar(true) }
     end       
   end
 

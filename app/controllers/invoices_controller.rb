@@ -80,7 +80,7 @@ class InvoicesController < ApplicationController
     # @invoice.update_attribute(:status, 1)
     # redirect_to invoices_path
 
-    ApplicationMailer.thank_you_for_payment(@invoice).deliver
+    ApplicationMailer.thank_you_for_payment(@invoice.id).deliver
     redirect_to list_invoices_path
   end
 

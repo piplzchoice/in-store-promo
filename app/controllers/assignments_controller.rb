@@ -8,7 +8,7 @@ class AssignmentsController < ApplicationController
         @statements = current_user.brand_ambassador.statements.order(created_at: :desc)
       }
       format.json {
-        render json: current_user.brand_ambassador.available_calendar
+        render json: current_user.brand_ambassador.available_calendar(true)
       }
     end
   end

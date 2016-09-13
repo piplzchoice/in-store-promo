@@ -163,7 +163,8 @@ class ApplicationMailer < ActionMailer::Base
     mail(to: emails.flatten.uniq, subject: et.subject)
   end
 
-  def thank_you_for_payment(invoice)
+  def thank_you_for_payment(invoice_id)
+    invoice = Invoice.find invoice_id
     et = EmailTemplate.find_by_name("thank_you_for_payment")
 
     emails = [invoice.client.email]

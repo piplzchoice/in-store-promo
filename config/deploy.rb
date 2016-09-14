@@ -19,7 +19,7 @@ set :scm, :git
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system public/assets public/uploads public/sitemaps}
 
-set :sidekiq_queue, ['default', 'mailer']
+set :sidekiq_queue, ['default']
 
 set :keep_releases, 5
 

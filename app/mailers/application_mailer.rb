@@ -1,5 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
-  include Sidekiq::Mailer
+  # include Sidekiq::Mailer
   include ActionView::Helpers::NumberHelper
   default :from => "info@flavorfanaticsism.com"
 

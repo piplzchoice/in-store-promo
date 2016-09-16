@@ -844,68 +844,12 @@ class Service < ActiveRecord::Base
     unless self.co_op_services.empty?
       self.co_op_services.each do |service_coop|
         old_status = service_coop.status
-        # service_coop.update_attributes({status: Service.status_confirmed, token: token})
+        service_coop.update_attributes({status: status, token: token})
         Log.record_status_changed(service_coop.id, old_status, service_coop.status, current_user_id)
       end
     end
   end
-
-  # def update_status_to_confirmed(token)
-  #   old_status = self.status
-  #   self.update_attributes({status: Service.status_confirmed, token: token})
-  #   # Log.create_data(self.id, old_status, self.status)
-
-  #   unless self.co_op_services.empty?
-  #     self.co_op_services.each do |service_coop|
-  #       old_status = service_coop.status
-  #       service_coop.update_attributes({status: Service.status_confirmed, token: token})
-  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
-  #     end
-  #   end
-  # end
-
-  # def update_status_to_rejected(token)
-  #   old_status = self.status
-  #   self.update_attributes({status: Service.status_rejected, token: token})
-  #   # Log.create_data(self.id, old_status, self.status)
-
-  #   unless self.co_op_services.empty?
-  #     self.co_op_services.each do |service_coop|
-  #       old_status = service_coop.status
-  #       service_coop.update_attributes({status: Service.status_rejected, token: token})
-  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
-  #     end
-  #   end
-  # end
-
-  # def update_status_to_reported
-  #   old_status = self.status
-  #   self.update_attributes({status: Service.status_reported})
-  #   # Log.create_data(self.id, old_status, self.status)
-
-  #   unless self.co_op_services.empty?
-  #     self.co_op_services.each do |service_coop|
-  #       old_status = service_coop.status
-  #       service_coop.update_attributes({status: Service.status_reported})
-  #       # Log.create_data(service_coop.id, old_status, service_coop.status)
-  #     end
-  #   end
-  # end
-
-  # def update_status_to_conducted
-  #   self.update_attributes({status: Service.status_conducted})
-
-  #   if is_co_op?
-  #     if self.co_op_services.empty?
-  #       self.parent.update_attributes({status: Service.status_conducted})
-  #     else
-  #       self.co_op_services.each do |service_coop|
-  #         service_coop.update_attributes({status: Service.status_conducted})
-  #       end
-  #     end
-  #   end
-  # end
-
+  
   def update_status_both_side(status, current_user_id)
     old_status = self.status
     self.update_attributes({status: status})

@@ -359,14 +359,6 @@ class ServicesController < ApplicationController
 
     @respond_service = "true"
     render "respond_service"
-    # redirect_to root_path
-    # path = assignment_path(id: @service.id)
-
-    # if current_user.has_role?(:admin) || current_user.has_role?(:ismp)
-    #   path = client_service_path(client_id: @client.id, id: @service.id)
-    # end
-
-    # redirect_to path
   end
 
   def rejected_respond

@@ -83,14 +83,16 @@ class ReportsController < ApplicationController
         end
 
         data = {
-          "status" => params[:statuses], 
+          "status" => params[:statuses].split(","), 
           "assigned_to" => ba_id, 
           "client_name" => client_name, 
           "sort_column" => sort_column, 
           "sort_direction" => sort_direction, 
           "page" => params[:page], 
-          "location_name" => location_name
+          "location_name" => location_name,
+          "is_client" => false,
         }
+
 
         @services = Service.filter_and_order(data)
 

@@ -1059,7 +1059,6 @@ $(function() {
         $("#status-csv").val(statusesValue.join(","))
         $("#assigned-csv").val($("#assigned_to").val())
         $("#client-csv").val($("#client_name").val())
-        $("#project-csv").val($("#project_name").val())
         $("#sort-csv").val($("#sort").val())
         $("#direction-csv").val($("#direction").val())
         $("#location-csv").val($("#location_name").val())
